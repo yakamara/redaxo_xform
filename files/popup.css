@@ -1,0 +1,11 @@
+#rex-redaxo-link,
+#rex-footer,
+#rex-navi-logout,
+#rex-title,
+#rex-navi-main {
+display:none;
+}
+
+body #rex-website {
+width:775px;
+}
