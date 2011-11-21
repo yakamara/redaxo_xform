@@ -58,11 +58,6 @@ if(!isset($table)) {
 
 rex_title($I18N->msg("table").": ".$table["name"]." ", "");
 
-
-echo '<table cellpadding="5" class="rex-table"><tr><td><b>'.$table["table_name"].'</b>';
-if($table["description"] != "") echo "<b>:</b> ".nl2br($table["description"]);
-if(isset($rex_xform_manager_opener["info"])) { echo ' - '.$I18N->msg("openerinfo").': '.htmlspecialchars($rex_xform_manager_opener["info"]); }
-echo '</td></tr></table><br />';
 $table["fields"] = $this->getTableFields($table["table_name"]);
 
 
@@ -360,30 +355,6 @@ if($show_editpage) {
 	// ********************************************* LIST
 	if($show_list)
 	{
-		if($this->hasDataPageFunction("add") || ($this->hasDataPageFunction("import") && !$popup) || $this->hasDataPageFunction("export"))
-		{
-			echo '<table cellpadding="5" class="rex-table"><tr>';
-			if($this->hasDataPageFunction("add"))
-			{
-				echo '<td><a href="index.php?'.$link_vars.'&func=add&'.$em_url.$em_rex_list.'"><b>+ '.$I18N->msg("add").'</b></a></td>';
-			}
-			if(($table["export"] == 1 && $this->hasDataPageFunction("export")) or ($table["import"] == 1 && $this->hasDataPageFunction("import")))
-			{
-				echo '<td style="text-align:right;">';
-				if($this->hasDataPageFunction("truncate_table")) {
-					echo '&nbsp;&nbsp;&nbsp;<a href="index.php?'.$link_vars.'&func=truncate_table&'.$em_url.$em_rex_list.'"><b>o '.$I18N->msg('truncate_table').'</b></a>';
-				}
-				if($table["export"] == 1 && $this->hasDataPageFunction("export")) {
-					echo '&nbsp;&nbsp;&nbsp;<a href="index.php?'.$link_vars.'&func=export&'.$em_url.$em_rex_list.'"><b>o '.$I18N->msg('export').'</b></a>';
-				}
-				if(!$popup && $table["import"] == 1 && $this->hasDataPageFunction("import")) {
-					echo '&nbsp;&nbsp;&nbsp;<a href="index.php?'.$link_vars.'&func=import"><b>o '.$I18N->msg('import').'</b></a>';
-				}
-				echo '</td>';
-			}
-			echo '</tr></table><br />';
-		}
-	
 		// ----- SUCHE
 		if($table["search"]==1  && $this->hasDataPageFunction("search"))
 		{
@@ -394,16 +365,16 @@ if($show_editpage) {
 			
 			$addsql = "";
 			
-			$search_field_select = new rex_select();
-			$search_field_select->setMultiple(1);
-			$search_field_select->setSize(5);
-			$search_field_select->setName("rex_xform_searchfields[]");
-			$search_field_select->setStyle("width:100%;");
-			$search_field_select->addOption('id',"id");
-			
-			$field_names = array();
-			foreach($fields as $field){ if($field["type_id"] == "value" && $field["search"] == 1) { $search_field_select->addOption(rex_translate($field["f2"]).' ['.$field["f1"].']',$field["f1"]); } }
-			foreach($rex_xform_searchfields as $cs) { $search_field_select->setSelected($cs); }
+			$checkboxes = '';
+			$fields = array_merge(array(array('f1'=>'id','f2'=>'ID','type_id'=>'value','search'=>1,'list_hidden'=>0)),$fields); // manually inject "id" into avail fields..
+			foreach($fields as $field)
+			{
+			  if($field["type_id"] == "value" && $field["search"] == 1)
+        { 
+          $checked = in_array($field["f1"],$rex_xform_searchfields) ? 'checked="checked"' : '';
+          $checkboxes .= '<span style="background:silver;color:white;padding:3px;border-radius:5px;margin:1px;"><input type="checkbox" name="rex_xform_searchfields[]" value="'.$field["f1"].'" class="" id="'.$field["f1"].'" '.$checked.' />&nbsp;<label for="'.$field["f1"].'">'.rex_translate($field["f2"]).'</label></span>';
+        } 
+      }
 			
 			$suchform = '<table width=770 cellpadding=5 cellspacing=1 border=0 bgcolor=#ffffff class="rex-table">';
 			$suchform .= '<form action="'.$_SERVER['PHP_SELF'].'" method="poost" >';
@@ -424,26 +395,62 @@ if($show_editpage) {
 			
 			$suchform .= '<input type="hidden" name="rex_xform_search" value="1" />';
 			$suchform .= '<tr>
-					<th>'.$I18N->msg('searchtext').'</th>
+					<th>'.$I18N->msg('searchtext').' [<a href="#" id="xform_help_empty_toggler">?</a>]</th>
 					<th>'.$I18N->msg('searchfields').'</th>
 					<th>&nbsp;</th>
 				</tr>'; 
 			$suchform .= '<tr>
 					<td class="grey" valign="top"><input type="text" name="rex_xform_searchtext" value="'.htmlspecialchars(stripslashes($rex_xform_searchtext)).'" style="width:100%;" />
-					<br />'.$I18N->msg('xform_help_empty').'</td>
-					<td class="grey" valign="top">'.$search_field_select->get().'<br />'.$I18N->msg('xform_help_multipleselect').'</td>
-					<td class="grey" valign="top"><input type="submit" name="send" value="'.$I18N->msg('search').'"  class="inp100" /></td>
+					<p id="xform_help_empty" style="display:none;">'.$I18N->msg('xform_help_empty').'</p></td>
+					<td class="grey" valign="top">'.$checkboxes.'</td>
+					<td class="grey" valign="top"><input type="submit" name="send" value="'.$I18N->msg('search').'"  class="inp100" />';
+      if(rex_request('rex_xform_search')==1 && rex_request('rex_xform_searchtext')!='')
+      {
+        $suchform .= '&nbsp;<input type="button" name="reset" value="'.$I18N->msg('form_reset').'" class="inp100" id="xform_search_reset"/>';
+      }
+			$suchform .= '</td>
 				</tr>';
 			$suchform .= '</form>';
-			$suchform .= '</table><br />';
+			$suchform .= '</table>';
 			
-			echo $suchform;
+			//echo $suchform;
+		}else{
+		$suchform = '';
 		}
 	
 		$where = false;
 	
 		// ---------- SQL AUFBAUEN
 		$sql = "select * from ".$table["table_name"];
+		
+		
+		
+		//-------------------------------------------------------------------
+		//TABELLENFELDER AUCH NACH PRIO AUSGEBEN
+		
+		$sql_felder = new rex_sql;
+		$sql_felder->debugsql = 0;
+		$sql_felder->setQuery("SELECT * FROM rex_xform_field WHERE table_name='".$table["table_name"]."' ORDER BY prio");
+
+		$felder = '';
+		$max = $sql_felder->getRows();
+		if ($max > 0){
+			for($i=0;$i<$sql_felder->getRows();$i++)
+			{
+				$felder .= $sql_felder->getValue("f1");  
+	
+				if ($i<$max-1) $felder .= ",";
+				$sql_felder->counter++;
+	
+			}	
+	
+			// ---------- SQL AUFBAUEN
+			$sql = "select id,".$felder." from ".$table["table_name"];
+	
+		}
+		
+		
+		
 		if(count($rex_xform_filter)>0)
 		{
 			$where = true;
@@ -533,8 +540,66 @@ if($show_editpage) {
 		}
 	
 		$list = rex_register_extension_point('XFORM_DATA_LIST', $list, array());
+		echo '
+		<div class="rex-addon-output">
+      <div class="rex-hl2" style="font-size:12px;font-weight:bold;">
+        <span style="float:left;">Datensatz: ';
 		
+    // ADD LINK
+    if($this->hasDataPageFunction("add"))
+    {
+      echo '<a href="index.php?'.$link_vars.'&func=add&'.$em_url.$em_rex_list.'">'.$I18N->msg("add").'</a> | ';
+    }
+
+    // SEARCH LINK
+    echo '<a href="#" id="searchtoggler">'.$I18N->msg("search").'</a>';
+
+    echo '</span>';
+
+    // INFO LINK
+    echo '<span style="float:right;">Tabelle: <a href="#" id="infotoggler">'.$I18N->msg("pool_file_details").'</a>';
+    
+    if(($table["export"] == 1 && $this->hasDataPageFunction("export")) or ($table["import"] == 1 && $this->hasDataPageFunction("import")))
+    {
+      // EXPORT FUNC
+      if($table["export"] == 1 && $this->hasDataPageFunction("export")) {
+        echo ' | <a href="index.php?'.$link_vars.'&func=export&'.$em_url.$em_rex_list.'">'.$I18N->msg("export").'</a>';
+      }
+      // IMPORT FUNC
+      if(!$popup && $table["import"] == 1 && $this->hasDataPageFunction("import")) {
+        echo ' | <a href="index.php?'.$link_vars.'&func=import">'.$I18N->msg("import").'</a>';
+      }
+      // TRUNCATE FUNC
+      if($this->hasDataPageFunction("truncate_table")) {
+        echo ' | <a href="index.php?'.$link_vars.'&func=truncate_table&'.$em_url.$em_rex_list.'">'.$I18N->msg("truncate_table").'</a>';
+      }
+    }
+  
+    echo '</span><br style="clear:both;" /></div>';
+    
+    // SEARCHBLOCK
+    $display = rex_request('rex_xform_search')==1 ? 'block' : 'none';
+    echo '<div id="searchblock" style="display:'.$display.';">'.$suchform.'</div>';
+    
+    // INFOBLOCK
+    echo '<div id="infoblock" style="display:none;/*padding:10px;*/">
+    <div class="rex-hl2" style="font-size:12px;font-weight:bold;">'.$I18N->msg("pool_file_details").'</div>
+    <ul>';
+    echo '<li><b>'.$I18N->msg("xform_table_name").'</b>: '.$table["table_name"].'</li>';
+    if($table["description"] != "") echo '<li><b>'.$I18N->msg("xform_description").'</b>:'.nl2br($table["description"]).'</li>';
+    if(isset($rex_xform_manager_opener["info"])) { echo '<li><b>'.$I18N->msg("openerinfo").'</b>: '.htmlspecialchars($rex_xform_manager_opener["info"]).'</li>'; }
+    echo '</ul></div>';
+
 		echo $list->get();
+	
+    echo '</div>
+
+    <script type="text/javascript">
+      jQuery("#infotoggler").click(function(){jQuery("#infoblock").slideToggle("fast");});
+      jQuery("#searchtoggler").click(function(){jQuery("#searchblock").slideToggle("fast");});
+      jQuery("#xform_help_empty_toggler").click(function(){jQuery("#xform_help_empty").slideToggle("fast");});
+      jQuery("#xform_search_reset").click(function(){window.location.href = "index.php?page=xform&subpage=manager&tripage=data_edit&table_name='.$table["table_name"].'&rex_xform_search=1";});
+    </script>';
 	
 	}
 

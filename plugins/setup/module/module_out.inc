@@ -55,7 +55,7 @@ if ($form_type == "1" || $form_type == "2" || $form_type == "3")
 if ($form_type == "0" || $form_type == "2" || $form_type == "3") {
   $xform->setActionField("db", array(
       "REX_VALUE[8]", // table
-      $this->objparams["main_where"], // where
+      $xform->objparams["main_where"], // where
       )
     );
 }

@@ -1,0 +1,16 @@
+
+xform_setup = Setup
+
+
+xform_setup_install_modul = Modul installieren
+xform_setup_install_modul_description = Um die XForm sinnvoll nutzen können, muß ein Modul erstellt werden,
+mit welchem man die entsprechenden Formulare erstellen kann.
+xform_setup_install_xform_modul = Neues Modul mit der XForm installieren
+xform_setup_update_following_modul = Folgendes Modul aktualisieren "{0}"
+
+xform_setup_oldtables = Alte Tabellen übernehmen
+xform_setup_oldtables_description = Alte Tabellendefinition aus dem AddOn "EditMe" oder aus dem AddOn "Community" können hiermit übernommen werden. Die alten Definitionen werden damit geloescht (Nicht die Tabellen und Daten selber).
+
+xform_setup_copytables = Tabellendefinitionen von folgender Tabelle übernehmen "{0}"
+
+xform_setup_table_copied = Tabelledefinitionen von "{0}" wurden übernommen 
