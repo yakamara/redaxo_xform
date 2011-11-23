@@ -20,6 +20,13 @@ class rex_xform_radio extends rex_xform_abstract
 		{
 			$t = explode("=",$option);
 			$v = $t[0];
+			
+			if (isset($t[1])) {
+                $k = $t[1];
+            }else {
+                $k = $t[0];
+            }
+			
 			$k = $t[1];
 			$SEL->addOption($v, $k);
 			$sqlnames[$k] = $t[0];
