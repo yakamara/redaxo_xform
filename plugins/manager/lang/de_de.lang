@@ -5,27 +5,27 @@ navigation_manager = Tabellen
 
 # xform manager
 alltables = Alle Tabellen
-back_to_overview = Zurück zur Übersicht
+back_to_overview = Zurï¿½ck zur ï¿½bersicht
 updatetable = Tabelle/n aktualisieren
 tablesupdated = Tabelle/n wurde/n aktualisiert
 
-xform_help_empty = Leereinträge können mit <br />"(empty)" gesucht werden
-xform_help_multipleselect = Mehrfachauswahl mit gedrückter CTRL/CMD Taste
-updatetable_with_delete = mit Feldlöschung
+xform_help_empty = Leereintrï¿½ge kï¿½nnen mit <br />"(empty)" gesucht werden
+xform_help_multipleselect = Mehrfachauswahl mit gedrï¿½ckter CTRL/CMD Taste
+updatetable_with_delete = mit Feldlï¿½schung
 
-xform_relation_move_first_data = Ausgewählten Datensatz an den Anfang verschieben
-xform_relation_move_up_data = Ausgewählten Datensatz nach oben verschieben
-xform_relation_move_down_data = Ausgewählten Datensatz nach unten verschieben
-xform_relation_move_last_data = Ausgewählten Datensatz an das Ende verschieben
-xform_relation_choose_entry = Datensatz auswählen
-xform_relation_delete_entry = Ausgewählten Datensatz löschen
+xform_relation_move_first_data = Ausgewï¿½hlten Datensatz an den Anfang verschieben
+xform_relation_move_up_data = Ausgewï¿½hlten Datensatz nach oben verschieben
+xform_relation_move_down_data = Ausgewï¿½hlten Datensatz nach unten verschieben
+xform_relation_move_last_data = Ausgewï¿½hlten Datensatz an das Ende verschieben
+xform_relation_choose_entry = Datensatz auswï¿½hlen
+xform_relation_delete_entry = Ausgewï¿½hlten Datensatz lï¿½schen
 
-truncate_table = Daten löschen
-table_truncated = Daten wurden komplett gelöscht
-xform_table_overview = Tabellenübersicht
+truncate_table = Daten lï¿½schen
+table_truncated = Daten wurden komplett gelï¿½scht
+xform_table_overview = Tabellenï¿½bersicht
 
 xform_manager_edit_table = Tabelle editieren
-xform_manager_add_table = Tabelle hinzufügen
+xform_manager_add_table = Tabelle hinzufï¿½gen
 
 # tables.inc.php
 importcsv = CSV Importieren
@@ -37,43 +37,43 @@ xform_tbl_inactive = inaktiv
 
 xform_manager_table_updated = Tabelle und Felder wurden erstellt und/oder aktualisiert
 xform_manager_table_entry_saved = Vielen Dank fuer die Eintragung
-xform_manager_table_enter_name = Bitte tragen Sie den Tabellenname ein
+xform_manager_table_enter_name = Bitte tragen Sie den Tabellennamen ein
 xform_manager_table_enter_specialchars = Bitte tragen Sie beim Tabellenname nur Buchstaben ein
 xform_manager_table_exists = Dieser Tabellenname ist bereits vorhanden
 
-xform_manager_table_prio = Priorität
+xform_manager_table_prio = Prioritï¿½t
 xform_manager_table_name = Name
 xform_manager_name = Bezeichnung
 xform_manager_table_description = Beschreibung
-xform_manager_entries_per_page = Datensätze pro Seite
+xform_manager_entries_per_page = Datensï¿½tze pro Seite
 xform_manager_search_active = Suche aktiv
-xform_manager_enter_number = Bitte geben Sie eine Zahl für die Datensätze pro Seite ein
+xform_manager_enter_number = Bitte geben Sie eine Zahl fï¿½r die Datensï¿½tze pro Seite ein
 xform_manager_table_hide = In Navigation versteckt
 xform_manager_table_allow_export = Export der Daten erlauben
 xform_manager_table_allow_import = Import von Daten erlauben
-xform_manager_table_enter_name = Bitte den Namen eingeben
-xform_manager_table_updated = Vielen Dank für die Aktualisierung.
-xform_manager_table_added = Vielen Dank für den Eintrag.
-xform_manager_table_deleted = Tabelle wurde gelöscht
+
+xform_manager_table_updated = Vielen Dank fï¿½r die Aktualisierung.
+xform_manager_table_added = Vielen Dank fï¿½r den Eintrag.
+xform_manager_table_deleted = Tabelle wurde gelï¿½scht
 xform_manager_table_add = Tabelle anlegen
 xform_manager_table_update = Tabellen und Felder updaten
 xform_manager_table_import = Tabelle importieren
 
 
 # edit.inc.php
-thankyouforupdate = Vielen Dank für die Aktualisierung.
-thankyouforentry = Vielen Dank für den Eintrag.
+thankyouforupdate = Vielen Dank fï¿½r die Aktualisierung.
+thankyouforentry = Vielen Dank fï¿½r den Eintrag.
 editdata = Daten editieren 
 adddata = Datensatz anlegen
 searchtext = Suchbegriff
-searchfields = Tabellenfelder über die gesucht wird
-add = hinzufügen
+searchfields = Tabellenfelder ï¿½ber die gesucht wird
+add = hinzufï¿½gen
 edit = editieren
-delete = löschen
+delete = lï¿½schen
 search = suchen
 export = Datenexport
 import = Datenimport
-datadeleted = Datensatz wurde gelöscht
+datadeleted = Datensatz wurde gelï¿½scht
 openerinfo = Opener-Info
 
 
@@ -82,7 +82,7 @@ openerinfo = Opener-Info
 tablenotexists = Diese Tabelle existiert nicht!
 tablefield = Tabellenfeld
 values = Werte
-validates = Validierung/Überprüfung
+validates = Validierung/ï¿½berprï¿½fung
 actios = Aktionen
 validatenamenotempty = Bitte tragen Sie den Namen ein
 validatenamepregmatch = Bitte tragen Sie beim Namen nur Buchstaben und "_" ein
@@ -90,14 +90,14 @@ validatenamecheck = Dieser Name ist bereits vorhanden
 donotsaveindb = Nicht in Datenbank speichern
 hideinlist = In Liste verstecken
 useassearchfieldalidatenamenotempty = Als Suchfeld aufnehmen
-tablefielddeleted = Tabellenfeld wurde gelöscht
+tablefielddeleted = Tabellenfeld wurde gelï¿½scht
 tablefieldnotfound = Tabllenfeld wurde nicht gefunden
 addtablefield = Tabellenfeld anlegen
 table = Tabelle
 editfield = Feld editieren
-choosenadd = Felder auswählen
-choosenadd_description = Bitte wählen Sie Feld aus, welches Sie bei Ihrer Verwaltung verwenden wollen. Dabei gibt es Value-Felder, mit denen normalerweise Eingaben getätigt werden, wie auch Validate-Felder, mit denen die Value-Felder nach diversen Kriterien überprüft werden können.
-addfield = Feld hinzufügen
+choosenadd = Felder auswï¿½hlen
+choosenadd_description = Bitte wï¿½hlen Sie Feld aus, welches Sie bei Ihrer Verwaltung verwenden wollen. Dabei gibt es Value-Felder, mit denen normalerweise Eingaben getï¿½tigt werden, wie auch Validate-Felder, mit denen die Value-Felder nach diversen Kriterien ï¿½berprï¿½ft werden kï¿½nnen.
+addfield = Feld hinzufï¿½gen
 editfield = Felder bearbeiten
 
 
