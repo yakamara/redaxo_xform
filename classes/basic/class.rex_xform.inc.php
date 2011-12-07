@@ -30,7 +30,7 @@ class rex_xform
     $this->objparams["actions"] = array();
 
     $this->objparams["answertext"] = "";
-    $this->objparams["submit_btn_label"] = "Abschicken";
+    $this->objparams["submit_btn_label"] = "Speichern";
     $this->objparams["submit_btn_show"] = TRUE;
     $this->objparams["output"] = "";
 
