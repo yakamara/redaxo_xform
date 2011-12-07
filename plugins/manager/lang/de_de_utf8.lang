@@ -37,7 +37,7 @@ xform_tbl_inactive = inaktiv
 
 xform_manager_table_updated = Tabelle und Felder wurden erstellt und/oder aktualisiert
 xform_manager_table_entry_saved = Vielen Dank fuer die Eintragung
-xform_manager_table_enter_name = Bitte tragen Sie den Tabellenname ein
+xform_manager_table_enter_name = Bitte tragen Sie den Tabellennamen ein
 xform_manager_table_enter_specialchars = Bitte tragen Sie beim Tabellenname nur Buchstaben ein
 xform_manager_table_exists = Dieser Tabellenname ist bereits vorhanden
 
@@ -51,7 +51,7 @@ xform_manager_enter_number = Bitte geben Sie eine Zahl für die Datensätze pro 
 xform_manager_table_hide = In Navigation versteckt
 xform_manager_table_allow_export = Export der Daten erlauben
 xform_manager_table_allow_import = Import von Daten erlauben
-xform_manager_table_enter_name = Bitte den Namen eingeben
+
 xform_manager_table_updated = Vielen Dank für die Aktualisierung.
 xform_manager_table_added = Vielen Dank für den Eintrag.
 xform_manager_table_deleted = Tabelle wurde gelöscht
