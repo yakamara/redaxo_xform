@@ -28,7 +28,7 @@ if( ($func == "add" || $func == "edit") && $REX['USER']->isAdmin() )
 
   if($func == "edit")
   {
-    $xform->setValueField("showvalue",array("table_name","Name"));
+    $xform->setValueField("showvalue",array("table_name",$I18N->msg("xform_manager_table_name")));
     $xform->setHiddenField("table_id",$table_id);
     $xform->setActionField("db",array($table,"id=$table_id"));
     $xform->setObjectparams("main_id",$table_id);
