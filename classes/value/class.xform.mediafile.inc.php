@@ -137,7 +137,7 @@ class rex_xform_mediafile extends rex_xform_abstract
     array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 1),
     array( 'type' => 'text',    'label' => 'Mediakategorie ID'),
     ),
-						'description' => 'Mediafeld, welches Dateien aus dem Medienpool holen',
+						'description' => 'Mediafeld, welches Dateien aus dem Medienpool holt',
 						'dbtype' => 'text'
 						);
   }

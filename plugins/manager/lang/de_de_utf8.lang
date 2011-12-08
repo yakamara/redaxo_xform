@@ -96,7 +96,7 @@ addtablefield = Tabellenfeld anlegen
 table = Tabelle
 editfield = Feld editieren
 choosenadd = Felder auswählen
-choosenadd_description = Bitte wählen Sie Feld aus, welches Sie bei Ihrer Verwaltung verwenden wollen. Dabei gibt es Value-Felder, mit denen normalerweise Eingaben getätigt werden, wie auch Validate-Felder, mit denen die Value-Felder nach diversen Kriterien überprüft werden können.
+choosenadd_description = Bitte wählen Sie das Feld aus, welches Sie bei Ihrer Verwaltung verwenden wollen. Dabei gibt es Value-Felder, mit denen normalerweise Eingaben getätigt werden, wie auch Validate-Felder, mit denen die Value-Felder nach diversen Kriterien überprüft werden können.
 addfield = Feld hinzufügen
 editfield = Felder bearbeiten
 
