@@ -28,7 +28,7 @@ if( ($func == "add" || $func == "edit") && $REX['USER']->isAdmin() )
 
   if($func == "edit")
   {
-    $xform->setValueField("showvalue",array("table_name","Name"));
+    $xform->setValueField("showvalue",array("table_name",$I18N->msg("xform_manager_table_name")));
     $xform->setHiddenField("table_id",$table_id);
     $xform->setActionField("db",array($table,"id=$table_id"));
     $xform->setObjectparams("main_id",$table_id);
@@ -36,7 +36,7 @@ if( ($func == "add" || $func == "edit") && $REX['USER']->isAdmin() )
     $xform->setObjectparams('getdata',true); // Datein vorher auslesen
   }elseif($func == "add")
   {
-    $xform->setValueField("text",array("table_name",$I18N->msg("xform_manager_table_name")));
+    $xform->setValueField("text",array("table_name",$I18N->msg("xform_manager_table_name"),$REX['TABLE_PREFIX']));
     $xform->setValidateField("empty",array("table_name",$I18N->msg("xform_manager_table_enter_name")));
     $xform->setValidateField("preg_match",array("table_name","/([a-z\_])*/",$I18N->msg("xform_manager_table_enter_specialchars")));
     $xform->setValidateField("customfunction",array("table_name","rex_xform_manager_checkLabelInTable","",$I18N->msg("xform_manager_table_exists")));

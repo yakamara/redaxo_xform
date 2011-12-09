@@ -37,7 +37,7 @@ xform_tbl_inactive = inaktiv
 
 xform_manager_table_updated = Tabelle und Felder wurden erstellt und/oder aktualisiert
 xform_manager_table_entry_saved = Vielen Dank fuer die Eintragung
-xform_manager_table_enter_name = Bitte tragen Sie den Tabellenname ein
+xform_manager_table_enter_name = Bitte tragen Sie den Tabellennamen ein
 xform_manager_table_enter_specialchars = Bitte tragen Sie beim Tabellenname nur Buchstaben ein
 xform_manager_table_exists = Dieser Tabellenname ist bereits vorhanden
 
@@ -51,7 +51,7 @@ xform_manager_enter_number = Bitte geben Sie eine Zahl für die Datensätze pro Se
 xform_manager_table_hide = In Navigation versteckt
 xform_manager_table_allow_export = Export der Daten erlauben
 xform_manager_table_allow_import = Import von Daten erlauben
-xform_manager_table_enter_name = Bitte den Namen eingeben
+
 xform_manager_table_updated = Vielen Dank für die Aktualisierung.
 xform_manager_table_added = Vielen Dank für den Eintrag.
 xform_manager_table_deleted = Tabelle wurde gelöscht
@@ -96,7 +96,7 @@ addtablefield = Tabellenfeld anlegen
 table = Tabelle
 editfield = Feld editieren
 choosenadd = Felder auswählen
-choosenadd_description = Bitte wählen Sie Feld aus, welches Sie bei Ihrer Verwaltung verwenden wollen. Dabei gibt es Value-Felder, mit denen normalerweise Eingaben getätigt werden, wie auch Validate-Felder, mit denen die Value-Felder nach diversen Kriterien überprüft werden können.
+choosenadd_description = Bitte wählen Sie das Feld aus, welches Sie bei Ihrer Verwaltung verwenden wollen. Dabei gibt es Value-Felder, mit denen normalerweise Eingaben getätigt werden, wie auch Validate-Felder, mit denen die Value-Felder nach diversen Kriterien überprüft werden können.
 addfield = Feld hinzufügen
 editfield = Felder bearbeiten
 
