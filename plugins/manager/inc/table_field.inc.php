@@ -270,7 +270,8 @@ if( ($func == "add" || $func == "edit" )  && isset($types[$type_id][$type_name])
 				break;
 
 			case("no_db"):
-				$xform->setValueField("checkbox",array("f".$i,$I18N->msg("donotsaveindb"),1,0));
+				// ToDo: Default Wert beachten
+				$xform->setValueField("checkbox",array("f".$i,$I18N->msg("donotsaveindb"),'no_db',0));
 				break;
 
 			case("boolean"):
