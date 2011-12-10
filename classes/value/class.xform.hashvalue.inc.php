@@ -22,14 +22,14 @@ class rex_xform_hashvalue extends rex_xform_abstract
 		}
 		else 
 		{
-			## Hold current hash vor email
+			## get current hash vor email
 			$this->params["value_pool"]["email"][$this->getElement(1)] = $this->getValue();
 		}
 	}
 
 	function getDescription()
 	{
-		return "hashvalue -> Beispiel: hashvalue|label|[bezeichnung]|field|(md5/sha1/sha512/...)|[salt]|[no_db]";
+		return "hashvalue -> Beispiel: hashvalue|label|[title]|field|(md5/sha1/sha512/...)|[salt]|[no_db]";
 	}
 	
 	function getLongDescription()
@@ -56,9 +56,9 @@ class rex_xform_hashvalue extends rex_xform_abstract
 									array( 'type' => 'text',    'label' => 'Input-Feld'),
 									array( 'type' => 'text',    'label' => 'Algorithmus'),
 									array( 'type' => 'text', 	'label' => 'Salt'),
-									array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 1),
+									array( 'type' => 'no_db'),
 								),
-						'description' => 'Erzeug Hash-Wert von anderem Feld',
+						'description' => 'Erzeug Hash-Wert von anderem Feld und speichert ihn',
 						'dbtype' => 'text',
 						'famous' => FALSE
 						);
