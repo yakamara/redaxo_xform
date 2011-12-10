@@ -86,13 +86,13 @@ class rex_xform_select extends rex_xform_abstract
             'values' => array(
 				array( 'type' => 'name',   'label' => 'Feld' ),
 				array( 'type' => 'text',    'label' => 'Bezeichnung'),
-				array( 'type' => 'text',    'label' => 'Selektdefinition, kommasepariert',   'example' => 'w=Frau,m=Herr'),
+				array( 'type' => 'text',    'label' => 'Selectdefinition, kommasepariert',   'example' => 'w=Frau,m=Herr'),
 				array( 'type' => 'no_db',   'label' => 'Datenbank',          'default' => 1),
 				array( 'type' => 'text',    'label' => 'Defaultwert'),
 				array( 'type' => 'boolean', 'label' => 'Mehrere Felder möglich'),
 				array( 'type' => 'text',    'label' => 'Höhe der Auswahlbox'),
 				),
-            'description' => 'Ein Selektfeld mit festen Definitionen',
+            'description' => 'Ein Selectfeld mit festen Definitionen',
             'dbtype' => 'text'
             );
 
