@@ -13,9 +13,6 @@ $xform->setRedaxoVars(REX_ARTICLE_ID,REX_CLANG_ID);
 
 ?>REX_PHP_VALUE[9]<?php
 
-// get data
-if ("REX_VALUE[10]" != "") { $xform->setObjectparams("getdata",TRUE); }
-
 // action - showtext
 if("REX_IS_VALUE[6]" == "true")
 {
@@ -52,7 +49,12 @@ if ($form_type == "1" || $form_type == "2" || $form_type == "3")
 }
 
 // action - db
-if ($form_type == "0" || $form_type == "2" || $form_type == "3") {
+if ($form_type == "0" || $form_type == "2" || $form_type == "3")
+{
+  //getdata
+  if ("REX_VALUE[10]" != "")
+    $xform->setObjectparams("getdata",TRUE);
+  
   $xform->setActionField("db", array(
       "REX_VALUE[8]", // table
       $xform->objparams["main_where"], // where
