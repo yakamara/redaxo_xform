@@ -1,0 +1,17 @@
+CHANGELOG
+formsign v 1.0 for PHP 5
+
+Date Friday, October 15, 2010
+
+ 1. Add the function use_sqlite([ string DB_Name ][, string DB_Table ]). You can use the PHP5 internal database SqLite instead of a file or MySQL database.  
+ 2. Add the function use_mysql. instead of a existing function use_database. The function use_database is deprecated and will be not longer provided in next formsign version.   
+The functions use_database and use_mysql  have now an optional parameter to specify a name of table, default value is "formsign".
+
+ 3. Add the function use_pdo([ [ string DB_Type ] or [ object DB-Resource ] ]  [, string DB-Name ] [, string Table-Name ] [, string DB_Host ][, string DB_User ] [, string DB-Password ])  
+ 
+formsign v 0.9 for PHP 5
+
+Date Saturday, September 25, 2010
+1. Enhanced the function check_file_db   so that it can prevent repeated sending of the same form by using a database to verification. 
+2. Add the function set_check_name($name) To mask the Name of check field.
+
