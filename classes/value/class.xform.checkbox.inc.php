@@ -12,10 +12,10 @@ class rex_xform_checkbox extends rex_xform_abstract
 	    	$v = $this->getElement(3);
 	    else
 	   		$this->setElement(3,1);
-	
+	    
 	    ## is checkbox checked?
-	    if($this->params["send"] != 1 && $this->getValue() === "" && $this->getElement(4) == $this->getElement(3))
-	    	$checked = ' checked="checked"';
+	    if($this->params["send"] != 1 && $this->getElement(4) == 1)
+	        $checked = ' checked="checked"';
 	    elseif($this->getValue() == $this->getElement(3))
 	      	$checked = ' checked="checked"';
 	    elseif($this->getValue() == 1)
@@ -41,7 +41,7 @@ class rex_xform_checkbox extends rex_xform_abstract
 
 	function getDescription()
   	{
-		return "checkbox -> Beispiel: checkbox|label|Bezeichnung|Value|default (1/0)|[no_db]";
+		return "checkbox -> Beispiel: checkbox|label|Bezeichnung|Value|checked (1/0)|[no_db]";
   	}
 
   	function getDefinitions()
