@@ -120,7 +120,7 @@ $mail_display = ($sel=='' || $sel==0) ?'style="display:none"':'';
     <?php echo rex_xform::showHelp(true,true); ?>
   </div><!-- #xform-classes-showhelp -->
 
-  <div id="thx-markup"><strong>Meldung bei erfogreichen Versand:</strong> (
+  <div id="thx-markup"><strong>Meldung bei erfolgreichen Versand:</strong> (
     <input type="radio" name="VALUE[11]" value="0" <?php if("REX_VALUE[11]" == "0") echo 'checked="checked"'; ?>> Plaintext
     <input type="radio" name="VALUE[11]" value="1" <?php if("REX_VALUE[11]" == "1") echo 'checked="checked"'; ?>> HTML
     <input type="radio" name="VALUE[11]" value="2" <?php if("REX_VALUE[11]" == "2") echo 'checked="checked"'; ?>> Textile)
@@ -163,7 +163,7 @@ $mail_display = ($sel=='' || $sel==0) ?'style="display:none"':'';
 
   <ul class="help" id="xform-placeholders-help">
     <li>Die Platzhalter ergeben sich aus den obenstehenden Felddefinitionen.</li>
-    <li>Per click können einelzne Platzhalter in den Mail-Body kopiert werden.</li>
+    <li>Per click können einzelne Platzhalter in den Mail-Body kopiert werden.</li>
     <li>Aktualisierung der Platzhalter erfolgt über die Aktualisierung des Moduls.</li>
   </ul>
 
@@ -191,7 +191,7 @@ $mail_display = ($sel=='' || $sel==0) ?'style="display:none"':'';
     <textarea name="VALUE[9]" cols="30" id="xform-db-where" class="fullwidth"rows="<?php echo (count(explode("\r",'REX_VALUE[9]'))+$row_pad);?>">REX_VALUE[9]</textarea>
     <ul class="help" id="xform-where-help">
       <li>PHP erlaubt. Beispiel: <em>$xform-&gt;setObjectparams("main_where",$where);</em></li>
-      <li>Die User-Eingaben aus dem Formular können mittels Platzhaltern (Schema: ###<em>FELDNAME</em>###) in der WHERE Klausel verwendet werden - Beispiel: text|myname|Name|1 -> Platzhalter: ###myname###</li>
+      <li>Die Benutzereingaben aus dem Formular können mittels Platzhaltern (Schema: ###<em>FELDNAME</em>###) in der WHERE Klausel verwendet werden - Beispiel: text|myname|Name|1 -> Platzhalter: ###myname###</li>
     </ul>
   </div><!-- #db_data -->
 
