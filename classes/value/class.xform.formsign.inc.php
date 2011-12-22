@@ -96,7 +96,6 @@ class rex_xform_formsign extends rex_xform_abstract
 				$wc = $this->params["error_class"];
 			}
 		}
-		$link = rex_getUrl($this->params["article_id"],$this->params["clang"],array("formsign"=>"show"),"&");
 		
 		if ($wc != '')
 		$wc = ' '.$wc;
