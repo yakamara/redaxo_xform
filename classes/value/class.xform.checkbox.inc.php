@@ -14,7 +14,7 @@ class rex_xform_checkbox extends rex_xform_abstract
 	   		$this->setElement(3,1);
 	    
 	    ## is checkbox checked?
-	    if($this->params["send"] != 1 && $this->getElement(4) == 1)
+	    if($this->params["send"] != 1 && $this->getElement(4) == 1 && $this->getValue() === "")
 	        $checked = ' checked="checked"';
 	    elseif($this->getValue() == $this->getElement(3))
 	      	$checked = ' checked="checked"';
