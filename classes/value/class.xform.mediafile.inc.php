@@ -11,6 +11,7 @@ class rex_xform_mediafile extends rex_xform_abstract
     if ($this->getElement(8) == "") $mediacatid = 0;
     else $mediacatid = (int) $this->getElement(8);
 
+    $error = false;
     $minsize = 0;
     $maxsize = 50000;
 
@@ -20,7 +21,7 @@ class rex_xform_mediafile extends rex_xform_abstract
       $minsize = (int) ($sizes[0]*1024); // -> bytes
       $maxsize = (int) ($sizes[1]*1024); // -> bytes
     }
-
+    
     // Größencheck
     if (	$this->params["send"]
     && isset($_FILES["FORM"]["size"][$this->params["form_name"]]["el_".$this->getId()])
@@ -30,7 +31,7 @@ class rex_xform_mediafile extends rex_xform_abstract
     {
       $_FILES["FORM"]["name"][$this->params["form_name"]]["el_".$this->getId()] = "";
       $this->setValue("");
-      $this->setElement(5,1); // auf "error message true" setzen, wenn datei fehlerhaft
+      $error = true; // auf "error message true" setzen, wenn datei fehlerhaft
 
     }
 
@@ -56,7 +57,7 @@ class rex_xform_mediafile extends rex_xform_abstract
         }else
         {
           $this->setValue("");
-          $this->setElement(5,1);
+          $error = true;
         }
       }
     }
@@ -73,9 +74,14 @@ class rex_xform_mediafile extends rex_xform_abstract
       $this->params["value_pool"]["email"][$this->getElement(1)] = stripslashes($this->getValue());
       if ($this->getElement(7) != "no_db") $this->params["value_pool"]["sql"][$this->getElement(1)] = $this->getValue();
     }
+    
+    ## check for required file
+    if($this->params["send"] && $this->getElement(5) == 1 && $this->getValue() == '')
+      $error = true;
 
     $tmp = "";
     $check_delete = "";
+    
     if ($this->getValue() != "")
     {
       $this->setElement(2, $this->getElement(2).'<br />Dateiname: <a href="files/'.$this->getValue().'">'.$this->getValue().'</a><br />');
@@ -93,7 +99,9 @@ class rex_xform_mediafile extends rex_xform_abstract
    			// $this->getElement(2) = "";
     }
 
-    if ($this->params["send"] && $this->getElement(5)==1) {
+    ## setting up error Message
+    if ($this->params["send"] && $error)
+    {
       $this->params["warning"][$this->getId()] = $this->params["error_class"];
       $this->params["warning_messages"][$this->getId()] = $this->getElement(6);
     }
