@@ -252,7 +252,8 @@ class rex_xform
           $_REQUEST["FORM"][$this->objparams["form_name"]]["el_" . $i] = @addslashes($SQLOBJ->getValue($element[1]));
         }
         if($element[0]!="validate" && $element[0]!="action") {
-          $ValueObjects[$i]->setValue($_REQUEST["FORM"][$this->objparams["form_name"]]["el_" . $i]);
+          if(isset($_REQUEST["FORM"][$this->objparams["form_name"]]["el_" . $i]))
+            $ValueObjects[$i]->setValue($_REQUEST["FORM"][$this->objparams["form_name"]]["el_" . $i]);
         }
       }
     }
