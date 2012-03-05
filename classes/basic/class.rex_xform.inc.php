@@ -168,6 +168,20 @@ class rex_xform
   function getForm() {
 
     global $REX;
+    
+// *************************************************** Quick & Dirty Hack - Start
+$elements = $this->objparams["form_elements"];
+
+foreach ($elements as $e)
+{
+ if($e[0] == 'objparams' && $e[1] == 'form_name' && trim($e[2]) != '')
+ {
+   $this->objparams["form_name"] = trim($e[2]);
+   break;
+ }
+}
+// *************************************************** Quick & Dirty Hack - End
+
 
     $preg_user_vorhanden = "~\*|:|\(.*\)~Usim"; // Preg der Bestimmte Zeichen/Zeichenketten aus der Bezeichnung entfernt
 
