@@ -51,6 +51,8 @@ if ($form_type == "1" || $form_type == "2" || $form_type == "3")
 // action - db
 if ($form_type == "0" || $form_type == "2" || $form_type == "3")
 {
+  $xform->setObjectparams('main_table', 'REX_VALUE[8]');
+  
   //getdata
   if ("REX_VALUE[10]" != "")
     $xform->setObjectparams("getdata",TRUE);
