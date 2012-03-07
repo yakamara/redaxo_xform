@@ -21,7 +21,15 @@ class rex_xform_action_callback extends rex_xform_action_abstract
       
     $f = $this->getElement(2);
   
-    if (function_exists($f))
+    if (strpos($f,'::') !== false)
+    {
+      $f = explode('::',$f,2);
+      if (is_callable($f[0],$f[1])) 
+      {
+        call_user_func($f,$this);
+      }
+    }
+    elseif (function_exists($f))
     {
       $f($this);
     }  
