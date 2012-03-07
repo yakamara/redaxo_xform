@@ -40,7 +40,7 @@ class rex_xform_action_callback extends rex_xform_action_abstract
 
   function getDescription()
   {
-    return "action|callback|function";
+    return "action|callback|mycallback / myclass::mycallback";
   }
 
 }
