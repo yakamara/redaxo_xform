@@ -393,10 +393,9 @@ foreach ($elements as $e)
 
     $hasWarnings = count($this->objparams["warning"]) != 0;
     $hasWarningMessages = count($this->objparams["warning_messages"]) != 0;
-
+    
     if($this->objparams["form_show"] || $this->objparams["form_showformafterupdate"])
     {
-
       $this->objparams["output"] .= '<form action="'.$this->objparams["form_action"];
       if($this->objparams["form_anchor"] != ""){ $this->objparams["output"] .= '#'.$this->objparams["form_anchor"]; }
       $this->objparams["output"] .= '" method="'.$this->objparams["form_method"].'" id="' . $this->objparams["form_id"] . '" enctype="multipart/form-data">';
@@ -406,6 +405,9 @@ foreach ($elements as $e)
       $hasWarningMessages = count($this->objparams["warning_messages"]) != 0;
       if ($this->objparams["unique_error"] != '' || $hasWarnings || $hasWarningMessages)
       {
+        ## sort warnings correctly
+        ksort($this->objparams["warning_messages"]);
+        
         $warningListOut = '';
         if($hasWarningMessages)
         {
