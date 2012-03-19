@@ -372,7 +372,7 @@ if($show_editpage) {
 			  if($field["type_id"] == "value" && $field["search"] == 1)
         { 
           $checked = in_array($field["f1"],$rex_xform_searchfields) ? 'checked="checked"' : '';
-          $checkboxes .= '<span class="search-checkbox"><input type="checkbox" name="rex_xform_searchfields[]" value="'.$field["f1"].'" class="" id="'.$field["f1"].'" '.$checked.' />&nbsp;<label for="'.$field["f1"].'">'.rex_translate($field["f2"]).'</label></span>';
+          $checkboxes .= '<span style="background:silver;color:white;padding:3px;border-radius:5px;margin:1px;"><input type="checkbox" name="rex_xform_searchfields[]" value="'.$field["f1"].'" class="" id="'.$field["f1"].'" '.$checked.' />&nbsp;<label for="'.$field["f1"].'">'.rex_translate($field["f2"]).'</label></span>';
         } 
       }
 			
