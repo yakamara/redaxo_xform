@@ -9,8 +9,8 @@ ul.xform {
 }
 .xform fieldset {
 	clear: both;
-	padding: .5em;
-	margin-bottom: 1em;
+  /*padding: .5em;
+  margin-bottom: 1em;*/
 }
 .xform legend {
 	padding: .5em;
@@ -46,7 +46,7 @@ ul.xform {
 }
 .xform p.formsubmit {
   margin-bottom: 0;
-  padding-bottom:0;
+  padding-bottom:10px;
   border-bottom:0;
 }
 
@@ -57,7 +57,7 @@ ul.xform {
 }
 
 #rex-page-xform div.rex-area-content {
-  padding: 10px 0 0 1px;
+  padding: 0 0 0 1px;
   }
 
 /*	--------------------------------------- Labels */
@@ -65,6 +65,7 @@ ul.xform {
 .xform span.as-label {
 	float: left;
 	width: 245px;
+  padding-left:6px;
 }
 .xform label.captcha {
 	display: block;
@@ -145,9 +146,13 @@ ul.xform {
 /*  --------------------------------------- Fieldset / Legend */
 
 .xform fieldset legend{
-  padding:0px 10px;
-  border:1px solid #333;
-  background-color:#fff;
+  background-color: #DFE9E9;
+  /*border: 1px solid #333333;*/
+  display: block;
+  margin: 0 0 6px;
+  padding: 2px 0 2px 1%;
+  /*padding: 0 10px;*/
+  width: 99%;
 }
 
 .xform fieldset {
