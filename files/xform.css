@@ -31,8 +31,10 @@ ul.xform {
 .xform .xform-element {
 	float: left;
 	width: 100%;
-	margin-bottom: .5em;
-  padding-bottom: .5em;
+	margin-bottom: .2em;
+  padding-bottom: .2em;
+	margin-top: .2em;
+  padding-top: .2em;
   border-bottom:1px solid white;
 }
 .xform div.formradio p.radio, 
@@ -116,7 +118,7 @@ ul.xform {
 
 /*	--------------------------------------- Submit */
 .xform input.submit {
-	margin-left: 245px;
+	margin-left: 252px;
 }
 
 /*  --------------------------------------- Checkbox */
@@ -149,7 +151,7 @@ ul.xform {
   background-color: #DFE9E9;
   /*border: 1px solid #333333;*/
   display: block;
-  margin: 0 0 6px;
+  margin: 0 0 2px 0;
   padding: 2px 0 2px 1%;
   /*padding: 0 10px;*/
   width: 99%;

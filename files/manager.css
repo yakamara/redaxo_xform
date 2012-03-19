@@ -27,7 +27,7 @@ body#rex-page-editme table.rex-table {
 	display:block;
 	margin:0px;
 	width:390px;
-	margin-left:245px;
+	/*margin-left:245px;*/
 }
 
 #rex-xform div.rex-widget input.text {
