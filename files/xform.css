@@ -32,6 +32,8 @@ ul.xform {
 	float: left;
 	width: 100%;
 	margin-bottom: .5em;
+  padding-bottom: .5em;
+  border-bottom:1px solid white;
 }
 .xform div.formradio p.radio, 
 .xform div.form_google_geocode p.form_google_geocode {
@@ -39,6 +41,13 @@ ul.xform {
 }
 .xform div.rex-widget p {
 	margin-bottom: 0;
+  padding-bottom:0;
+  border-bottom:0;
+}
+.xform p.formsubmit {
+  margin-bottom: 0;
+  padding-bottom:0;
+  border-bottom:0;
 }
 
 /*	--------------------------------------- Allgemeines */
@@ -46,6 +55,10 @@ ul.xform {
 	clear: both;
 	margin-left: 245px;
 }
+
+#rex-page-xform div.rex-area-content {
+  padding: 10px 0 0 1px;
+  }
 
 /*	--------------------------------------- Labels */
 .xform label, 
@@ -89,7 +102,7 @@ ul.xform {
 .xform textarea.textarea, 
 .xform select.multipleselect, 
 .xform .formtable table td input {
-	border: 1px solid #999;
+  /*border: 1px solid #999;*/
 }
 
 .xform .formtable table {
@@ -138,7 +151,7 @@ ul.xform {
 }
 
 .xform fieldset {
-  padding-top:15px;
+  /*padding-top:15px;*/
 }
 
 
