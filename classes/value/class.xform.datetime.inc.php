@@ -114,7 +114,7 @@ class rex_xform_datetime extends rex_xform_abstract
       $hsel->addOption(str_pad($i,2,'0',STR_PAD_LEFT),str_pad($i,2,'0',STR_PAD_LEFT));
     }
     $hsel->setSelected($hour);
-    $out .= $hsel->get()."h";
+    $out .= ' &ndash; '.$hsel->get()."h";
 
     $msel = new rex_select;
     $msel->setName($formname.'[min]');
