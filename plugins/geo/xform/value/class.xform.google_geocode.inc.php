@@ -6,12 +6,8 @@ class rex_xform_google_geocode extends rex_xform_abstract
   function enterObject()
   {
 
-    $labels = explode(",",$this->getElement(2)); // Fields of Position
-    $label_lng = $labels[0];
-    $label_lat = $labels[1];
-
-    $value_lng = "0";
-    $value_lat = "0";
+    $labels       = explode(",",$this->getElement(2)); // Fields of Position
+    $fields_count = count($labels);
 
     $address = explode(",",$this->getElement(3)); // Fields of getPosition
 
@@ -27,11 +23,29 @@ class rex_xform_google_geocode extends rex_xform_abstract
     }
 
     foreach($this->obj as $o) {
-      if($o->getName() == $label_lng) {
-        $value_lng = floatval($o->getValue());
-      }
-      if($o->getName() == $label_lat) {
-        $value_lat = floatval($o->getValue());
+      switch($fields_count) {
+        // one field for latlng
+        case(1):
+          if($o->getName() == $labels[0]) {
+            if($o->getValue()!='' && strpos($o->getValue(),',')) {
+              $tmp       = explode(',',$o->getValue());
+              $value_lat = str_replace(',','.',$tmp[0]);
+              $value_lng = str_replace(',','.',$tmp[1]);
+            } else {
+              $value_lat = $value_lng = 0;
+            }
+            $labels[1] = 0;
+          }
+          break;
+        // two fields for latlng
+        case(2):
+          if($o->getName() == $labels[0]) {
+            $value_lng = $o->getValue()!= '' ? str_replace(',','.',$o->getValue()) : 0;
+          }
+          if($o->getName() == $labels[1]) {
+            $value_lat = $o->getValue()!= '' ? str_replace(',','.',$o->getValue()) : 0;
+          }
+          break;
       }
     }
 
@@ -55,6 +69,7 @@ class rex_xform_google_geocode extends rex_xform_abstract
 
   echo '<script type="text/javascript">
   //<![CDATA[
+  var fields_count = '.$fields_count.';
 
   var rex_geo_coder = function()
   {
@@ -81,9 +96,12 @@ class rex_xform_google_geocode extends rex_xform_abstract
     geocoder = new google.maps.Geocoder();
 
     rex_geo_updatePosition = function(latLng) {
-
-      jQuery(".formlabel-'.$label_lat.' input").val(latLng.lat());
-      jQuery(".formlabel-'.$label_lng.' input").val(latLng.lng());
+      if(fields_count==2) {
+        jQuery(".formlabel-'.$labels[1].' input").val(latLng.lat());
+        jQuery(".formlabel-'.$labels[0].' input").val(latLng.lng());
+      } else {
+        jQuery(".formlabel-'.$labels[0].' input").val(latLng.lat()+","+latLng.lng());
+      }
 
     }
 
@@ -127,8 +145,12 @@ class rex_xform_google_geocode extends rex_xform_abstract
     rex_geo_resetPosition = function() {
 
       jQuery(function($){
-        $(".formlabel-'.$label_lat.' input").val("0");
-        $(".formlabel-'.$label_lng.' input").val("0");
+        if(fields_count==2) {
+          $(".formlabel-'.$labels[1].' input").val("0");
+          $(".formlabel-'.$labels[0].' input").val("0");
+        } else {
+          $(".formlabel-'.$labels[0].' input").val("0");
+        }
       });
 
       marker.setMap(null);
