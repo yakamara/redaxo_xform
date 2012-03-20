@@ -152,6 +152,24 @@ class rex_xform_datetime extends rex_xform_abstract
   {
     return "datetime -> Beispiel: datetime|feldname|Text *|jahrstart|jahrsende|minutenformate 00,15,30,45";
   }
+
+
+  function getDefinitions()
+  {
+    return array(
+      'type' => 'value',
+      'name' => 'datetime',
+      'values' => array(
+        array( 'type' => 'name', 'label' => 'Feld' ),
+        array( 'type' => 'text', 'label' => 'Bezeichnung'),
+        array( 'type' => 'text', 'label' => 'Startjahr'),
+        array( 'type' => 'text', 'label' => 'Endjahr'),
+        ),
+      'description' => 'Datum & Uhrzeit Eingabe',
+      'dbtype' => 'datetime'
+      );
+  }
+
 }
 
 ?>
