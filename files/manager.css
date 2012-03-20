@@ -27,7 +27,7 @@ body#rex-page-editme table.rex-table {
 	display:block;
 	margin:0px;
 	width:390px;
-	margin-left:245px;
+	/*margin-left:245px;*/
 }
 
 #rex-xform div.rex-widget input.text {
@@ -36,13 +36,3 @@ width:330px;
 #rex-xform div.rex-widget select{
 	width:335px;
 }
-
-#searchblock span.search-checkbox {
-  background:silver;
-  color:white;
-  padding:3px;
-  border-radius:5px;
-  margin:1px;
-  white-space:nowrap;
-  float:left;
-  }
