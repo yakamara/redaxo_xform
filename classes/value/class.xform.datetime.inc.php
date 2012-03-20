@@ -12,9 +12,9 @@ class rex_xform_datetime extends rex_xform_abstract
     $hour = date("H");
     $min = date("i");
     
-    if (!is_array($this->getValue()) && strlen($this->getValue()) == 12)
+    if (!is_array($this->getValue()) && strlen($this->getValue()) == 19)
     {
-      $min = (int) substr($this->getValue(),13,2);
+      $min   = (int) substr($this->getValue(),14,2);
       $hour = (int) substr($this->getValue(),11,2);
       $day = (int) substr($this->getValue(),8,2);
       $month = (int) substr($this->getValue(),5,2);
