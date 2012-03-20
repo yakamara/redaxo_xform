@@ -161,6 +161,7 @@ class rex_xform_datetime extends rex_xform_abstract
         array( 'type' => 'text', 'label' => 'Bezeichnung'),
         array( 'type' => 'text', 'label' => 'Startjahr'),
         array( 'type' => 'text', 'label' => 'Endjahr'),
+        array( 'type' => 'text', 'label' => 'Minutenformate'),
         ),
       'description' => 'Datum & Uhrzeit Eingabe',
       'dbtype' => 'datetime'
