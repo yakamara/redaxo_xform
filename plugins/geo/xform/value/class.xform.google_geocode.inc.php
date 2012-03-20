@@ -184,7 +184,7 @@ class rex_xform_google_geocode extends rex_xform_abstract
 
   function getDescription()
   {
-    return "google_geocode -> Beispiel: google_geocode|gcode|pos_lng,pos_lat|strasse,plz,ort|Google Map|width|height|
+    return "google_geocode -> Beispiel: google_geocode|gcode|lng_label,lat_label|strasse,plz,ort|Google Map|width|height|
     ";
   }
 
@@ -195,9 +195,9 @@ class rex_xform_google_geocode extends rex_xform_abstract
       'type' => 'value',
       'name' => 'google_geocode',
       'values' => array(
-        array( 'type' => 'name',   'label' => 'Name' ),
-        array( 'type' => 'getNames',	'label' => '"lng"-name,"lat"-name'),
-        array( 'type' => 'getNames','label' => 'Names Positionsfindung'),
+        array( 'type' => 'name',     'label' => 'Name' ),
+        array( 'type' => 'getNames', 'label' => '"lng"-Feldname,"lat"-Feldname'),
+        array( 'type' => 'getNames', 'label' => 'Names Positionsfindung'),
         array( 'type' => 'text',     'label' => 'Bezeichnung'),
         array( 'type' => 'text',     'label' => 'Map-Breite'),
         array( 'type' => 'text',     'label' => 'Map-H&ouml;he'),
