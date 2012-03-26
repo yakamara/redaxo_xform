@@ -6,8 +6,8 @@ class rex_xform_time extends rex_xform_abstract
 	function enterObject()
 	{
 
-		$hour = "";
-		$min = "";
+    $hour = date('H');
+    $min = date('i');
 
 		if (!is_array($this->getValue()) && (strlen($this->getValue()) == 2 || strlen($this->getValue()) == 4))
 		{
@@ -69,14 +69,24 @@ class rex_xform_time extends rex_xform_abstract
 
 		$msel = new rex_select;
 		$msel->setName($formname.'[min]');
-		$msel->setStyle("width:55px;");
+    $msel->setStyle('width:55px;');
 		$msel->setId('el_'.$this->getId().'_min');
 		$msel->setSize(1);
-		$msel->addOption("MIN","");
-		$msel->addOption("00","00");
-		$msel->addOption("15","15");
-		$msel->addOption("30","30");
-		$msel->addOption("45","45");
+    $msel->addOption('MM','0');
+
+    $mmm = array();
+    if($this->getElement(3) != '')
+      $mmm = explode(',',trim($this->getElement(3)));
+
+    if(count($mmm)>0) {
+      foreach($mmm as $m) {
+        $msel->addOption($m,$m);
+      }
+    } else {
+      for($i=0;$i<61;$i++) {
+        $msel->addOption(str_pad($i,2,'0',STR_PAD_LEFT),str_pad($i,2,'0',STR_PAD_LEFT));
+      }
+    }
 		$msel->setSelected($min);
 		$out .= $msel->get();
 
@@ -87,9 +97,10 @@ class rex_xform_time extends rex_xform_abstract
 	}
 	function getDescription()
 	{
-		return "date -> Beispiel: date|feldname|Text *|jahrstart|jahrend|[format: Y-m-d]";
-	}
-	
+    return "date -> Beispiel: time|feldname|Text *|jahrstart|jahrend|minutenrater 00,15,30,45";
+  }
+
+
 	function getDefinitions()
 	{
 		return array(
@@ -98,6 +109,8 @@ class rex_xform_time extends rex_xform_abstract
 					'values' => array(
 								array( 'type' => 'name',   'label' => 'Feld' ),
 								array( 'type' => 'text',    'label' => 'Bezeichnung'),
+                array( 'type' => 'text',   'label' => 'Minutenraster'),
+                array( 'type' => 'text',    'label' => 'Format (H:i)'),
 							),
 					'description' => 'Uhrzeitfeld Eingabe',
 					'dbtype' => 'text'
@@ -105,23 +118,15 @@ class rex_xform_time extends rex_xform_abstract
 
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+  function getListValue($params)
+  {
+        $format = $params['params']['f4']!=''
+                ? $params['params']['f4']
+                : 'H:i';
+        return date($format,strtotime($params['subject']));
+  }
+
+
 }
 
 ?>
