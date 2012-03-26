@@ -513,6 +513,17 @@ if($show_editpage) {
 		$list->setColumnSortable("id");
 		
 		foreach($fields as $field) {
+
+      // CALL CLASS'S LIST VALUE METHOD IF AVAILABLE
+      if($field['list_hidden']==0 && isset($field['type_name'])) {
+        if(!class_exists('rex_xform_'.$field['type_name'])) {
+          rex_xform::includeClass($field['type_id'],$field['type_name']);
+        }
+        if(method_exists('rex_xform_'.$field['type_name'],'getListValue')) {
+          $list->setColumnFormat($field["f1"],'custom',array('rex_xform_'.$field['type_name'],'getListValue'),$field);
+        }
+      }
+
 			if($field["type_id"] == "value") {
 				if($field["list_hidden"] == 1) {
 					$list->removeColumn($field["f1"]);
