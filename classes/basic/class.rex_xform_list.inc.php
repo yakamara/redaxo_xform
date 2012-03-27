@@ -251,4 +251,48 @@ class rex_xform_list extends rex_list {
     }
 
 
+  /**
+   * Setzt ein Format für die Spalte
+   *
+   * @param $columnName Name der Spalte
+   * @param $format_type Formatierungstyp
+   * @param $format Zu verwendentes Format
+   * @param $params Custom params für callback func bei format_type 'custom'
+   */
+  function setColumnFormat($columnName, $format_type, $format = '', $params=array() )
+  {
+    $this->columnFormates[$columnName] = array($format_type, $format, $params);
+  }
+
+
+  /**
+   * Formatiert einen übergebenen String anhand der rexFormatter Klasse
+   *
+   * @param $value Zu formatierender String
+   * @param $format Array mit den Formatierungsinformationen
+   * @param $escape Flag, Ob escapen von $value erlaubt ist
+   *
+   * @return string
+   */
+  function formatValue($value, $format, $escape, $field=null)
+  {
+    if(is_array($format))
+    {
+      // Callbackfunktion -> Parameterliste aufbauen
+      if($this->isCustomFormat($format))
+      {
+        $format[2] = isset($format[2]) ? $format[2] : array();
+        $format[1] = array($format[1], array('list' => $this, 'field' => $field, 'value' => $value, 'format' => $format[0], 'escape' => $escape, 'params'=>$format[2]));
+      }
+
+      $value = rex_formatter::format($value, $format[0], $format[1]);
+    }
+
+    // Nur escapen, wenn formatter aufgerufen wird, der kein html zurückgeben können soll
+    if($escape && !$this->isCustomFormat($format) && $format[0] != 'rexmedia' && $format[0] != 'rexurl')
+      $value = htmlspecialchars($value);
+
+    return $value;
+  }
+
 }
