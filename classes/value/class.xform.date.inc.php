@@ -71,8 +71,8 @@ class rex_xform_date extends rex_xform_abstract
 		$year_start = (int) $this->getElement(3);
 		$year_end = (int) $this->getElement(4);
 		
-		if ($year_start == 0) $year_start = 1980;
-		if ($year_end == 0) $year_end = 2010;
+    if ($year_start == 0) $year_start = $year-30;
+    if ($year_end == 0) $year_end = $year+10;
 
 		if ($year_end<$year_start) $year_end = $year_start;
 
@@ -109,6 +109,7 @@ class rex_xform_date extends rex_xform_abstract
 									array( 'type' => 'text',    'label' => 'Bezeichnung'),
 									array( 'type' => 'text',    'label' => 'Startjahr'),
 									array( 'type' => 'text',    'label' => 'Endjahr'),
+                  array( 'type' => 'text',    'label' => 'Format (d.m.Y)'),
 								),
 						'description' => 'Datumsfeld Eingabe',
 						'dbtype' => 'text'
@@ -116,4 +117,12 @@ class rex_xform_date extends rex_xform_abstract
 
 	}
 	
+  function getListValue($params)
+  {
+        $format = $params['params']['field']['f5']!=''
+                ? $params['params']['field']['f5']
+                : 'd.m.Y';
+        return date($format,strtotime($params['subject']));
+  }
+
 }
