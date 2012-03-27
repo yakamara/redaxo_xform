@@ -520,7 +520,11 @@ if($show_editpage) {
           rex_xform::includeClass($field['type_id'],$field['type_name']);
         }
         if(method_exists('rex_xform_'.$field['type_name'],'getListValue')) {
-          $list->setColumnFormat($field["f1"],'custom',array('rex_xform_'.$field['type_name'],'getListValue'),$field);
+          $list->setColumnFormat(
+            $field["f1"],
+            'custom',
+            array('rex_xform_'.$field['type_name'], 'getListValue'),
+            array('field' => $field, 'fields' => $fields));
         }
       }
 

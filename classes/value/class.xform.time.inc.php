@@ -120,8 +120,8 @@ class rex_xform_time extends rex_xform_abstract
 	
   function getListValue($params)
   {
-        $format = $params['params']['f4']!=''
-                ? $params['params']['f4']
+        $format = $params['params']['field']['f4']!=''
+                ? $params['params']['field']['f4']
                 : 'H:i';
         return date($format,strtotime($params['subject']));
   }
