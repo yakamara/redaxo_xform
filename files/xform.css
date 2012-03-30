@@ -28,7 +28,8 @@ ul.xform {
 
 /*  --------------------------------------- Container Formelement */
 .xform p,
-.xform .xform-element {
+.xform .xform-element,
+.xform .formlangtextarea {
   float: left;
   width: 100%;
   margin-bottom: .2em;
@@ -36,6 +37,9 @@ ul.xform {
   margin-top: .2em;
   padding-top: .2em;
   border-bottom:1px solid white;
+}
+.xform .formlangtextarea p {
+  border-bottom:0;
 }
 .xform div.formradio p.radio,
 .xform div.form_google_geocode p.form_google_geocode {
