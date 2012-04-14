@@ -4,29 +4,37 @@ class rex_xform_be_link extends rex_xform_abstract
 {
 
   function enterObject()
-  { 
+  {
     global $REX;
-    
-    if(!isset($REX["xform_classes_be_link"]))
-      $REX["xform_classes_be_link"] = 0;
-    
-    $REX["xform_classes_be_link"]++;
-    
-    $i = $REX["xform_classes_be_link"];
-    
-    if ($this->getValue() == "" && !$this->params["send"])
+
+    if(!isset($REX['xform_classes_be_link']))
+    {
+      $REX['xform_classes_be_link'] = 0;
+    }
+
+    $REX['xform_classes_be_link']++;
+
+    $i = $REX['xform_classes_be_link'];
+
+    if ($this->getValue() == '' && !$this->params['send'])
+    {
       $this->setValue($this->getElement(3));
+    }
 
-    $wc = "";
-    if (isset($this->params["warning"][$this->getId()])) 
-      $wc = $this->params["warning"][$this->getId()];
+    $wc = '';
+    if (isset($this->params['warning'][$this->getId()]))
+    {
+      $wc = $this->params['warning'][$this->getId()];
+    }
 
-    $linkname = "";
-    if($this->getValue() != "" && $a = OOArticle::getArticleById($this->getValue()))
+    $linkname = '';
+    if($this->getValue() != '' && $a = OOArticle::getArticleById($this->getValue()))
+    {
       $linkname = $a->getName();
-      
-      $this->params["form_output"][$this->getId()] = '
-      
+    }
+
+      $this->params['form_output'][$this->getId()] = '
+
     <div class="xform-element formbe_mediapool '.$this->getHTMLClass().'">
         <label class="text ' . $wc . '" for="'.$this->getFieldId().'" >' . $this->getElement(2) . '</label>
     <div class="rex-widget">
@@ -46,34 +54,38 @@ class rex_xform_be_link extends rex_xform_abstract
     </div>
     <div class="rex-clearer"></div>
     </div>
-  ';    
-    
-    $this->params["value_pool"]["email"][$this->getElement(1)] = stripslashes($this->getValue());
-    if ($this->getElement(4) != "no_db") $this->params["value_pool"]["sql"][$this->getElement(1)] = $this->getValue();
+  ';
+
+    $this->params['value_pool']['email'][$this->getElement(1)] = stripslashes($this->getValue());
+    if ($this->getElement(4) != 'no_db')
+    {
+      $this->params['value_pool']['sql'][$this->getElement(1)] = $this->getValue();
+    }
   }
-  
+
+
   function getDescription()
   {
-    return "be_link -> Beispiel: be_link|label|Bezeichnung|defaultwert|no_db";
+    return 'be_link -> Beispiel: be_link|label|Bezeichnung|defaultwert|no_db';
   }
-  
-  
+
+
   function getDefinitions()
   {
     return array(
-            'type' => 'value',
-            'name' => 'be_link',
-            'values' => array(
-              array( 'type' => 'name',   'label' => 'Name' ),
-              array( 'type' => 'text',   'label' => 'Bezeichnung'),
-            ),
-            'description' => 'Hiermit kann man einen Link zu einem REDAXO Artikel setzen.',
-            'dbtype' => 'text'
+      'type' => 'value',
+      'name' => 'be_link',
+      'values' => array(
+        array( 'type' => 'name',   'label' => 'Name' ),
+        array( 'type' => 'text',   'label' => 'Bezeichnung'),
+      ),
+      'description' => 'Hiermit kann man einen Link zu einem REDAXO Artikel setzen.',
+      'dbtype' => 'text'
       );
   }
 
-  
-  
+
+
 }
 
 ?>
