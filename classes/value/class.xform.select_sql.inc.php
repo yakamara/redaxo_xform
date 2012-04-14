@@ -127,6 +127,14 @@ class rex_xform_select_sql extends rex_xform_abstract
     );
   }
 
+
+  function getListValue($params)
+  {
+    $db = new rex_sql;
+    $tmp = $db->getDBArray($params['params']['field']['f3'].' WHERE `id`='.$params['value']);
+    return $tmp[0]['name'];
+  }
+
 }
 
 ?>
