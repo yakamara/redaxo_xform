@@ -13,14 +13,9 @@ class rex_xform_google_geocode extends rex_xform_abstract
 
     $label = $this->getElement(4);
 
-    $map_width = 400;
-    if ($this->getElement(5) != "") {
-      $map_width = (int) $this->getElement(5);
-    }
-    $map_height = 200;
-    if ($this->getElement(6) != "") {
-      $map_height = (int) $this->getElement(6);
-    }
+    $map_width  = ($this->getElement(5) != "") ? (int) $this->getElement(5) : 650;
+    $map_height = ($this->getElement(6) != "") ? (int) $this->getElement(6) : 400;
+    $zoom       = ($this->getElement(7) != "") ? (int) $this->getElement(7) : 12;
 
     foreach($this->obj as $o) {
       switch($fields_count) {
@@ -76,7 +71,7 @@ class rex_xform_google_geocode extends rex_xform_abstract
 
     var myLatlng = new google.maps.LatLng('.$value_lat.', '.$value_lng.');
       var myOptions = {
-        zoom: 8,
+        zoom: '.$zoom.',
         center: myLatlng,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       }
@@ -172,7 +167,7 @@ class rex_xform_google_geocode extends rex_xform_abstract
         <label class="text '.$wc.'" for="'.$this->getFieldId().'">'.$label.'</label>
         <p class="form_google_geocode">';
 
-    $output .= '<a href="#" onclick="rex_geo_getPosition(\''.implode(",",str_replace('"','',$address)).'\')">Geodaten holen</a> | ';
+    $output .= '<a href="#" onclick="rex_geo_getPosition(\''.implode(',',str_replace('"','',$address)).'\')">Geodaten holen</a> | ';
 
     $output .= '<a href="#" onclick="rex_geo_resetPosition()">Geodaten nullen</a></p>
         <div class="form_google_geocode_map" id="'.$map_id.'" style="width:'.$map_width.'px; height:'.$map_height.'px">Google Map</div>
@@ -201,6 +196,7 @@ class rex_xform_google_geocode extends rex_xform_abstract
         array( 'type' => 'text',     'label' => 'Bezeichnung'),
         array( 'type' => 'text',     'label' => 'Map-Breite'),
         array( 'type' => 'text',     'label' => 'Map-H&ouml;he'),
+        array( 'type' => 'text',     'label' => 'Zoom (0-15)'),
         ),
       'description' => 'GoogeMap Positionierung',
       'dbtype' => 'text'
