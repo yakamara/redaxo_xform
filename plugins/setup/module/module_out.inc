@@ -34,7 +34,7 @@ $form_type = "REX_VALUE[1]";
 if ($form_type == "1" || $form_type == "2" || $form_type == "3")
 {
   $mail_from = $REX['ERROR_EMAIL'];
-  if("REX_VALUE[2]" == "") $mail_from = "REX_VALUE[2]";
+  if("REX_VALUE[2]" != "") $mail_from = "REX_VALUE[2]";
   $mail_to = $REX['ERROR_EMAIL'];
   if("REX_VALUE[12]" != "") $mail_to = "REX_VALUE[12]";
   $mail_subject = "REX_VALUE[4]";
