@@ -16,7 +16,7 @@ if($REX["REDAXO"] && !$REX['SETUP'])
 	// $REX['ADDON']['name'][$mypage] = $I18N->msg("xform_table_manager");
 	$REX['ADDON']['version'][$mypage] = '2.8';
 	$REX['ADDON']['author'][$mypage] = 'Jan Kristinus';
-	$REX['ADDON']['supportpage'][$mypage] = 'www.yakamara.de/tag/redaxo';
+	$REX['ADDON']['supportpage'][$mypage] = 'www.yakamara.de/tag/redaxo/';
 	$REX['ADDON']['navigation'][$mypage] = array(
 	  // rootPage nur aktivieren wenn sie direkt ausgewaehlt ist
 	  // da alle pages main-pages und daher separate oberpunkte sind
@@ -45,7 +45,8 @@ if($REX["REDAXO"] && !$REX['SETUP'])
 			// check active-state and permissions
 			if($table['status'] == 1 && $table['hidden'] != 1 && $REX['USER'] && ($REX['USER']->isAdmin() || $REX['USER']->hasPerm($table_perm)))
 			{
-				$be_page = new rex_be_page($table['name'], array('page' => 'xform', 'subpage' => 'manager', 'tripage' => 'data_edit', 'table_name' => $table['table_name']));
+				$table_name = rex_translate($table['name']);
+				$be_page = new rex_be_page($table_name, array('page' => 'xform', 'subpage' => 'manager', 'tripage' => 'data_edit', 'table_name' => $table['table_name']));
 				$be_page->setHref('index.php?page=xform&subpage=manager&tripage=data_edit&table_name='.$table['table_name']);
 				$subpages[] = new rex_be_main_page($mypage, $be_page);
 			}

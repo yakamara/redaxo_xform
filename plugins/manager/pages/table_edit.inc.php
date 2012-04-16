@@ -144,9 +144,21 @@ if($show_list && $REX['USER']->isAdmin()){
   // $list->removeColumn("prio");
   $list->removeColumn("description");
 
+  function rex_xform_tableedit_translate($params) 
+  {
+ 	return rex_translate($params["subject"]);
+  }
+
+  // name - rex_xform_manager::translate($msg)
+  $list->setColumnFormat(
+            'name',
+            'custom',
+            'rex_xform_tableedit_translate'
+            );
+
 
   $list->setColumnFormat('status', 'custom', 'rex_xform_status_col');
-  $list->setColumnParams("name", array("table_id"=>"###id###","func"=>"edit"));
+  $list->setColumnParams("table_name", array("table_id"=>"###id###","func"=>"edit"));
 
   $list->addColumn($I18N->msg("edit"),$I18N->msg("editfield"));
   $list->setColumnParams($I18N->msg("edit"), array("subpage"=>"manager", "tripage"=>"table_field", "table_name"=>"###table_name###"));

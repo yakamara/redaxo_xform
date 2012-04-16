@@ -9,6 +9,10 @@ class rex_xform_datestamp extends rex_xform_abstract
 		if ($this->getElement(2) != "")
 		{
 			$format = $this->getElement(2);
+			
+			if($format == "mysql")
+				$format = "Y-m-d H:i:s";
+			
 		}
   
 		 // 0 = immer setzen, 1 = nur wenn leer / create
@@ -24,7 +28,7 @@ class rex_xform_datestamp extends rex_xform_abstract
 		}
 
 		$this->params["form_output"][$this->getId()] = '
-	      <p class="formhidden '.$this->getHTMLClass().'" style="display:hidden;" id="'.$this->getHTMLId().'">
+	      <p class="formhidden '.$this->getHTMLClass().'" style="display:none;" id="'.$this->getHTMLId().'">
 	        <input type="hidden" name="'.$this->getFieldName().'" id="'.$this->getFieldId().'" value="'.htmlspecialchars(stripslashes($this->getValue())).'" />
 	      </p>';
 
@@ -37,7 +41,7 @@ class rex_xform_datestamp extends rex_xform_abstract
 
 	function getDescription()
 	{
-		return "datestamp -> Beispiel: datestamp|label|[Y-m-d]|[no_db]|[0-wird immer neu gesetzt,1-nur wenn leer]";
+		return "datestamp -> Beispiel: datestamp|label|[YmdHis/U/dmy/mysql]|[no_db]|[0-wird immer neu gesetzt,1-nur wenn leer]";
 	}
 
 	function getDefinitions()
@@ -48,9 +52,9 @@ class rex_xform_datestamp extends rex_xform_abstract
             'name' => 'datestamp',
             'values' => array(
 				array( 'type' => 'name',   'label' => 'Name' ),
-				array( 'type' => 'text',    'label' => 'Format [YmdHis]'),
+				array( 'type' => 'text',    'label' => 'Format [YmdHis/U/dmy/mysql]'),
 				array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 1),
-				array( 'type' => 'select',  'label' => 'Wann soll Wert gesetzt werden', 'default' => '0', 'definition' => 'immer=0;nur wenn leer=1' ),
+				array( 'type' => 'select',  'label' => 'Wann soll Wert gesetzt werden', 'default' => '0', 'definition' => 'immer=0,nur wenn leer=1' ),
 				),
             'description' => 'Ein Selectfeld mit festen Definitionen.',
             'dbtype' => 'varchar(255)'

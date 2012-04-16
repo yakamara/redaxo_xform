@@ -56,7 +56,7 @@ if(!isset($table)) {
   }
 }
 
-rex_title($I18N->msg("table").": ".$table["name"]." ", "");
+rex_title($I18N->msg("table").": ".rex_translate($table["name"]).' ['.$table["table_name"].']', "");
 
 $table["fields"] = $this->getTableFields($table["table_name"]);
 
@@ -234,12 +234,10 @@ if($show_editpage) {
 		
 		foreach($fields as $field)
 		{
-			$type_name = $field["type_name"];
-			$type_id = $field["type_id"];
 		
 			$values = array();
 			for($i=1;$i<10;$i++){ $values[$i] = $field["f".$i]; }
-			if($type_id == "value")
+			if($field["type_id"] == "value")
 			{
 				if(in_array($values[1],$this->getFilterFields()))
 				{
@@ -250,10 +248,10 @@ if($show_editpage) {
 					$xform->setValueField($field["type_name"],$values);
 				}
 			
-			}elseif($type_id == "validate")
+			}elseif($field["type_id"] == "validate")
 			{
 				$xform->setValidateField($field["type_name"],$values);
-			}elseif($type_id == "action")
+			}elseif($field["type_id"] == "action")
 			{
 				$xform->setActionField($field["type_name"],$values);
 			}

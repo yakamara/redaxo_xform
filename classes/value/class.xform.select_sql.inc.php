@@ -3,114 +3,147 @@
 class rex_xform_select_sql extends rex_xform_abstract
 {
 
-	function enterObject()
-	{
+  static $getListValues = array();
 
-		$multiple = (int) $this->getElement(8);
-		if($multiple != 1)
-			$multiple = 0; 
+  function enterObject()
+  {
+    $multiple = (int) $this->getElement(8);
+    if($multiple != 1)
+    {
+      $multiple = 0;
+    }
 
-		$size = (int) $this->getElement(9);
-		if($size < 1)
-			$size = 1; 
+    $size = (int) $this->getElement(9);
+    if($size < 1)
+    {
+      $size = 1;
+    }
 
-		$SEL = new rex_select();
-		$SEL->setId($this->getHTMLId().'-s');
-		
-		if($multiple)
-		{
-			$SEL->setName($this->getFieldName().'[]');
-			$SEL->setMultiple();
-			$SEL->setSize($size);
-		}else
-		{
-			$SEL->setName($this->getFieldName());
-			$SEL->setSize(1);
-		}
-		
+    $SEL = new rex_select();
+    $SEL->setId($this->getHTMLId().'-s');
 
-		$sql = $this->getElement(3);
+    if($multiple)
+    {
+      $SEL->setName($this->getFieldName().'[]');
+      $SEL->setMultiple();
+      $SEL->setSize($size);
+    }
+    else
+    {
+      $SEL->setName($this->getFieldName());
+      $SEL->setSize(1);
+    }
 
-		$teams = rex_sql::factory();
-		$teams->debugsql = $this->params["debug"];
-		$teams->setQuery($sql);
 
-		$sqlnames = array();
+    $sql = $this->getElement(3);
 
-		// mit --- keine auswahl ---
-		if (!$multiple && $this->getElement(6) == 1)
-			$SEL->addOption($this->getElement(7), "0");
+    $teams = rex_sql::factory();
+    $teams->debugsql = $this->params['debug'];
+    $teams->setQuery($sql);
 
-		foreach($teams->getArray() as $t)
-		{
-			$v = $t['name'];
-			$k = $t['id'];
-			$SEL->addOption($v, $k);
-			$sqlnames[$k] = $t['name'];
-		}
+    $sqlnames = array();
 
-		$wc = "";
-		if (isset($this->params["warning"][$this->getId()])) 
-			$wc = $this->params["warning"][$this->getId()];
+    // mit --- keine auswahl ---
+    if (!$multiple && $this->getElement(6) == 1)
+    {
+      $SEL->addOption($this->getElement(7), '0');
+    }
 
-		$SEL->setStyle(' class="select ' . $wc . '"');
+    foreach($teams->getArray() as $t)
+    {
+      $v = $t['name'];
+      $k = $t['id'];
+      $SEL->addOption($v, $k);
+      $sqlnames[$k] = $t['name'];
+    }
 
-		if ($this->getValue()=="" && $this->getElement(4) != "") 
-			$this->setValue($this->getElement(4));
+    $wc = '';
+    if (isset($this->params['warning'][$this->getId()]))
+    {
+      $wc = $this->params['warning'][$this->getId()];
+    }
 
-		if(!is_array($this->getValue()))
-		{
-			$this->setValue(explode(",",$this->getValue()));
-		}
+    $SEL->setStyle(' class="select ' . $wc . '"');
 
-		foreach($this->getValue() as $v)
-		{
-			$SEL->setSelected($v);
-		}
-		
-		$form_class = '';
-		if ($multiple)
-			$form_class = ' formselect-multiple-'.$size;
-		
-		$this->params["form_output"][$this->getId()] = '
-			<p class="formselect'.$form_class.'"  id="'.$this->getHTMLId().'">
-				<label class="select ' . $wc . '" for="' . $this->getHTMLId() . '-s" >' . $this->getElement(2) . '</label>
-				' . $SEL->get() . '
-			</p>';
+    if ($this->getValue()=='' && $this->getElement(4) != '')
+    {
+      $this->setValue($this->getElement(4));
+    }
 
-		$this->setValue(implode(",",$this->getValue()));
-		$this->params["value_pool"]["email"][$this->getElement(1)] = stripslashes($this->getValue());
-		if ($this->getElement(5) != "no_db") 
-			$this->params["value_pool"]["sql"][$this->getElement(1)] = $this->getValue();
-		
-	}
-	
-	function getDescription()
-	{
-		return "select_sql -> Beispiel: select_sql|label|Bezeichnung:|select id,name from table order by name|[defaultvalue]|[no_db]|1/0 Leeroption|Leeroptionstext|1/0 Multiple Feld";
-	}
-	
-	function getDefinitions()
-	{
-		return array(
-						'type' => 'value',
-						'name' => 'select_sql',
-						'values' => array(
-							array( 'type' => 'name',		'label' => 'Name' ),
-							array( 'type' => 'text',		'label' => 'Bezeichnung'),
-							array( 'type' => 'text',		'label' => 'Query mit "select id, name from .."'),
-					   		array( 'type' => 'text',		'label' => 'Defaultwert (opt.)'),
-					   		array( 'type' => 'no_db',   	'label' => 'Datenbank',  'default' => 1),
-					   		array( 'type' => 'boolean',		'label' => 'Leeroption'),
-					   		array( 'type' => 'text',		'label' => 'Text bei Leeroption (Bitte auswählen)'),
-					   		array( 'type' => 'boolean',		'label' => 'Mehrere Felder möglich'),
-					   		array( 'type' => 'text',		'label' => 'Höhe der Auswahlbox'),
-						),
-						'description' => 'Hiermit kann man SQL Abfragen als Selectbox nutzen',
-						'dbtype' => 'text'
-					);
-	}
-	
+    if(!is_array($this->getValue()))
+    {
+      $this->setValue(explode(',',$this->getValue()));
+    }
+
+    foreach($this->getValue() as $v)
+    {
+      $SEL->setSelected($v);
+    }
+
+    $form_class = '';
+    if ($multiple)
+    {
+      $form_class = ' formselect-multiple-'.$size;
+    }
+
+    $this->params["form_output"][$this->getId()] = '
+      <p class="formselect'.$form_class.'"  id="'.$this->getHTMLId().'">
+        <label class="select ' . $wc . '" for="' . $this->getHTMLId() . '-s" >' . $this->getElement(2) . '</label>
+        ' . $SEL->get() . '
+      </p>';
+
+    $this->setValue(implode(',',$this->getValue()));
+    $this->params['value_pool']['email'][$this->getElement(1)] = stripslashes($this->getValue());
+    if ($this->getElement(5) != 'no_db')
+    {
+      $this->params['value_pool']['sql'][$this->getElement(1)] = $this->getValue();
+    }
+
+  }
+
+
+  function getDescription()
+  {
+    return 'select_sql -> Beispiel: select_sql|label|Bezeichnung:|select id,name from table order by name|[defaultvalue]|[no_db]|1/0 Leeroption|Leeroptionstext|1/0 Multiple Feld';
+  }
+
+
+  function getDefinitions()
+  {
+    return array(
+      'type' => 'value',
+      'name' => 'select_sql',
+      'values' => array(
+        array( 'type' => 'name',    'label' => 'Name' ),
+        array( 'type' => 'text',    'label' => 'Bezeichnung'),
+        array( 'type' => 'text',    'label' => 'Query mit "select id, name from .."'),
+        array( 'type' => 'text',    'label' => 'Defaultwert (opt.)'),
+        array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 1),
+        array( 'type' => 'boolean', 'label' => 'Leeroption'),
+        array( 'type' => 'text',    'label' => 'Text bei Leeroption (Bitte auswählen)'),
+        array( 'type' => 'boolean', 'label' => 'Mehrere Felder möglich'),
+        array( 'type' => 'text',    'label' => 'Höhe der Auswahlbox'),
+      ),
+      'description' => 'Hiermit kann man SQL Abfragen als Selectbox nutzen',
+      'dbtype' => 'text'
+    );
+  }
+
+
+  function getListValue($params)
+  {
+    $return = array();
+
+    $db = rex_sql::factory();
+    $db_array = $db->getDBArray($params['params']['field']['f3'].' WHERE FIND_IN_SET(`id`,"'.$params['value'].'")');
+    foreach($db_array as $entry)
+    {
+      $return[] = $entry['name'];
+    }
+    
+    return implode("<br />",$return);
+  }
+
 }
 
 ?>

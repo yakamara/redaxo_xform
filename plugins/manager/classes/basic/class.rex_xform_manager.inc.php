@@ -317,7 +317,7 @@ if (!class_exists('rex_xform_manager'))
               // Column erstellen
               if($add_column)
               {
-                $c->setQuery('ALTER TABLE `'.$table["table_name"].'` ADD `'.$type_label.'` '.$dbtype);
+                $c->setQuery('ALTER TABLE `'.$table["table_name"].'` ADD `'.$type_label.'` '.$dbtype.' NOT NULL');
               }
             }
 
@@ -346,9 +346,11 @@ if (!class_exists('rex_xform_manager'))
       // - relation
       // - field
       // - data
+      // - update tabletype
+      // - NOT NULL
+      // - Default value
 
     }
-
 
   }
 

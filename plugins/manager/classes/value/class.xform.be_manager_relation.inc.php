@@ -19,6 +19,7 @@ n-1 - neues fenster und dort traegt man entsprechend infos ein .
 class rex_xform_be_manager_relation extends rex_xform_abstract
 {
 
+  static $xform_list_values = array();
 
   function enterObject()
   {
@@ -427,6 +428,30 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
 						);
   }
 
+  function getListValue($params)
+  {
+    if(count(rex_xform_be_manager_relation::$xform_list_values) == 0)
+    {
+      rex_xform_be_manager_relation::$xform_list_values = array();
+      $db = rex_sql::factory();
+      $db_array = $db->getDBArray('select id, `'.$params['params']['field']['f4'].'` as name from '.$params['params']['field']['f3'].'');
+      foreach($db_array as $entry)
+      {
+        rex_xform_be_manager_relation::$xform_list_values[$entry['id']] = $entry['name'];
+      }
+    }
+  
+    $return = array();
+    foreach(explode(",",$params["value"]) as $value)
+    {
+      if(isset(rex_xform_be_manager_relation::$xform_list_values[$value]))
+      {
+        $return[] = rex_xform_be_manager_relation::$xform_list_values[$value];
+      }
+    }
+    
+    return implode("<br />",$return);
+  }
 
 }
 

@@ -43,19 +43,19 @@ foreach($tables as $t) {
 
 
 echo '<table cellpadding="5" class="rex-table" id="xform-alltables">';
-echo '<tr><td><b>'.$I18N->msg("alltables").':</b> ';
+echo '<tr><td>';
 foreach($tables as $t) {
 	if($t["table_name"] == $table["table_name"]) { 
-		echo ' | <b>'.$t["table_name"].'</b> '; 
+		echo '<b>'.rex_translate($t["name"]).' ['.$t["table_name"].']</b> '; 
 	}else { 
-		echo ' | <a href="index.php?'.$link_vars.'&table_name='.$t["table_name"].'">'.$t["table_name"].'</a> '; 
+		echo ' d<a href="index.php?'.$link_vars.'&table_name='.$t["table_name"].'">'.rex_translate($t["name"]).' ['.$t["table_name"].']</a> '; 
 	}
 }
-echo '| </td></tr>';
-echo '<tr><td>';
-if($table["description"] != "") echo " ".$table["description"];
+echo '</td></tr>';
+echo '';
+if($table["description"] != "") echo "<tr><td>".$table["description"].'</td></tr>';
 // if($rex_em_opener_info != "") { echo ' - '.$I18N->msg("openerinfo").': '.$rex_em_opener_info; }
-echo '</td></tr></table><br />';
+echo '</table><br />';
 $table["fields"] = $this->getTableFields($table["table_name"]);
 
 

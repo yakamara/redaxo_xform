@@ -4,24 +4,50 @@ class rex_xform_checkbox extends rex_xform_abstract
 {
 	function enterObject()
   	{
-	  	$v = 1;
-	  	$checked = "";
 	  	
-	  	## set value attribute
-	    if ($this->getElement(3) != '')
-	    	$v = $this->getElement(3);
-	    else
-	   		$this->setElement(3,1);
-	    
-	    ## is checkbox checked?
+	  	## set default value attribute
+	    if ($this->getElement(3) == '')
+	   	{
+	  	  $v = 1; // gecheckt
+		  $w = 0; // nicht gecheckt
+	   	  
+	   	}else
+	   	{
+	   	  $values = explode(",",$this->getElement(3));
+
+	   	  if(count($values) == 1)
+	   	  {
+	   	    $v = $values[0];
+	   	    $w = '';
+	   	    
+	   	  }else
+	   	  {
+	   	    $v = $values[1];
+	   	    $w = $values[0];
+	   	  
+	   	  }
+	   	
+	   	}
+	   	
+	    // first time and default is true -> checked
 	    if($this->params["send"] != 1 && $this->getElement(4) == 1 && $this->getValue() === "")
-	        $checked = ' checked="checked"';
-	    elseif($this->getValue() == $this->getElement(3))
-	      	$checked = ' checked="checked"';
-	    elseif($this->getValue() == 1)
-	     	$checked = ' checked="checked"';
-		else
-	      	$this->setValue("0");
+	    {
+	      $checked = ' checked="checked"';
+	      $this->setValue($v);
+	      
+	    // if check value is fiven -> checked
+	    }elseif($this->getValue() == $v)
+	    {
+	      $checked = ' checked="checked"';
+	      $this->setValue($v);
+
+		// not checked
+		}else
+	    {
+	  	  $checked = "";
+	      $this->setValue($w);
+
+	    }
 	
 	    $wc = "";
 	    if (isset($this->params["warning"][$this->getId()]))
@@ -41,7 +67,7 @@ class rex_xform_checkbox extends rex_xform_abstract
 
 	function getDescription()
   	{
-		return "checkbox -> Beispiel: checkbox|label|Bezeichnung|Value|checked (1/0)|[no_db]";
+		return "checkbox -> Beispiel: checkbox|label|Bezeichnung|Values(0,1)|default clicked (0/1)|[no_db]";
   	}
 
   	function getDefinitions()
