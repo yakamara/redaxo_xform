@@ -257,21 +257,29 @@ if($show_editpage) {
 			}
 		}
 		
-		// ***** START
-		// Textblock gibt den formalarblock als text aus, um diesen in das xform modul einsetzen zu können.
-		/*
-		$text_block = ''; 
-		foreach($fields as $field) { 
-		$values = array(); for($i=1;$i<10;$i++){ $values[] = $field["f".$i]; } 
-		if($field["type_id"] == "value") { $text_block .= "\n".'$xform->setValueField("'.$field["type_name"].'",array("'.implode('","',$values).'"));';
-		}elseif($field["type_id"] == "validate") { $text_block .= "\n".'$xform->setValidateField("'.$field["type_name"].'",array("'.implode('","',$values).'"));';
-		}elseif($field["type_id"] == "action") { $text_block .= "\n".'$xform->setActionField("'.$field["type_name"].'",array("'.implode('","',$values).'"));'; }
-		// $text_block .= "\n".$field["type_name"].'|'.implode("|",$values);
+		
+		if(rex_request("rex_xform_show_formularblock","string") != "")
+		{
+			// Optional .. kann auch geloescht werden. Dient nur zu Hilfe beim Aufbau
+			// von XForm-Formularen über php
+			// Textblock gibt den formalarblock als text aus, um diesen in das xform modul einsetzen zu können.
+			//	rex_xform_show_formularblock=1
+			$text_block = ''; 
+			foreach($fields as $field) 
+			{ 
+				$values = array(); for($i=1;$i<10;$i++){ $values[] = $field["f".$i]; } 
+				if($field["type_id"] == "value") { 
+					$text_block .= "\n".'$xform->setValueField("'.$field["type_name"].'",array("'.implode('","',$values).'"));';
+				}elseif($field["type_id"] == "validate") { 
+					$text_block .= "\n".'$xform->setValidateField("'.$field["type_name"].'",array("'.implode('","',$values).'"));';
+				}elseif($field["type_id"] == "action") { 
+					$text_block .= "\n".'$xform->setActionField("'.$field["type_name"].'",array("'.implode('","',$values).'"));'; 
+				}
+				// $text_block .= "\n".$field["type_name"].'|'.implode("|",$values);
+			}
+			echo '<pre>'.$text_block.'</pre>';
 		}
-		echo '<pre>'.$text_block.'</pre>';
-		*/
-		// ***** ENDE	
-	
+
 		$xform->setObjectparams("main_table",$table["table_name"]); // für db speicherungen und unique abfragen
 		$xform->setObjectparams("submit_btn_label",$I18N->msg('submit'));
 		

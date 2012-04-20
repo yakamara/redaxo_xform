@@ -118,7 +118,7 @@ class rex_xform_select_sql extends rex_xform_abstract
         array( 'type' => 'text',    'label' => 'Bezeichnung'),
         array( 'type' => 'text',    'label' => 'Query mit "select id, name from .."'),
         array( 'type' => 'text',    'label' => 'Defaultwert (opt.)'),
-        array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 1),
+        array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 0),
         array( 'type' => 'boolean', 'label' => 'Leeroption'),
         array( 'type' => 'text',    'label' => 'Text bei Leeroption (Bitte auswählen)'),
         array( 'type' => 'boolean', 'label' => 'Mehrere Felder möglich'),

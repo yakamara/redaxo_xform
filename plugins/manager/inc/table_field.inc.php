@@ -271,12 +271,16 @@ if( ($func == "add" || $func == "edit" )  && isset($types[$type_id][$type_name])
 
 			case("no_db"):
 				// ToDo: Default Wert beachten
-				$xform->setValueField("checkbox",array("f".$i,$I18N->msg("donotsaveindb"),'no_db',0));
+				
+				
+				$xform->setValueField("checkbox",array("f".$i, $I18N->msg("donotsaveindb"), 'no_db', $v['default']));
 				break;
 
 			case("boolean"):
 				// checkbox|check_design|Bezeichnung|Value|1/0|[no_db]
-				$xform->setValueField("checkbox",array("f".$i,$v['label']));
+				if(!isset($v['default']))
+					$v['default'] = '';
+				$xform->setValueField("checkbox",array("f".$i, $v['label'],'',$v['default']));
 				break;
 
 			case("select"):

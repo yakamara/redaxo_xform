@@ -4,7 +4,10 @@ class rex_xform_textarea extends rex_xform_abstract
 {
 
 	function enterObject()
-	{		
+	{	
+		
+		$this->setValue((string) $this->getValue());
+		
 		if ($this->getValue() == "" && !$this->params["send"])
 		{
 			$this->setValue($this->getElement(3));
@@ -44,7 +47,7 @@ class rex_xform_textarea extends rex_xform_abstract
 	              array( 'type' => 'name',   'label' => 'Feld' ),
 	              array( 'type' => 'text',    'label' => 'Bezeichnung'),
 	              array( 'type' => 'text',    'label' => 'Defaultwert'),
-	              array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 1),
+	              array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 0),
 	              array( 'type' => 'text',    'label' => 'classes'),
               ),
             'description' => 'Ein mehrzeiliges Textfeld als Eingabe',

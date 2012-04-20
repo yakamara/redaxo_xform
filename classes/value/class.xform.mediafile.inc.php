@@ -142,7 +142,7 @@ class rex_xform_mediafile extends rex_xform_abstract
     array( 'type' => 'text',    'label' => 'Welche Dateien sollen erlaubt sein, kommaseparierte Liste. ".gif,.png"'),
     array( 'type' => 'boolean', 'label' => 'Pflichtfeld'),
     array( 'type' => 'text',    'label' => 'Fehlermeldung'),
-    array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 1),
+    array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 0),
     array( 'type' => 'text',    'label' => 'Mediakategorie ID'),
     ),
 						'description' => 'Mediafeld, welches Dateien aus dem Medienpool holt',

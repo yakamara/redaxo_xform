@@ -208,7 +208,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
 
       $this->params["form_output"][$this->getId()] = '
 				<p class="formpopup '.$this->getHTMLClass().'" id="'.$this->getHTMLId().'">
-					<label class="select ' . $wc . '" for="' . $this->getFieldId() . '" >' . $this->be_em["label"] . '</label>
+					<label class="select ' . $wc . '" for="' . $this->getFieldId() . '" >' . rex_translate($this->be_em["label"]) . '</label>
 					'.$out.'
 				</p>';
     }
@@ -246,7 +246,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
 
       $this->params["form_output"][$this->getId()] = '
 			<p class="formhtml '.$this->getHTMLClass().'" id="'.$this->getHTMLId().'">
-			<label class="select " for="' . $this->getFieldId() . '" >' . $this->be_em["label"] . '</label>
+			<label class="select " for="' . $this->getFieldId() . '" >' . rex_translate($this->be_em["label"]) . '</label>
 			<input type="hidden" name="FORM[' . $this->params["form_name"] . '][el_' . $this->getId() . '][]" id="REX_RELATION_'.$this->getId().'" />
 			<span>'.$text.'</span>
 			</p>';
@@ -314,7 +314,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
 
       $this->params["form_output"][$this->getId()] = '
 	        <p class="formselect '.$this->getHTMLClass().'" id="'.$this->getHTMLId().'">
-	          <label class="select ' . $wc . '" for="' . $this->getFieldId() . '" >' . $this->be_em["label"] . '</label>
+	          <label class="select ' . $wc . '" for="' . $this->getFieldId() . '" >' . rex_translate($this->be_em["label"]) . '</label>
 	          ' . $SEL->get() . '
 	        </p>';
 

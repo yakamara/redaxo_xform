@@ -53,7 +53,7 @@ class rex_xform_datestamp extends rex_xform_abstract
             'values' => array(
 				array( 'type' => 'name',   'label' => 'Name' ),
 				array( 'type' => 'text',    'label' => 'Format [YmdHis/U/dmy/mysql]'),
-				array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 1),
+				array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 0),
 				array( 'type' => 'select',  'label' => 'Wann soll Wert gesetzt werden', 'default' => '0', 'definition' => 'immer=0,nur wenn leer=1' ),
 				),
             'description' => 'Ein Selectfeld mit festen Definitionen.',

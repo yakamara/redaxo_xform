@@ -74,4 +74,8 @@ class rex_xform_validate_abstract
       return $this->elements[$i];
   }
   
+  function postValueEnter()
+  {
+  }
+  
 }

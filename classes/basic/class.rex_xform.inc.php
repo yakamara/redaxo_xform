@@ -325,10 +325,19 @@ foreach ($elements as $e)
       $value_object->enterObject();
     }
 
+	if ($this->objparams["send"] == 1) {
+	    foreach($ValidateObjects as $vObj) {
+	      foreach($vObj as $xoObject) {
+	        $xoObject->postValueEnter();
+	      }
+	    }
+	}
+
     // ***** PostFormActions
     foreach($ValueObjects as $value_object) {
       $value_object->postFormAction();
     }
+    
 
     // *************************************************** ACTION OBJEKTE
 

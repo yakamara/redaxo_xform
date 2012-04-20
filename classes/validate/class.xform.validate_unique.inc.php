@@ -3,7 +3,7 @@
 class rex_xform_validate_unique extends rex_xform_validate_abstract 
 {
 
-	function enterObject()
+	function postValueEnter()
 	{
 		if($this->params["send"]=="1")
 		{
@@ -14,7 +14,6 @@ class rex_xform_validate_unique extends rex_xform_validate_abstract
 				
 			foreach($this->obj_array as $Object)
 			{
-			
 				$sql = 'select '.$this->getElement(2).' from '.$table.' WHERE '.$this->getElement(2).'="'.$Object->getValue().'" LIMIT 1';
 				if($this->params["main_where"] != "")
 					$sql = 'select '.$this->getElement(2).' from '.$table.' WHERE '.$this->getElement(2).'="'.$Object->getValue().'" AND !('.$this->params["main_where"].') LIMIT 1';

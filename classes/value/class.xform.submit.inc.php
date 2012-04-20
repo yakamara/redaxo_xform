@@ -19,7 +19,7 @@ class rex_xform_submit extends rex_xform_abstract
 	
        	$this->params["form_output"][$this->getId()] = '
 				<p class="formsubmit '.$this->getHTMLClass().'">
-				<input type="submit" class="submit '.$wc.'" name="'.$this->getFieldName().'" id="'.$this->getFieldId().'" value="'.htmlspecialchars(stripslashes($this->getValue())) . '" />
+				<input type="submit" class="submit '.$wc.'" name="'.$this->getFieldName().'" id="'.$this->getFieldId().'" value="'.htmlspecialchars(stripslashes(rex_translate($this->getValue()))) . '" />
 				</p>';
 		$this->params["value_pool"]["email"][$this->getElement(1)] = stripslashes($this->getValue());
 		if ($this->getElement(3) != "no_db") $this->params["value_pool"]["sql"][$this->getElement(1)] = $this->getValue();

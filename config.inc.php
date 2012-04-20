@@ -13,7 +13,7 @@ $mypage = 'xform';
 
 $REX['ADDON']['name'][$mypage] = 'XForm';
 $REX['ADDON']['perm'][$mypage] = 'xform[]';
-$REX['ADDON']['version'][$mypage] = '2.8.1';
+$REX['ADDON']['version'][$mypage] = '2.9';
 $REX['ADDON']['author'][$mypage] = 'Jan Kristinus';
 $REX['ADDON']['supportpage'][$mypage] = 'www.yakamara.de/tag/xform/';
 $REX['PERM'][] = 'xform[]';
