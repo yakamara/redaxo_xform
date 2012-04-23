@@ -19,6 +19,7 @@ class rex_xform_google_geocode extends rex_xform_abstract
 
     $map_width  = ($this->getElement(5) != "") ? (int) $this->getElement(5) : 650;
     $map_height = ($this->getElement(6) != "") ? (int) $this->getElement(6) : 400;
+    $zoom       = ($this->getElement(7) != "") ? (int) $this->getElement(7) : 12;
 
     foreach($this->obj as $o)
     {
@@ -54,7 +55,7 @@ class rex_xform_google_geocode extends rex_xform_abstract
 
     var myLatlng = new google.maps.LatLng('.$value_lat.', '.$value_lng.');
       var myOptions = {
-        zoom: 8,
+        zoom: '.$zoom.',
         center: myLatlng,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       }
@@ -155,7 +156,7 @@ class rex_xform_google_geocode extends rex_xform_abstract
 
   function getDescription()
   {
-    return "google_geocode -> Beispiel: google_geocode|gcode|pos_lng,pos_lat|strasse,plz,ort|Google Map|width|height|
+    return "google_geocode -> Beispiel: google_geocode|gcode|lng_feldname,lat_feldname|strasse,plz,ort|Google Map|width|height|zoom
     ";
   }
 
@@ -165,12 +166,13 @@ class rex_xform_google_geocode extends rex_xform_abstract
             'type' => 'value',
             'name' => 'google_geocode',
             'values' => array(
-              array( 'type' => 'name',   'label' => 'Name' ),
-              array( 'type' => 'getNames',  'label' => '"lng"-name,"lat"-name'),
-              array( 'type' => 'getNames','label' => 'Names Positionsfindung'),
+              array( 'type' => 'name',     'label' => 'Name' ),
+              array( 'type' => 'getNames', 'label' => '"lng"-Feldname,"lat"-Feldname'),
+              array( 'type' => 'getNames', 'label' => 'Names Positionsfindung'),
               array( 'type' => 'text',     'label' => 'Bezeichnung'),
               array( 'type' => 'text',     'label' => 'Map-Breite'),
               array( 'type' => 'text',     'label' => 'Map-H&ouml;he'),
+              array( 'type' => 'text',     'label' => 'Zoom (0-15)'),
             ),
             'description' => 'GoogeMap Positionierung',
             'dbtype' => 'text'
