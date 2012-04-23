@@ -553,7 +553,7 @@ if($show_editpage) {
 
       if($this->hasDataPageFunction("delete"))
       {
-        $list->addColumn($I18N->msg('delete'),"- ".$I18N->msg('delete'));
+        $list->addColumn($I18N->msg('delete'),$I18N->msg('delete'));
         $list->setColumnParams($I18N->msg('delete'), array("data_id"=>"###id###","func"=>"delete"));
         $list->addLinkAttribute($I18N->msg('delete'), 'onclick', 'return confirm(\' id=###id### '.$I18N->msg('delete').' ?\')');
       }
