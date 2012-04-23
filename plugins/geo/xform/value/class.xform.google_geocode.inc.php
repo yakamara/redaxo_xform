@@ -24,8 +24,12 @@ class rex_xform_google_geocode extends rex_xform_abstract
 
     foreach($this->obj as $o)
     {
-      if($o->getName() == $label_lng) 		$value_lng = floatval($o->getValue());
-      if($o->getName() == $label_lat) 		$value_lat = floatval($o->getValue());
+      if($o->getName() == $label_lng) {
+        $value_lng = str_replace(',','.',$o->getValue());
+      }
+      if($o->getName() == $label_lat) {
+        $value_lat = str_replace(',','.',$o->getValue());
+      }
     }
 
     if ($this->getValue() == "" && !$this->params["send"]) {
@@ -164,7 +168,7 @@ class rex_xform_google_geocode extends rex_xform_abstract
             'name' => 'google_geocode',
             'values' => array(
               array( 'type' => 'name',   'label' => 'Name' ),
-              array( 'type' => 'getNames',	'label' => '"lng"-name,"lat"-name'),
+              array( 'type' => 'getNames',  'label' => '"lng"-name,"lat"-name'),
               array( 'type' => 'getNames','label' => 'Names Positionsfindung'),
               array( 'type' => 'text',     'label' => 'Bezeichnung'),
               array( 'type' => 'text',     'label' => 'Map-Breite'),
