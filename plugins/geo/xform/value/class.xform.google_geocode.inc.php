@@ -17,9 +17,9 @@ class rex_xform_google_geocode extends rex_xform_abstract
 
     $label = $this->getElement(4);
 
-    $map_width  = ($this->getElement(5) != "") ? (int) $this->getElement(5) : 650;
-    $map_height = ($this->getElement(6) != "") ? (int) $this->getElement(6) : 400;
-    $zoom       = ($this->getElement(7) != "") ? (int) $this->getElement(7) : 12;
+    $map_width  = ($this->getElement(5) != "") ? (int) $this->getElement(5) : 400;
+    $map_height = ($this->getElement(6) != "") ? (int) $this->getElement(6) : 200;
+    $zoom       = ($this->getElement(7) != "") ? (int) $this->getElement(7) : 8;
 
     foreach($this->obj as $o)
     {
