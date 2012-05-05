@@ -22,7 +22,7 @@ class rex_xform_resetbutton extends rex_xform_abstract
 
 	function getDescription()
 	{
-		return "submit -> Beispiel: submit|label|value|cssclassname";
+		return "resetbutton -> Beispiel: resetbutton|label|value|cssclassname";
 	}
 }
 
