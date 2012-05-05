@@ -7,8 +7,6 @@ echo '<div class="rex-addon-output">
 	<div class="rex-addon-content">
 	<div class="xform-description">'.$I18N->msg('xform_description_all').'</div>';
 
-error_reporting(E_ALL);
-
 echo rex_xform::showHelp(true,true);
 
 echo '

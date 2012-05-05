@@ -56,7 +56,7 @@ class rex_xform_datestamp extends rex_xform_abstract
 				array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 0),
 				array( 'type' => 'select',  'label' => 'Wann soll Wert gesetzt werden', 'default' => '0', 'definition' => 'immer=0,nur wenn leer=1' ),
 				),
-            'description' => 'Ein Selectfeld mit festen Definitionen.',
+            'description' => 'Zeitstempel.',
             'dbtype' => 'varchar(255)'
             );
 

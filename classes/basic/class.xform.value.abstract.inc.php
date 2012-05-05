@@ -166,8 +166,7 @@ class rex_xform_abstract
 
   function getFieldName($k="")
   {
-    if($k === "") return 'FORM['.$this->params["form_name"].'][el_'.$this->getId().']';
-    return 'FORM['.$this->params["form_name"].'][el_'.$this->getId().']['.$k.']';
+  	return $this->params["this"]->getFieldName($this->getId(), $k, $this->getName());
   }
 
   function getHTMLId($suffix = "")

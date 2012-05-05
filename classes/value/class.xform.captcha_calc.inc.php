@@ -9,13 +9,9 @@ class rex_xform_captcha_calc extends rex_xform_abstract
 		// var_dump($this->params);
 		global $REX; 
 
-		error_reporting(E_ALL);
-		ini_set("display_errors",1);
-
-		
 		require_once (realpath(dirname (__FILE__).'/../../ext/captcha_calc/class.captcha_calc_x.php'));
 
-    	$captcha = new captcha_calc_x ();
+    $captcha = new captcha_calc_x ();
 		$captchaRequest = rex_request('captcha_calc', 'string');
 		
 		if ($captchaRequest == "show")
@@ -41,21 +37,15 @@ class rex_xform_captcha_calc extends rex_xform_abstract
 			$wc = $this->params["error_class"];
 		}
 
-		$link = rex_getUrl($this->params["article_id"],$this->params["clang"],array("captcha_calc"=>"show"),"&");
-		/*
-		$form_output[] = '
-			<p class="formcaptcha">
-				<span class="' . $wc . '">'.htmlspecialchars($this->elements[1]).'</span>
-				<label class="captcha ' . $wc . '"><img 
-					src="'.$link.'" 
-					onclick="javascript:this.src=\''.$link.'&\'+Math.random();" 
-					alt="CAPTCHA image" 
-					/></label>
-				<input class="' . $wc . '" maxlength="5" size="5" name="FORM['.$this->params["form_name"].'][el_'.$this->id.']" type="text" />
-			</p>';
-		*/
+		if($this->getElement(3) != "")
+		{
+      // TODO: ? vorhanden oder nicht
+		  $link = $this->getELement(3).'?captcha_calc=show&'.time();
+		}else {
+		  
+		  $link = rex_getUrl($this->params["article_id"],$this->params["clang"],array("captcha_calc"=>"show"),"&");
+		}
 		
-		// 22.05.2009 - Tab Aenderung
 		if ($wc != '')
 			$wc = ' '.$wc;
 			
@@ -69,7 +59,7 @@ class rex_xform_captcha_calc extends rex_xform_abstract
 					onclick="javascript:this.src=\''.$link.'&\'+Math.random();" 
 					alt="CAPTCHA image" 
 					/></span>
-				<input class="captcha' . $wc . '" maxlength="5" size="5" id="el_' . $this->id . '" name="FORM['.$this->params["form_name"].'][el_'.$this->id.']" type="text" />
+				<input class="captcha' . $wc . '" maxlength="5" size="5" id="el_' . $this->id . '" name="'.$this->getFieldName().'" type="text" />
 			</p>';
 		// Ende
 	}

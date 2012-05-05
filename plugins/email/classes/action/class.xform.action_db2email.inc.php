@@ -65,23 +65,24 @@ class rex_xform_action_db2email extends rex_xform_action_abstract
         echo "<hr /><pre>"; var_dump($etpl); echo "</pre><hr />"; 
       }
       
-      if(!rex_xform_emailtemplate::sendMail($etpl))
+      if(!rex_xform_emailtemplate::sendMail($etpl, $template_name))
       {
-        echo "Fehler beim E-Mail Versand";
+        echo "error - email sent";
         return FALSE;
-      }
 
-      return TRUE;
+      }else 
+      {
+        return TRUE;
+
+      }
     
     }
-
     return FALSE;
 
   }
 
   function getDescription()
   {
-
     return "action|db2email|emailtemplate|emaillabel|[email@domain.de]";
 
   }

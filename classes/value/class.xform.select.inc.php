@@ -97,6 +97,27 @@ class rex_xform_select extends rex_xform_abstract
             );
 
 	}
+	
+  function getListValue($params)
+  {
+    $return = array();
+
+    $values = array();
+    foreach (explode(',', $params['params']['field']['f3']) as $v) 
+    {
+			$entry = explode('=', $v);
+			if (isset($entry[1])) 
+				$values[$entry[1]] = rex_translate($entry[0]); // .' ['.$entry[1].']';
+			else 
+				$values[$entry[0]] = rex_translate($entry[0]); // .' ['.$entry[0].']';
+		}
+
+    foreach(explode(",",$params['value']) as $k)
+      if(isset($values[$k]))
+        $return[] = $values[$k];
+    
+    return implode("<br />",$return);
+  }
 
 }
 

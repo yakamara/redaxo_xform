@@ -247,7 +247,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
       $this->params["form_output"][$this->getId()] = '
 			<p class="formhtml '.$this->getHTMLClass().'" id="'.$this->getHTMLId().'">
 			<label class="select " for="' . $this->getFieldId() . '" >' . rex_translate($this->be_em["label"]) . '</label>
-			<input type="hidden" name="FORM[' . $this->params["form_name"] . '][el_' . $this->getId() . '][]" id="REX_RELATION_'.$this->getId().'" />
+			<input type="hidden" name="'.$this->getFieldName().'[]" id="REX_RELATION_'.$this->getId().'" />
 			<span>'.$text.'</span>
 			</p>';
       	
@@ -281,7 +281,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
       $sss->setQuery('select * from '.$this->be_em["target_table"].' order by '.$this->be_em["target_field"]);
 
       $SEL = new rex_select();
-      $SEL->setName('FORM[' . $this->params["form_name"] . '][el_' . $this->getId() . '][]');
+      $SEL->setName($this->getFieldName().'[]');
       $SEL->setId($this->getFieldId());
       $SEL->setStyle('class="select"');
 
@@ -430,23 +430,24 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
 
   function getListValue($params)
   {
-    if(count(rex_xform_be_manager_relation::$xform_list_values) == 0)
+  
+    if(count(rex_xform_be_manager_relation::$xform_list_values[$params['params']['field']['f3']]) == 0)
     {
-      rex_xform_be_manager_relation::$xform_list_values = array();
+      rex_xform_be_manager_relation::$xform_list_values[$params['params']['field']['f3']] = array();
       $db = rex_sql::factory();
       $db_array = $db->getDBArray('select id, `'.$params['params']['field']['f4'].'` as name from '.$params['params']['field']['f3'].'');
       foreach($db_array as $entry)
       {
-        rex_xform_be_manager_relation::$xform_list_values[$entry['id']] = $entry['name'];
+        rex_xform_be_manager_relation::$xform_list_values[$params['params']['field']['f3']][$entry['id']] = $entry['name'];
       }
     }
   
     $return = array();
     foreach(explode(",",$params["value"]) as $value)
     {
-      if(isset(rex_xform_be_manager_relation::$xform_list_values[$value]))
+      if(isset(rex_xform_be_manager_relation::$xform_list_values[$params['params']['field']['f3']][$value]))
       {
-        $return[] = rex_xform_be_manager_relation::$xform_list_values[$value];
+        $return[] = rex_xform_be_manager_relation::$xform_list_values[$params['params']['field']['f3']][$value];
       }
     }
     

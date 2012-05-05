@@ -30,7 +30,7 @@ class rex_xform_captcha extends rex_xform_abstract
 			{
 				unset($_SESSION['captcha']);
 			}
-		}elseif($this->params["send"]==1)
+		}elseif($this->params["send"] == 1)
 		{
 			// Error. Fehlermeldung ausgeben
 			$this->params["warning"][$this->getId()] = $this->getElement(2);
@@ -38,14 +38,21 @@ class rex_xform_captcha extends rex_xform_abstract
 			$wc = $this->params["error_class"];
 		}
 
-		$link = rex_getUrl($this->params["article_id"],$this->params["clang"],array("captcha"=>"show"),"&");
+    if($this->getElement(3) != "")
+    {
+      // TODO: ? vorhanden oder nicht
+      $link = $this->getELement(3).'?captcha=show&'.time();
+    }else {
+      
+		  $link = rex_getUrl($this->params["article_id"],$this->params["clang"],array("captcha"=>"show"),"&");
+    }
 
 		if ($wc != '')
 			$wc = ' '.$wc;
 			
 		$this->params["form_output"][$this->getId()] = '
 			<p class="formcaptcha" id="'.$this->getHTMLId().'">
-				<label class="captcha' . $wc . '" for="' . $this->getFieldId() . '">'.htmlspecialchars(rex_translate($this->getElement(1))).'</label>
+				<label class="captcha' . $wc . '" for="' . $this->getFieldId() . '">'.rex_translate($this->getElement(1)).'</label>
 				<span class="as-label' . $wc . '"><img  src="'.$link.'" onclick="javascript:this.src=\''.$link.'&\'+Math.random();" alt="CAPTCHA image" /></span>
 				<input class="captcha' . $wc . '" maxlength="5" size="5" id="' . $this->getFieldId() . '" name="'.$this->getFieldName().'" type="text" />
 			</p>';
@@ -54,7 +61,7 @@ class rex_xform_captcha extends rex_xform_abstract
 
 	function getDescription()
 	{
-		return "captcha -> Beispiel: captcha|Beschreibungstext|Fehlertext";
+		return "captcha -> Beispiel: captcha|Beschreibungstext|Fehlertext|[link]";
 	}
 
 }

@@ -43,7 +43,7 @@ class rex_xform_emailtemplate
 		return $str;
 	}
 	
-	function sendMail($template)
+	function sendMail($template, $template_name = "")
 	{
 		$mail = new rex_mailer();
 		$mail->AddAddress($template["mail_to"], $template["mail_to_name"]);
@@ -65,7 +65,19 @@ class rex_xform_emailtemplate
 			}
 		}
 		
-		return $mail->Send();
+		if($mail->Send())
+    {
+      $template["email_subject"] = $template["subject"];
+      rex_register_extension_point("XFORM_EMAIL_SENT", $template_name, $template, true); // read only
+      return TRUE;
+
+    }else 
+    {
+      $template["email_subject"] = $template["subject"];
+      rex_register_extension_point("XFORM_EMAIL_SENT_FAILED", $template_name, $template, true); // read only
+      return FALSE;
+      
+    }
 	
 	}
 	

@@ -88,7 +88,7 @@ class rex_xform_select_sql extends rex_xform_abstract
 
     $this->params["form_output"][$this->getId()] = '
       <p class="formselect'.$form_class.'"  id="'.$this->getHTMLId().'">
-        <label class="select ' . $wc . '" for="' . $this->getHTMLId() . '-s" >' . $this->getElement(2) . '</label>
+        <label class="select ' . $wc . '" for="' . $this->getHTMLId() . '-s" >' . rex_translate($this->getElement(2)) . '</label>
         ' . $SEL->get() . '
       </p>';
 

@@ -17,7 +17,7 @@ class rex_xform_password extends rex_xform_abstract
 		
 		$this->params["form_output"][$this->getId()] = '
 				<p class="formpassword formlabel-'.$this->getName().'" id="'.$this->getHTMLId().'">
-				<label class="password ' . $wc . '" for="'.$this->getFieldId().'" >' . $this->getElement(2) . '</label>
+				<label class="password ' . $wc . '" for="'.$this->getFieldId().'" >' . rex_translate($this->getElement(2)) . '</label>
 				<input type="password" class="password ' . $wc . '" name="'.$this->getFieldName().'" id="'.$this->getFieldId().'" value="" />
 				</p>';
 		$this->params["value_pool"]["email"][$this->getElement(1)] = stripslashes($this->getValue());

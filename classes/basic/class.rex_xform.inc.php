@@ -15,8 +15,6 @@ class rex_xform
   {
     global $REX;
 
-    // $REX['ADDON']['xform']['classpaths']['value'][0]
-
     require_once($REX['INCLUDE_PATH'].'/addons/xform/classes/basic/'.'class.xform.value.abstract.inc.php');
     require_once($REX['INCLUDE_PATH'].'/addons/xform/classes/basic/'.'class.xform.action.abstract.inc.php');
     require_once($REX['INCLUDE_PATH'].'/addons/xform/classes/basic/'.'class.xform.validate.abstract.inc.php');
@@ -44,6 +42,8 @@ class rex_xform
     $this->objparams["article_id"] = 0;
     $this->objparams["clang"] = 0;
 
+    $this->objparams["real_field_names"] = FALSE;
+
     $this->objparams["form_method"] = "post";
     $this->objparams["form_action"] = "index.php";
     $this->objparams["form_anchor"] = "";
@@ -63,7 +63,7 @@ class rex_xform
     $this->objparams["warning"] = array ();
     $this->objparams["warning_messages"] = array ();
 
-    $this->objparams["first_fieldset"] = true; //
+    $this->objparams["fieldsets_opened"] = 0; //
     $this->objparams["getdata"] = FALSE;
 
     $this->objparams["form_elements"] = array();
@@ -76,6 +76,8 @@ class rex_xform
     $this->objparams["value"] = array(); // reserver for classes - $this->objparams["value"]["text"] ...
     $this->objparams["validate"] = array(); // reserver for classes
     $this->objparams["action"] = array(); // reserver for classes
+
+    $this->objparams["this"] = $this;
 
   }
 
@@ -94,9 +96,9 @@ class rex_xform
     }
 
     $form_elements_tmp = array ();
-    $form_elements_tmp = explode("\n", $this->objparams['form_data']); // Die Definitionen
+    $form_elements_tmp = explode("\n", $this->objparams['form_data']);
 
-    // leere Zeilen aus $this->objparams["form_elements"] entfernen
+    /* clear empty line */
     foreach($form_elements_tmp as $form_element) {
       if(trim($form_element) != "") {
         $this->objparams["form_elements"][] = explode("|", trim($form_element));
@@ -139,23 +141,13 @@ class rex_xform
     $this->objparams["form_hiddenfields"][$k] = $v;
   }
 
-  function setObjectparams($k,$v,$refresh = TRUE) {
+  function setObjectparams($k, $v, $refresh = TRUE) {
     if (!$refresh && isset($this->objparams[$k])) {
       $this->objparams[$k] .= $v;
     }else {
       $this->objparams[$k] = $v;
     }
-
-    if($k != "form_name") {
-      return;
-    }
-
-    if (isset($_REQUEST["FORM"][$this->objparams["form_name"]][$this->objparams["form_name"] . "send"])) {
-      $this->objparams["send"] = $_REQUEST["FORM"][$this->objparams["form_name"]][$this->objparams["form_name"] . "send"];
-    }else {
-      $this->objparams["send"] = 0;
-    }
-
+    return $this->objparams[$k];
   }
 
   function getObjectparams($k) {
@@ -169,34 +161,22 @@ class rex_xform
 
     global $REX;
     
-// *************************************************** Quick & Dirty Hack - Start
-$elements = $this->objparams["form_elements"];
-
-foreach ($elements as $e)
-{
- if($e[0] == 'objparams' && $e[1] == 'form_name' && trim($e[2]) != '')
- {
-   $this->objparams["form_name"] = trim($e[2]);
-   break;
- }
-}
-// *************************************************** Quick & Dirty Hack - End
-
-
     $preg_user_vorhanden = "~\*|:|\(.*\)~Usim"; // Preg der Bestimmte Zeichen/Zeichenketten aus der Bezeichnung entfernt
 
     $ValueObjects = array();
     $ValidateObjects = array();
 
     // *************************************************** ABGESCHICKT PARAMENTER
-    if (isset($_REQUEST["FORM"][$this->objparams["form_name"]][$this->objparams["form_name"] . "send"]))
+    $this->objparams["send"] = 0;
+        
+    if ($this->getFieldValue("send",'',"send") == "1")
     {
-      $this->objparams["send"] = $_REQUEST["FORM"][$this->objparams["form_name"]][$this->objparams["form_name"] . "send"];
-    }else
-    {
-      $this->objparams["send"] = 0;
+    	$this->objparams["send"] = 1;
     }
 
+    // *************************************************** VALUE OBJEKTE
+    
+  	$this->setValueField("submit",array("rex_xform_submit", $this->objparams["submit_btn_label"],"no_db"));
 
     // *************************************************** VALUE OBJEKTE
     $rows = count($this->objparams["form_elements"]);
@@ -221,15 +201,7 @@ foreach ($elements as $e)
             $ValueObjects[$i]->loadParams($this->objparams,$element);
             $ValueObjects[$i]->setId($i);
             $ValueObjects[$i]->init();
-
-            if (isset($_REQUEST["FORM"][$this->objparams["form_name"]]["el_" . $i]))
-            {
-              $ValueObjects[$i]->setValue($_REQUEST["FORM"][$this->objparams["form_name"]]["el_" . $i]);
-            }else
-            {
-              $ValueObjects[$i]->setValue("");
-            }
-
+            $ValueObjects[$i]->setValue($this->getFieldValue($i,'',$ValueObjects[$i]->getName()));
             $ValueObjects[$i]->setObjects($ValueObjects);
 
             // muss hier gesetzt sein, damit ein value objekt die elemente erweitern kann
@@ -259,15 +231,22 @@ foreach ($elements as $e)
     // ----- Felder mit Werten fuellen, fuer wiederanzeige
     // Die Value Objekte werden mit den Werten befuellt die
     // aus dem Formular nach dem Abschicken kommen
-    if (!($this->objparams["send"] == 1) && $this->objparams["main_where"] != "") { //  && $this->objparams['form_type'] != "3"
-      for ($i = 0; $i < count($this->objparams["form_elements"]); $i++) {
+    if (!($this->objparams["send"] == 1) && $this->objparams["main_where"] != "") 
+    { 
+      //  && $this->objparams['form_type'] != "3"
+      for ($i = 0; $i < count($this->objparams["form_elements"]); $i++) 
+      {
         $element = $this->objparams["form_elements"][$i];
-        if (($element[0]!="validate" && $element[0]!="action") and $element[1] != "") {
-          $_REQUEST["FORM"][$this->objparams["form_name"]]["el_" . $i] = @addslashes($SQLOBJ->getValue($element[1]));
+        if (($element[0]!="validate" && $element[0]!="action") and $element[1] != "") 
+        {
+          if(isset($SQLOBJ)) 
+          {
+          	$this->setFieldValue($i,@addslashes($SQLOBJ->getValue($element[1])),'',$element[1]);
+          }
         }
-        if($element[0]!="validate" && $element[0]!="action") {
-          if(isset($_REQUEST["FORM"][$this->objparams["form_name"]]["el_" . $i]))
-            $ValueObjects[$i]->setValue($_REQUEST["FORM"][$this->objparams["form_name"]]["el_" . $i]);
+        if($element[0]!="validate" && $element[0]!="action") 
+        {
+          $ValueObjects[$i]->setValue($this->getFieldValue($i,'',$ValueObjects[$i]->getName()));
         }
       }
     }
@@ -325,13 +304,13 @@ foreach ($elements as $e)
       $value_object->enterObject();
     }
 
-	if ($this->objparams["send"] == 1) {
-	    foreach($ValidateObjects as $vObj) {
-	      foreach($vObj as $xoObject) {
-	        $xoObject->postValueEnter();
-	      }
-	    }
-	}
+    if ($this->objparams["send"] == 1) {
+      foreach($ValidateObjects as $vObj) {
+        foreach($vObj as $xoObject) {
+          $xoObject->postValueAction();
+        }
+      }
+    }
 
     // ***** PostFormActions
     foreach($ValueObjects as $value_object) {
@@ -403,74 +382,80 @@ foreach ($elements as $e)
     $hasWarnings = count($this->objparams["warning"]) != 0;
     $hasWarningMessages = count($this->objparams["warning_messages"]) != 0;
     
-    if($this->objparams["form_show"] || $this->objparams["form_showformafterupdate"])
+    if($this->objparams["form_showformafterupdate"]) 
     {
-      $this->objparams["output"] .= '<form action="'.$this->objparams["form_action"];
-      if($this->objparams["form_anchor"] != ""){ $this->objparams["output"] .= '#'.$this->objparams["form_anchor"]; }
-      $this->objparams["output"] .= '" method="'.$this->objparams["form_method"].'" id="' . $this->objparams["form_id"] . '" enctype="multipart/form-data">';
-      $this->objparams["output"] .= '<fieldset>';
-      $this->objparams["output"] .= '<input type="hidden" name="FORM[' . $this->objparams["form_name"] . '][' . $this->objparams["form_name"] . 'send]" value="1" />';
+  		$this->objparams["form_show"] = TRUE;	
+  	}
+    
+    if($this->objparams["form_show"])
+    {
 
+      // -------------------- send definition
+      $this->setHiddenField($this->getFieldName("send","","send"),1);
+      
+      // -------------------- form start
+      if($this->objparams["form_anchor"] != ""){ $this->objparams["form_action"] .= '#'.$this->objparams["form_anchor"]; }
+      
+      // -------------------- warnings output
+      $warningOut = '';
       $hasWarningMessages = count($this->objparams["warning_messages"]) != 0;
       if ($this->objparams["unique_error"] != '' || $hasWarnings || $hasWarningMessages)
       {
-        ## sort warnings correctly
-        ksort($this->objparams["warning_messages"]);
-        
         $warningListOut = '';
-        if($hasWarningMessages)
+        if($hasWarningMessages) 
         {
-          foreach($this->objparams["warning_messages"] as $k => $v)
-          {
+          foreach($this->objparams["warning_messages"] as $k => $v) {
             $warningListOut .= '<li>'. rex_translate($v) .'</li>';
           }
         }
-        if($this->objparams["unique_error"] != '')
+        if($this->objparams["unique_error"] != '') 
         {
           $warningListOut .= '<li>'. rex_translate( preg_replace($preg_user_vorhanden, "", $this->objparams["unique_error"]) ) .'</li>';
         }
-
-        if ($warningListOut != '')
+      
+        if ($warningListOut != '') 
         {
-          if ($this->objparams["Error-occured"] != "")
+          if ($this->objparams["Error-occured"] != "") 
           {
-            $this->objparams["output"] .= '<dl class="' . $this->objparams["error_class"] . '">';
-            $this->objparams["output"] .= '<dt>'. $this->objparams["Error-occured"] .'</dt>';
-            $this->objparams["output"] .= '<dd><ul>'. $warningListOut .'</ul></dd>';
-            $this->objparams["output"] .= '</dl>';
-          }else
+            $warningOut .= '<dl class="' . $this->objparams["error_class"] . '">';
+            $warningOut .= '<dt>'. $this->objparams["Error-occured"] .'</dt>';
+            $warningOut .= '<dd><ul>'. $warningListOut .'</ul></dd>';
+            $warningOut .= '</dl>';
+          }else 
           {
-            $this->objparams["output"] .= '<ul class="' . $this->objparams["error_class"] . '">'. $warningListOut .'</ul>';
+            $warningOut .= '<ul class="' . $this->objparams["error_class"] . '">'. $warningListOut .'</ul>';
           }
         }
       }
-
-      foreach ($this->objparams["form_output"] as $v)
+      
+      // -------------------- formFieldsOut output
+      $formFieldsOut = '';
+      foreach ($this->objparams["form_output"] as $v) 
       {
-        $this->objparams["output"] .= $v;
+        $formFieldsOut .= $v;
       }
-
-      if ($this->objparams["submit_btn_show"])
-      {
-        $this->objparams["output"] .= '
-          <p class="formsubmit">
-            <input type="submit" name="FORM['.$this->objparams["form_name"].']['.$this->objparams["form_name"].'submit]" value="'.$this->objparams["submit_btn_label"].'" class="submit" />
-          </p>';
+      
+      // -------------------- hidden fields 
+      $hiddenOut = '';
+      foreach($this->objparams["form_hiddenfields"] as $k => $v) {
+        $hiddenOut .= '<input type="hidden" name="'.$k.'" value="'.htmlspecialchars($v).'" />';
       }
+      
+      // -------------------- formOut
+      $formOut = $warningOut;
+      $formOut .= '<form action="'.$this->objparams["form_action"].'" method="'.$this->objparams["form_method"].'" id="' . $this->objparams["form_id"] . '" enctype="multipart/form-data">';
+      $formOut .= $formFieldsOut;
+      $formOut .= $hiddenOut;
+      for($i=0;$i<$this->objparams["fieldsets_opened"];$i++) { $formOut .= '</fieldset>'; }
+      $formOut .= '</form>';
 
-      foreach($this->objparams["form_hiddenfields"] as $k => $v)
-      {
-        $this->objparams["output"] .= '<input type="hidden" name="'.$k.'" value="'.htmlspecialchars($v).'" />';
-      }
-
-      $this->objparams["output"] .= '</fieldset>';
-      $this->objparams["output"] .= '</form>';
+      $this->objparams["output"] .= $this->objparams["form_wrap"][0].$formOut.$this->objparams["form_wrap"][1];
 
     }
-
-    return $this->objparams["form_wrap"][0].$this->objparams["output"].$this->objparams["form_wrap"][1];
+    
+    return $this->objparams["output"];
+    
   }
-
 
 
 
@@ -529,6 +514,82 @@ foreach ($elements as $e)
   function getTypes()
   {
     return array('value','validate','action');
+  }
+
+  function getFieldName($id = "", $k = "", $label = "")
+  {
+    $label = $this->prepareLabel($label);
+    $k = $this->prepareLabel($k);
+  	if($this->objparams["real_field_names"] && $label != "") 
+  	{
+	    if($k == "") 
+	    { 
+	    	return $label;
+	    }else {
+	    	return $label.'['.$k.']';
+	    }
+  	}else
+  	{
+	    if($k == "") 
+	    { 
+	    	return 'FORM['.$this->objparams["form_name"].']['.$id.']';
+	    }else 
+	    {
+	    	return 'FORM['.$this->objparams["form_name"].']['.$id.']['.$k.']';
+	    }
+  	}
+  }
+
+  function getFieldValue($id = "", $k = "", $label = "")
+  {
+    $label = $this->prepareLabel($label);
+    $k = $this->prepareLabel($k);
+  	if($this->objparams["real_field_names"] && $label != "") 
+  	{
+  		if($k == "" && isset($_REQUEST[$label])) 
+  		{
+		  	return $_REQUEST[$label];
+	  	}elseif(isset($_REQUEST[$label][$k])) 
+	  	{
+	  		return $_REQUEST[$label][$k];
+	  	}
+  	}else
+  	{
+	  	if($k == "" && isset($_REQUEST["FORM"][$this->objparams["form_name"]][$id])) 
+	  	{
+		  	return $_REQUEST["FORM"][$this->objparams["form_name"]][$id];
+	  	}elseif(isset($_REQUEST["FORM"][$this->objparams["form_name"]][$id][$k])) 
+	  	{
+	  		return $_REQUEST["FORM"][$this->objparams["form_name"]][$id][$k];
+	  	}
+  	}
+	return "";
+  }
+
+  function setFieldValue($id = "", $value = "", $k = "", $label = "")
+  {
+    $label = $this->prepareLabel($label);
+    $k = $this->prepareLabel($k);
+  	if($this->objparams["real_field_names"] && $label != "") {
+    	if($k == "") {
+  	  	$_REQUEST[$label] = $value;
+    	}else {
+    		$_REQUEST[$label][$k] = $value;
+    	}
+  		return;
+  	}else
+  	{
+    	if($k == "") {
+  	  	$_REQUEST["FORM"][$this->objparams["form_name"]][$id] = $value;
+    	}else {
+    		$_REQUEST["FORM"][$this->objparams["form_name"]][$id][$k] = $value;
+    	}
+  	}
+  }
+
+  function prepareLabel($label)
+  {
+    return preg_replace('/[^a-zA-Z\-\_0-9]/', '-', $label);;
   }
 
   // ----- Hilfsfunktionen -----
@@ -725,7 +786,7 @@ foreach ($elements as $e)
 
     foreach($REX['ADDON']['xform']['classpaths']['value'] as $pos => $value_path)
     {
-      if($Verzeichniszeiger = opendir($value_path))
+      if($Verzeichniszeiger = @opendir($value_path))
       {
         while($Datei = readdir($Verzeichniszeiger))
         {
@@ -759,7 +820,7 @@ foreach ($elements as $e)
 
     foreach($REX['ADDON']['xform']['classpaths']['validate'] as $pos => $validate_path)
     {
-      if($Verzeichniszeiger = opendir($validate_path))
+      if($Verzeichniszeiger = @opendir($validate_path))
       {
         while($Datei = readdir($Verzeichniszeiger))
         {
@@ -793,7 +854,7 @@ foreach ($elements as $e)
 
     foreach($REX['ADDON']['xform']['classpaths']['action'] as $pos => $action_path)
     {
-      if($Verzeichniszeiger = opendir($action_path))
+      if($Verzeichniszeiger = @opendir($action_path))
       {
         while($Datei = readdir($Verzeichniszeiger))
         {
