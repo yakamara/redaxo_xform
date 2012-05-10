@@ -591,7 +591,7 @@ if($show_editpage) {
       }
       // TRUNCATE FUNC
       if($this->hasDataPageFunction("truncate_table")) {
-        echo ' | <a href="index.php?'.$link_vars.'&func=truncate_table&'.$em_url.$em_rex_list.'">'.$I18N->msg("truncate_table").'</a>';
+        echo ' | <a href="index.php?'.$link_vars.'&func=truncate_table&'.$em_url.$em_rex_list.'" id="truncate-table">'.$I18N->msg("truncate_table").'</a>';
       }
     }
 
@@ -619,6 +619,7 @@ if($show_editpage) {
       jQuery("#searchtoggler").click(function(){jQuery("#searchblock").slideToggle("fast");});
       jQuery("#xform_help_empty_toggler").click(function(){jQuery("#xform_help_empty").slideToggle("fast");});
       jQuery("#xform_search_reset").click(function(){window.location.href = "index.php?page=xform&subpage=manager&tripage=data_edit&table_name='.$table["table_name"].'&rex_xform_search=1";});
+      jQuery("a.#truncate-table").click(function(){if(confirm("'.$I18N->msg("truncate_table_confirm").'")){return true;} else {return false;}});
     </script>';
 
   }

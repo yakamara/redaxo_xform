@@ -22,6 +22,7 @@ xform_relation_delete_entry = Ausgewählten Datensatz löschen
 
 truncate_table = Daten löschen
 table_truncated = Daten wurden komplett gelöscht
+truncate_table_confirm = Wirklich alle Datensaetze der Tabelle loeschen?
 xform_table_overview = Tabellenübersicht
 
 xform_manager_edit_table = Tabelle editieren
@@ -63,7 +64,7 @@ xform_manager_table_import = Tabelle importieren
 # edit.inc.php
 thankyouforupdate = Vielen Dank für die Aktualisierung.
 thankyouforentry = Vielen Dank für den Eintrag.
-editdata = Daten editieren 
+editdata = Daten editieren
 adddata = Datensatz anlegen
 searchtext = Suchbegriff
 searchfields = Tabellenfelder über die gesucht wird
