@@ -56,7 +56,7 @@ if(!isset($table)) {
   }
 }
 
-rex_title($I18N->msg("table").": ".rex_translate($table["name"]).' ['.$table["table_name"].']', "");
+rex_title($I18N->msg("table").": ".rex_translate($table["name"]).' <span class="table-name">['.$table["table_name"].']</span>', "");
 
 $table["fields"] = $this->getTableFields($table["table_name"]);
 
