@@ -15,10 +15,10 @@ class rex_xform_action_copy_value extends rex_xform_action_abstract
 
   function execute()
   {
-  
+
     $label_from = $this->getElement(2);
     $label_to = $this->getElement(3);
-  
+
     foreach($this->params["value_pool"]["sql"] as $key => $value)
     {
       if ($label_from==$key)
@@ -27,7 +27,7 @@ class rex_xform_action_copy_value extends rex_xform_action_abstract
         break;
       }
     }
-    
+
     return;
 
   }

@@ -8,16 +8,16 @@ include ($REX['INCLUDE_PATH'].'/addons/xform/plugins/email/classes/basic/class.r
 
 if($REX["REDAXO"] && !$REX['SETUP'])
 {
-	// Sprachdateien anhaengen
-	$I18N->appendFile($REX['INCLUDE_PATH'].'/addons/xform/plugins/email/lang/');
+  // Sprachdateien anhaengen
+  $I18N->appendFile($REX['INCLUDE_PATH'].'/addons/xform/plugins/email/lang/');
 
-	// $REX['ADDON']['name'][$mypage] = $I18N->msg("xform_email_templates");
-	$REX['ADDON']['version'][$mypage] = '2.9';
-	$REX['ADDON']['author'][$mypage] = 'Jan Kristinus';
-	$REX['ADDON']['supportpage'][$mypage] = 'www.yakamara.de/tag/redaxo/';
+  // $REX['ADDON']['name'][$mypage] = $I18N->msg("xform_email_templates");
+  $REX['ADDON']['version'][$mypage] = '2.9';
+  $REX['ADDON']['author'][$mypage] = 'Jan Kristinus';
+  $REX['ADDON']['supportpage'][$mypage] = 'www.yakamara.de/tag/redaxo/';
 
-	if ($REX['USER'] && ($REX['USER']->isAdmin() || $REX['USER']->hasPerm("xform[email]")))
-		$REX['ADDON']['xform']['SUBPAGES'][] = array ('email' , $I18N->msg("xform_email_templates"));
+  if ($REX['USER'] && ($REX['USER']->isAdmin() || $REX['USER']->hasPerm("xform[email]")))
+    $REX['ADDON']['xform']['SUBPAGES'][] = array ('email' , $I18N->msg("xform_email_templates"));
 
 }
 

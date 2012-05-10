@@ -15,16 +15,16 @@ class rex_xform_action_callback extends rex_xform_action_abstract
 
   function execute()
   {
-  
+
     if(!$this->getElement(2))
       return FALSE;
-      
+
     $f = $this->getElement(2);
-  
+
     if (strpos($f,'::') !== false)
     {
       $f = explode('::',$f,2);
-      if (is_callable($f[0],$f[1])) 
+      if (is_callable($f[0],$f[1]))
       {
         call_user_func($f,$this);
       }
@@ -32,8 +32,8 @@ class rex_xform_action_callback extends rex_xform_action_abstract
     elseif (function_exists($f))
     {
       $f($this);
-    }  
-  
+    }
+
     return;
 
   }

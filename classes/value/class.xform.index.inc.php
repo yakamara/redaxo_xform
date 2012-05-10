@@ -28,17 +28,17 @@ class rex_xform_index extends rex_xform_abstract
             $value .= $v;
         }
       }
-      
+
       $fnc = trim($this->getElement(4));
       if(function_exists($fnc))
       {
         $value = call_user_func($fnc, $value);
       }
-      
+
       $this->setValue($value);
-      
+
       $this->params["value_pool"]["email"][$this->getName()] = $value;
-      if ($this->getElement(3) != "no_db") 
+      if ($this->getElement(3) != "no_db")
         $this->params["value_pool"]["sql"][$this->getName()] = $value;
 
     }
