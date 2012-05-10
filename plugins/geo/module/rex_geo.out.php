@@ -16,57 +16,57 @@ $page_size = 50;
 $rex_geo_func = rex_request("rex_geo_func","string");
 switch($rex_geo_func)
 {
-	case("datalist"):
-		ob_end_clean();
-		ob_end_clean();
-		
-		header('Cache-Control: no-cache, must-revalidate');
-		header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
-		header('Content-type: application/json');
+  case("datalist"):
+    ob_end_clean();
+    ob_end_clean();
 
-		$geo_search_text = rex_request("geo_search_text","string");
-		$geo_search_page = rex_request("geo_search_page","int");
-		$geo_search_page_size = rex_request("geo_search_page_size","int",50);
-		if($geo_search_page_size < 0 or $geo_search_page_size > 200) $geo_search_page_size = 50;
-		
-		$geo_bounds_top = rex_request("geo_bounds_top","string");
-		$geo_bounds_right = rex_request("geo_bounds_right","string");
-		$geo_bounds_bottom = rex_request("geo_bounds_bottom","string");
-		$geo_bounds_left = rex_request("geo_bounds_left","string");
-		$sql_pos_add = ' '.$pos_lng.'<>"" and '.$pos_lat.'<>"" ';
-		if($geo_bounds_top != "" && $geo_bounds_bottom != "" && $geo_bounds_left != "" && $geo_bounds_right != "") {
-			$sql_pos_add = '
-				('.$pos_lng.'>'.$geo_bounds_left.' and '.$pos_lng.'<'.$geo_bounds_right.')
-				and ('.$pos_lat.'<'.$geo_bounds_top.' and '.$pos_lat.'>'.$geo_bounds_bottom.')
-			';
-		}
+    header('Cache-Control: no-cache, must-revalidate');
+    header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+    header('Content-type: application/json');
 
-		$sql_where = "";
-		if($where != "") {
-			$sql_where = ' AND ('.$where.') ';
-		}
-		
-		$sql_vt_add = '';
-		if($geo_search_text != "") {
-			$vtf = array();
-			foreach(explode(",",$vt_fields) as $f) {
-				$vtf[] = '('.trim($f).' LIKE "%'.mysql_real_escape_string(trim($geo_search_text)).'%"  )';
-			}
-			
-			$sql_vt_add = ' and ( '.implode(" OR ",$vtf).') ';
-		}
+    $geo_search_text = rex_request("geo_search_text","string");
+    $geo_search_page = rex_request("geo_search_page","int");
+    $geo_search_page_size = rex_request("geo_search_page_size","int",50);
+    if($geo_search_page_size < 0 or $geo_search_page_size > 200) $geo_search_page_size = 50;
 
-		if($geo_search_page<0) $geo_search_page = 0;
-		$sql_limit_from = ($geo_search_page*$geo_search_page_size);
-		$sql_limit_to = (($geo_search_page+1)*$geo_search_page_size)+1;
-		$sql_limit = ' order by rand(20)  LIMIT '.$sql_limit_from.','.$sql_limit_to;
+    $geo_bounds_top = rex_request("geo_bounds_top","string");
+    $geo_bounds_right = rex_request("geo_bounds_right","string");
+    $geo_bounds_bottom = rex_request("geo_bounds_bottom","string");
+    $geo_bounds_left = rex_request("geo_bounds_left","string");
+    $sql_pos_add = ' '.$pos_lng.'<>"" and '.$pos_lat.'<>"" ';
+    if($geo_bounds_top != "" && $geo_bounds_bottom != "" && $geo_bounds_left != "" && $geo_bounds_right != "") {
+      $sql_pos_add = '
+        ('.$pos_lng.'>'.$geo_bounds_left.' and '.$pos_lng.'<'.$geo_bounds_right.')
+        and ('.$pos_lat.'<'.$geo_bounds_top.' and '.$pos_lat.'>'.$geo_bounds_bottom.')
+      ';
+    }
 
-		$gd = rex_sql::factory();
-		// $gd->debugsql = 1;
-		$gd->setQuery('select '.$fields.','.$pos_lng.' as lng,'.$pos_lat.' as lat from '.$table.' where '.$sql_pos_add.$sql_where.$sql_vt_add.$sql_limit);
-		echo json_encode($gd->getArray());
-		exit;
-		break;
+    $sql_where = "";
+    if($where != "") {
+      $sql_where = ' AND ('.$where.') ';
+    }
+
+    $sql_vt_add = '';
+    if($geo_search_text != "") {
+      $vtf = array();
+      foreach(explode(",",$vt_fields) as $f) {
+        $vtf[] = '('.trim($f).' LIKE "%'.mysql_real_escape_string(trim($geo_search_text)).'%"  )';
+      }
+
+      $sql_vt_add = ' and ( '.implode(" OR ",$vtf).') ';
+    }
+
+    if($geo_search_page<0) $geo_search_page = 0;
+    $sql_limit_from = ($geo_search_page*$geo_search_page_size);
+    $sql_limit_to = (($geo_search_page+1)*$geo_search_page_size)+1;
+    $sql_limit = ' order by rand(20)  LIMIT '.$sql_limit_from.','.$sql_limit_to;
+
+    $gd = rex_sql::factory();
+    // $gd->debugsql = 1;
+    $gd->setQuery('select '.$fields.','.$pos_lng.' as lng,'.$pos_lat.' as lat from '.$table.' where '.$sql_pos_add.$sql_where.$sql_vt_add.$sql_limit);
+    echo json_encode($gd->getArray());
+    exit;
+    break;
 }
 
 ?>
@@ -81,22 +81,22 @@ switch($rex_geo_func)
 
 jQuery(document).ready(function(){
 
-	var map_options = {
-		div_id: "rex-googlemap",
-		dataUrl: "/index.php?article_id=<?php echo $REX["ARTICLE_ID"]; ?>&rex_geo_func=datalist",
-		page_size: <?php echo $page_size; ?>,
-		page_loading: '<div class="rex-geo-loading"></div>',
-		sidebar_view: '<?php echo $view; ?>',
-		fulltext: 1,
-		zoom:6,
-		marker_icon_normal: "/files/addons/xform/plugins/geo/icon_normal.png",
-		marker_icon_active: "/files/addons/xform/plugins/geo/icon_active.png",
-	};
+  var map_options = {
+    div_id: "rex-googlemap",
+    dataUrl: "/index.php?article_id=<?php echo $REX["ARTICLE_ID"]; ?>&rex_geo_func=datalist",
+    page_size: <?php echo $page_size; ?>,
+    page_loading: '<div class="rex-geo-loading"></div>',
+    sidebar_view: '<?php echo $view; ?>',
+    fulltext: 1,
+    zoom:6,
+    marker_icon_normal: "/files/addons/xform/plugins/geo/icon_normal.png",
+    marker_icon_active: "/files/addons/xform/plugins/geo/icon_active.png",
+  };
 
-	map_explorer = new rex_xform_geomap(map_options); //
-	map_explorer.initialize();
+  map_explorer = new rex_xform_geomap(map_options); //
+  map_explorer.initialize();
 
 });
-	    
+
 -->
 </script>

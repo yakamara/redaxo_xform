@@ -12,21 +12,21 @@
 
 if(!class_exists("rex_radio"))
 {
-  
+
   ################ Class Select
   class rex_radio
   {
-  
+
     var $attributes;
     var $options;
     var $option_selected;
-  
+
     ################ Konstruktor
     /*public*/ function rex_select()
     {
       $this->init();
     }
-  
+
     ################ init
     /*public*/ function init()
     {
@@ -35,12 +35,12 @@ if(!class_exists("rex_radio"))
       $this->setName('standard');
       $this->setDisabled(false);
     }
-  
+
     /*public*/ function setAttribute($name, $value)
     {
       $this->attributes[$name] = $value;
     }
-  
+
     /*public*/ function delAttribute($name)
     {
       if($this->hasAttribute($name))
@@ -50,12 +50,12 @@ if(!class_exists("rex_radio"))
       }
       return false;
     }
-  
+
     /*public*/ function hasAttribute($name)
     {
       return isset($this->attributes[$name]);
     }
-  
+
     /*public*/ function getAttribute($name, $default = '')
     {
       if($this->hasAttribute($name))
@@ -64,7 +64,7 @@ if(!class_exists("rex_radio"))
       }
       return $default;
     }
-  
+
     ############### disabled ?
     /*public*/ function setDisabled($disabled = true)
     {
@@ -73,19 +73,19 @@ if(!class_exists("rex_radio"))
       else
         $this->delAttribute('disabled');
     }
-  
+
     ################ select name
     /*public*/ function setName($name)
     {
       $this->setAttribute('name', $name);
     }
-  
+
     ################ select id
     /*public*/ function setId($id)
     {
       $this->setAttribute('id', $id);
     }
-  
+
     /**
     * select style
     * Es ist moeglich sowohl eine Styleklasse als auch einen Style zu uebergeben.
@@ -109,24 +109,24 @@ if(!class_exists("rex_radio"))
         $this->setAttribute('style', $style);
       }
     }
-  
+
     ################ select size
     /*public*/ function setSize($size)
     {
       $this->setAttribute('size', $size);
     }
-  
+
     ################ selected feld - option value uebergeben
     /*public*/ function setSelected($selected)
     {
       $this->option_selected = htmlspecialchars($selected);
     }
-  
+
     /*public*/ function resetSelected()
     {
       $this->option_selected = "";
     }
-  
+
     ################ optionen hinzufuegen
     /**
      * Fügt eine Option hinzu
@@ -135,8 +135,8 @@ if(!class_exists("rex_radio"))
     {
       $this->options[] = array ('name'=>$name, 'value' =>$value, 'attributes' => $attributes);
     }
-  
-  
+
+
     ############### show select
     /*public*/ function get()
     {
@@ -145,40 +145,40 @@ if(!class_exists("rex_radio"))
       {
         $attr .= ' '. $name .'="'. $value .'"';
       }
-      
+
       $ausgabe = "\n";
     // $ausgabe .= '<select'.$attr.'>'."\n";
     $ausgabe.= '<div class="radios">';
-  
+
       if (is_array($this->options))
         $ausgabe .= $this->_outOptions();
-  
+
       // $ausgabe .= '</select>'. "\n";
       $ausgabe .= '</div>'. "\n";
-  
+
       return $ausgabe;
     }
-  
+
     ############### show select
     /*public*/ function show()
     {
       echo $this->get();
     }
-  
+
     /*private*/ function _outOptions()
     {
     $return = "";
-    
-    $selected = "";	
+
+    $selected = "";
     foreach($this->options as $option)
     {
       if($selected == "")
         $selected = $option["value"];
-      
+
       if($this->option_selected == $option["value"])
         $selected = $option["value"];
     }
-  
+
     $id = $this->getAttribute("id");
     $counter = 0;
     foreach($this->options as $option)
@@ -192,11 +192,11 @@ if(!class_exists("rex_radio"))
       $return .= '<label for="'.$oid.'">'.$option["name"].'</label>'."\n";
       $return .= '</p>';
     }
-  
+
     return $return;
-  
+
     }
-  
+
   }
 
 }

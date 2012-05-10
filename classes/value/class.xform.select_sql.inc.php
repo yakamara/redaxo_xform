@@ -140,7 +140,7 @@ class rex_xform_select_sql extends rex_xform_abstract
     {
       $return[] = $entry['name'];
     }
-    
+
     return implode("<br />",$return);
   }
 

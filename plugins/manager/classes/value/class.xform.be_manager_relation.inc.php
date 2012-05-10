@@ -33,7 +33,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
 
     $this->be_em["target_table"] = $this->getElement(3); // Zieltabelle
     $this->be_em["target_field"] = $this->getElement(4); // Zielfield welches angezeigt wird.
-    	
+
     $this->be_em["relation_type"] = (int) $this->getElement(5); // select single = 0 / select multiple = 1 / popup single = 2 / popup multiple = 3
     if($this->be_em["relation_type"] > 4) {
       $this->be_em["relation_type"] = 0;
@@ -66,21 +66,21 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
         $vs = rex_sql::factory();
         $vs->debugsql = $this->params["debug"];
         $vs->setQuery('
-					select 
-						target_id as id 
-					from 
-						rex_xform_relation 
-					where 
-						source_table="'.$this->be_em["source_table"].'" and 
-						source_name="'.$this->getName().'" and 
-						source_id="'.$this->params["main_id"].'"');
+          select
+            target_id as id
+          from
+            rex_xform_relation
+          where
+            source_table="'.$this->be_em["source_table"].'" and
+            source_name="'.$this->getName().'" and
+            source_id="'.$this->params["main_id"].'"');
         $v = $vs->getArray();
         $values = array();
         if(count($v)>0) foreach($v as $w) { $values[$w["id"]] = $w["id"]; };
       }
       $this->setValue($values);
       // echo '<pre>++ ';var_dump($this->getValue());echo '</pre>';
-      	
+
     }
 
     // ---------- connected, fix values
@@ -134,83 +134,83 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
       if($this->be_em["relation_type"] == 3) {
         $multiple = "1";
       }
-      	
+
       $link = 'index.php?page=xform&subpage=manager&tripage=data_edit&table_name='.$this->be_em["target_table"];
       if($multiple)
       {
         $out = '
-				<div class="rex-widget">
-				    <div class="rex-widget-xform-manager-datalist">
-				      <input type="hidden" name="'.$this->getHTMLClass().'" id="XFORM_MANAGER_DATALIST_'.$this->getId().'" value="'.implode(",",$this->getValue()).'" />
-				      <p class="rex-widget-field">
-				        <select name="XFORM_MANAGER_DATALIST_SELECT['.$this->getId().']" id="XFORM_MANAGER_DATALIST_SELECT_'.$this->getId().'" size="8">';
+        <div class="rex-widget">
+            <div class="rex-widget-xform-manager-datalist">
+              <input type="hidden" name="'.$this->getHTMLClass().'" id="XFORM_MANAGER_DATALIST_'.$this->getId().'" value="'.implode(",",$this->getValue()).'" />
+              <p class="rex-widget-field">
+                <select name="XFORM_MANAGER_DATALIST_SELECT['.$this->getId().']" id="XFORM_MANAGER_DATALIST_SELECT_'.$this->getId().'" size="8">';
         foreach($value_names as $k => $v) {
           $out .= '<option value="'.$k.'">'.$v.'</option>';
         }
         $out .= '
-				        </select>
-				      </p>
-				       <p class="rex-widget-icons rex-widget-2col">
-				       	<span class="rex-widget-column rex-widget-column-first">
-						<a href="#" class="rex-icon-file-top" 
-							onclick="xform_manager_moveDatalist('.$this->getId().',\'top\');return false;" 
-							title="'.$I18N->msg("xform_relation_move_first_data").'"></a>
-						<a href="#" class="rex-icon-file-up" 
-							onclick="xform_manager_moveDatalist('.$this->getId().',\'up\');return false;" 
-							title="'.$I18N->msg("xform_relation_move_up_data").'"></a>
-						<a href="#" class="rex-icon-file-down" 
-							onclick="xform_manager_moveDatalist('.$this->getId().',\'down\');return false;" 
-							title="'.$I18N->msg("xform_relation_down_first_data").'"></a>
-						<a href="#" class="rex-icon-file-bottom" 
-							onclick="xform_manager_moveDatalist('.$this->getId().',\'bottom\');return false;" 
-							title="'.$I18N->msg("xform_relation_move_last_data").'"></a>
-				       	</span>
-				       	<span class="rex-widget-column">
-							<a href="#" class="rex-icon-file-open" 
-								onclick="xform_manager_openDatalist('.$this->getId().', \''.$this->be_em["target_field"].'\', \''.$link.'\',\''.$multiple.'\');return false;" 
-								title="'.$I18N->msg("xform_relation_choose_entry").'"></a>
-							<a href="#" class="rex-icon-file-delete" 
-								onclick="xform_manager_deleteDatalist('.$this->getId().',\''.$multiple.'\');return false;" 
-								title="'.$I18N->msg("xform_relation_delete_entry").'"></a>
-				        </span>
-				 	    </p>
-				    </div>
-				  </div>
-			 	<div class="rex-clearer"></div>';
-        	
+                </select>
+              </p>
+               <p class="rex-widget-icons rex-widget-2col">
+                <span class="rex-widget-column rex-widget-column-first">
+            <a href="#" class="rex-icon-file-top"
+              onclick="xform_manager_moveDatalist('.$this->getId().',\'top\');return false;"
+              title="'.$I18N->msg("xform_relation_move_first_data").'"></a>
+            <a href="#" class="rex-icon-file-up"
+              onclick="xform_manager_moveDatalist('.$this->getId().',\'up\');return false;"
+              title="'.$I18N->msg("xform_relation_move_up_data").'"></a>
+            <a href="#" class="rex-icon-file-down"
+              onclick="xform_manager_moveDatalist('.$this->getId().',\'down\');return false;"
+              title="'.$I18N->msg("xform_relation_down_first_data").'"></a>
+            <a href="#" class="rex-icon-file-bottom"
+              onclick="xform_manager_moveDatalist('.$this->getId().',\'bottom\');return false;"
+              title="'.$I18N->msg("xform_relation_move_last_data").'"></a>
+                </span>
+                <span class="rex-widget-column">
+              <a href="#" class="rex-icon-file-open"
+                onclick="xform_manager_openDatalist('.$this->getId().', \''.$this->be_em["target_field"].'\', \''.$link.'\',\''.$multiple.'\');return false;"
+                title="'.$I18N->msg("xform_relation_choose_entry").'"></a>
+              <a href="#" class="rex-icon-file-delete"
+                onclick="xform_manager_deleteDatalist('.$this->getId().',\''.$multiple.'\');return false;"
+                title="'.$I18N->msg("xform_relation_delete_entry").'"></a>
+                </span>
+              </p>
+            </div>
+          </div>
+        <div class="rex-clearer"></div>';
+
       }else
       {
         $out = '
-				
-				<div class="rex-widget">
-					<div class="rex-widget-data">
-					
-					<p class="rex-widget-field">
-					<input type="hidden" name="'.$this->getHTMLClass().'" id="XFORM_MANAGER_DATA_'.$this->getId().'" value="'.implode(",",$this->getValue()).'" />
-					<input type="text" size="30" name="XFORM_MANAGER_DATANAME['.$this->getId().']" value="'.htmlspecialchars($value_name).'" id="XFORM_MANAGER_DATANAME_'.$this->getId().'" readonly="readonly" class="text" />
-					</p>
-					<p class="rex-widget-icons rex-widget-1col">
-					<span class="rex-widget-column rex-widget-column-first">
-						<a href="#" class="rex-icon-file-open" 
-							onclick="xform_manager_openDatalist('.$this->getId().', \''.$this->be_em["target_field"].'\', \''.$link.'\',\''.$multiple.'\');return false;" 
-							title="'.$I18N->msg("xform_relation_choose_entry").'"></a>
-						<a href="#" class="rex-icon-file-delete" 
-							onclick="xform_manager_deleteDatalist('.$this->getId().',\''.$multiple.'\');return false;" 
-							title="'.$I18N->msg("xform_relation_delete_entry").'"></a>
-					</span>
-					</p>
-					</div>
-				</div>
-				<div class="rex-clearer"></div>
-				';
-        	
+
+        <div class="rex-widget">
+          <div class="rex-widget-data">
+
+          <p class="rex-widget-field">
+          <input type="hidden" name="'.$this->getHTMLClass().'" id="XFORM_MANAGER_DATA_'.$this->getId().'" value="'.implode(",",$this->getValue()).'" />
+          <input type="text" size="30" name="XFORM_MANAGER_DATANAME['.$this->getId().']" value="'.htmlspecialchars($value_name).'" id="XFORM_MANAGER_DATANAME_'.$this->getId().'" readonly="readonly" class="text" />
+          </p>
+          <p class="rex-widget-icons rex-widget-1col">
+          <span class="rex-widget-column rex-widget-column-first">
+            <a href="#" class="rex-icon-file-open"
+              onclick="xform_manager_openDatalist('.$this->getId().', \''.$this->be_em["target_field"].'\', \''.$link.'\',\''.$multiple.'\');return false;"
+              title="'.$I18N->msg("xform_relation_choose_entry").'"></a>
+            <a href="#" class="rex-icon-file-delete"
+              onclick="xform_manager_deleteDatalist('.$this->getId().',\''.$multiple.'\');return false;"
+              title="'.$I18N->msg("xform_relation_delete_entry").'"></a>
+          </span>
+          </p>
+          </div>
+        </div>
+        <div class="rex-clearer"></div>
+        ';
+
       }
 
       $this->params["form_output"][$this->getId()] = '
-				<p class="formpopup '.$this->getHTMLClass().'" id="'.$this->getHTMLId().'">
-					<label class="select ' . $wc . '" for="' . $this->getFieldId() . '" >' . rex_translate($this->be_em["label"]) . '</label>
-					'.$out.'
-				</p>';
+        <p class="formpopup '.$this->getHTMLClass().'" id="'.$this->getHTMLId().'">
+          <label class="select ' . $wc . '" for="' . $this->getFieldId() . '" >' . rex_translate($this->be_em["label"]) . '</label>
+          '.$out.'
+        </p>';
     }
 
 
@@ -245,12 +245,12 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
        */
 
       $this->params["form_output"][$this->getId()] = '
-			<p class="formhtml '.$this->getHTMLClass().'" id="'.$this->getHTMLId().'">
-			<label class="select " for="' . $this->getFieldId() . '" >' . rex_translate($this->be_em["label"]) . '</label>
-			<input type="hidden" name="'.$this->getFieldName().'[]" id="REX_RELATION_'.$this->getId().'" />
-			<span>'.$text.'</span>
-			</p>';
-      	
+      <p class="formhtml '.$this->getHTMLClass().'" id="'.$this->getHTMLId().'">
+      <label class="select " for="' . $this->getFieldId() . '" >' . rex_translate($this->be_em["label"]) . '</label>
+      <input type="hidden" name="'.$this->getFieldName().'[]" id="REX_RELATION_'.$this->getId().'" />
+      <span>'.$text.'</span>
+      </p>';
+
       return;
     }
 
@@ -260,7 +260,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
 
     if($this->be_em["relation_type"] < 2)
     {
-       
+
       if($this->params["send"] == 1 && $this->be_em["eoption"] == 0 && count($this->getValue()) == 0)
       {
         // Error. Fehlermeldung ausgeben
@@ -268,7 +268,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
         $this->params["warning_messages"][] = $this->getElement(7);
         $wc = $this->params["error_class"];
       }
-      	
+
       $wc = "";
       if (isset($this->params["warning"][$this->getId()]))
       {
@@ -313,10 +313,10 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
       $SEL->setSelected($this->getValue());
 
       $this->params["form_output"][$this->getId()] = '
-	        <p class="formselect '.$this->getHTMLClass().'" id="'.$this->getHTMLId().'">
-	          <label class="select ' . $wc . '" for="' . $this->getFieldId() . '" >' . rex_translate($this->be_em["label"]) . '</label>
-	          ' . $SEL->get() . '
-	        </p>';
+          <p class="formselect '.$this->getHTMLClass().'" id="'.$this->getHTMLId().'">
+            <label class="select ' . $wc . '" for="' . $this->getFieldId() . '" >' . rex_translate($this->be_em["label"]) . '</label>
+            ' . $SEL->get() . '
+          </p>';
 
     }
 
@@ -339,9 +339,9 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
   function postAction()
   {
     global $REX;
-     
+
     // $this->params["debug"] = TRUE;
-     
+
     $source_id = -1;
     if (isset($this->params["value_pool"]["email"]["ID"]) && $this->params["value_pool"]["email"]["ID"] > 0)
     {
@@ -390,7 +390,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
       }
 
     }
-    	
+
   }
 
   // -------------------------------------------------------------------------
@@ -409,9 +409,9 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
   function getDefinitions()
   {
     return array(
-						'type' => 'value',
-						'name' => 'be_manager_relation',
-						'values' => array(
+            'type' => 'value',
+            'name' => 'be_manager_relation',
+            'values' => array(
     array( 'type' => 'name',		'label' => 'Name' ),
     array( 'type' => 'text',		'label' => 'Bezeichnung'),
     array( 'type' => 'table',		'label' => 'Ziel Tabelle'),
@@ -423,14 +423,14 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
     array( 'type' => 'text',		'label' => 'REX Subpage (opt)'),
 
     ),
-						'description' => 'Hiermit kann man Verkn&uuml;pfungen zu anderen Tabellen setzen',
-						'dbtype' => 'text'
-						);
+            'description' => 'Hiermit kann man Verkn&uuml;pfungen zu anderen Tabellen setzen',
+            'dbtype' => 'text'
+            );
   }
 
   function getListValue($params)
   {
-  
+
     if(count(rex_xform_be_manager_relation::$xform_list_values[$params['params']['field']['f3']]) == 0)
     {
       rex_xform_be_manager_relation::$xform_list_values[$params['params']['field']['f3']] = array();
@@ -441,7 +441,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
         rex_xform_be_manager_relation::$xform_list_values[$params['params']['field']['f3']][$entry['id']] = $entry['name'];
       }
     }
-  
+
     $return = array();
     foreach(explode(",",$params["value"]) as $value)
     {
@@ -450,7 +450,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
         $return[] = rex_xform_be_manager_relation::$xform_list_values[$params['params']['field']['f3']][$value];
       }
     }
-    
+
     return implode("<br />",$return);
   }
 

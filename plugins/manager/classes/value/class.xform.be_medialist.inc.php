@@ -3,31 +3,31 @@
 class rex_xform_be_medialist extends rex_xform_abstract
 {
 
-	function enterObject()
-	{	
-		
-		global $I18N;
-		
-		static $tmp_medialist=0;
-		
-		// if (!isset($tmp_medialist)) $tmp_medialist = 0;
-		$tmp_medialist++;
-		
-		$ausgabe = '';
-		$options = '';
-		$medialistarray = explode(",",$this->getValue());
-		if (is_array($medialistarray))
-		{
-			for($j=0;$j<count($medialistarray);$j++)
-			{
-				if (current($medialistarray)!="")
-					$options .= "<option value='".current($medialistarray)."'>".current($medialistarray)."</option>\n";
-				next($medialistarray);
-			}
-		}
-		
-		$ausgabe .= '
-		<div class="rex-widget">
+  function enterObject()
+  {
+
+    global $I18N;
+
+    static $tmp_medialist=0;
+
+    // if (!isset($tmp_medialist)) $tmp_medialist = 0;
+    $tmp_medialist++;
+
+    $ausgabe = '';
+    $options = '';
+    $medialistarray = explode(",",$this->getValue());
+    if (is_array($medialistarray))
+    {
+      for($j=0;$j<count($medialistarray);$j++)
+      {
+        if (current($medialistarray)!="")
+          $options .= "<option value='".current($medialistarray)."'>".current($medialistarray)."</option>\n";
+        next($medialistarray);
+      }
+    }
+
+    $ausgabe .= '
+    <div class="rex-widget">
       <div class="rex-widget-medialist">
         <input type="hidden" name="'.$this->getFieldName().'" id="REX_MEDIALIST_'.$tmp_medialist.'" value="'.htmlspecialchars(stripslashes($this->getValue())) . '" />
         <p class="rex-widget-field">
@@ -54,27 +54,27 @@ class rex_xform_be_medialist extends rex_xform_abstract
       </div>
     </div>
     <div class="rex-clearer"></div>
-		';
-		
-		$wc = "";
-		if (isset($this->params["warning"][$this->getId()])) $wc = $this->params["warning"][$this->getId()];
-		
-		$this->params["form_output"][$this->getId()] = '
-			<div class="xform-element formbe_medialist '.$this->getHTMLClass().'">
-				<label class="text ' . $wc . '" for="' . $this->getFieldId() . '" >' . $this->getElement(2) . '</label>
-				'.$ausgabe.'
-			</div>';
+    ';
 
-		$this->params["value_pool"]["email"][$this->getElement(1)] = stripslashes($this->getValue());
-		if ($this->getElement(3) != "no_db") $this->params["value_pool"]["sql"][$this->getElement(1)] = $this->getValue();
+    $wc = "";
+    if (isset($this->params["warning"][$this->getId()])) $wc = $this->params["warning"][$this->getId()];
 
-	}
-	
-	function getDescription()
-	{
-		return "be_medialist -> Beispiel: be_medialist|label|Bezeichnung|no_db";
-	}
-	
+    $this->params["form_output"][$this->getId()] = '
+      <div class="xform-element formbe_medialist '.$this->getHTMLClass().'">
+        <label class="text ' . $wc . '" for="' . $this->getFieldId() . '" >' . $this->getElement(2) . '</label>
+        '.$ausgabe.'
+      </div>';
+
+    $this->params["value_pool"]["email"][$this->getElement(1)] = stripslashes($this->getValue());
+    if ($this->getElement(3) != "no_db") $this->params["value_pool"]["sql"][$this->getElement(1)] = $this->getValue();
+
+  }
+
+  function getDescription()
+  {
+    return "be_medialist -> Beispiel: be_medialist|label|Bezeichnung|no_db";
+  }
+
   function getDefinitions()
   {
     return array(
@@ -88,9 +88,9 @@ class rex_xform_be_medialist extends rex_xform_abstract
             'dbtype' => 'text'
       );
   }
-	
-	
-	
+
+
+
 }
 
 ?>

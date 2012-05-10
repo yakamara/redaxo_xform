@@ -160,7 +160,7 @@ class rex_xform
   function getForm() {
 
     global $REX;
-    
+
     $preg_user_vorhanden = "~\*|:|\(.*\)~Usim"; // Preg der Bestimmte Zeichen/Zeichenketten aus der Bezeichnung entfernt
 
     $ValueObjects = array();
@@ -168,28 +168,28 @@ class rex_xform
 
     // *************************************************** ABGESCHICKT PARAMENTER
     $this->objparams["send"] = 0;
-        
+
     if ($this->getFieldValue("send",'',"send") == "1")
     {
-    	$this->objparams["send"] = 1;
+      $this->objparams["send"] = 1;
     }
 
     // *************************************************** VALUE OBJEKTE
-    
-  	$this->setValueField("submit",array("rex_xform_submit", $this->objparams["submit_btn_label"],"no_db"));
+
+    $this->setValueField("submit",array("rex_xform_submit", $this->objparams["submit_btn_label"],"no_db"));
 
     // *************************************************** VALUE OBJEKTE
     $rows = count($this->objparams["form_elements"]);
     for ($i = 0; $i < $rows; $i++)
     {
       $element = $this->objparams["form_elements"][$i];
-      	
+
       if($element[0] == "validate")
       {
-        	
+
       }elseif($element[0] == "action")
       {
-        	
+
       }else
       {
         foreach($REX['ADDON']['xform']['classpaths']['value'] as $value_path)
@@ -231,20 +231,20 @@ class rex_xform
     // ----- Felder mit Werten fuellen, fuer wiederanzeige
     // Die Value Objekte werden mit den Werten befuellt die
     // aus dem Formular nach dem Abschicken kommen
-    if (!($this->objparams["send"] == 1) && $this->objparams["main_where"] != "") 
-    { 
+    if (!($this->objparams["send"] == 1) && $this->objparams["main_where"] != "")
+    {
       //  && $this->objparams['form_type'] != "3"
-      for ($i = 0; $i < count($this->objparams["form_elements"]); $i++) 
+      for ($i = 0; $i < count($this->objparams["form_elements"]); $i++)
       {
         $element = $this->objparams["form_elements"][$i];
-        if (($element[0]!="validate" && $element[0]!="action") and $element[1] != "") 
+        if (($element[0]!="validate" && $element[0]!="action") and $element[1] != "")
         {
-          if(isset($SQLOBJ)) 
+          if(isset($SQLOBJ))
           {
-          	$this->setFieldValue($i,@addslashes($SQLOBJ->getValue($element[1])),'',$element[1]);
+            $this->setFieldValue($i,@addslashes($SQLOBJ->getValue($element[1])),'',$element[1]);
           }
         }
-        if($element[0]!="validate" && $element[0]!="action") 
+        if($element[0]!="validate" && $element[0]!="action")
         {
           $ValueObjects[$i]->setValue($this->getFieldValue($i,'',$ValueObjects[$i]->getName()));
         }
@@ -316,7 +316,7 @@ class rex_xform
     foreach($ValueObjects as $value_object) {
       $value_object->postFormAction();
     }
-    
+
 
     // *************************************************** ACTION OBJEKTE
 
@@ -331,8 +331,8 @@ class rex_xform
       if($element[0]=="action")
       {
         $this->objparams["actions"][] = array(
-					"type" => trim($element[1]),
-					"elements" => $element,
+          "type" => trim($element[1]),
+          "elements" => $element,
         );
       }
     }
@@ -381,66 +381,66 @@ class rex_xform
 
     $hasWarnings = count($this->objparams["warning"]) != 0;
     $hasWarningMessages = count($this->objparams["warning_messages"]) != 0;
-    
-    if($this->objparams["form_showformafterupdate"]) 
+
+    if($this->objparams["form_showformafterupdate"])
     {
-  		$this->objparams["form_show"] = TRUE;	
-  	}
-    
+      $this->objparams["form_show"] = TRUE;
+    }
+
     if($this->objparams["form_show"])
     {
 
       // -------------------- send definition
       $this->setHiddenField($this->getFieldName("send","","send"),1);
-      
+
       // -------------------- form start
       if($this->objparams["form_anchor"] != ""){ $this->objparams["form_action"] .= '#'.$this->objparams["form_anchor"]; }
-      
+
       // -------------------- warnings output
       $warningOut = '';
       $hasWarningMessages = count($this->objparams["warning_messages"]) != 0;
       if ($this->objparams["unique_error"] != '' || $hasWarnings || $hasWarningMessages)
       {
         $warningListOut = '';
-        if($hasWarningMessages) 
+        if($hasWarningMessages)
         {
           foreach($this->objparams["warning_messages"] as $k => $v) {
             $warningListOut .= '<li>'. rex_translate($v) .'</li>';
           }
         }
-        if($this->objparams["unique_error"] != '') 
+        if($this->objparams["unique_error"] != '')
         {
           $warningListOut .= '<li>'. rex_translate( preg_replace($preg_user_vorhanden, "", $this->objparams["unique_error"]) ) .'</li>';
         }
-      
-        if ($warningListOut != '') 
+
+        if ($warningListOut != '')
         {
-          if ($this->objparams["Error-occured"] != "") 
+          if ($this->objparams["Error-occured"] != "")
           {
             $warningOut .= '<dl class="' . $this->objparams["error_class"] . '">';
             $warningOut .= '<dt>'. $this->objparams["Error-occured"] .'</dt>';
             $warningOut .= '<dd><ul>'. $warningListOut .'</ul></dd>';
             $warningOut .= '</dl>';
-          }else 
+          }else
           {
             $warningOut .= '<ul class="' . $this->objparams["error_class"] . '">'. $warningListOut .'</ul>';
           }
         }
       }
-      
+
       // -------------------- formFieldsOut output
       $formFieldsOut = '';
-      foreach ($this->objparams["form_output"] as $v) 
+      foreach ($this->objparams["form_output"] as $v)
       {
         $formFieldsOut .= $v;
       }
-      
-      // -------------------- hidden fields 
+
+      // -------------------- hidden fields
       $hiddenOut = '';
       foreach($this->objparams["form_hiddenfields"] as $k => $v) {
         $hiddenOut .= '<input type="hidden" name="'.$k.'" value="'.htmlspecialchars($v).'" />';
       }
-      
+
       // -------------------- formOut
       $formOut = $warningOut;
       $formOut .= '<form action="'.$this->objparams["form_action"].'" method="'.$this->objparams["form_method"].'" id="' . $this->objparams["form_id"] . '" enctype="multipart/form-data">';
@@ -452,9 +452,9 @@ class rex_xform
       $this->objparams["output"] .= $this->objparams["form_wrap"][0].$formOut.$this->objparams["form_wrap"][1];
 
     }
-    
+
     return $this->objparams["output"];
-    
+
   }
 
 
@@ -520,71 +520,71 @@ class rex_xform
   {
     $label = $this->prepareLabel($label);
     $k = $this->prepareLabel($k);
-  	if($this->objparams["real_field_names"] && $label != "") 
-  	{
-	    if($k == "") 
-	    { 
-	    	return $label;
-	    }else {
-	    	return $label.'['.$k.']';
-	    }
-  	}else
-  	{
-	    if($k == "") 
-	    { 
-	    	return 'FORM['.$this->objparams["form_name"].']['.$id.']';
-	    }else 
-	    {
-	    	return 'FORM['.$this->objparams["form_name"].']['.$id.']['.$k.']';
-	    }
-  	}
+    if($this->objparams["real_field_names"] && $label != "")
+    {
+      if($k == "")
+      {
+        return $label;
+      }else {
+        return $label.'['.$k.']';
+      }
+    }else
+    {
+      if($k == "")
+      {
+        return 'FORM['.$this->objparams["form_name"].']['.$id.']';
+      }else
+      {
+        return 'FORM['.$this->objparams["form_name"].']['.$id.']['.$k.']';
+      }
+    }
   }
 
   function getFieldValue($id = "", $k = "", $label = "")
   {
     $label = $this->prepareLabel($label);
     $k = $this->prepareLabel($k);
-  	if($this->objparams["real_field_names"] && $label != "") 
-  	{
-  		if($k == "" && isset($_REQUEST[$label])) 
-  		{
-		  	return $_REQUEST[$label];
-	  	}elseif(isset($_REQUEST[$label][$k])) 
-	  	{
-	  		return $_REQUEST[$label][$k];
-	  	}
-  	}else
-  	{
-	  	if($k == "" && isset($_REQUEST["FORM"][$this->objparams["form_name"]][$id])) 
-	  	{
-		  	return $_REQUEST["FORM"][$this->objparams["form_name"]][$id];
-	  	}elseif(isset($_REQUEST["FORM"][$this->objparams["form_name"]][$id][$k])) 
-	  	{
-	  		return $_REQUEST["FORM"][$this->objparams["form_name"]][$id][$k];
-	  	}
-  	}
-	return "";
+    if($this->objparams["real_field_names"] && $label != "")
+    {
+      if($k == "" && isset($_REQUEST[$label]))
+      {
+        return $_REQUEST[$label];
+      }elseif(isset($_REQUEST[$label][$k]))
+      {
+        return $_REQUEST[$label][$k];
+      }
+    }else
+    {
+      if($k == "" && isset($_REQUEST["FORM"][$this->objparams["form_name"]][$id]))
+      {
+        return $_REQUEST["FORM"][$this->objparams["form_name"]][$id];
+      }elseif(isset($_REQUEST["FORM"][$this->objparams["form_name"]][$id][$k]))
+      {
+        return $_REQUEST["FORM"][$this->objparams["form_name"]][$id][$k];
+      }
+    }
+  return "";
   }
 
   function setFieldValue($id = "", $value = "", $k = "", $label = "")
   {
     $label = $this->prepareLabel($label);
     $k = $this->prepareLabel($k);
-  	if($this->objparams["real_field_names"] && $label != "") {
-    	if($k == "") {
-  	  	$_REQUEST[$label] = $value;
-    	}else {
-    		$_REQUEST[$label][$k] = $value;
-    	}
-  		return;
-  	}else
-  	{
-    	if($k == "") {
-  	  	$_REQUEST["FORM"][$this->objparams["form_name"]][$id] = $value;
-    	}else {
-    		$_REQUEST["FORM"][$this->objparams["form_name"]][$id][$k] = $value;
-    	}
-  	}
+    if($this->objparams["real_field_names"] && $label != "") {
+      if($k == "") {
+        $_REQUEST[$label] = $value;
+      }else {
+        $_REQUEST[$label][$k] = $value;
+      }
+      return;
+    }else
+    {
+      if($k == "") {
+        $_REQUEST["FORM"][$this->objparams["form_name"]][$id] = $value;
+      }else {
+        $_REQUEST["FORM"][$this->objparams["form_name"]][$id][$k] = $value;
+      }
+    }
   }
 
   function prepareLabel($label)
@@ -626,7 +626,7 @@ class rex_xform
 
     if (!class_exists('rex_xform_abstract'))
     require_once($REX['INCLUDE_PATH'].'/addons/xform/classes/basic/class.xform.value.abstract.inc.php');
-     
+
     foreach($REX['ADDON']['xform']['classpaths']['value'] as $pos => $value_path)
     {
       if ($pos==1) $html .= '<li class="value extras"><strong class="toggler opened">Value Extras</strong><ul class="xform type value extras">';
@@ -692,14 +692,14 @@ class rex_xform
       }
     }
     if ($pos>0) $html .= '</ul></li>';
-     
+
     $html .= '</ul>
   </li>
 
   <li class="type action"><strong class="toggler">Action</strong>
   <ul class="xform type action">
   ';
-     
+
     if (!class_exists('rex_xform_action_abstract'))
     require_once($REX['INCLUDE_PATH'].'/addons/xform/classes/basic/class.xform.action.abstract.inc.php');
 
@@ -731,7 +731,7 @@ class rex_xform
       }
     }
     if ($pos>0) $html .= '</ul></li>';
-     
+
     $html .= '</ul>
   </li>
 </ul>';

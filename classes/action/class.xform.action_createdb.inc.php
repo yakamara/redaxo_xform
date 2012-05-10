@@ -53,7 +53,7 @@ class rex_xform_action_createdb extends rex_xform_action_abstract
         $sql->setQuery('ALTER TABLE `'.$table.'` ADD `'.$key.'` TEXT NOT NULL;');
       }
     }
-    
+
     return;
 
   }

@@ -18,18 +18,18 @@ class rex_xform_validate_abstract
   var $elements;
   var $obj_array;
   var $Objects; // die verschiedenen Value Objekte
-  
+
   function loadParams(&$params, $elements)
   {
     $this->params = &$params;
     $this->elements = $elements;
   }
-  
+
   function setObjects(&$Objects)
   {
     $this->obj = &$Objects;
     $tmp_Objects = explode(",", $this->getElement(2));
-    
+
     foreach($tmp_Objects as $tmp_Object)
     {
       $tmp_FoundObject=false;
@@ -43,14 +43,14 @@ class rex_xform_validate_abstract
         }
       }
     }
-    
+
   }
-  
+
   function enterObject()
   {
     return "";
   }
-  
+
   function getDescription()
   {
     return "";
@@ -60,12 +60,12 @@ class rex_xform_validate_abstract
   {
     return "";
   }
-  
+
   function getDefinitions()
   {
     return array();
   }
-  
+
   function getElement($i)
   {
     if(!isset($this->elements[$i]))
@@ -73,9 +73,9 @@ class rex_xform_validate_abstract
     else
       return $this->elements[$i];
   }
-  
+
   function postValueAction()
   {
   }
-  
+
 }
