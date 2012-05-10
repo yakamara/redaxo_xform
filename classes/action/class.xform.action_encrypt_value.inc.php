@@ -3,39 +3,39 @@
 class rex_xform_action_encrypt_value extends rex_xform_action_abstract
 {
 
-	function execute()
-	{
-		
-		$f = $this->getElement(3); // the function
-		if(!function_exists($f)){ $f = "md5"; } // default func = md5
+  function execute()
+  {
 
-		// Labels to get
-		$l = explode(",",$this->getElement(2));
-		
-		// Label to save in
-		$ls = @$this->getElement(4);
-		if($ls == "")
-			$ls = $l[0];
-		if($ls == "")
-			return FALSE;
-	
-		// $this->params["value_pool"]["sql"] = Array for database
-		$k = '';
-		foreach($this->params["value_pool"]["sql"] as $key => $value)
-		{
-			if(in_array($key,$l)){ $k .= $value; }
-		}
+    $f = $this->getElement(3); // the function
+    if(!function_exists($f)){ $f = "md5"; } // default func = md5
 
-		if($k != ''){ $this->params["value_pool"]["sql"][$ls] = $f($k); $this->params["value_pool"]["email"][$ls] = $f($k); }
+    // Labels to get
+    $l = explode(",",$this->getElement(2));
 
-		return;
+    // Label to save in
+    $ls = @$this->getElement(4);
+    if($ls == "")
+      $ls = $l[0];
+    if($ls == "")
+      return FALSE;
 
-	}
+    // $this->params["value_pool"]["sql"] = Array for database
+    $k = '';
+    foreach($this->params["value_pool"]["sql"] as $key => $value)
+    {
+      if(in_array($key,$l)){ $k .= $value; }
+    }
 
-	function getDescription()
-	{
-		return "action|encrypt|label[,label2,label3]|md5|[save_in_this_label]";
-	}
+    if($k != ''){ $this->params["value_pool"]["sql"][$ls] = $f($k); $this->params["value_pool"]["email"][$ls] = $f($k); }
+
+    return;
+
+  }
+
+  function getDescription()
+  {
+    return "action|encrypt|label[,label2,label3]|md5|[save_in_this_label]";
+  }
 
 }
 

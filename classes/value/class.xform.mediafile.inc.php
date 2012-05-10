@@ -21,7 +21,7 @@ class rex_xform_mediafile extends rex_xform_abstract
       $minsize = (int) ($sizes[0]*1024); // -> bytes
       $maxsize = (int) ($sizes[1]*1024); // -> bytes
     }
-    
+
     // Größencheck
     if (	$this->params["send"]
     && isset($_FILES["FORM"]["size"][$this->params["form_name"]]["el_".$this->getId()])
@@ -74,14 +74,14 @@ class rex_xform_mediafile extends rex_xform_abstract
       $this->params["value_pool"]["email"][$this->getElement(1)] = stripslashes($this->getValue());
       if ($this->getElement(7) != "no_db") $this->params["value_pool"]["sql"][$this->getElement(1)] = $this->getValue();
     }
-    
+
     ## check for required file
     if($this->params["send"] && $this->getElement(5) == 1 && $this->getValue() == '')
       $error = true;
 
     $tmp = "";
     $check_delete = "";
-    
+
     if ($this->getValue() != "")
     {
       $this->setElement(2, $this->getElement(2).'<br />Dateiname: <a href="files/'.$this->getValue().'">'.$this->getValue().'</a><br />');
@@ -91,12 +91,12 @@ class rex_xform_mediafile extends rex_xform_abstract
         $this->setElement(2,$this->getElement(2).'<br /><img src="?rex_img_type=profileimage&amp;rex_img_file='.$this->getValue().'" />');
       }
       $check_delete = '
-   			<span class="formmcheckbox" style="width:300px;clear:none;">
-	   			<input id="'.$this->getFieldId("delete").'" type="checkbox" name="FORM['.$this->params["form_name"].'][el_'.$this->getId().'_delete]" value="1" />
-	   			<label for="'.$this->getFieldId("delete").'">Datei löschen</label>
-   			</span>
-   			';
-   			// $this->getElement(2) = "";
+        <span class="formmcheckbox" style="width:300px;clear:none;">
+          <input id="'.$this->getFieldId("delete").'" type="checkbox" name="FORM['.$this->params["form_name"].'][el_'.$this->getId().'_delete]" value="1" />
+          <label for="'.$this->getFieldId("delete").'">Datei löschen</label>
+        </span>
+        ';
+        // $this->getElement(2) = "";
     }
 
     ## setting up error Message
@@ -112,12 +112,12 @@ class rex_xform_mediafile extends rex_xform_abstract
     }
 
     $out = '
-			<input type="hidden" name="FORM['.$this->params["form_name"].'][el_'.$this->getId().'_filename]" value="'.$this->getValue().'" />
-			<p class="formfile" id="'.$this->getHTMLId().'">
-				<label class="text ' . $wc . '" for="'.$this->getFieldId().'" >' . $this->getElement(2) .'</label>
-				'.$check_delete.'
-				<input class="uploadbox clickmedia '.$wc.'" id="'.$this->getFieldId().'" name="'.$this->getFieldName().'" type="file" />
-			</p>';
+      <input type="hidden" name="FORM['.$this->params["form_name"].'][el_'.$this->getId().'_filename]" value="'.$this->getValue().'" />
+      <p class="formfile" id="'.$this->getHTMLId().'">
+        <label class="text ' . $wc . '" for="'.$this->getFieldId().'" >' . $this->getElement(2) .'</label>
+        '.$check_delete.'
+        <input class="uploadbox clickmedia '.$wc.'" id="'.$this->getFieldId().'" name="'.$this->getFieldName().'" type="file" />
+      </p>';
 
     $this->params["form_output"][$this->getId()] = $out;
 
@@ -133,9 +133,9 @@ class rex_xform_mediafile extends rex_xform_abstract
   {
 
     return array(
-						'type' => 'value',
-						'name' => 'mediafile',
-						'values' => array(
+            'type' => 'value',
+            'name' => 'mediafile',
+            'values' => array(
     array( 'type' => 'label',   'label' => 'Label' ),
     array( 'type' => 'text',    'label' => 'Bezeichnung'),
     array( 'type' => 'text',    'label' => 'Maximale Größe in Kb oder Range 100,500'),
@@ -145,9 +145,9 @@ class rex_xform_mediafile extends rex_xform_abstract
     array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 0),
     array( 'type' => 'text',    'label' => 'Mediakategorie ID'),
     ),
-						'description' => 'Mediafeld, welches Dateien aus dem Medienpool holt',
-						'dbtype' => 'text'
-						);
+            'description' => 'Mediafeld, welches Dateien aus dem Medienpool holt',
+            'dbtype' => 'text'
+            );
   }
 
   function saveMedia($FILE,$filefolder,$extensions_array,$rex_file_category){

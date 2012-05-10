@@ -35,88 +35,88 @@ class rex_xform_list extends rex_list {
         )
       );
     }
-    
+
     return new $class($query, $rowsPerPage, $listName, $debug);
   }
 
   function getPagination()
   {
     global $I18N;
-    
+
     $s = $this->getPlainView();
     // $s .= $this->getClassicView();
-    
+
     return $s;
   }
 
   // ------------------------------------------------------- VIEWS
-  
+
   function getClassicView()
   {
     global $I18N;
-    
+
     $start = $this->getStartRow();
     $rows = $this->getRows();
     $rowsPerPage = $this->getRowsPerPage();
     $pages = ceil($rows / $rowsPerPage);
-    
+
     $s .= '<ul class="rex-navi-paginate">'. "\n";
     $s .= '<li class="rex-navi-paginate-prev"><a href="'. $this->getUrl(array('start' => $start - $rowsPerPage)) .'" title="'. $I18N->msg('list_previous') .'"><span>'. $I18N->msg('list_previous') .'</span></a></li>';
-    
+
     if($pages > 1)
     {
       for($i = 1; $i <= $pages; $i++)
       {
         $first = ($i - 1) * $rowsPerPage;
         $last = $i * $rowsPerPage;
-        
+
         if($last > $rows) {
           $last = $rows;
         }
-        
+
         $pageLink = $i;
         if($start != $first) {
           $pageLink = '<a href="'. $this->getUrl(array('start' => $first)) .'"><span>'. $pageLink .'</span></a>';
         }else {
           $pageLink = '<a class="rex-active" href="'. $this->getUrl(array('start' => $first)) .'"><span>'. $pageLink .'</span></a>';
         }
-        
+
         $s .= '<li class="rex-navi-paginate-page">'. $pageLink .'</li>';
       }
     }
     $s .= '<li class="rex-navi-paginate-next"><a href="'. $this->getUrl(array('start' => $start + $rowsPerPage)) .'" title="'. $I18N->msg('list_next') .'"><span>'. $I18N->msg('list_next') .'</span></a></li>';
     $s .= '<li class="rex-navi-paginate-message"><span>'. $I18N->msg('list_rows_found', $this->getRows()) .'</span></li>';
     $s .= '</ul>'. "\n";
-    
+
     return '<div class="rex-navi-paginate rex-toolbar"><div class="rex-toolbar-content">'.$s.'<div class="rex-clearer"></div></div></div>';
   }
-  
+
   function getPlainView()
   {
     global $I18N;
-    
+
     $current = $this->getStartRow();
 
     if($current > $this->getRows() || $current < 0) $current = 0;
-    
+
     $last = (intval($this->getRows()/$this->getRowsPerPage())*$this->getRowsPerPage())-$this->getRowsPerPage();
     $next = $current+$this->getRowsPerPage();
     if($next >= $this->getRows()) $next = "";
     $prev = $current-$this->getRowsPerPage();
     if($prev < 0) $prev = "";
-    
+
     $page_current = intval($current/$this->getRowsPerPage());
     $page_all = intval(($this->getRows()-1)/$this->getRowsPerPage());
     $entries = $current+$this->getRowsPerPage();
     if($entries > $this->getRows()) $entries = ($page_current*$this->getRowsPerPage())+$this->getRows()-($page_current*$this->getRowsPerPage());
-    
+
     $return = '';
     if($prev !== "") {
       $return .= '<li class="rex-navi-paginate-prev"><a class="rex-active" href="'.$this->getUrl(array("start"=>$prev)).'"><span>'. $I18N->msg('list_previous') .'</span></a></li>';
     } else {
       $return .= '<li class="rex-navi-paginate-prev"><a href="javascript:void(0);"><span>'. $I18N->msg('list_previous') .'</span></a></li>';
     }
-    
+
     $show_pages = array();
     $show_pages[0] = 0;
     $show_pages[1] = 1;
@@ -138,7 +138,7 @@ class rex_xform_list extends rex_list {
       $show_pages[$page_current-1] = $page_current-1;
       $show_pages[$page_current] = $page_current;
       $show_pages[$page_current+1] = $page_current+1;
-      
+
     }
 
     $dot = TRUE;
@@ -158,26 +158,26 @@ class rex_xform_list extends rex_list {
         $dot = FALSE;
       }
     }
-            
+
     if($next !== "") {
       $return .= '<li class="rex-navi-paginate-next"><a class="rex-active" href="'.$this->getUrl(array("start"=>$next)).'"><span>'.$I18N->msg('list_next').'</span></a></li>';
     }else {
       $return .= '<li class="rex-navi-paginate-next"><a href="javascript:void(0);"><span>'. $I18N->msg('list_next') .'</span></a></li>';
     }
-    
+
     $return .= '<li class="rex-navi-paginate-message"><span>'.$current.' bis '.$entries.' von '.$this->getRows().' Einträge</span></li>';
 
     $return = '<ul class="rex-navi-paginate">'. $return .'</ul>';
     $return = '<div class="rex-clearer"></div><div class="rex-navi-paginate rex-toolbar"><div class="rex-toolbar-content">'.$return.'<div class="rex-clearer"></div></div></div>';
-    
+
     return $return;
-  
+
   }
 
   /*
   on edit page, only back and forward.
   */
-    
+
   function getSingleView($params = array())
   {
 
@@ -187,16 +187,16 @@ class rex_xform_list extends rex_list {
     $current = 0;
 
     if($current > $this->getRows() || $current < 0) $current = 0;
-    
+
     $last = (intval($this->getRows()/$this->getRowsPerPage())*$this->getRowsPerPage())-$this->getRowsPerPage();
     $next = $current+$this->getRowsPerPage();
     if($next >= $this->getRows()) $next = "";
     $prev = $current-$this->getRowsPerPage();
     if($prev < 0) $prev = "";
-    
+
     $page_current = intval($current/$this->getRowsPerPage());
     $page_all = intval(($this->getRows()-1)/$this->getRowsPerPage());
-    
+
     $show_pages = array(0=>0,1=>1,2=>2,3=>3,4=>4,5=>5,6=>6);
     if($page_all > 6)
     {
@@ -215,14 +215,14 @@ class rex_xform_list extends rex_list {
       $show_pages[$page_current-1] = $page_current-1;
       $show_pages[$page_current] = $page_current;
       $show_pages[$page_current+1] = $page_current+1;
-      
+
       $show_pages[$page_all-1] = $page_all-1;
       $show_pages[$page_all] = $page_all;
     }
-    
+
     $return .= '<div class="header">';
     $return .= '<ul class="navi-header"><li class="first"><a class="back" href="'.$this->getUrl(array_merge($params,array("list_style"=>"line","start"=>0))).'">Zurück zur Übersicht</a></li></ul>';
-    
+
     $return .= '<ul class="navi-pagination">';
     if($page_all>1)
     {
@@ -238,13 +238,13 @@ class rex_xform_list extends rex_list {
     }
     $return .= '</ul>';
     $return .= '</div>';
-    
+
     return $return;
-  
+
   }
-  
+
   // ---------------------------------------------------
-  
+
   function setColumnLabel($columnName, $label)
     {
       $this->columnLabels[$columnName] = rex_translate($label);

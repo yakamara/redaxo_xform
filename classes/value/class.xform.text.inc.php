@@ -3,60 +3,60 @@
 class rex_xform_text extends rex_xform_abstract
 {
 
-	function enterObject()
-	{
+  function enterObject()
+  {
 
-		$this->setValue((string) $this->getValue());
+    $this->setValue((string) $this->getValue());
 
-		if ($this->getValue() == "" && !$this->params["send"]) {
-			$this->setValue($this->getElement(3));
-		}
+    if ($this->getValue() == "" && !$this->params["send"]) {
+      $this->setValue($this->getElement(3));
+    }
 
-		$classes = "";
-		$classes .= " ".$this->getElement(5);
-		
-		$wc = "";
-		if (isset($this->params["warning"][$this->getId()])) {
-			$wc = " ".$this->params["warning"][$this->getId()];
-		}
+    $classes = "";
+    $classes .= " ".$this->getElement(5);
 
-		$this->params["form_output"][$this->getId()] = '
-			<p class="formtext formlabel-'.$this->getName().'" id="'.$this->getHTMLId().'">
-				<label class="text' . $wc . '" for="' . $this->getFieldId() . '" >' . rex_translate($this->getElement(2)) . '</label>
-				<input type="text" class="text'.$classes.$wc.'" name="'.$this->getFieldName().'" id="'.$this->getFieldId().'" value="'.htmlspecialchars(stripslashes($this->getValue())).'" />
-			</p>';
+    $wc = "";
+    if (isset($this->params["warning"][$this->getId()])) {
+      $wc = " ".$this->params["warning"][$this->getId()];
+    }
 
-		$this->params["value_pool"]["email"][$this->getElement(1)] = stripslashes($this->getValue());
-		if ($this->getElement(4) != "no_db")
-		{
-			$this->params["value_pool"]["sql"][$this->getElement(1)] = $this->getValue();
-		}
+    $this->params["form_output"][$this->getId()] = '
+      <p class="formtext formlabel-'.$this->getName().'" id="'.$this->getHTMLId().'">
+        <label class="text' . $wc . '" for="' . $this->getFieldId() . '" >' . rex_translate($this->getElement(2)) . '</label>
+        <input type="text" class="text'.$classes.$wc.'" name="'.$this->getFieldName().'" id="'.$this->getFieldId().'" value="'.htmlspecialchars(stripslashes($this->getValue())).'" />
+      </p>';
 
-	}
+    $this->params["value_pool"]["email"][$this->getElement(1)] = stripslashes($this->getValue());
+    if ($this->getElement(4) != "no_db")
+    {
+      $this->params["value_pool"]["sql"][$this->getElement(1)] = $this->getValue();
+    }
 
-	function getDescription()
-	{
-		return "text -> Beispiel: text|label|Bezeichnung|defaultwert|[no_db]|cssclassname";
-	}
+  }
 
-	function getDefinitions()
-	{
-		return array(
-						'type' => 'value',
-						'name' => 'text',
-						'values' => array(
-									array( 'type' => 'name',   'label' => 'Feld' ),
-									array( 'type' => 'text',    'label' => 'Bezeichnung'),
-									array( 'type' => 'text',    'label' => 'Defaultwert'),
-									array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 0),
-									array( 'type' => 'text',    'label' => 'cssclassname'),
-								),
-						'description' => 'Ein einfaches Textfeld als Eingabe',
-						'dbtype' => 'text',
-						'famous' => TRUE
-						);
+  function getDescription()
+  {
+    return "text -> Beispiel: text|label|Bezeichnung|defaultwert|[no_db]|cssclassname";
+  }
 
-	}
+  function getDefinitions()
+  {
+    return array(
+            'type' => 'value',
+            'name' => 'text',
+            'values' => array(
+                  array( 'type' => 'name',   'label' => 'Feld' ),
+                  array( 'type' => 'text',    'label' => 'Bezeichnung'),
+                  array( 'type' => 'text',    'label' => 'Defaultwert'),
+                  array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 0),
+                  array( 'type' => 'text',    'label' => 'cssclassname'),
+                ),
+            'description' => 'Ein einfaches Textfeld als Eingabe',
+            'dbtype' => 'text',
+            'famous' => TRUE
+            );
+
+  }
 }
 
 ?>

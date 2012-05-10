@@ -124,10 +124,10 @@ if($show_list && $REX['USER']->isAdmin()){
   }
 
   echo "<table cellpadding=5 class=rex-table><tr><td>
-		<a href=index.php?page=".$page."&subpage=".$subpage."&func=add><b>+ ".$I18N->msg("xform_manager_table_add")."</b></a>
-		<!-- |  <a href=index.php?page=".$page."&subpage=".$subpage."&func=table_import><b>".$I18N->msg("xform_manager_table_import")."</b></a> -->
-		
-		</td></tr></table><br />";
+    <a href=index.php?page=".$page."&subpage=".$subpage."&func=add><b>+ ".$I18N->msg("xform_manager_table_add")."</b></a>
+    <!-- |  <a href=index.php?page=".$page."&subpage=".$subpage."&func=table_import><b>".$I18N->msg("xform_manager_table_import")."</b></a> -->
+
+    </td></tr></table><br />";
 
   $sql = "select * from $table order by prio,table_name";
 
@@ -144,9 +144,9 @@ if($show_list && $REX['USER']->isAdmin()){
   // $list->removeColumn("prio");
   $list->removeColumn("description");
 
-  function rex_xform_tableedit_translate($params) 
+  function rex_xform_tableedit_translate($params)
   {
- 	return rex_translate($params["subject"]);
+  return rex_translate($params["subject"]);
   }
 
   // name - rex_xform_manager::translate($msg)

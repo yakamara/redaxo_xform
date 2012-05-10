@@ -14,13 +14,13 @@ class rex_xform_action_db extends rex_xform_action_abstract
     {
       $main_table = $this->params["main_table"];
     }
-     
+
     if ($main_table == "")
     {
-    		$this->params["form_show"] = TRUE;
-    		$this->params["hasWarnings"] = TRUE;
-    		$this->params["warning_messages"][] = $this->params["Error-Code-InsertQueryError"];
-    		return FALSE;
+        $this->params["form_show"] = TRUE;
+        $this->params["hasWarnings"] = TRUE;
+        $this->params["warning_messages"][] = $this->params["Error-Code-InsertQueryError"];
+        return FALSE;
     }
 
     $sql->setTable($main_table);
@@ -39,7 +39,7 @@ class rex_xform_action_db extends rex_xform_action_abstract
       $sql->setValue($key, $value);
       if ($where != "") $where = str_replace('###'.$key.'###',addslashes($value),$where);
     }
-     
+
     if ($where != "")
     {
       $sql->setWhere($where);
@@ -50,7 +50,7 @@ class rex_xform_action_db extends rex_xform_action_abstract
       $saved = $sql->insert();
       $flag = "insert";
       $id = $sql->getLastId();
-       
+
       $this->params["main_id"] = $id;
       $this->params["value_pool"]["email"]["ID"] = $id;
       // $this->params["value_pool"]["sql"]["ID"] = $id;

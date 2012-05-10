@@ -49,7 +49,7 @@ class rex_xform_action_abstract
   {
     return array();
   }
-  
+
   function getElement($i)
   {
     if(!isset($this->elements[$i]))
@@ -57,7 +57,7 @@ class rex_xform_action_abstract
     else
       return $this->elements[$i];
   }
-  
+
   function getParam($param)
   {
     return $this->params[$param];

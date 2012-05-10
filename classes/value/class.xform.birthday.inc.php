@@ -8,11 +8,11 @@ class rex_xform_birthday extends rex_xform_abstract
 
   function enterObject(&$email_elements,&$sql_elements,&$warning,&$form_output,$send = 0)
   {
-    
+
     $day = 0;
     $month = 0;
     $year = 0;
-    
+
     if (@strlen($this->value) == 10)
     {
       $day = (int) substr($this->value,8,2);
@@ -24,7 +24,7 @@ class rex_xform_birthday extends rex_xform_abstract
       if (isset($_REQUEST["FORM"][$this->params["form_name"]]['el_'.$this->id]["month"])) $month = (int) $_REQUEST["FORM"][$this->params["form_name"]]['el_'.$this->id]["month"];
       if (isset($_REQUEST["FORM"][$this->params["form_name"]]['el_'.$this->id]["year"])) $year = (int) $_REQUEST["FORM"][$this->params["form_name"]]['el_'.$this->id]["year"];
     }
-    
+
     $formname = 'FORM['.$this->params["form_name"].'][el_'.$this->id.']';
 
     $isodatum = sprintf ("%04d-%02d-%02d", $year, $month, $day);
@@ -34,25 +34,25 @@ class rex_xform_birthday extends rex_xform_abstract
     $wc = '';
     if (isset($this->elements[4]) && $this->elements[4]==1 && !checkdate($month,$day,$year) && $send == 1)
     {
-  
-      
+
+
       $this->params["warning"][$this->getId()] = $this->elements[5];
       $this->params["warning_messages"][$this->getId()] = $this->elements[5];
       $wc = $this->params["error_class"];
-      
+
     }else
     {
       $email_elements[$this->elements[1]] = "$day.$month.$year";
       $sql_elements[$this->elements[1]] = $datum;
     }
-    
 
-    
+
+
     $out = "";
     $out .= '
     <p class="formbirthday">
           <label class="select" for="el_'.$this->id.'" >'.$this->elements[2].'</label>';
-          
+
     $dsel = new rex_select;
     $dsel->setName($formname.'[day]');
 //    $dsel->setStyle("width:50px;".$twarning);

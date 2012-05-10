@@ -6,7 +6,7 @@ class rex_xform_formsign extends rex_xform_abstract
  {
   global $REX;
   require_once (realpath(dirname (__FILE__).'/../../ext/formsign/class.formsign.php'));
-  
+
   // Einstellungen
   $debug=(int)$this->params["debug"];
   if($this->getElement(3)=='')
@@ -27,20 +27,20 @@ class rex_xform_formsign extends rex_xform_abstract
   $db_name='db.sqlite3';
   $DB_Table="tab";
   $fso->use_pdo("sqlite", $db_name, $DB_Table);
-  
+
   // Festlegen den Namen fuer checkfield (dieser wird mit md5 maskiert)
   $fso->set_check_name('this is checkfield');
-  
+
   // Erstellung einer Signatur fuer das Formular; Entsprechend fuer XHTML oder HTML
   if((int)$this->getElement(4)==1)
   $sign=$fso->create_sign(0);
   else  $sign=$fso->create_sign(); // for XHTML tags
-  
+
   if ( $this->params["send"] == 1)
   {
    // Prueffung der gueltigkeit des Siegels
    $testsign=$fso->check_sign($_POST );
-   
+
    if($testsign==1)
    {
     // Alles in Ordnung, formular darf Versendet werden.
@@ -92,14 +92,14 @@ class rex_xform_formsign extends rex_xform_abstract
     $wc = $this->params["error_class"];
    }
   }
-  
+
   if ($wc != '')
   $wc = ' '.$wc;
-  
+
   $this->params["form_output"][$this->getId()] =$sign;
   // Ende
  }
- 
+
  function getDescription()
  {
   return "formsign -> Beispiel: formsign|min_limit in Sekunden|max_limit in Sekunden|salz: Zeichenkette aus Buchstaben, Ziffern und Sonderzeichen|[HTML Tags: 1]";

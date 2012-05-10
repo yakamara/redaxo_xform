@@ -8,17 +8,17 @@ $g = rex_sql::factory();
 $g->setQuery($sql);
 
 foreach($g->getArray() as $d) {
-	if($data == "") {
-		foreach($d as $a => $b) {
-			$fields[] = '"'.$a.'"';
-		}
-		$data = implode(';',$fields);
-	}
+  if($data == "") {
+    foreach($d as $a => $b) {
+      $fields[] = '"'.$a.'"';
+    }
+    $data = implode(';',$fields);
+  }
 
-	foreach($d as $a => $b) {
-		$d[$a] = '"'.str_replace('"','""',$b).'"';
-	}
-	$data .= "\n".implode(';',$d);
+  foreach($d as $a => $b) {
+    $d[$a] = '"'.str_replace('"','""',$b).'"';
+  }
+  $data .= "\n".implode(';',$d);
 }
 
 // ----- download - save as
@@ -34,8 +34,8 @@ header("Last-Modified: " . $last_modified); // always modified
 header("Cache-Control: no-store, no-cache, must-revalidate"); // HTTP/1.1
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
-		header('Pragma: private');
-		header('Cache-control: private, must-revalidate');
+    header('Pragma: private');
+    header('Cache-control: private, must-revalidate');
 header('Content-Type: '.$filetype.'; name="'.$filename.'"');
 header('Content-Disposition: attachment; filename="'.$filename.'"');
 header('Content-Description: "'.$filename.'"');

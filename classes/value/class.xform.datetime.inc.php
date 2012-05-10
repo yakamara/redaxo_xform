@@ -10,7 +10,7 @@ class rex_xform_datetime extends rex_xform_abstract
     $year = date("Y");
     $hour = date("H");
     $min = date("i");
-    
+
     if (!is_array($this->getValue()) && strlen($this->getValue()) == 19) {
       $min   = (int) substr($this->getValue(),14,2);
       $hour = (int) substr($this->getValue(),11,2);
@@ -52,7 +52,7 @@ class rex_xform_datetime extends rex_xform_abstract
     $out .= '
     <p class="formdate '.$this->getHTMLClass().'" id="'.$this->getHTMLId().'">
           <label class="select" for="'.$this->getFieldId().'" >'.$this->getElement(2).'</label>';
-        
+
     $dsel = new rex_select;
     $dsel->setName($formname.'[day]');
     $dsel->setStyle("width:55px;".$twarning);
