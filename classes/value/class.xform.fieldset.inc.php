@@ -51,7 +51,7 @@ class rex_xform_fieldset extends rex_xform_abstract
       case("closeandopen");
       case("onlyopen"):
         $this->params["fieldsets_opened"]++;
-        $output .= '<fieldset'.$class.' id="'.$this->getHTMLId().'">'.$legend;
+        $output .= '<fieldset'.$classes.' id="'.$this->getHTMLId().'">'.$legend;
         break;
     }
 
