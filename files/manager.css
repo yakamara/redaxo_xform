@@ -36,3 +36,12 @@ div#rex-title h1 span {
   color:#CBCBCB;
   font-size:0.5em;
   }
+#searchblock span.search-checkbox {
+  background:silver;
+  color:white;
+  padding:3px;
+  border-radius:5px;
+  margin:1px;
+  white-space:nowrap;
+  float:left;
+  }
