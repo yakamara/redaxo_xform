@@ -608,19 +608,21 @@ if($show_editpage) {
     echo '<li><b>'.$I18N->msg("xform_table_name").'</b>: '.$table["table_name"].'</li>';
     if($table["description"] != "") echo '<li><b>'.$I18N->msg("xform_description").'</b>:'.nl2br($table["description"]).'</li>';
     if(isset($rex_xform_manager_opener["info"])) { echo '<li><b>'.$I18N->msg("openerinfo").'</b>: '.htmlspecialchars($rex_xform_manager_opener["info"]).'</li>'; }
-    echo '</ul></div>';
+    echo '</ul>
+    </div><!-- /#infoblock -->
+    </div><!-- /.rex-addon-output -->';
 
     echo $list->get();
 
-    echo '</div>
-
+    echo '
     <script type="text/javascript">
       jQuery("#infotoggler").click(function(){jQuery("#infoblock").slideToggle("fast");});
       jQuery("#searchtoggler").click(function(){jQuery("#searchblock").slideToggle("fast");});
       jQuery("#xform_help_empty_toggler").click(function(){jQuery("#xform_help_empty").slideToggle("fast");});
       jQuery("#xform_search_reset").click(function(){window.location.href = "index.php?page=xform&subpage=manager&tripage=data_edit&table_name='.$table["table_name"].'&rex_xform_search=1";});
       jQuery("a.#truncate-table").click(function(){if(confirm("'.$I18N->msg("truncate_table_confirm").'")){return true;} else {return false;}});
-    </script>';
+    </script>
+    ';
 
   }
 
