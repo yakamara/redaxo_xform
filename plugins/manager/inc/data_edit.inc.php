@@ -58,6 +58,8 @@ if(!isset($table)) {
 
 rex_title($I18N->msg("table").": ".rex_translate($table["name"]).' <span class="table-name">['.$table["table_name"].']</span>', "");
 
+echo rex_register_extension_point('XFORM_MANAGER_REX_INFO','');
+
 $table["fields"] = $this->getTableFields($table["table_name"]);
 
 
