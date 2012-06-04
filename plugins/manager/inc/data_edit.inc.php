@@ -494,6 +494,8 @@ if($show_editpage) {
         }
       }
     }
+    
+    $sql = rex_register_extension_point('XFORM_DATA_LIST_SQL',$sql);
 
     // ********************************************* Export
     // export is here because the query has been build here.
