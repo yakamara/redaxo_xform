@@ -70,6 +70,7 @@ searchtext = Suchbegriff
 searchfields = Tabellenfelder über die gesucht wird
 add = hinzufügen
 edit = editieren
+save = speichern
 delete = löschen
 search = suchen
 export = Datenexport

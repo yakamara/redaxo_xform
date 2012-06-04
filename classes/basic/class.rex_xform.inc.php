@@ -174,47 +174,26 @@ class rex_xform
       $this->objparams["send"] = 1;
     }
 
-    // *************************************************** VALUE OBJEKTE
-
-    $this->setValueField("submit",array("rex_xform_submit", $this->objparams["submit_btn_label"],"no_db"));
 
     // *************************************************** VALUE OBJEKTE
     $rows = count($this->objparams["form_elements"]);
     for ($i = 0; $i < $rows; $i++)
     {
       $element = $this->objparams["form_elements"][$i];
-
-      if($element[0] == "validate")
-      {
-
-      }elseif($element[0] == "action")
-      {
-
-      }else
-      {
-        foreach($REX['ADDON']['xform']['classpaths']['value'] as $value_path)
-        {
-          $classname = "rex_xform_".trim($element[0]);
-          if (@include_once ($value_path.'class.xform.'.trim($element[0]).'.inc.php'))
-          {
-            $ValueObjects[$i] = new $classname;
-            $ValueObjects[$i]->loadParams($this->objparams,$element);
-            $ValueObjects[$i]->setId($i);
-            $ValueObjects[$i]->init();
-            $ValueObjects[$i]->setValue($this->getFieldValue($i,'',$ValueObjects[$i]->getName()));
-            $ValueObjects[$i]->setObjects($ValueObjects);
-
-            // muss hier gesetzt sein, damit ein value objekt die elemente erweitern kann
-            $rows = count($this->objparams["form_elements"]);
-
-            break;
-
-          }
-        }
-      }
+      $ValueObjects = $this->_setValueElement($ValueObjects, $element, $i);
+      $rows = count($this->objparams["form_elements"]); // if elements have changed -> new rowcount
     }
 
-    // ----- PRE VALUES
+    // *************************************************** VALUE OBJEKTE
+    if ($this->objparams["submit_btn_show"])
+    {
+      $i++;
+      $element = array("submit","rex_xform_submit", $this->objparams["submit_btn_label"],"no_db");
+      $ValueObjects = $this->_setValueElement($ValueObjects, $element, $i);
+    }
+
+
+    // *************************************************** PRE VALUES
     // Felder aus Datenbank auslesen - Sofern Aktualisierung
     $SQLOBJ = rex_sql::factory();
     if ($this->objparams['getdata']) {
@@ -457,6 +436,38 @@ class rex_xform
 
   }
 
+
+
+  private function _setValueElement($ValueObjects, $element, $i)
+  {
+    global $REX;
+    if($element[0] == "validate")
+    {
+
+    }elseif($element[0] == "action")
+    {
+
+    }else
+    {
+      foreach($REX['ADDON']['xform']['classpaths']['value'] as $value_path)
+      {
+        $classname = "rex_xform_".trim($element[0]);
+        if (@include_once ($value_path.'class.xform.'.trim($element[0]).'.inc.php'))
+        {
+          $ValueObjects[$i] = new $classname;
+          $ValueObjects[$i]->loadParams($this->objparams,$element);
+          $ValueObjects[$i]->setId($i);
+          $ValueObjects[$i]->init();
+          $ValueObjects[$i]->setValue($this->getFieldValue($i,'',$ValueObjects[$i]->getName()));
+          $ValueObjects[$i]->setObjects($ValueObjects);
+          break;
+
+        }
+      }
+    }
+
+    return $ValueObjects;
+  }
 
 
 

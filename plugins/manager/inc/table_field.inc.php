@@ -343,6 +343,7 @@ if( ($func == "add" || $func == "edit" )  && isset($types[$type_id][$type_name])
 
   if($func == "edit")
   {
+    $xform->setObjectparams("submit_btn_label",$I18N->msg('save'));
     $xform->setHiddenField("field_id",$field_id);
     $xform->setActionField("manage_db",array('rex_xform_field',"id=$field_id"));
     $xform->setObjectparams("main_id",$field_id);
@@ -351,6 +352,7 @@ if( ($func == "add" || $func == "edit" )  && isset($types[$type_id][$type_name])
 
   }elseif($func == "add")
   {
+    $xform->setObjectparams("submit_btn_label",$I18N->msg('add'));
     $xform->setActionField("manage_db",array('rex_xform_field'));
 
   }

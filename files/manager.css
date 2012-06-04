@@ -36,3 +36,14 @@ div#rex-title h1 span {
   color:#CBCBCB;
   font-size:0.5em;
   }
+
+body#rex-page-xform .xform-manager-searchfield{
+  background:silver;
+  color:white;
+  padding:3px;
+  border-radius:5px;
+  margin:1px;
+  display:inline-block;
+  
+}
+

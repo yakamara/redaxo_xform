@@ -28,20 +28,24 @@ if( ($func == "add" || $func == "edit") && $REX['USER']->isAdmin() )
 
   if($func == "edit")
   {
+    $xform->setObjectparams("submit_btn_label",$I18N->msg('save'));
     $xform->setValueField("showvalue",array("table_name",$I18N->msg("xform_manager_table_name")));
     $xform->setHiddenField("table_id",$table_id);
     $xform->setActionField("db",array($table,"id=$table_id"));
     $xform->setObjectparams("main_id",$table_id);
     $xform->setObjectparams("main_where","id=$table_id");
     $xform->setObjectparams('getdata',true); // Datein vorher auslesen
+    
   }elseif($func == "add")
   {
+    $xform->setObjectparams("submit_btn_label",$I18N->msg('add'));
     $xform->setValueField("text",array("table_name",$I18N->msg("xform_manager_table_name"),$REX['TABLE_PREFIX']));
     $xform->setValidateField("empty",array("table_name",$I18N->msg("xform_manager_table_enter_name")));
     $xform->setValidateField("preg_match",array("table_name","/([a-z\_])*/",$I18N->msg("xform_manager_table_enter_specialchars")));
     $xform->setValidateField("customfunction",array("table_name","rex_xform_manager_checkLabelInTable","",$I18N->msg("xform_manager_table_exists")));
     $xform->setActionField("wrapper_value",array('table_name','###value###')); // Tablename
     $xform->setActionField("db",array($table));
+    
   }
 
   $xform->setValueField("text",array("name",$I18N->msg("xform_manager_name")));
@@ -62,7 +66,8 @@ if( ($func == "add" || $func == "edit") && $REX['USER']->isAdmin() )
 
   if($xform->objparams["form_show"])
   {
-    if($func == "edit"){
+    if($func == "edit")
+    {
       echo '<div class="rex-area"><h3 class="rex-hl2">'.$I18N->msg("xform_manager_edit_table").'</h3><div class="rex-area-content">';
     }else{
       echo '<div class="rex-area"><h3 class="rex-hl2">'.$I18N->msg("xform_manager_add_table").'</h3><div class="rex-area-content">';
@@ -73,7 +78,8 @@ if( ($func == "add" || $func == "edit") && $REX['USER']->isAdmin() )
     $show_list = FALSE;
   }else
   {
-    if($func == "edit"){
+    if($func == "edit")
+    {
       echo rex_info($I18N->msg("xform_manager_table_updated"));
     }elseif($func == "add") {
 
