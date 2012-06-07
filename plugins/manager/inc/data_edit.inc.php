@@ -353,6 +353,7 @@ if($show_editpage) {
     }else {
       if($func == "edit") {
         echo rex_info($I18N->msg("thankyouforupdate"));
+        $xform = rex_register_extension_point('XFORM_DATA_UPDATED', "", array("data_id"=>$data_id, "data"=>$data));
       }elseif($func == "add"){
         echo rex_info($I18N->msg("thankyouforentry"));
       }
