@@ -307,57 +307,65 @@ if($show_editpage) {
 
     $xform->setObjectparams("rex_xform_set",$rex_xform_set);
 
+    if($func == "edit") 
+    {
+      $xform = rex_register_extension_point('XFORM_DATA_UPDATE', $xform, array("table"=>$table, "data_id"=>$data_id, "data"=>$data));
+
+    }elseif($func == "add") 
+    {
+      $xform = rex_register_extension_point('XFORM_DATA_ADD', $xform, array("table"=>$table));
+
+    }
+
     $form = $xform->getForm();
 
-    // Formular ausgeben wenn
-    // - fehler
-    // - edit und nur save
-    // - add und nur save
+    if($xform->objparams["actions_executed"])
+    {
+      if($func == "edit") 
+      {
+        echo rex_info($I18N->msg("thankyouforupdate"));
+        $xform = rex_register_extension_point('XFORM_DATA_UPDATED', $xform, array("table"=>$table, "data_id"=>$data_id, "data"=>$data));
+        
+      }elseif($func == "add")
+      {
+        echo rex_info($I18N->msg("thankyouforentry"));
+        $xform = rex_register_extension_point('XFORM_DATA_ADDED', $xform, array("table"=>$table));
 
-    // formular nicht ausgeben wenn
-    // - wenn edit und schliessen
-    // - add und schliessen
-    // - und nur wenn kein fehler
-
-    if($xform->objparams["form_show"] || ($xform->objparams["form_showformafterupdate"] )) {
-
-      if($xform->objparams["send"]) {
-        if($func == "edit") {
-          if($form == "") {
-            echo rex_info($I18N->msg("thankyouforupdate"));
-            $xform = rex_register_extension_point('XFORM_DATA_UPDATED', $xform, array("table"=>$table));
-          }
-        }elseif($func == "add") {
-          if($form == "") {
-            echo rex_info($I18N->msg("thankyouforentry"));
-            $xform = rex_register_extension_point('XFORM_DATA_ADDED', $xform, array("table"=>$table));
-          }
-        }
       }
+    
+    }
+
+    if($xform->objparams["form_show"] || ($xform->objparams["form_showformafterupdate"] )) 
+    {
 
       echo $back.'<br />';
 
-      if($func == "edit") {
-        echo '<div class="rex-area"><h3 class="rex-hl2">'.$I18N->msg("editdata").'</h3><div class="rex-area-content">';
-      }else {
-        echo '<div class="rex-area"><h3 class="rex-hl2">'.$I18N->msg("adddata").'</h3><div class="rex-area-content">';
+      if($func == "edit") 
+      {
+        echo '
+          <div class="rex-area">
+            <h3 class="rex-hl2">'.$I18N->msg("editdata").'</h3>
+            <div class="rex-area-content">'.$form.'</div>
+          </div>';
+        
+      }else 
+      {
+        echo '
+          <div class="rex-area">
+            <h3 class="rex-hl2">'.$I18N->msg("adddata").'</h3>
+            <div class="rex-area-content">'.$form.'</div>
+          </div>';
+
       }
-      echo $form;
-      echo '</div></div>';
 
       echo rex_register_extension_point('XFORM_DATA_FORM', '', array("form" => $form, "func" => $func, "this" => $this, "table"=>$table));
 
       echo '<br />&nbsp;<br />'.$back;
 
       $show_list = FALSE;
-    }else {
-      if($func == "edit") {
-        echo rex_info($I18N->msg("thankyouforupdate"));
-        $xform = rex_register_extension_point('XFORM_DATA_UPDATED', "", array("data_id"=>$data_id, "data"=>$data));
-      }elseif($func == "add"){
-        echo rex_info($I18N->msg("thankyouforentry"));
-      }
+
     }
+
   }
 
 
