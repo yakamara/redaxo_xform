@@ -47,7 +47,7 @@ $ignores = array('html','validate','action');
   <p id="xform-placeholders">'.PHP_EOL;
 foreach($xform->objparams['form_elements'] as $e)
 {
-  if(!in_array($e[0],$ignores))
+  if(!in_array($e[0],$ignores) && isset($e[1]))
   {
       $placeholders .= '<span>###'.$e[1].'###</span> '.PHP_EOL;
   }
