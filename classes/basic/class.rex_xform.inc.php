@@ -98,9 +98,10 @@ class rex_xform
     $form_elements_tmp = array ();
     $form_elements_tmp = explode("\n", $this->objparams['form_data']);
 
-    /* clear empty line */
+    // CLEAR EMPTY AND COMMENT LINES
     foreach($form_elements_tmp as $form_element) {
-      if(trim($form_element) != "") {
+      $form_element = trim($form_element);
+      if($form_element != "" && $form_element[0] != '#' && $form_element[0] != '/') {
         $this->objparams["form_elements"][] = explode("|", trim($form_element));
       }
     }
