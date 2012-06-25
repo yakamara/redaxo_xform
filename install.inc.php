@@ -7,6 +7,8 @@
  */
 
 $addonname = 'xform';
+$I18N->appendFile($REX['INCLUDE_PATH'].'/addons/xform/lang/');
+
 
 $msg = '';
 
