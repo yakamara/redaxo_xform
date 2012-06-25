@@ -459,7 +459,7 @@ if($show_editpage) {
     if ($max > 0){
       for($i=0;$i<$sql_felder->getRows();$i++)
       {
-        $felder .= $sql_felder->getValue("f1");
+        $felder .= '`'.$sql_felder->getValue("f1").'`';
 
         if ($i<$max-1) $felder .= ",";
         $sql_felder->counter++;
@@ -467,7 +467,7 @@ if($show_editpage) {
       }
 
       // ---------- SQL AUFBAUEN
-      $sql = "select id,".$felder." from ".$table["table_name"]."";
+      $sql = "select `id`,".$felder." from `".$table["table_name"]."`";
 
     }
 
