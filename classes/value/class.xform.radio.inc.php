@@ -14,20 +14,21 @@ class rex_xform_radio extends rex_xform_abstract
     $SEL->setName($this->getFieldName());
 
 
-    $options = explode(";",$this->getElement(3));
+    $options = explode(",",$this->getElement(3));
 
     foreach($options as $option)
     {
       $t = explode("=",$option);
       $v = $t[0];
 
-      if (isset($t[1])) {
-                $k = $t[1];
-            }else {
-                $k = $t[0];
-            }
+      if (isset($t[1])) 
+      {
+        $k = $t[1];
+      }else 
+      {
+        $k = $t[0];
+      }
 
-      $k = $t[1];
       $SEL->addOption($v, $k);
       $sqlnames[$k] = $t[0];
     }
@@ -66,6 +67,6 @@ class rex_xform_radio extends rex_xform_abstract
 
   function getDescription()
   {
-    return "radio -> Beispiel: radio|gender|Geschlecht *|Frau=w;Herr=m|[no_db]|defaultwert";
+    return "radio -> Beispiel: radio|gender|Geschlecht *|Frau=w,Herr=m|[no_db]|defaultwert";
   }
 }

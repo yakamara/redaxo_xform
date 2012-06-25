@@ -8,38 +8,43 @@ class rex_xform_select extends rex_xform_abstract
 
     $multiple = FALSE;
     if($this->getElement(6)==1)
-    $multiple = TRUE;
-
-    $size = (int) $this->getElement(7);
-    if($size < 1)
-      $size = 1;
+    {
+      $multiple = TRUE;
+    }
 
     $SEL = new rex_select();
     $SEL->setId($this->getFieldId());
-    if($multiple) {
-      if($size == 1) {
-        $size = 2;
+
+    $fields = explode(',', $this->getElement(3));
+    foreach($fields as $v) 
+    {
+      $teile = explode('=', $v);
+      $wert = $teile[0];
+      if (isset ($teile[1])) 
+      {
+        $bezeichnung = $teile[1];
+      }else 
+      {
+        $bezeichnung = $teile[0];
       }
+      $SEL->addOption(rex_translate($wert), $bezeichnung);
+    }
+
+    if($multiple) 
+    {
+      $size = (int) $this->getElement(7);
+      if($size < 2)
+        $size = count($fields);
+
       $SEL->setName($this->getFieldName()."[]");
       $SEL->setSize($size);
       $SEL->setMultiple(1);
-    }else {
+    }else 
+    {
       $SEL->setName($this->getFieldName());
       $SEL->setSize(1);
     }
 
-    foreach (explode(',', $this->getElement(3)) as $v) {
-      $teile = explode('=', $v);
-      $wert = $teile[0];
-      if (isset ($teile[1])) {
-        $bezeichnung = $teile[1];
-
-      }else {
-        $bezeichnung = $teile[0];
-
-      }
-      $SEL->addOption(rex_translate($wert), $bezeichnung);
-    }
 
     if (!$this->params["send"] && $this->getValue()=="" && $this->getElement(5) != ""){
       $this->setValue($this->getElement(5));
@@ -75,7 +80,7 @@ class rex_xform_select extends rex_xform_abstract
 
   function getDescription()
   {
-    return "select -> Beispiel: select|gender|Geschlecht *|Frau=w,Herr=m|[no_db]|defaultwert|multiple=1";
+    return "select -> Beispiel: select|gender|Geschlecht *|Frau=w,Herr=m|[no_db]|defaultwert|multiple=1|selectsize";
   }
 
   function getDefinitions()
