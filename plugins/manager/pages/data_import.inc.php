@@ -8,7 +8,7 @@ $show_list = FALSE;
 $rfields = rex_xform_manager_table::getFields($table['table_name']);
 
 $replacefield = rex_request("replacefield","string");
-$divider = rex_request("divider","string");
+$divider = rex_request("divider","string",";");
 $missing_columns = rex_request("missing_columns","int");
 $debug = rex_request("debug","string");
 
@@ -76,6 +76,7 @@ if(rex_request('send',"int",0) == 1)
             $show_importform = TRUE;
             $func = "import";
             break;
+            
           }elseif($missing_columns == 2)
           {
             $error = FALSE;
@@ -89,6 +90,7 @@ if(rex_request('send',"int",0) == 1)
               {
                 $error = TRUE;
                 echo rex_warning('Feld "'.$mcc.'" konnte nicht angelegt werden: '.$upd->getError());
+                
               }else
               {
                 echo rex_info('Feld "'.$mcc.'" wurde angelegt');
@@ -111,16 +113,19 @@ if(rex_request('send',"int",0) == 1)
 
       }else
       {
-        if(!$line_array) {
+        if(!$line_array) 
+        {
           break;
-        }else {
+        
+        }else
+        {
 
           $counter++;
           $i->setTable($table['table_name']);
           $replacevalue = "";
           foreach($line_array as $k => $v)
           {
-            if($fieldarray[$k] != "" && array_key_exists($fieldarray[$k],$rfields))
+            if($fieldarray[$k] != "" && (array_key_exists($fieldarray[$k],$rfields) || $fieldarray[$k] == "id"))
             {
               $i->setValue($fieldarray[$k],mysql_real_escape_string($v));
               if($replacefield == $fieldarray[$k])
