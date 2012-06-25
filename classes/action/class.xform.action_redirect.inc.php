@@ -25,7 +25,7 @@ class rex_xform_action_redirect extends rex_xform_action_abstract
     }
 
     $u = $this->getElement(2);
-    $u1 = (int) $u;
+    $u1 = (string)(int) $u;
 
     if($u == $u1)
     {
