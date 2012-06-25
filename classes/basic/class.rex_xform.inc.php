@@ -20,25 +20,19 @@ class rex_xform
     require_once($REX['INCLUDE_PATH'].'/addons/xform/classes/basic/'.'class.xform.validate.abstract.inc.php');
 
     $this->objparams = array();
-    $this->objparams['object_path'] = $REX["INCLUDE_PATH"]."/addons/xform/classes/";
-    $this->objparams['debug'] = FALSE;
 
-    $this->objparams['form_data'] = "";
-
-    $this->objparams["actions"] = array();
+    // --------------------------- editable via objparams|key|newvalue
 
     $this->objparams["answertext"] = "";
     $this->objparams["submit_btn_label"] = "Abschicken";
     $this->objparams["submit_btn_show"] = TRUE;
-    $this->objparams["output"] = "";
 
-    $this->objparams["main_where"] = ""; // z.B. id=12
-    $this->objparams["main_id"] = -1; // unique ID
-    $this->objparams["main_table"] = ""; // for db and unique
+    $this->objparams["actions"] = array();
 
     $this->objparams["error_class"] = 'form_warning';
     $this->objparams["unique_error"] = "";
     $this->objparams["unique_field_warning"] = "not unique";
+
     $this->objparams["article_id"] = 0;
     $this->objparams["clang"] = 0;
 
@@ -51,8 +45,7 @@ class rex_xform
     $this->objparams["form_show"] = TRUE;
     $this->objparams["form_name"] = "formular";
     $this->objparams["form_id"] = "form_formular";
-    $this->objparams["form_wrap"] = array('<div id="rex-xform" class="xform">','</div>');
-    $this->objparams["form_hiddenfields"] = array();
+    $this->objparams["form_wrap"] = array('<div id="rex-xform" class="xform">','</div>'); // or: <div id="rex-xform" class="xform">#</div>
 
     $this->objparams["actions_executed"] = FALSE;
     $this->objparams["postactions_executed"] = FALSE;
@@ -60,11 +53,28 @@ class rex_xform
     $this->objparams["Error-occured"] = "";
     $this->objparams["Error-Code-EntryNotFound"] = "ErrorCode - EntryNotFound";
     $this->objparams["Error-Code-InsertQueryError"] = "ErrorCode - InsertQueryError";
+
+    $this->objparams["getdata"] = FALSE;
+
+
+    // --------------------------- do not edit
+
+    $this->objparams['object_path'] = $REX["INCLUDE_PATH"]."/addons/xform/classes/";
+    $this->objparams['debug'] = FALSE;
+
+    $this->objparams['form_data'] = "";
+    $this->objparams["output"] = "";
+
+    $this->objparams["main_where"] = ""; // z.B. id=12
+    $this->objparams["main_id"] = -1; // unique ID
+    $this->objparams["main_table"] = ""; // for db and unique
+
+    $this->objparams["form_hiddenfields"] = array();
+
     $this->objparams["warning"] = array ();
     $this->objparams["warning_messages"] = array ();
 
     $this->objparams["fieldsets_opened"] = 0; //
-    $this->objparams["getdata"] = FALSE;
 
     $this->objparams["form_elements"] = array();
     $this->objparams["form_output"] = array();
@@ -428,6 +438,9 @@ class rex_xform
       $formOut .= $hiddenOut;
       for($i=0;$i<$this->objparams["fieldsets_opened"];$i++) { $formOut .= '</fieldset>'; }
       $formOut .= '</form>';
+
+      if(!is_array($this->objparams["form_wrap"]))
+          $this->objparams["form_wrap"] = explode("#",$this->objparams["form_wrap"]);
 
       $this->objparams["output"] .= $this->objparams["form_wrap"][0].$formOut.$this->objparams["form_wrap"][1];
 
