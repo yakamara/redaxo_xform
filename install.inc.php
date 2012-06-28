@@ -12,15 +12,20 @@ $I18N->appendFile($REX['INCLUDE_PATH'].'/addons/xform/lang/');
 
 $msg = '';
 
-if($I18N->msg("htmlcharset") != "utf-8") 
+if (version_compare(PHP_VERSION, '5.3.0', '<')) 
+{
+  $msg = $I18N->msg('xform_install_checkphpversion', PHP_VERSION);
+
+}else if($I18N->msg("htmlcharset") != "utf-8") 
 {
 	$msg = $I18N->msg('xform_install_only_utf8');
 
-}elseif (OOAddon::isAvailable('phpmailer') != 1 || OOAddon::getVersion('phpmailer') < "2.8") 
+}else if (OOAddon::isAvailable('phpmailer') != 1 || OOAddon::getVersion('phpmailer') < "2.8") 
 {
 	$msg = $I18N->msg('xform_install_phpmailer_version_problem','2.8');
 
-}else {
+}else 
+{
   
   // AUTOINSTALL THESE PLUGINS
   $autoinstall = array('email','setup','manager');
