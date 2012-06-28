@@ -1,4 +1,9 @@
 
+
+xform_format_datetime = d.m.Y H:i:s
+xform_format_date = d.m.Y
+xform_format_time = H:i
+
 xform_overview = Übersicht
 xform_description = Beschreibung
 xform_back_to_overview = Zurück zur Übersicht

@@ -43,10 +43,23 @@ class rex_xform_validate_type extends rex_xform_validate_abstract
           if(preg_match($xsRegEx_url, $Object->getValue())==0)
             $w = TRUE;
           break;
+        case "time":
+          $w = true;
+          $ex = explode(":",$Object->getValue());
+          if(count($ex) == 3 && $ex[0]>-839 && $ex[0]<839 && $ex[1]>=0 && $ex[1]<60  && $ex[2]>=0 && $ex[2]<60)
+              $w = false;
+          break;
         case "date":
-          $xsRegEx_datum = "/^([0-9]{1,2}\.[0-9]{1,2}\.[0-9]{2,4})$/i";
-          if(preg_match($xsRegEx_datum, $Object->getValue())==0)
-            $w = TRUE;
+          $w = true;
+          if (preg_match("/^(\d{4})-(\d{2})-(\d{2})$/", $Object->getValue(), $matches))
+            if (checkdate($matches[2], $matches[3], $matches[1]))
+              $w = false;
+          break;
+        case "datetime":
+          $w = true;
+          if (preg_match("/^(\d{4})-(\d{2})-(\d{2}) ([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/", $Object->getValue(), $matches))
+            if (checkdate($matches[2], $matches[3], $matches[1]))
+              $w = false;
           break;
         case "":
           break;
@@ -69,7 +82,7 @@ class rex_xform_validate_type extends rex_xform_validate_abstract
 
   function getDescription()
   {
-    return "type -> prüft auf typ,beispiel: validate|type|label|int(oder float/numeric/string/email/url/date)|Fehlermeldung|[1= Feld darf auch leer sein]";
+    return "type -> prüft auf typ,beispiel: validate|type|label|int(oder float/numeric/string/email/url/date/datetime)|Fehlermeldung|[1= Feld darf auch leer sein]";
   }
 
   function getLongDescription()
@@ -85,7 +98,7 @@ class rex_xform_validate_type extends rex_xform_validate_abstract
         'name' => 'type',
         'values' => array(
           array( 'type' => 'select_name', 'label' => 'Name' ),
-          array( 'type' => 'select',		'label' => 'Prüfung nach:', 'default' => '', 'definition' => 'int,float,numeric,string,email,url,date' ),
+          array( 'type' => 'select',		'label' => 'Prüfung nach:', 'default' => '', 'definition' => 'int,float,numeric,string,email,url,date,datetime' ),
           array( 'type' => 'text',		'label' => 'Fehlermeldung'),
           array( 'type' => 'boolean',		'label' => 'Feld muss nicht ausgefüllt werden', 'default' => 0 ),
         ),

@@ -3,126 +3,156 @@
 class rex_xform_date extends rex_xform_abstract
 {
 
+  function preValidateAction()
+  {
+    if(is_array($this->getValue()))
+    {
+      $a = $this->getValue();
+
+      $year = (int) substr(@$a["year"],0,4);
+      $month = (int) substr(@$a["month"],0,2);
+      $day = (int) substr(@$a["day"],0,2);
+
+      $r =
+        str_pad($year, 4, "0", STR_PAD_LEFT)."-".
+        str_pad($month, 2, "0", STR_PAD_LEFT)."-".
+        str_pad($day, 2, "0", STR_PAD_LEFT);
+
+      $this->setValue($r);
+    }
+  }
+
+
   function enterObject()
   {
+  
+    $r = $this->getValue();
+  
+    $day = "00";
+    $month = "00";
+    $year = "0000";
 
-    $day = date("d");
-    $month = date("m");
-    $year = date("Y");
-
-    if (!is_array($this->getValue()) && strlen($this->getValue()) == 8)
+    if ($r != "") 
     {
       $year = (int) substr($this->getValue(),0,4);
-      $month = (int) substr($this->getValue(),4,2);
-      $day = (int) substr($this->getValue(),6,2);
-
-    }else
-    {
-      if (isset($_REQUEST["FORM"][$this->params["form_name"]]['el_'.$this->getId()]["day"])) $day = $_REQUEST["FORM"][$this->params["form_name"]]['el_'.$this->getId()]["day"];
-      if (isset($_REQUEST["FORM"][$this->params["form_name"]]['el_'.$this->getId()]["month"])) $month = $_REQUEST["FORM"][$this->params["form_name"]]['el_'.$this->getId()]["month"];
-      if (isset($_REQUEST["FORM"][$this->params["form_name"]]['el_'.$this->getId()]["year"])) $year = $_REQUEST["FORM"][$this->params["form_name"]]['el_'.$this->getId()]["year"];
+      $month = (int) substr($this->getValue(),5,2);
+      $day = (int) substr($this->getValue(),8,2);
     }
+    
+    $year = str_pad($year, 4, "0", STR_PAD_LEFT);
+    $month = str_pad($month, 2, "0", STR_PAD_LEFT);
+    $day = str_pad($day, 2, "0", STR_PAD_LEFT);
+      
+    $isodatum = sprintf ("%04d-%02d-%02d", $year, $month, $day);
 
-    $formname = 'FORM['.$this->params["form_name"].'][el_'.$this->getId().']';
-
-    $twarning = "";
-    if (!checkdate($month,$day,$year) && $this->params["send"] == 1)
+    $wc = "";
+    if (isset($this->params["warning"][$this->getId()])) 
     {
-      $twarning = 'border:1px solid #f99;background-color:#f9f3f3;';
-      $this->params["warning"][$this->getId()] = "Datum ist falsch";
+      $wc = $this->params["warning"][$this->getId()];
     }
-
-    $isodatum = sprintf ("%04d%02d%02d", $year, $month, $day);
 
     $this->params["value_pool"]["email"][$this->getName()] = $isodatum;
     $this->params["value_pool"]["sql"][$this->getName()] = $isodatum;
 
-    $out = "";
-    $out .= '
-    <p class="formdate formlabel-'.$this->getName().'" id="'.$this->getHTMLId().'">
-          <label class="select" for="'.$this->getFieldId().'" >'.$this->getElement(2).'</label>';
-
-    $dsel = new rex_select;
-    $dsel->setName($formname.'[day]');
-    $dsel->setStyle("width:55px;".$twarning);
-    $dsel->setId('el_'.$this->getId().'_day');
-    $dsel->setSize(1);
-    $dsel->addOption("TT","0");
-    for($i=1;$i<32;$i++)
-    {
-      $dsel->addOption($i,$i);
-    }
-    $dsel->setSelected($day);
-    $out .= $dsel->get();
-
-    $msel = new rex_select;
-    $msel->setName($formname.'[month]');
-    $msel->setStyle("width:55px;".$twarning);
-    $msel->setId('el_'.$this->getId().'_month');
-    $msel->setSize(1);
-    $msel->addOption("MM","0");
-    for($i=1;$i<13;$i++)
-    {
-      $msel->addOption($i,$i);
-    }
-    $msel->setSelected($month);
-    $out .= $msel->get();
+    
+    // ------------- year
 
     $year_start = (int) $this->getElement(3);
     $year_end = (int) $this->getElement(4);
-
-    if ($year_start == 0) $year_start = $year-30;
-    if ($year_end == 0) $year_end = $year+10;
-
-    if ($year_end<$year_start) $year_end = $year_start;
+    if ($year_start == 0) { $year_start = 1980; }
+    if ($year_end == 0) {   $year_end = 2020;   }
+    if ($year_end < $year_start) { $year_end = $year_start; }
 
     $ysel = new rex_select;
-    $ysel->setName($formname.'[year]');
-    $ysel->setStyle("width:88px;".$twarning);
-    $ysel->setId('el_'.$this->getId().'_year');
+    $ysel->setName($this->getFieldName("year"));
+    $ysel->setStyle('" class="'.$wc);
+    $ysel->setId($this->getFieldId("year"));
     $ysel->setSize(1);
-    $ysel->addOption("YYYY","0");
-    for($i=$year_start;$i<=$year_end;$i++)
-    {
+    $ysel->addOption("----","0000");
+    for($i=$year_start;$i<=$year_end;$i++) {
       $ysel->addOption($i,$i);
     }
     $ysel->setSelected($year);
-    $out .= $ysel->get();
+    $year_out = $ysel->get();
 
+
+    // ------------- month
+
+    $msel = new rex_select;
+    $msel->setName($this->getFieldName("month"));
+    $msel->setStyle('" class="'.$wc);
+    $msel->setId($this->getFieldId("month"));
+    $msel->setSize(1);
+    $msel->addOption("--","00");
+    for($i=1;$i<13;$i++) {
+      $msel->addOption($i,$i);
+    }
+    $msel->setSelected($month);
+    $month_out = $msel->get();
+
+
+    // ------------- day
+
+    $dsel = new rex_select;
+    $dsel->setName($this->getFieldName("day"));
+    $dsel->setStyle('" class="'.$wc);
+    $dsel->setId($this->getFieldId("day"));
+    $dsel->setSize(1);
+    $dsel->addOption("--","00");
+    for($i=1;$i<32;$i++) {
+      $dsel->addOption($i,$i);
+    }
+    $dsel->setSelected($day);
+    $day_out = $dsel->get();
+
+    // -------------
+    
+    $out = '
+    <p class="'.$this->getHTMLClass().'" id="'.$this->getHTMLId().'">
+          <label class="select" for="'.$this->getFieldId().'" >'.$this->getElement(2).'</label>';
+
+    $format = $this->getElement(5);
+    if($format == "")
+      $format = "###Y###-###M###-###D###";
+
+    $format = str_replace("###Y###", $year_out, $format);
+    $format = str_replace("###M###", $month_out, $format);
+    $format = str_replace("###D###", $day_out, $format);
+    
+    $out .= $format;
     $out .= '</p>';
 
     $this->params["form_output"][$this->getId()] = $out;
-
   }
+
+
   function getDescription()
   {
-    return "date -> Beispiel: date|feldname|Text *|jahrstart|jahrend|[format: Y-m-d]";
+    return "date -> Beispiel: date|feldname|Text *|jahrstart|jahrsende|[Anzeigeformat###Y###-###M###-###D###]";
   }
 
   function getDefinitions()
   {
     return array(
-            'type' => 'value',
-            'name' => 'date',
-            'values' => array(
-                  array( 'type' => 'name',   'label' => 'Feld' ),
-                  array( 'type' => 'text',    'label' => 'Bezeichnung'),
-                  array( 'type' => 'text',    'label' => 'Startjahr'),
-                  array( 'type' => 'text',    'label' => 'Endjahr'),
-                  array( 'type' => 'text',    'label' => 'Format (d.m.Y)'),
-                ),
-            'description' => 'Datumsfeld Eingabe',
-            'dbtype' => 'text'
-            );
-
+      'type' => 'value',
+      'name' => 'date',
+      'values' => array(
+        array( 'type' => 'name', 'label' => 'Feld' ),
+        array( 'type' => 'text', 'label' => 'Bezeichnung'),
+        array( 'type' => 'text', 'label' => '[Startjahr]'),
+        array( 'type' => 'text', 'label' => '[Endjahr]'),
+        array( 'type' => 'text', 'label' => '[Anzeigeformat###Y###-###M###-###D###]]'),
+        ),
+      'description' => 'Datums Eingabe',
+      'dbtype' => 'date'
+      );
   }
 
   function getListValue($params)
   {
-        $format = $params['params']['field']['f5']!=''
-                ? $params['params']['field']['f5']
-                : 'd.m.Y';
-        return date($format,strtotime($params['subject']));
+    global $I18N;
+    $format = $I18N->msg("xform_format_date");;
+    return date($format,strtotime($params['subject']));
   }
 
 }
