@@ -8,8 +8,10 @@ class rex_xform_mediafile extends rex_xform_abstract
 
     global $REX;
 
-    if ($this->getElement(8) == "") $mediacatid = 0;
-    else $mediacatid = (int) $this->getElement(8);
+    if ($this->getElement(8) == "") 
+      $mediacatid = 0;
+    else 
+      $mediacatid = (int) $this->getElement(8);
 
     $error = false;
     $minsize = 0;
@@ -22,14 +24,14 @@ class rex_xform_mediafile extends rex_xform_abstract
       $maxsize = (int) ($sizes[1]*1024); // -> bytes
     }
 
-    // Größencheck
-    if (	$this->params["send"]
-    && isset($_FILES["FORM"]["size"][$this->params["form_name"]]["el_".$this->getId()])
-    && $_FILES["FORM"]["size"][$this->params["form_name"]]["el_".$this->getId()] != ""
-    && ($_FILES["FORM"]["size"][$this->params["form_name"]]["el_".$this->getId()]>$maxsize || $_FILES["FORM"]["size"][$this->params["form_name"]]["el_".$this->getId()]<$minsize)
-    )
+    $rdelete = md5($this->getFieldName("delete"));
+    $rfile = "file_".md5($this->getFieldName("file"));
+    $filename = $this->getValue();
+
+    // size check
+    if ( $this->params["send"] && isset($_FILES[$rfile]) && $_FILES[$rfile]["name"] != "" && ($_FILES[$rfile]["size"]>$maxsize || $_FILES[$rfile]["size"]<$minsize) )
     {
-      $_FILES["FORM"]["name"][$this->params["form_name"]]["el_".$this->getId()] = "";
+      $_FILES[$rfile] = "";
       $this->setValue("");
       $error = true; // auf "error message true" setzen, wenn datei fehlerhaft
 
@@ -37,42 +39,41 @@ class rex_xform_mediafile extends rex_xform_abstract
 
     if ($this->params["send"])
     {
-      if (isset($_FILES["FORM"]["name"][$this->params["form_name"]]["el_".$this->getId()])
-      && $_FILES["FORM"]["size"][$this->params["form_name"]]["el_".$this->getId()] != ""
-      )
+      if(isset($_REQUEST[$rdelete]) && $_REQUEST[$rdelete] == 1)
       {
-
-        $FILE["size"] = $_FILES["FORM"]["size"][$this->params["form_name"]]["el_".$this->getId()];
-        $FILE["name"] = $_FILES["FORM"]["name"][$this->params["form_name"]]["el_".$this->getId()];
-        $FILE["type"] = $_FILES["FORM"]["type"][$this->params["form_name"]]["el_".$this->getId()];
-        $FILE["tmp_name"] = $_FILES["FORM"]["tmp_name"][$this->params["form_name"]]["el_".$this->getId()];
-        $FILE["error"] = $_FILES["FORM"]["error"][$this->params["form_name"]]["el_".$this->getId()];
+        $this->setValue("");
+      }
+    
+      if (isset($_FILES[$rfile]) && $_FILES[$rfile]["name"] != "" )
+      {
+        $FILE["size"] = $_FILES[$rfile]["size"];
+        $FILE["name"] = $_FILES[$rfile]["name"];
+        $FILE["type"] = $_FILES[$rfile]["type"];
+        $FILE["tmp_name"] = $_FILES[$rfile]["tmp_name"];
+        $FILE["error"] = $_FILES[$rfile]["error"];
 
         $extensions_array = explode(",",$this->getElement(4));
-        $NEWFILE = $this->saveMedia($FILE,$REX["INCLUDE_PATH"]."/../../files/",$extensions_array,$mediacatid);
+        $NEWFILE = $this->saveMedia($FILE, $REX["INCLUDE_PATH"]."/../../files/", $extensions_array, $mediacatid);
 
         if ($NEWFILE["ok"])
         {
           $this->setValue($NEWFILE['filename']);
+
         }else
         {
           $this->setValue("");
           $error = true;
         }
+
       }
     }
 
     if ($this->params["send"])
     {
-      if ($this->getValue() == ""
-      && @$_REQUEST["FORM"][$this->params["form_name"]]['el_'.$this->getId().'_filename'] != ""
-      && @$_REQUEST["FORM"][$this->params["form_name"]]['el_'.$this->getId().'_delete'] != 1)
-      {
-        $this->setValue($_REQUEST["FORM"][$this->params["form_name"]]['el_'.$this->getId().'_filename']);
-      }
 
       $this->params["value_pool"]["email"][$this->getElement(1)] = stripslashes($this->getValue());
-      if ($this->getElement(7) != "no_db") $this->params["value_pool"]["sql"][$this->getElement(1)] = $this->getValue();
+      if ($this->getElement(7) != "no_db") 
+        $this->params["value_pool"]["sql"][$this->getElement(1)] = $this->getValue();
     }
 
     ## check for required file
@@ -86,13 +87,13 @@ class rex_xform_mediafile extends rex_xform_abstract
     {
       $this->setElement(2, $this->getElement(2).'<br />Dateiname: <a href="files/'.$this->getValue().'">'.$this->getValue().'</a><br />');
 
-      $fileendung = substr(strtolower($this->getValue()),-3);
-      if ($fileendung == 'jpg' || $fileendung == 'png' || $fileendung == 'gif') {
+      $fileendung = substr(strtolower($this->getValue()),-4);
+      if ($fileendung == '.jpg' || $fileendung == '.png' || $fileendung == '.gif') {
         $this->setElement(2,$this->getElement(2).'<br /><img src="?rex_img_type=profileimage&amp;rex_img_file='.$this->getValue().'" />');
       }
       $check_delete = '
         <span class="formmcheckbox" style="width:300px;clear:none;">
-          <input id="'.$this->getFieldId("delete").'" type="checkbox" name="FORM['.$this->params["form_name"].'][el_'.$this->getId().'_delete]" value="1" />
+          <input id="'.$this->getFieldId("delete").'" type="checkbox" name="'.$rdelete.'" value="1" />
           <label for="'.$this->getFieldId("delete").'">Datei löschen</label>
         </span>
         ';
@@ -112,11 +113,11 @@ class rex_xform_mediafile extends rex_xform_abstract
     }
 
     $out = '
-      <input type="hidden" name="FORM['.$this->params["form_name"].'][el_'.$this->getId().'_filename]" value="'.$this->getValue().'" />
-      <p class="formfile" id="'.$this->getHTMLId().'">
+      <input type="hidden" name="'.$this->getFieldName().'" value="'.$this->getValue().'" />
+      <p class="'.$this->getHTMLClass().' formlabel-'.$this->getName().'" id="'.$this->getHTMLId().'">
         <label class="text ' . $wc . '" for="'.$this->getFieldId().'" >' . $this->getElement(2) .'</label>
         '.$check_delete.'
-        <input class="uploadbox clickmedia '.$wc.'" id="'.$this->getFieldId().'" name="'.$this->getFieldName().'" type="file" />
+        <input class="uploadbox clickmedia '.$wc.'" id="'.$this->getFieldId().'" name="'.$rfile.'" type="file" />
       </p>';
 
     $this->params["form_output"][$this->getId()] = $out;
@@ -133,24 +134,25 @@ class rex_xform_mediafile extends rex_xform_abstract
   {
 
     return array(
-            'type' => 'value',
-            'name' => 'mediafile',
-            'values' => array(
-    array( 'type' => 'label',   'label' => 'Label' ),
-    array( 'type' => 'text',    'label' => 'Bezeichnung'),
-    array( 'type' => 'text',    'label' => 'Maximale Größe in Kb oder Range 100,500'),
-    array( 'type' => 'text',    'label' => 'Welche Dateien sollen erlaubt sein, kommaseparierte Liste. ".gif,.png"'),
-    array( 'type' => 'boolean', 'label' => 'Pflichtfeld'),
-    array( 'type' => 'text',    'label' => 'Fehlermeldung'),
-    array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 0),
-    array( 'type' => 'text',    'label' => 'Mediakategorie ID'),
-    ),
-            'description' => 'Mediafeld, welches Dateien aus dem Medienpool holt',
-            'dbtype' => 'text'
-            );
+      'type' => 'value',
+      'name' => 'mediafile',
+      'values' => array(
+        array( 'type' => 'label',   'label' => 'Label' ),
+        array( 'type' => 'text',    'label' => 'Bezeichnung'),
+        array( 'type' => 'text',    'label' => 'Maximale Größe in Kb oder Range 100,500'),
+        array( 'type' => 'text',    'label' => 'Welche Dateien sollen erlaubt sein, kommaseparierte Liste. ".gif,.png"'),
+        array( 'type' => 'boolean', 'label' => 'Pflichtfeld'),
+        array( 'type' => 'text',    'label' => 'Fehlermeldung'),
+        array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 0),
+        array( 'type' => 'text',    'label' => 'Mediakategorie ID'),
+        ),
+      'description' => 'Mediafeld, welches Dateien aus dem Medienpool holt',
+      'dbtype' => 'text'
+    );
   }
 
-  function saveMedia($FILE,$filefolder,$extensions_array,$rex_file_category){
+  function saveMedia($FILE, $filefolder, $extensions_array, $rex_file_category)
+  {
 
     global $REX;
 
@@ -192,7 +194,7 @@ class rex_xform_mediafile extends rex_xform_abstract
 
     $NFILENAME = $NFILE_NAME.$NFILE_EXT;
 
-    // ----- datei schon vorhanden -> namen aendern -> _1 ..
+    // ----- filexists ? -> _1 ..
     if (file_exists($filefolder."/$NFILENAME"))
     {
       for ($cf=1;$cf<1000;$cf++)
