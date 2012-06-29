@@ -1,23 +1,9 @@
-body#rex-page-editme div.rex-form,
-body#rex-page-editme table.rex-table {
-  border: 0;
-  -moz-outline-radius-bottomleft: 4px;
-  -moz-outline-radius-bottomright: 4px;
-  -moz-outline-radius-topleft: 4px;
-  -moz-outline-radius-topright: 4px;
-  outline: 1px solid #CBCBCB;
-  }
-#rex-page-editme input.submit {
-  background-image: url(../be_style/plugins/agk_skin/button.gif);
-  background-repeat: repeat-x;
-  padding: 2px 6px;
-  border: 0;
-  -moz-outline-radius-bottomleft: 4px;
-  -moz-outline-radius-bottomright: 4px;
-  -moz-outline-radius-topleft: 4px;
-  -moz-outline-radius-topright: 4px;
-  outline: 1px solid #CBCBCB;
-  }
+ 
+#rex-xform .rex-widget-field {
+  padding-top: 0px; 
+  margin-top: 0px;
+}  
+  
 #rex-xform div.rex-widget {
   clear:none;
   float:left;
@@ -27,7 +13,8 @@ body#rex-page-editme table.rex-table {
   /*margin-left:245px;*/
   }
 #rex-xform div.rex-widget input.text {
-  width:330px;
+  padding: 2px;
+  width: 290px;
   }
 #rex-xform div.rex-widget select{
   width:335px;

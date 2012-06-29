@@ -10,8 +10,7 @@ popup
 single 1-1 - neue fenster und man kann einen eintrag auswaehlen
 multiple n-m - neues fenster und man kann mehrere eintraege auswaehlen
 
-
-popup
+TODO: popup
 n-1 - neues fenster und dort traegt man entsprechend infos ein .
 
 */
@@ -59,10 +58,13 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
     // ---------- Datensatz existiert bereits, Values aus verkn�pfungstabelle holen
     if($this->params["main_id"] > 0 && $this->params["send"] == 0)
     {
-
-      if(trim($this->getValue()) != "") {
+      $values = array();
+      if(trim($this->getValue()) != "") 
+      {
         $values = explode(",",$this->getValue());
-      }else {
+      
+      }else 
+      {
         $vs = rex_sql::factory();
         $vs->debugsql = $this->params["debug"];
         $vs->setQuery('
@@ -75,14 +77,18 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
             source_name="'.$this->getName().'" and
             source_id="'.$this->params["main_id"].'"');
         $v = $vs->getArray();
-        $values = array();
-        if(count($v)>0) foreach($v as $w) { $values[$w["id"]] = $w["id"]; };
+        if(count($v)>0) 
+          foreach($v as $w) 
+          {
+            $values[$w["id"]] = $w["id"]; 
+          };
+
       }
       $this->setValue($values);
       // echo '<pre>++ ';var_dump($this->getValue());echo '</pre>';
-
     }
 
+    
     // ---------- connected, fix values
     if(isset($this->params["rex_xform_set"][$this->getName()])) {
       $values = $this->getValue();
@@ -91,47 +97,136 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
       $disabled = TRUE;
     }
 
+    
     // ---------- Value angleichen -> immer Array mit IDs daraus machen
-    if(!is_array($this->getValue())) {
-      if(trim($this->getValue()) == "") {
+    if(!is_array($this->getValue())) 
+    {
+      if(trim($this->getValue()) == "") 
+      {
         $this->setValue(array());
-      }else {
+      }else 
+      {
         $this->setValue(explode(",",$this->getValue()));
       }
     }
+    
     // ---------- (array) $this->getValue()
-
+    // echo '<hr /><pre>'; var_dump($this->getValue()); echo '</pre>';
+    
+    
     // ---------- check values
-    $sql = 'select id,'.$this->be_em["target_field"].' from '.$this->be_em["target_table"];
+    $sql = 'select id,'.mysql_real_escape_string($this->be_em["target_field"]).' from '.$this->be_em["target_table"];
     $value_names = array();
-    if(count($this->getValue())>0) {
+    $value_name = "";
+    $values = array();
+    if(count($this->getValue())>0) 
+    {
       $add_sql = array();
-      foreach($this->getValue() as $v) {
-        $add_sql[] = ' id='.$v.'';
+      foreach($this->getValue() as $v) 
+      {
+        $add_sql[] = ' id='.intval($v).'';
       }
       if(count($add_sql)>0) {
         $sql .= ' where '.implode(" OR ",$add_sql);
       }
 
-      $values = array();
       $vs = rex_sql::factory();
-      $sss->debugsql = $this->params["debug"];
+      $vs->debugsql = $this->params["debug"];
       $vs->setQuery($sql);
       foreach($vs->getArray() as $v) {
         $value_names[$v["id"]] = $v[$this->be_em["target_field"]]. ' [id='.$v['id'].']';
-        $values[] = $v["id"];
         $value_name = $v[$this->be_em["target_field"]];
       }
+      foreach($this->getValue() as $v) 
+      {
+        if(isset($value_names[$v["id"]]))
+          $values[] = $v["id"];
+      }
+      
       $this->setValue($values);
     }
+
+    // ---------- (array) $this->getValue()
+    // echo '<pre>'; var_dump($this->getValue()); echo '</pre>';
+
+
+    // ---------- empty option ?
+
+    if($this->params["send"] == 1 && $this->be_em["eoption"] == 0 && count($this->getValue()) == 0)
+    {
+      // Error. Fehlermeldung ausgeben
+      $this->params["warning"][] = $this->getElement(7);
+      $this->params["warning_messages"][] = $this->getElement(7);
+      $wc = $this->params["error_class"];
+    }
+
+    $wc = "";
+    if (isset($this->params["warning"][$this->getId()]))
+    {
+      $wc = $this->params["warning"][$this->getId()];
+    }
+
+    // --------------------------------------- Selectbox, single 0 or multiple 1
+    
+    if($this->be_em["relation_type"] < 2)
+    {
+
+      // ----- SELECT BOX
+      $sss = rex_sql::factory();
+      $sss->debugsql = $this->params["debug"];
+      $sss->setQuery('select * from `'.mysql_real_escape_string($this->be_em["target_table"]).'` order by `'.mysql_real_escape_string($this->be_em["target_field"]).'`');
+
+      $SEL = new rex_select();
+      $SEL->setId($this->getFieldId());
+      $SEL->setStyle('class="select"');
+
+      $SEL->setDisabled($disabled);
+      $SEL->setSize(1);
+
+      // mit --- keine auswahl ---
+
+      if($this->be_em["relation_type"] == 1)
+      {
+        $SEL->setName($this->getFieldName().'[]');
+        $SEL->setMultiple(TRUE);
+        $SEL->setSize(5);
+
+      }elseif($this->be_em["eoption"] == 1)
+      {
+        $SEL->setName($this->getFieldName());
+        $SEL->addOption("-", "");
+
+      }
+
+      foreach($sss->getArray() as $v)
+      {
+        $s = $v[$this->be_em["target_field"]];
+        if(strlen($s)>50) $s = substr($s,0,45).' ... ';
+        $s = $s.' [id='.$v["id"].']';
+        $SEL->addOption($s, $v["id"]);
+      }
+
+      $SEL->setSelected($this->getValue());
+
+      $this->params["form_output"][$this->getId()] = '
+          <p class="'.$this->getHTMLClass().' formlabel-'.$this->getName().'" id="'.$this->getHTMLId().'">
+            <label class="select ' . $wc . '" for="' . $this->getFieldId() . '" >' . rex_translate($this->be_em["label"]) . '</label>
+            ' . $SEL->get() . '
+          </p>';
+
+    }
+
+
 
 
     // ------------------------------------ POPUP, single, multiple 1-1, n-m
 
     if($this->be_em["relation_type"] == 2 || $this->be_em["relation_type"] == 3)
     {
+    
       $multiple = "0";
-      if($this->be_em["relation_type"] == 3) {
+      if($this->be_em["relation_type"] == 3) 
+      {
         $multiple = "1";
       }
 
@@ -141,42 +236,31 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
         $out = '
         <div class="rex-widget">
             <div class="rex-widget-xform-manager-datalist">
-              <input type="hidden" name="'.$this->getHTMLClass().'" id="XFORM_MANAGER_DATALIST_'.$this->getId().'" value="'.implode(",",$this->getValue()).'" />
+              <input type="hidden" name="'.$this->getFieldName().'" id="XFORM_MANAGER_DATALIST_'.$this->getId().'" value="'.implode(",",$this->getValue()).'" />
               <p class="rex-widget-field">
                 <select name="XFORM_MANAGER_DATALIST_SELECT['.$this->getId().']" id="XFORM_MANAGER_DATALIST_SELECT_'.$this->getId().'" size="8">';
-        foreach($value_names as $k => $v) {
-          $out .= '<option value="'.$k.'">'.$v.'</option>';
+        foreach($this->getValue() as $k) {
+          $out .= '<option value="'.$k.'">'.$value_names[$k].'</option>';
         }
         $out .= '
                 </select>
               </p>
                <p class="rex-widget-icons rex-widget-2col">
                 <span class="rex-widget-column rex-widget-column-first">
-            <a href="#" class="rex-icon-file-top"
-              onclick="xform_manager_moveDatalist('.$this->getId().',\'top\');return false;"
-              title="'.$I18N->msg("xform_relation_move_first_data").'"></a>
-            <a href="#" class="rex-icon-file-up"
-              onclick="xform_manager_moveDatalist('.$this->getId().',\'up\');return false;"
-              title="'.$I18N->msg("xform_relation_move_up_data").'"></a>
-            <a href="#" class="rex-icon-file-down"
-              onclick="xform_manager_moveDatalist('.$this->getId().',\'down\');return false;"
-              title="'.$I18N->msg("xform_relation_down_first_data").'"></a>
-            <a href="#" class="rex-icon-file-bottom"
-              onclick="xform_manager_moveDatalist('.$this->getId().',\'bottom\');return false;"
-              title="'.$I18N->msg("xform_relation_move_last_data").'"></a>
+                  <a href="#" class="rex-icon-file-top" onclick="xform_manager_moveDatalist('.$this->getId().',\'top\');return false;" title="'.$I18N->msg("xform_relation_move_first_data").'"></a>
+                  <a href="#" class="rex-icon-file-up" onclick="xform_manager_moveDatalist('.$this->getId().',\'up\');return false;" title="'.$I18N->msg("xform_relation_move_up_data").'"></a>
+                  <a href="#" class="rex-icon-file-down" onclick="xform_manager_moveDatalist('.$this->getId().',\'down\');return false;" title="'.$I18N->msg("xform_relation_down_first_data").'"></a>
+                  <a href="#" class="rex-icon-file-bottom" onclick="xform_manager_moveDatalist('.$this->getId().',\'bottom\');return false;" title="'.$I18N->msg("xform_relation_move_last_data").'"></a>
                 </span>
                 <span class="rex-widget-column">
-              <a href="#" class="rex-icon-file-open"
-                onclick="xform_manager_openDatalist('.$this->getId().', \''.$this->be_em["target_field"].'\', \''.$link.'\',\''.$multiple.'\');return false;"
-                title="'.$I18N->msg("xform_relation_choose_entry").'"></a>
-              <a href="#" class="rex-icon-file-delete"
-                onclick="xform_manager_deleteDatalist('.$this->getId().',\''.$multiple.'\');return false;"
-                title="'.$I18N->msg("xform_relation_delete_entry").'"></a>
+                  <a href="#" class="rex-icon-file-open" onclick="xform_manager_openDatalist('.$this->getId().', \''.$this->be_em["target_field"].'\', \''.$link.'\',\''.$multiple.'\');return false;" title="'.$I18N->msg("xform_relation_choose_entry").'"></a>
+                  <a href="#" class="rex-icon-file-delete" onclick="xform_manager_deleteDatalist('.$this->getId().',\''.$multiple.'\');return false;" title="'.$I18N->msg("xform_relation_delete_entry").'"></a>
                 </span>
               </p>
             </div>
           </div>
-        <div class="rex-clearer"></div>';
+        <div class="rex-clearer"></div>
+        ';
 
       }else
       {
@@ -186,17 +270,13 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
           <div class="rex-widget-data">
 
           <p class="rex-widget-field">
-          <input type="hidden" name="'.$this->getHTMLClass().'" id="XFORM_MANAGER_DATA_'.$this->getId().'" value="'.implode(",",$this->getValue()).'" />
+          <input type="hidden" name="'.$this->getFieldName().'" id="XFORM_MANAGER_DATA_'.$this->getId().'" value="'.implode(",",$this->getValue()).'" />
           <input type="text" size="30" name="XFORM_MANAGER_DATANAME['.$this->getId().']" value="'.htmlspecialchars($value_name).'" id="XFORM_MANAGER_DATANAME_'.$this->getId().'" readonly="readonly" class="text" />
           </p>
           <p class="rex-widget-icons rex-widget-1col">
           <span class="rex-widget-column rex-widget-column-first">
-            <a href="#" class="rex-icon-file-open"
-              onclick="xform_manager_openDatalist('.$this->getId().', \''.$this->be_em["target_field"].'\', \''.$link.'\',\''.$multiple.'\');return false;"
-              title="'.$I18N->msg("xform_relation_choose_entry").'"></a>
-            <a href="#" class="rex-icon-file-delete"
-              onclick="xform_manager_deleteDatalist('.$this->getId().',\''.$multiple.'\');return false;"
-              title="'.$I18N->msg("xform_relation_delete_entry").'"></a>
+            <a href="#" class="rex-icon-file-open" onclick="xform_manager_openDatalist('.$this->getId().', \''.$this->be_em["target_field"].'\', \''.$link.'\',\''.$multiple.'\');return false;" title="'.$I18N->msg("xform_relation_choose_entry").'"></a>
+            <a href="#" class="rex-icon-file-delete" onclick="xform_manager_deleteDatalist('.$this->getId().',\''.$multiple.'\');return false;" title="'.$I18N->msg("xform_relation_delete_entry").'"></a>
           </span>
           </p>
           </div>
@@ -207,12 +287,11 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
       }
 
       $this->params["form_output"][$this->getId()] = '
-        <p class="formpopup '.$this->getHTMLClass().'" id="'.$this->getHTMLId().'">
+        <div class="xform-element '.$this->getHTMLClass().' formlabel-'.$this->getName().'" id="'.$this->getHTMLId().'">
           <label class="select ' . $wc . '" for="' . $this->getFieldId() . '" >' . rex_translate($this->be_em["label"]) . '</label>
           '.$out.'
-        </p>';
+        </div>';
     }
-
 
 
     // --------------------------------------- POPUP, 1-n
@@ -243,82 +322,22 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
        '</a>';
        }
        */
-
+      
+      /*
       $this->params["form_output"][$this->getId()] = '
       <p class="formhtml '.$this->getHTMLClass().'" id="'.$this->getHTMLId().'">
       <label class="select " for="' . $this->getFieldId() . '" >' . rex_translate($this->be_em["label"]) . '</label>
       <input type="hidden" name="'.$this->getFieldName().'[]" id="REX_RELATION_'.$this->getId().'" />
       <span>'.$text.'</span>
       </p>';
+      */
 
       return;
     }
 
 
 
-    // --------------------------------------- Selectbox, single or multiple
-
-    if($this->be_em["relation_type"] < 2)
-    {
-
-      if($this->params["send"] == 1 && $this->be_em["eoption"] == 0 && count($this->getValue()) == 0)
-      {
-        // Error. Fehlermeldung ausgeben
-        $this->params["warning"][] = $this->getElement(7);
-        $this->params["warning_messages"][] = $this->getElement(7);
-        $wc = $this->params["error_class"];
-      }
-
-      $wc = "";
-      if (isset($this->params["warning"][$this->getId()]))
-      {
-        $wc = $this->params["warning"][$this->getId()];
-      }
-
-      // ----- SELECT BOX
-      $sss = rex_sql::factory();
-      $sss->debugsql = $this->params["debug"];
-      $sss->setQuery('select * from '.$this->be_em["target_table"].' order by '.$this->be_em["target_field"]);
-
-      $SEL = new rex_select();
-      $SEL->setName($this->getFieldName().'[]');
-      $SEL->setId($this->getFieldId());
-      $SEL->setStyle('class="select"');
-
-      $SEL->setDisabled($disabled);
-      $SEL->setSize(1);
-
-      // mit --- keine auswahl ---
-
-      if($this->be_em["relation_type"] == 1)
-      {
-        $SEL->setMultiple(TRUE);
-        $SEL->setSize(5);
-
-      }elseif($this->be_em["eoption"] == 1)
-      {
-        $SEL->addOption("-", "");
-
-      }
-
-      foreach($sss->getArray() as $v)
-      {
-        $s = $v[$this->be_em["target_field"]];
-        if(strlen($s)>50) $s = substr($s,0,45).' ... ';
-        $s = $s.' [id='.$v["id"].']';
-        $SEL->addOption($s, $v["id"]);
-      }
-
-      // var_dump($this->getValue());
-      $SEL->setSelected($this->getValue());
-
-      $this->params["form_output"][$this->getId()] = '
-          <p class="formselect '.$this->getHTMLClass().'" id="'.$this->getHTMLId().'">
-            <label class="select ' . $wc . '" for="' . $this->getFieldId() . '" >' . rex_translate($this->be_em["label"]) . '</label>
-            ' . $SEL->get() . '
-          </p>';
-
-    }
+    
 
     // --------------------------------------- save
 
@@ -339,6 +358,8 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
   function postAction()
   {
     global $REX;
+
+    return;
 
     // $this->params["debug"] = TRUE;
 
@@ -409,29 +430,28 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
   function getDefinitions()
   {
     return array(
-            'type' => 'value',
-            'name' => 'be_manager_relation',
-            'values' => array(
-    array( 'type' => 'name',		'label' => 'Name' ),
-    array( 'type' => 'text',		'label' => 'Bezeichnung'),
-    array( 'type' => 'table',		'label' => 'Ziel Tabelle'),
-    array( 'type' => 'text',	'label' => 'Ziel Tabellenfeld zur Anzeige oder Zielfeld'),
-    array( 'type' => 'select',    	'label' => 'Mehrfachauswahl', 'default' => '', 'definition' => 'select (single)=0,select (multiple)=1,popup (single)=2,popup (multiple)=3,popup (multiple / relation)=4' ),
-    array( 'type' => 'boolean',		'label' => 'Mit "Leer-Option"' ),
-    array( 'type' => 'text',		'label' => 'Fehlermeldung wenn "Leer-Option" nicht aktiviert ist.'),
-    array( 'type' => 'text',		'label' => 'REX Page (opt)'),
-    array( 'type' => 'text',		'label' => 'REX Subpage (opt)'),
-
-    ),
-            'description' => 'Hiermit kann man Verkn&uuml;pfungen zu anderen Tabellen setzen',
-            'dbtype' => 'text'
-            );
+      'type' => 'value',
+      'name' => 'be_manager_relation',
+      'values' => array(
+        array( 'type' => 'name',		'label' => 'Name' ),
+        array( 'type' => 'text',		'label' => 'Bezeichnung'),
+        array( 'type' => 'table',		'label' => 'Ziel Tabelle'),
+        array( 'type' => 'text',	'label' => 'Ziel Tabellenfeld zur Anzeige oder Zielfeld'),
+        array( 'type' => 'select',    	'label' => 'Mehrfachauswahl', 'default' => '', 'definition' => 'select (single)=0,select (multiple)=1,popup (single)=2,popup (multiple)=3' ), // ,popup (multiple / relation)=4
+        array( 'type' => 'boolean',		'label' => 'Mit "Leer-Option"' ),
+        array( 'type' => 'text',		'label' => 'Fehlermeldung wenn "Leer-Option" nicht aktiviert ist.'),
+        array( 'type' => 'text',		'label' => 'REX Page (opt)'),
+        array( 'type' => 'text',		'label' => 'REX Subpage (opt)'),
+      ),
+      'description' => 'Hiermit kann man Verkn&uuml;pfungen zu anderen Tabellen setzen',
+      'dbtype' => 'text'
+    );
   }
 
   function getListValue($params)
   {
 
-    if(count(rex_xform_be_manager_relation::$xform_list_values[$params['params']['field']['f3']]) == 0)
+    if(!isset(rex_xform_be_manager_relation::$xform_list_values[$params['params']['field']['f3']]) || count(rex_xform_be_manager_relation::$xform_list_values[$params['params']['field']['f3']]) == 0)
     {
       rex_xform_be_manager_relation::$xform_list_values[$params['params']['field']['f3']] = array();
       $db = rex_sql::factory();
