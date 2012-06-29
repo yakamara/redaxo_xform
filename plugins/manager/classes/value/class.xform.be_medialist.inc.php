@@ -89,8 +89,25 @@ class rex_xform_be_medialist extends rex_xform_abstract
       );
   }
 
-
-
+  function getListValue($params)
+  {
+  
+    $return = $params['subject'];
+    
+    if($return != "" && $returns = explode(",",$return))
+    {
+      $return = array();
+      foreach($returns as $r)
+      { 
+        if(strlen($r) > 16)
+        {
+          $return[] = '<span style="white-space:nowrap;" title="'.htmlspecialchars($r).'">'.substr($r,0,6)." ... ".substr($r,-6).'</span>';
+        }
+      }
+      $return = implode("<br />",$return);
+    }
+    return $return;
+  }
 }
 
 ?>

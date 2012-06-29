@@ -144,8 +144,10 @@ class rex_xform_time extends rex_xform_abstract
   function getListValue($params)
   {
     global $I18N;
-    $format = $I18N->msg("xform_format_time");;
-    return date($format,strtotime($params['subject']));
+    $format = $I18N->msg("xform_format_time");
+    if(($d = DateTime::createFromFormat("H:i:s", $params['subject'])) && $d->format("H:i:s") == $params['subject'])
+      return $d->format($format);
+    return "[".$params['subject']."]";
   }
 
 

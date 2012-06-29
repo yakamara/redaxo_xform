@@ -70,6 +70,19 @@ class rex_xform_be_mediapool extends rex_xform_abstract
   }
 
 
+  function getListValue($params)
+  {
+    $return = $params['subject'];
+    if(strlen($return) > 16)
+    {
+      $return = '<span style="white-space:nowrap;" title="'.htmlspecialchars($return).'">'.substr($return,0,6)." ... ".substr($return,-6).'</span>';
+    }
+    return $return;
+
+  }
+
+
+
 }
 
 ?>

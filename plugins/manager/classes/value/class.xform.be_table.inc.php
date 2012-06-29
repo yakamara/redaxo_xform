@@ -38,7 +38,7 @@ class rex_xform_be_table extends rex_xform_abstract
       {
         $out .= '<td><input type="text" name="v['.$id.']['.$r.'][]" value="" /></td>';
       }
-      $out .= '<td><a href="javascript:void(0)" onclick="rex_xform_table_deleteRow'.$id.'( jQuery(this) )">- l�schen</a></td>';
+      $out .= '<td><a href="javascript:void(0)" onclick="rex_xform_table_deleteRow'.$id.'( jQuery(this) )">- löschen</a></td>';
       $out .= '</tr>';
 
       $out .= '\');
