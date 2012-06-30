@@ -8,82 +8,96 @@ class rex_xform_mediafile extends rex_xform_abstract
 
     global $REX;
 
-    if ($this->getElement(8) == "") 
-      $mediacatid = 0;
-    else 
-      $mediacatid = (int) $this->getElement(8);
+    // MEDIAPOOL CAT
+    $mediacatid = ($this->getElement(8) == '') ? 0 : (int) $this->getElement(8);
 
-    $error = false;
-    $minsize = 0;
-    $maxsize = 50000;
+    // MIN/MAX SIZES
+    $sizes   = explode(",",$this->getElement(3));
+    $minsize = count($sizes) > 1 ? (int) ($sizes[0]*1024) : 0;
+    $maxsize = count($sizes) > 1 ? (int) ($sizes[1]*1024) : (int) ($sizes[0]*1024);
 
-    $sizes = explode(",",$this->getElement(3));
-    if(count($sizes) > 1)
-    {
-      $minsize = (int) ($sizes[0]*1024); // -> bytes
-      $maxsize = (int) ($sizes[1]*1024); // -> bytes
-    }
+    // ERR MSGS
+    $error                 = array();
+    $err_msgs              = explode(",",$this->getElement(6)); // min_err,max_err,type_err,empty_err
+    $err_msgs['min_err']   = $err_msgs[0];
+    $err_msgs['max_err']   = isset($err_msgs[1]) ? $err_msgs[1] : $err_msgs[0];
+    $err_msgs['type_err']  = isset($err_msgs[2]) ? $err_msgs[2] : $err_msgs[0];
+    $err_msgs['empty_err'] = isset($err_msgs[3]) ? $err_msgs[3] : $err_msgs[0];
 
-    $rdelete = md5($this->getFieldName("delete"));
-    $rfile = "file_".md5($this->getFieldName("file"));
+    $rdelete  = md5($this->getFieldName('delete'));
+    $rfile    = 'file_'.md5($this->getFieldName('file'));
     $filename = $this->getValue();
 
-    // size check
-    if ( $this->params["send"] && isset($_FILES[$rfile]) && $_FILES[$rfile]["name"] != "" && ($_FILES[$rfile]["size"]>$maxsize || $_FILES[$rfile]["size"]<$minsize) )
+    // SIZE CHECK
+    if ( $this->params['send'] && isset($_FILES[$rfile]) && $_FILES[$rfile]['name'] != '' && ($_FILES[$rfile]['size']>$maxsize || $_FILES[$rfile]['size']<$minsize) )
     {
-      $_FILES[$rfile] = "";
-      $this->setValue("");
-      $error = true; // auf "error message true" setzen, wenn datei fehlerhaft
-
+      if($_FILES[$rfile]['size']<$minsize){
+        $error[] = $err_msgs['min_err'];
+      }
+      if($_FILES[$rfile]['size']>$maxsize){
+        $error[] = $err_msgs['max_err'];
+      }
+      unset($_FILES[$rfile]);
+      $this->setValue('');
     }
 
-    if ($this->params["send"])
+    if ($this->params['send'])
     {
       if(isset($_REQUEST[$rdelete]) && $_REQUEST[$rdelete] == 1)
       {
-        $this->setValue("");
+        $this->setValue('');
       }
-    
-      if (isset($_FILES[$rfile]) && $_FILES[$rfile]["name"] != "" )
+
+      if (isset($_FILES[$rfile]) &&  $_FILES[$rfile]['name'] != '' )
       {
-        $FILE["size"] = $_FILES[$rfile]["size"];
-        $FILE["name"] = $_FILES[$rfile]["name"];
-        $FILE["type"] = $_FILES[$rfile]["type"];
-        $FILE["tmp_name"] = $_FILES[$rfile]["tmp_name"];
-        $FILE["error"] = $_FILES[$rfile]["error"];
+        $FILE['size']     = $_FILES[$rfile]['size'];
+        $FILE['name']     = $_FILES[$rfile]['name'];
+        $FILE['type']     = $_FILES[$rfile]['type'];
+        $FILE['tmp_name'] = $_FILES[$rfile]['tmp_name'];
+        $FILE['error']    = $_FILES[$rfile]['error'];
 
-        $extensions_array = explode(",",$this->getElement(4));
-        $NEWFILE = $this->saveMedia($FILE, $REX["INCLUDE_PATH"]."/../../files/", $extensions_array, $mediacatid);
-
-        if ($NEWFILE["ok"])
+        // EXTENSION CHECK
+        $extensions_array = explode(',',$this->getElement(4));
+        $ext = '.'.pathinfo($FILE['name'], PATHINFO_EXTENSION);
+        if(!in_array(strtolower($ext),$extensions_array) && !in_array(strtoupper($ext),$extensions_array))
         {
-          $this->setValue($NEWFILE['filename']);
-
-        }else
+          $error[] = $err_msgs['type_err'];
+        }
+        else
         {
-          $this->setValue("");
-          $error = true;
+          $NEWFILE = $this->saveMedia($FILE, $REX['INCLUDE_PATH'].'/../../files/', $extensions_array, $mediacatid);
+
+          if ($NEWFILE['ok'])
+          {
+            $this->setValue($NEWFILE['filename']);
+
+          }else
+          {
+            $this->setValue('');
+            $error[] = 'unknown_save_error';
+          }
         }
 
       }
     }
 
-    if ($this->params["send"])
+    if ($this->params['send'])
     {
 
-      $this->params["value_pool"]["email"][$this->getElement(1)] = stripslashes($this->getValue());
-      if ($this->getElement(7) != "no_db") 
-        $this->params["value_pool"]["sql"][$this->getElement(1)] = $this->getValue();
+      $this->params['value_pool']['email'][$this->getElement(1)] = stripslashes($this->getValue());
+      if ($this->getElement(7) != 'no_db')
+        $this->params['value_pool']['sql'][$this->getElement(1)] = $this->getValue();
     }
 
     ## check for required file
-    if($this->params["send"] && $this->getElement(5) == 1 && $this->getValue() == '')
-      $error = true;
+    if($this->params['send'] && $this->getElement(5) == 1 && $this->getValue() == ''){
+      $error[] = $err_msgs['empty_err'];
+    }
 
-    $tmp = "";
-    $check_delete = "";
+    $tmp = '';
+    $check_delete = '';
 
-    if ($this->getValue() != "")
+    if ($this->getValue() != '')
     {
       $this->setElement(2, $this->getElement(2).'<br />Dateiname: <a href="files/'.$this->getValue().'">'.$this->getValue().'</a><br />');
 
@@ -101,15 +115,15 @@ class rex_xform_mediafile extends rex_xform_abstract
     }
 
     ## setting up error Message
-    if ($this->params["send"] && $error)
+    if ($this->params['send'] && count($error)>0)
     {
-      $this->params["warning"][$this->getId()] = $this->params["error_class"];
-      $this->params["warning_messages"][$this->getId()] = $this->getElement(6);
+      $this->params['warning'][$this->getId()] = $this->params['error_class'];
+      $this->params['warning_messages'][$this->getId()] = implode(', ',$error);
     }
 
-    $wc = "";
-    if (isset($this->params["warning"][$this->getId()])) {
-      $wc = $this->params["warning"][$this->getId()];
+    $wc = '';
+    if (isset($this->params['warning'][$this->getId()])) {
+      $wc = $this->params['warning'][$this->getId()];
     }
 
     $out = '
@@ -120,13 +134,13 @@ class rex_xform_mediafile extends rex_xform_abstract
         <input class="uploadbox clickmedia '.$wc.'" id="'.$this->getFieldId().'" name="'.$rfile.'" type="file" />
       </p>';
 
-    $this->params["form_output"][$this->getId()] = $out;
+    $this->params['form_output'][$this->getId()] = $out;
 
   }
 
   function getDescription()
   {
-    return "mediafile -> Beispiel: mediafile|label|Bezeichnung|groesseinkb|endungenmitpunktmitkommasepariert|pflicht=1|Fehlermeldung|[no_db]|mediacatid";
+    return 'mediafile -> Beispiel: mediafile|label|Bezeichnung|groesseinkb|endungenmitpunktmitkommasepariert|pflicht=1|min_err,max_err,type_err,empty_err|[no_db]|mediacatid';
   }
 
 
