@@ -49,7 +49,7 @@ if(!isset($table)) {
     $table = current($tables);
 
   }else {
-  rex_title($I18N->msg("table_not_found"), "");
+ echo rex_warning($I18N->msg("table_not_found"));
     return;
     exit;
 
