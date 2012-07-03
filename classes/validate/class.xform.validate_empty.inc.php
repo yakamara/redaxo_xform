@@ -5,7 +5,7 @@ class rex_xform_validate_empty extends rex_xform_validate_abstract
 
   function enterObject()
   {
-    if($this->params["send"]=="1")
+    if($this->params["send"]=="1" && is_array($this->obj_array))
     {
       foreach($this->obj_array as $Object)
       {
