@@ -22,6 +22,7 @@ xform_relation_delete_entry = Ausgewählten Datensatz löschen
 
 truncate_table = Daten löschen
 table_truncated = Daten wurden komplett gelöscht
+table_not_found = Die Tabelle wurde nicht gefunden
 truncate_table_confirm = Wirklich alle Datensaetze der Tabelle loeschen?
 xform_table_overview = Tabellenübersicht
 
