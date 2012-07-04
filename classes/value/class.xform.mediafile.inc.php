@@ -8,8 +8,18 @@ class rex_xform_mediafile extends rex_xform_abstract
 
     global $REX;
 
-    // MEDIAPOOL CAT
-    $mediacatid = ($this->getElement(8) == '') ? 0 : (int) $this->getElement(8);
+    // MEDIAPOOL
+    $mediacatid     = ($this->getElement(8) == '') ? 0 : (int) $this->getElement(8);
+    $mediapool_user = ($this->getElement(9) == '') ? 'xform::mediafile' : $this->getElement(9);
+    $pool           = $this->params['value_pool']['email'];
+    $mediapool_user = preg_replace_callback('/###(\w+)###/',
+                              function($m) use($pool)
+                              {
+                                return isset($pool[$m[1]])
+                                     ? $pool[$m[1]]
+                                     : 'key not found';
+                              },
+                              $mediapool_user);
 
     // MIN/MAX SIZES
     $sizes   = explode(",",$this->getElement(3));
@@ -65,7 +75,7 @@ class rex_xform_mediafile extends rex_xform_abstract
         }
         else
         {
-          $NEWFILE = $this->saveMedia($FILE, $REX['INCLUDE_PATH'].'/../../files/', $extensions_array, $mediacatid);
+          $NEWFILE = $this->saveMedia($FILE, $REX['INCLUDE_PATH'].'/../../files/', $extensions_array, $mediacatid, $mediapool_user);
 
           if ($NEWFILE['ok'])
           {
@@ -113,7 +123,7 @@ class rex_xform_mediafile extends rex_xform_abstract
         ';
         // $this->getElement(2) = "";
     }
-
+$error[] = 'test error';
     ## setting up error Message
     if ($this->params['send'] && count($error)>0)
     {
@@ -140,7 +150,7 @@ class rex_xform_mediafile extends rex_xform_abstract
 
   function getDescription()
   {
-    return 'mediafile -> Beispiel: mediafile|label|Bezeichnung|groesseinkb|endungenmitpunktmitkommasepariert|pflicht=1|min_err,max_err,type_err,empty_err|[no_db]|mediacatid';
+    return 'mediafile -> Beispiel: mediafile|label|Bezeichnung|groesseinkb|endungenmitpunktmitkommasepariert|pflicht=1|min_err,max_err,type_err,empty_err|[no_db]|mediacatid|user';
   }
 
 
@@ -156,16 +166,17 @@ class rex_xform_mediafile extends rex_xform_abstract
         array( 'type' => 'text',    'label' => 'Maximale Größe in Kb oder Range 100,500'),
         array( 'type' => 'text',    'label' => 'Welche Dateien sollen erlaubt sein, kommaseparierte Liste. ".gif,.png"'),
         array( 'type' => 'boolean', 'label' => 'Pflichtfeld'),
-        array( 'type' => 'text',    'label' => 'Fehlermeldung'),
+        array( 'type' => 'text',    'label' => 'min_err,max_err,type_err,empty_err'),
         array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 0),
         array( 'type' => 'text',    'label' => 'Mediakategorie ID'),
+        array( 'type' => 'text',    'label' => 'Mediapool User (createuser/updateuser)'),
         ),
       'description' => 'Mediafeld, welches Dateien aus dem Medienpool holt',
       'dbtype' => 'text'
     );
   }
 
-  function saveMedia($FILE, $filefolder, $extensions_array, $rex_file_category)
+  function saveMedia($FILE, $filefolder, $extensions_array, $rex_file_category, $mediapool_user)
   {
 
     global $REX;
@@ -177,26 +188,26 @@ class rex_xform_mediafile extends rex_xform_abstract
     $message = '';
 
     // ----- neuer filename und extension holen
-    $NFILENAME = strtolower(preg_replace("/[^a-zA-Z0-9.\-\$\+]/","_",$FILENAME));
-    if (strrpos($NFILENAME,".") != "")
+    $NFILENAME = strtolower(preg_replace('/[^a-zA-Z0-9.\-\$\+]/','_',$FILENAME));
+    if (strrpos($NFILENAME,'.') != '')
     {
-      $NFILE_NAME = substr($NFILENAME,0,strlen($NFILENAME)-(strlen($NFILENAME)-strrpos($NFILENAME,".")));
-      $NFILE_EXT  = substr($NFILENAME,strrpos($NFILENAME,"."),strlen($NFILENAME)-strrpos($NFILENAME,"."));
+      $NFILE_NAME = substr($NFILENAME,0,strlen($NFILENAME)-(strlen($NFILENAME)-strrpos($NFILENAME,'.')));
+      $NFILE_EXT  = substr($NFILENAME,strrpos($NFILENAME,'.'),strlen($NFILENAME)-strrpos($NFILENAME,'.'));
     }else
     {
       $NFILE_NAME = $NFILENAME;
-      $NFILE_EXT  = "";
+      $NFILE_EXT  = '';
     }
 
     // ---- ext checken
-    $ERROR_EXT = array(".php",".php3",".php4",".php5",".phtml",".pl",".asp",".aspx",".cfm");
+    $ERROR_EXT = array('.php','.php3','.php4','.php5','.phtml','.pl','.asp','.aspx','.cfm');
     if (in_array($NFILE_EXT,$ERROR_EXT))
     {
       $NFILE_NAME .= $NFILE_EXT;
-      $NFILE_EXT = ".txt";
+      $NFILE_EXT = '.txt';
     }
 
-    $standard_extensions_array = array(".rtf",".pdf",".doc",".gif",".jpg",".jpeg");
+    $standard_extensions_array = array('.rtf','.pdf','.doc','.gif','.jpg','.jpeg');
     if (count($extensions_array) == 0) $extensions_array = $standard_extensions_array;
 
     if (!in_array($NFILE_EXT,$extensions_array))
@@ -209,12 +220,12 @@ class rex_xform_mediafile extends rex_xform_abstract
     $NFILENAME = $NFILE_NAME.$NFILE_EXT;
 
     // ----- filexists ? -> _1 ..
-    if (file_exists($filefolder."/$NFILENAME"))
+    if (file_exists($filefolder.'/'.$NFILENAME))
     {
       for ($cf=1;$cf<1000;$cf++)
       {
-        $NFILENAME = $NFILE_NAME."_$cf"."$NFILE_EXT";
-        if (!file_exists($filefolder."/$NFILENAME")) break;
+        $NFILENAME = $NFILE_NAME.'_'.$cf.'.'.$NFILE_EXT;
+        if (!file_exists($filefolder.'/'.$NFILENAME)) break;
       }
     }
 
@@ -222,16 +233,16 @@ class rex_xform_mediafile extends rex_xform_abstract
     $upload = true;
     if(!move_uploaded_file($FILE['tmp_name'],$filefolder."/$NFILENAME") )
     {
-      if (!copy($FILE['tmp_name'],$filefolder."/$NFILENAME"))
+      if (!copy($FILE['tmp_name'],$filefolder.'/'.$NFILENAME))
       {
-        $message .= "move file $NFILENAME failed | ";
+        $message .= 'move file $NFILENAME failed | ';
         $RETURN = FALSE;
         $RETURN['ok'] = FALSE;
         return $RETURN;
       }
     }
 
-    @chmod($filefolder."/$NFILENAME", $REX['FILEPERM']);
+    @chmod($filefolder.'/'.$NFILENAME, $REX['FILEPERM']);
     $RETURN['type'] = $FILETYPE;
     $RETURN['msg'] = $message;
     $RETURN['ok'] = TRUE;
@@ -239,16 +250,16 @@ class rex_xform_mediafile extends rex_xform_abstract
 
     $FILESQL = rex_sql::factory();
     // $FILESQL->debugsql=1;
-    $FILESQL->setTable($REX['TABLE_PREFIX']."file");
-    $FILESQL->setValue("filetype",$FILETYPE);
-    $FILESQL->setValue("filename",$NFILENAME);
-    $FILESQL->setValue("originalname",$FILENAME);
-    $FILESQL->setValue("filesize",$FILESIZE);
-    $FILESQL->setValue("category_id",$rex_file_category);
-    $FILESQL->setValue("createdate",time());
-    $FILESQL->setValue("createuser","system");
-    $FILESQL->setValue("updatedate",time());
-    $FILESQL->setValue("updateuser","system");
+    $FILESQL->setTable($REX['TABLE_PREFIX'].'file');
+    $FILESQL->setValue('filetype',$FILETYPE);
+    $FILESQL->setValue('filename',$NFILENAME);
+    $FILESQL->setValue('originalname',$FILENAME);
+    $FILESQL->setValue('filesize',$FILESIZE);
+    $FILESQL->setValue('category_id',$rex_file_category);
+    $FILESQL->setValue('createdate',time());
+    $FILESQL->setValue('createuser',$mediapool_user);
+    $FILESQL->setValue('updatedate',time());
+    $FILESQL->setValue('updateuser',$mediapool_user);
     $FILESQL->insert();
 
     return $RETURN;
