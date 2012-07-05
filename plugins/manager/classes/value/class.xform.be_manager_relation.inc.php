@@ -139,8 +139,8 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
       }
       foreach($this->getValue() as $v) 
       {
-        if(isset($value_names[$v["id"]]))
-          $values[] = $v["id"];
+        if(isset($value_names[$v]))
+          $values[] = $v;
       }
       
       $this->setValue($values);
