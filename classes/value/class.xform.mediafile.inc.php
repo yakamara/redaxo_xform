@@ -123,7 +123,7 @@ class rex_xform_mediafile extends rex_xform_abstract
         ';
         // $this->getElement(2) = "";
     }
-$error[] = 'test error';
+
     ## setting up error Message
     if ($this->params['send'] && count($error)>0)
     {
