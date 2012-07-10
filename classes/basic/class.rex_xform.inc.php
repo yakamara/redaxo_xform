@@ -191,6 +191,9 @@ class rex_xform
     for ($i = 0; $i < $rows; $i++)
     {
       $element = $this->objparams["form_elements"][$i];
+      if($element[0]=='submit'){
+        $this->objparams["submit_btn_show"] = false;
+      }
       $ValueObjects = $this->_setValueElement($ValueObjects, $element, $i);
       $rows = count($this->objparams["form_elements"]); // if elements have changed -> new rowcount
     }
