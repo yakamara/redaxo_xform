@@ -48,7 +48,7 @@ class rex_xform_date extends rex_xform_abstract
     $wc = "";
     if (isset($this->params["warning"][$this->getId()])) 
     {
-      $wc = $this->params["warning"][$this->getId()];
+      $wc = ' '.$this->params["warning"][$this->getId()];
     }
 
     $this->params["value_pool"]["email"][$this->getName()] = $isodatum;
@@ -109,7 +109,7 @@ class rex_xform_date extends rex_xform_abstract
     
     $out = '
     <p class="'.$this->getHTMLClass().'" id="'.$this->getHTMLId().'">
-          <label class="select" for="'.$this->getFieldId().'" >'.$this->getElement(2).'</label>';
+          <label class="select'.$wc.'" for="'.$this->getFieldId().'" >'.$this->getElement(2).'</label>';
 
     $format = $this->getElement(5);
     if($format == "")
