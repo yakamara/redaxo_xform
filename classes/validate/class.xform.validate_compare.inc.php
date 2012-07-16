@@ -13,13 +13,13 @@ class rex_xform_validate_compare extends rex_xform_validate_abstract
       {
         if ($o->getName() == $field_1)
         {
-          $id_1 = $o->getId();
-          $value_1 = $o->getValue();
+          $id_1    = !isset($id_1)    ? $o->getId()    : $id_1;
+          $value_1 = !isset($value_1) ? $o->getValue() : $value_1;
         }
         if ($o->getName() == $field_2)
         {
-          $id_2 = $o->getId();
-          $value_2 = $o->getValue();
+          $id_2    = !isset($id_2)    ? $o->getId()    : $id_2;
+          $value_2 = !isset($value_2) ? $o->getValue() : $value_2;
         }
       }
       if ($value_1 != $value_2)
