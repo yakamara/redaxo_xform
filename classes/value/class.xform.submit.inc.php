@@ -3,6 +3,11 @@
 class rex_xform_submit extends rex_xform_abstract
 {
 
+  function init()
+  {
+    $this->params["submit_btn_show"] = FALSE;
+  }
+
   function enterObject()
   {
     $this->setValue($this->getElement(2));
@@ -24,7 +29,6 @@ class rex_xform_submit extends rex_xform_abstract
       $this->params["value_pool"]["sql"][$this->getElement(1)] = $this->getValue();
     }
     
-    $this->params["submit_btn_show"] = FALSE;
   }
 
   function getDescription()
