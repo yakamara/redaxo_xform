@@ -66,12 +66,15 @@ class rex_xform_validate_abstract
     return array();
   }
 
-  function getElement($i)
+  function getElement($i,$trim=true)
   {
-    if(!isset($this->elements[$i]))
-      return "";
-    else
+    if(!isset($this->elements[$i])) {
+      return '';
+    }elseif($trim){
+      return trim($this->elements[$i]);
+    }else{
       return $this->elements[$i];
+    }
   }
 
   function postValueAction()
