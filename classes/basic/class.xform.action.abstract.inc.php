@@ -50,12 +50,15 @@ class rex_xform_action_abstract
     return array();
   }
 
-  function getElement($i)
+  function getElement($i,$trim=true)
   {
-    if(!isset($this->elements[$i]))
-      return FALSE;
-    else
+    if(!isset($this->elements[$i])) {
+      return '';
+    }elseif($trim){
+      return trim($this->elements[$i]);
+    }else{
       return $this->elements[$i];
+    }
   }
 
   function getParam($param)

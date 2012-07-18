@@ -139,11 +139,13 @@ class rex_xform_abstract
     }
   }
 
-  function getElement($i)
+  function getElement($i,$trim=true)
   {
     if(!isset($this->elements[$i])) {
-      return "";
-    }else {
+      return '';
+    }elseif($trim){
+      return trim($this->elements[$i]);
+    }else{
       return $this->elements[$i];
     }
   }
