@@ -452,7 +452,7 @@ class rex_xform
 
 
 
-  private function _setValueElement($ValueObjects, $element, $i)
+  private function _setValueElement(&$ValueObjects, $element, $i)
   {
     global $REX;
     if($element[0] == "validate")
@@ -473,7 +473,7 @@ class rex_xform
           $ValueObjects[$i]->setId($i);
           $ValueObjects[$i]->init();
           $ValueObjects[$i]->setValue($this->getFieldValue($i,'',$ValueObjects[$i]->getName()));
-          $ValueObjects[$i]->setObjects($ValueObjects);
+          $ValueObjects[$i]->setValueObjects($ValueObjects);
           break;
 
         }

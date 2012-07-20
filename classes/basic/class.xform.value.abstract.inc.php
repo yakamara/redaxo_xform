@@ -24,6 +24,14 @@ class rex_xform_abstract
   var $type;
   var $keys = array();
 
+
+  // ------------ 
+
+  function getId()
+  {
+    return $this->id;
+  }
+
   function setId($id)
   {
     $this->id = $id;
@@ -33,8 +41,6 @@ class rex_xform_abstract
   {
     $this->aid = $aid;
   }
-
-  // **************************
 
   function setValue($value)
   {
@@ -46,7 +52,38 @@ class rex_xform_abstract
     return $this->value;
   }
 
-  // **************************
+  function getFieldId($k="")
+  {
+    if($k === "") 
+    {
+      return "xform-".$this->params["form_name"]."-field-".$this->getId();
+    }
+    return "xform-".$this->params["form_name"]."-field-".$this->getId().'_'.$k;
+  }
+
+  function getFieldName($k="")
+  {
+    return $this->params["this"]->getFieldName($this->getId(), $k, $this->getName());
+  }
+
+  function getHTMLId($suffix = "")
+  {
+    if($suffix != "") 
+    {
+      return "xform-".$this->params["form_name"]."-".$this->getName()."-".$suffix;
+    }else 
+    {
+      return "xform-".$this->params["form_name"]."-".$this->getName();
+    }
+  }
+
+  function getHTMLClass()
+  {
+    return "form".$this->type;
+  }
+
+
+  // ------------
 
   function setKey($k,$v)
   {
@@ -69,9 +106,11 @@ class rex_xform_abstract
       return $v;
     }else
     {
-      if(isset($this->keys[$v])) {
+      if(isset($this->keys[$v])) 
+      {
         return $this->keys[$v];
-      }else {
+      }else 
+      {
         return $v;
       }
     }
@@ -82,7 +121,7 @@ class rex_xform_abstract
     $this->keys = array();
   }
 
-  // **************************
+  // ------------
 
   function loadParams(&$params, $elements = array())
   {
@@ -102,12 +141,20 @@ class rex_xform_abstract
     return $this->name;
   }
 
-  function setObjects(&$obj)
+  function setValueObjects(&$obj)
   {
     $this->obj = &$obj;
   }
 
-  function enterObject()
+  function getValueObjects()
+  {
+    return $this->obj;
+  }
+
+  // ------------ Trigger
+
+
+  function enterObject() 
   {
   }
 
@@ -131,19 +178,15 @@ class rex_xform_abstract
   {
   }
 
-  function postSQLAction($sql,$flag="insert")
-  {
-    if ($flag=="insert")
-    {
-      // $id = $sql->getLastId();
-    }
-  }
+  // ------------ 
 
   function getElement($i)
   {
-    if(!isset($this->elements[$i])) {
+    if(!isset($this->elements[$i])) 
+    {
       return "";
-    }else {
+    }else 
+    {
       return $this->elements[$i];
     }
   }
@@ -153,35 +196,7 @@ class rex_xform_abstract
     $this->elements[$i] = $value;
   }
 
-  function getId()
-  {
-    return $this->id;
-  }
-
-  function getFieldId($k="")
-  {
-    if($k === "") return "xform-".$this->params["form_name"]."-field-".$this->getId();
-    return "xform-".$this->params["form_name"]."-field-".$this->getId().'_'.$k;
-  }
-
-  function getFieldName($k="")
-  {
-    return $this->params["this"]->getFieldName($this->getId(), $k, $this->getName());
-  }
-
-  function getHTMLId($suffix = "")
-  {
-    if($suffix != "") {
-      return "xform-".$this->params["form_name"]."-".$this->getName()."-".$suffix;
-    }else {
-      return "xform-".$this->params["form_name"]."-".$this->getName();
-    }
-  }
-
-  function getHTMLClass()
-  {
-    return "form".$this->type;
-  }
+  // ------------ 
 
   function getDescription()
   {
