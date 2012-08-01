@@ -41,6 +41,9 @@ class rex_xform_action_db2email extends rex_xform_action_abstract
       if ($this->getElement(4) != FALSE && $this->getElement(4) != "")
         $mail_to = $this->getElement(4);
 
+      // EP "XFORM_DB2EMAIL_TEMPLATE_BEFORE_REPLACE"
+      $etpl = rex_register_extension_point('XFORM_DB2EMAIL_TEMPLATE_BEFORE_REPLACE',$etpl);
+
       $etpl = rex_xform_emailtemplate::replaceVars($etpl,$this->params["value_pool"]["email"]);
 
       $etpl['mail_to'] = $mail_to;
@@ -59,6 +62,9 @@ class rex_xform_action_db2email extends rex_xform_action_abstract
       {
         $etpl['attachments'] = array();
       }
+
+      // EP "XFORM_DB2EMAIL_TEMPLATE_BEFORE_SEND"
+      $etpl = rex_register_extension_point('XFORM_DB2EMAIL_TEMPLATE_BEFORE_SEND',$etpl);
 
       if ($this->params["debug"])
       {
