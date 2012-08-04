@@ -20,7 +20,7 @@ if($REX["REDAXO"] && !$REX['SETUP'])
     return TRUE;
   }
 
-  $REX['ADDON']['version']['geo'] = '2.8';
+  $REX['ADDON']['version']['geo'] = '2.9.3';
   $REX['ADDON']['author']['geo'] = 'Jan Kristinus';
   $REX['ADDON']['supportpage']['geo'] = 'www.yakamara.de/tag/redaxo/';
 
