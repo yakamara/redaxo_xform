@@ -214,6 +214,8 @@ class rex_xform
         $this->objparams["warning"][] = $this->objparams["Error-Code-EntryNotFound"];
         $this->objparams["warning_messages"][] = $this->objparams["Error-Code-EntryNotFound"];
         $this->objparams["form_show"] = TRUE;
+      } else {
+        $this->objparams["value_pool"]["prior_values"] = array_pop($SQLOBJ->getArray());
       }
     }
 
