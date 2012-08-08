@@ -206,14 +206,16 @@ class rex_xform
 
     // *************************************************** PRE VALUES
     // Felder aus Datenbank auslesen - Sofern Aktualisierung
-    $SQLOBJ = rex_sql::factory();
-    if ($this->objparams['getdata']) {
-      $SQLOBJ->debugsql = $this->objparams['debug'];
-      $SQLOBJ->setQuery("SELECT * from ".$this->objparams["main_table"]. " WHERE ".$this->objparams["main_where"]);
-      if ($SQLOBJ->getRows() > 1 || $SQLOBJ->getRows() == 0) {
+    if ($this->objparams['getdata']) 
+    {
+      $this->objparams["sql_object"] = rex_sql::factory();
+      $this->objparams["sql_object"]->debugsql = $this->objparams['debug'];
+      $this->objparams["sql_object"]->setQuery("SELECT * from ".$this->objparams["main_table"]. " WHERE ".$this->objparams["main_where"]);
+      if ($this->objparams["sql_object"]->getRows() > 1 || $this->objparams["sql_object"]->getRows() == 0) {
         $this->objparams["warning"][] = $this->objparams["Error-Code-EntryNotFound"];
         $this->objparams["warning_messages"][] = $this->objparams["Error-Code-EntryNotFound"];
         $this->objparams["form_show"] = TRUE;
+        unset($this->objparams["sql_object"]);
       }
     }
 
@@ -229,9 +231,9 @@ class rex_xform
         $element = $this->objparams["form_elements"][$i];
         if (($element[0]!="validate" && $element[0]!="action") and $element[1] != "")
         {
-          if(isset($SQLOBJ))
+          if(isset($this->objparams["sql_object"]))
           {
-            $this->setFieldValue($i,@addslashes($SQLOBJ->getValue($element[1])),'',$element[1]);
+            $this->setFieldValue($i,@addslashes($this->objparams["sql_object"]->getValue($element[1])),'',$element[1]);
           }
         }
         if($element[0]!="validate" && $element[0]!="action")
