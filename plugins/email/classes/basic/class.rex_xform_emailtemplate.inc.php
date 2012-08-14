@@ -16,9 +16,26 @@ class rex_xform_emailtemplate
     return FALSE;
   }
 
-  function replaceVars($template,$er = array())
+  function replaceVars($template, $er = array())
   {
     global $REX;
+    
+    $r = rex_register_extension_point('XFORM_EMAIL_BEFORE_REPLACEVARS', array(
+      "template" => $template,
+      "search_replace" => $er,
+      "status" => false
+      )
+    );
+    
+    $template = $r["template"];
+    $er = $r["search_replace"];
+    $status = $r["status"];
+    
+    if($status)
+    {
+      return true;
+    }
+    
     $er['REX_SERVER'] = $REX['SERVER'];
     $er['REX_ERROR_EMAIL'] = $REX['ERROR_EMAIL'];
     $er['REX_SERVERNAME'] = $REX['SERVERNAME'];
@@ -45,6 +62,23 @@ class rex_xform_emailtemplate
 
   function sendMail($template, $template_name = "")
   {
+  
+    $r = rex_register_extension_point('XFORM_EMAIL_BEFORE_SEND',array(
+      "template" => $template,
+      "template_name" => $template_name,
+      "status" => false
+      )
+    );
+    
+    $template = $r["template"];
+    $template_name = $r["template_name"];
+    $status = $r["status"];
+    
+    if($status)
+    {
+      return true;
+    }
+  
     $mail = new rex_mailer();
     $mail->AddAddress($template["mail_to"], $template["mail_to_name"]);
     $mail->SetFrom($template["mail_from"], $template["mail_from_name"]);
