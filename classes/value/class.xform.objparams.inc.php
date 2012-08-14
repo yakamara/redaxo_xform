@@ -17,7 +17,10 @@ class rex_xform_objparams extends rex_xform_abstract
         break;
 
       default:
-          $value = ((int)$value == $value) ? (int) $value : $value;
+        if(preg_match("/^[0-9]+$/i", $value) > 0)
+        {
+          // $value = (int) $value;
+        }
     }
     
     $this->params[trim($this->getElement(1))] = $value;
