@@ -359,8 +359,6 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
   {
     global $REX;
 
-    return;
-
     // $this->params["debug"] = TRUE;
 
     $source_id = -1;
