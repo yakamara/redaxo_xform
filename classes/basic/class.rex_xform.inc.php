@@ -20,19 +20,25 @@ class rex_xform
     require_once($REX['INCLUDE_PATH'].'/addons/xform/classes/basic/'.'class.xform.validate.abstract.inc.php');
 
     $this->objparams = array();
+    $this->objparams['object_path'] = $REX["INCLUDE_PATH"]."/addons/xform/classes/";
+    $this->objparams['debug'] = FALSE;
 
-    // --------------------------- editable via objparams|key|newvalue
+    $this->objparams['form_data'] = "";
+
+    $this->objparams["actions"] = array();
 
     $this->objparams["answertext"] = "";
     $this->objparams["submit_btn_label"] = "Abschicken";
     $this->objparams["submit_btn_show"] = TRUE;
+    $this->objparams["output"] = "";
 
-    $this->objparams["actions"] = array();
+    $this->objparams["main_where"] = ""; // z.B. id=12
+    $this->objparams["main_id"] = -1; // unique ID
+    $this->objparams["main_table"] = ""; // for db and unique
 
     $this->objparams["error_class"] = 'form_warning';
     $this->objparams["unique_error"] = "";
     $this->objparams["unique_field_warning"] = "not unique";
-
     $this->objparams["article_id"] = 0;
     $this->objparams["clang"] = 0;
 
@@ -40,12 +46,14 @@ class rex_xform
 
     $this->objparams["form_method"] = "post";
     $this->objparams["form_action"] = "index.php";
+    $this->objparams['form_parameter'] = "";
     $this->objparams["form_anchor"] = "";
     $this->objparams["form_showformafterupdate"] = 0;
     $this->objparams["form_show"] = TRUE;
     $this->objparams["form_name"] = "formular";
     $this->objparams["form_id"] = "form_formular";
-    $this->objparams["form_wrap"] = array('<div id="rex-xform" class="xform">','</div>'); // or: <div id="rex-xform" class="xform">#</div>
+    $this->objparams["form_wrap"] = array('<div id="rex-xform" class="xform">','</div>');
+    $this->objparams["form_hiddenfields"] = array();
 
     $this->objparams["actions_executed"] = FALSE;
     $this->objparams["postactions_executed"] = FALSE;
@@ -53,28 +61,11 @@ class rex_xform
     $this->objparams["Error-occured"] = "";
     $this->objparams["Error-Code-EntryNotFound"] = "ErrorCode - EntryNotFound";
     $this->objparams["Error-Code-InsertQueryError"] = "ErrorCode - InsertQueryError";
-
-    $this->objparams["getdata"] = FALSE;
-
-
-    // --------------------------- do not edit
-
-    $this->objparams['object_path'] = $REX["INCLUDE_PATH"]."/addons/xform/classes/";
-    $this->objparams['debug'] = FALSE;
-
-    $this->objparams['form_data'] = "";
-    $this->objparams["output"] = "";
-
-    $this->objparams["main_where"] = ""; // z.B. id=12
-    $this->objparams["main_id"] = -1; // unique ID
-    $this->objparams["main_table"] = ""; // for db and unique
-
-    $this->objparams["form_hiddenfields"] = array();
-
     $this->objparams["warning"] = array ();
     $this->objparams["warning_messages"] = array ();
 
     $this->objparams["fieldsets_opened"] = 0; //
+    $this->objparams["getdata"] = FALSE;
 
     $this->objparams["form_elements"] = array();
     $this->objparams["form_output"] = array();
@@ -108,10 +99,9 @@ class rex_xform
     $form_elements_tmp = array ();
     $form_elements_tmp = explode("\n", $this->objparams['form_data']);
 
-    // CLEAR EMPTY AND COMMENT LINES
+    /* clear empty line */
     foreach($form_elements_tmp as $form_element) {
-      $form_element = trim($form_element);
-      if($form_element != "" && $form_element[0] != '#' && $form_element[0] != '/') {
+      if(trim($form_element) != "") {
         $this->objparams["form_elements"][] = explode("|", trim($form_element));
       }
     }
@@ -206,16 +196,14 @@ class rex_xform
 
     // *************************************************** PRE VALUES
     // Felder aus Datenbank auslesen - Sofern Aktualisierung
-    if ($this->objparams['getdata']) 
-    {
-      $this->objparams["sql_object"] = rex_sql::factory();
-      $this->objparams["sql_object"]->debugsql = $this->objparams['debug'];
-      $this->objparams["sql_object"]->setQuery("SELECT * from ".$this->objparams["main_table"]. " WHERE ".$this->objparams["main_where"]);
-      if ($this->objparams["sql_object"]->getRows() > 1 || $this->objparams["sql_object"]->getRows() == 0) {
+    $SQLOBJ = rex_sql::factory();
+    if ($this->objparams['getdata']) {
+      $SQLOBJ->debugsql = $this->objparams['debug'];
+      $SQLOBJ->setQuery("SELECT * from ".$this->objparams["main_table"]. " WHERE ".$this->objparams["main_where"]);
+      if ($SQLOBJ->getRows() > 1 || $SQLOBJ->getRows() == 0) {
         $this->objparams["warning"][] = $this->objparams["Error-Code-EntryNotFound"];
         $this->objparams["warning_messages"][] = $this->objparams["Error-Code-EntryNotFound"];
         $this->objparams["form_show"] = TRUE;
-        unset($this->objparams["sql_object"]);
       }
     }
 
@@ -231,9 +219,9 @@ class rex_xform
         $element = $this->objparams["form_elements"][$i];
         if (($element[0]!="validate" && $element[0]!="action") and $element[1] != "")
         {
-          if(isset($this->objparams["sql_object"]))
+          if(isset($SQLOBJ))
           {
-            $this->setFieldValue($i,@addslashes($this->objparams["sql_object"]->getValue($element[1])),'',$element[1]);
+            $this->setFieldValue($i,@addslashes($SQLOBJ->getValue($element[1])),'',$element[1]);
           }
         }
         if($element[0]!="validate" && $element[0]!="action")
@@ -435,14 +423,24 @@ class rex_xform
 
       // -------------------- formOut
       $formOut = $warningOut;
-      $formOut .= '<form action="'.$this->objparams["form_action"].'" method="'.$this->objparams["form_method"].'" id="' . $this->objparams["form_id"] . '" enctype="multipart/form-data">';
+      
+      // Get-Parameter 
+      $formParams = $this->objparams['form_parameter'];
+      $formParams = explode(',',trim($formParams));
+      
+      $tmp_array = array();
+      foreach($formParams as $formParam) {
+          if(!empty($formParam))
+            $tmp_array[$formParam] = rex_get($formParam, 'string');
+      }
+      $formParams = $tmp_array;
+      (empty($formParams)) ? $formUrl = rex_getUrl() : $formUrl = rex_getUrl('', '', $formParams);
+      
+      $formOut .= '<form action="'.$formUrl.'" method="'.$this->objparams["form_method"].'" id="' . $this->objparams["form_id"] . '" enctype="multipart/form-data">';
       $formOut .= $formFieldsOut;
       $formOut .= $hiddenOut;
       for($i=0;$i<$this->objparams["fieldsets_opened"];$i++) { $formOut .= '</fieldset>'; }
       $formOut .= '</form>';
-
-      if(!is_array($this->objparams["form_wrap"]))
-          $this->objparams["form_wrap"] = explode("#",$this->objparams["form_wrap"]);
 
       $this->objparams["output"] .= $this->objparams["form_wrap"][0].$formOut.$this->objparams["form_wrap"][1];
 
@@ -454,7 +452,7 @@ class rex_xform
 
 
 
-  private function _setValueElement(&$ValueObjects, $element, $i)
+  private function _setValueElement($ValueObjects, $element, $i)
   {
     global $REX;
     if($element[0] == "validate")
@@ -475,7 +473,7 @@ class rex_xform
           $ValueObjects[$i]->setId($i);
           $ValueObjects[$i]->init();
           $ValueObjects[$i]->setValue($this->getFieldValue($i,'',$ValueObjects[$i]->getName()));
-          $ValueObjects[$i]->setValueObjects($ValueObjects);
+          $ValueObjects[$i]->setObjects($ValueObjects);
           break;
 
         }
