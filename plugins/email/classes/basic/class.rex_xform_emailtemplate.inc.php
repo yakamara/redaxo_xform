@@ -7,7 +7,7 @@ class rex_xform_emailtemplate
   function getTemplate($name)
   {
     $gt = rex_sql::factory();
-    $gt->setQuery('select * from rex_xform_email_template where name="'.mysql_real_escape_string($name).'"');
+    $gt->setQuery('select * from '. $REX['TABLE_PREFIX'] .'xform_email_template where name="'.mysql_real_escape_string($name).'"');
     if ($gt->getRows()==1)
     {
       $b = $gt->getArray();
