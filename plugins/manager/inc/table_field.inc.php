@@ -116,7 +116,6 @@ if($func == "choosenadd")
       $d = 0;
       foreach($mfields as $k => $v) {
         $d++;
-        if($d>50) break;
         $l = 'index.php?'.$link_vars.'&table_name='.$table["table_name"].'&func=choosenadd&type_real_field='.$k.'&type_layout=t';
         echo '<a href="'.$l.'">'.$k.'</a>, ';
       }
