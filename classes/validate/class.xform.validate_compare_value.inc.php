@@ -7,21 +7,23 @@ class rex_xform_validate_compare_value extends rex_xform_validate_abstract
   {
     if($this->params["send"]=="1")
     {
-      $field = $this->getElement(2);
-      $value = -1;
-      foreach($this->obj_array as $o)
+      if(is_array($this->obj_array))
       {
-        if ($o->getName() == $field)
+        foreach($this->obj_array as $o)
         {
-          $value = $o->getValue();
+          if ($o->getName() == $this->getElement(2))
+          {
+            $value = $o->getValue();
+            if(strtolower($value) != strtolower($this->getElement(3)))
+            {
+              $this->params["warning"][$o->getId()] = $this->getElement(4);
+              $this->params["warning_messages"][$o->getId()] = $this->getElement(4);
+            }
+          }
         }
       }
-      if ($value === -1 || strtolower($value) != strtolower($this->getElement(3)))
-      {
-        $this->params["warning"][] = $this->getElement(4);
-        $this->params["warning_messages"][] = $this->getElement(4);
-      }
     }
+    
   }
 
   function getDescription()
