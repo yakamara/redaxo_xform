@@ -19,11 +19,10 @@ if("REX_IS_VALUE[6]" == "true")
   $html = "0"; // plaintext
   if('REX_VALUE[11]' == 1) $html = "1"; // html
   if('REX_VALUE[11]' == 2) $html = "2"; // textile
-$var = <<<EOT
-REX_HTML_VALUE[6]
-EOT;
+  
+  $t = str_replace("<br />","",rex_xform::unhtmlentities('REX_VALUE[6]'));
   $xform->setActionField("showtext",array(
-      $var,
+      $t,
       '<div class="rex-message"><div class="rex-info"><p>',
       '</p></div></div>',
       $html // als HTML interpretieren
