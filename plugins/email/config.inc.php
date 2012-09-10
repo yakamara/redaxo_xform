@@ -15,6 +15,7 @@ if($REX["REDAXO"] && !$REX['SETUP'])
   $REX['ADDON']['version'][$mypage] = '2.9.3';
   $REX['ADDON']['author'][$mypage] = 'Jan Kristinus';
   $REX['ADDON']['supportpage'][$mypage] = 'www.yakamara.de/tag/redaxo/';
+  $REX['PERM'][] = 'xform[email]';
 
   if ($REX['USER'] && ($REX['USER']->isAdmin() || $REX['USER']->hasPerm("xform[email]")))
     $REX['ADDON']['xform']['SUBPAGES'][] = array ('email' , $I18N->msg("xform_email_templates"));
