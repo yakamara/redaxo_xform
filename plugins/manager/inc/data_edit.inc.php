@@ -265,7 +265,7 @@ if($show_editpage) {
       // Optional .. kann auch geloescht werden. Dient nur zu Hilfe beim Aufbau
       // von XForm-Formularen über php
       // Textblock gibt den formalarblock als text aus, um diesen in das xform modul einsetzen zu können.
-      //	rex_xform_show_formularblock=1
+      //  rex_xform_show_formularblock=1
       $text_block = '';
       foreach($fields as $field)
       {
@@ -397,9 +397,8 @@ if($show_editpage) {
           $checkboxes .= '<span class="xform-manager-searchfield"><input type="checkbox" name="rex_xform_searchfields[]" value="'.$field["f1"].'" class="" id="'.$field["f1"].'" '.$checked.' />&nbsp;<label for="'.$field["f1"].'">'.rex_translate($field["f2"]).'</label></span>';
         }
       }
-
-      $suchform = '<table width=770 cellpadding=5 cellspacing=1 border=0 bgcolor=#ffffff class="rex-table">';
-      $suchform .= '<form action="'.$_SERVER['PHP_SELF'].'" method="poost" >';
+      $suchform = '';
+      $suchform .= '<form action="'.$_SERVER['PHP_SELF'].'" method="post" ><div>';
 
       foreach($this->getLinkVars() as $k => $v)
       {
@@ -416,6 +415,9 @@ if($show_editpage) {
       if($sorttype != "") { $suchform .= '<input type="hidden" name="sorttype" value="'.htmlspecialchars(stripslashes($sorttype)).'" />'; };
 
       $suchform .= '<input type="hidden" name="rex_xform_search" value="1" />';
+      $suchform .= '</div>';
+      
+      $suchform .= '<table width="770" cellpadding="5" cellspacing="1" border="0" style="background-color:#ffffff" class="rex-table">';
       $suchform .= '<tr>
           <th>'.$I18N->msg('searchtext').' [<a href="#" id="xform_help_empty_toggler">?</a>]</th>
           <th>'.$I18N->msg('searchfields').'</th>
@@ -432,8 +434,8 @@ if($show_editpage) {
       }
       $suchform .= '</td>
         </tr>';
-      $suchform .= '</form>';
       $suchform .= '</table>';
+      $suchform .= '</form>';
 
       //echo $suchform;
     }else{
@@ -587,7 +589,7 @@ if($show_editpage) {
     // ADD LINK
     if($this->hasDataPageFunction("add"))
     {
-      echo '<a href="index.php?'.$link_vars.'&func=add&'.$em_url.$em_rex_list.'">'.$I18N->msg("add").'</a> | ';
+      echo '<a href="index.php?'.htmlspecialchars($link_vars).'&amp;func=add&amp;'.htmlspecialchars($em_url.$em_rex_list).'">'.$I18N->msg("add").'</a> | ';
     }
 
     // SEARCH LINK
@@ -602,15 +604,15 @@ if($show_editpage) {
     {
       // EXPORT FUNC
       if($table["export"] == 1 && $this->hasDataPageFunction("export")) {
-        echo ' | <a href="index.php?'.$link_vars.'&func=export&'.$em_url.$em_rex_list.'">'.$I18N->msg("export").'</a>';
+        echo ' | <a href="index.php?'.htmlspecialchars($link_vars).'&amp;func=export&amp;'.htmlspecialchars($em_url.$em_rex_list).'">'.$I18N->msg("export").'</a>';
       }
       // IMPORT FUNC
       if(!$popup && $table["import"] == 1 && $this->hasDataPageFunction("import")) {
-        echo ' | <a href="index.php?'.$link_vars.'&func=import">'.$I18N->msg("import").'</a>';
+        echo ' | <a href="index.php?'.htmlspecialchars($link_vars).'&amp;func=import">'.$I18N->msg("import").'</a>';
       }
       // TRUNCATE FUNC
       if($this->hasDataPageFunction("truncate_table")) {
-        echo ' | <a href="index.php?'.$link_vars.'&func=truncate_table&'.$em_url.$em_rex_list.'" id="truncate-table">'.$I18N->msg("truncate_table").'</a>';
+        echo ' | <a href="index.php?'.htmlspecialchars($link_vars).'&amp;func=truncate_table&amp;'.htmlspecialchars($em_url.$em_rex_list).'" id="truncate-table">'.$I18N->msg("truncate_table").'</a>';
       }
     }
 
@@ -633,13 +635,13 @@ if($show_editpage) {
 
     echo '
 
-    <script type="text/javascript">
+    <script type="text/javascript">/* <![CDATA[ */
       jQuery("#infotoggler").click(function(){jQuery("#infoblock").slideToggle("fast");});
       jQuery("#searchtoggler").click(function(){jQuery("#searchblock").slideToggle("fast");});
       jQuery("#xform_help_empty_toggler").click(function(){jQuery("#xform_help_empty").slideToggle("fast");});
       jQuery("#xform_search_reset").click(function(){window.location.href = "index.php?page=xform&subpage=manager&tripage=data_edit&table_name='.$table["table_name"].'&rex_xform_search=1";});
       jQuery("a.#truncate-table").click(function(){if(confirm("'.$I18N->msg("truncate_table_confirm").'")){return true;} else {return false;}});
-    </script>';
+    /* ]]> */</script>';
 
   }
 
