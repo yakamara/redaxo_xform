@@ -16,7 +16,7 @@ class rex_xform_validate_compare_value extends rex_xform_validate_abstract
             $value = $o->getValue();
             if(strtolower($value) != strtolower($this->getElement(3)))
             {
-              $this->params["warning"][$o->getId()] = $this->getElement(4);
+              $this->params["warning"][$o->getId()] = $this->params["error_class"];
               $this->params["warning_messages"][$o->getId()] = $this->getElement(4);
             }
           }
