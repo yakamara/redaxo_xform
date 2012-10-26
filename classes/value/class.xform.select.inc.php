@@ -27,7 +27,7 @@ class rex_xform_select extends rex_xform_abstract
       {
         $bezeichnung = $teile[0];
       }
-      $SEL->addOption(rex_translate($wert), $bezeichnung);
+      $SEL->addOption(rex_translate($wert, null, false), $bezeichnung);
     }
 
     if($multiple) 

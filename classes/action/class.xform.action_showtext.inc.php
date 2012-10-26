@@ -10,6 +10,8 @@ class rex_xform_action_showtext extends rex_xform_action_abstract
     if ($text == "")
       $text = $this->params["answertext"];
 
+    $text = rex_translate($text, null, false);
+
     if ($this->getElement(5) == "0")
       $text = nl2br(htmlspecialchars($text));
 
