@@ -1,0 +1,121 @@
+xform_table_manager = Table Manager
+
+navigation_manager = Database Tables
+
+
+# xform manager
+alltables = All Tables
+back_to_overview = back to Overview
+updatetable = Update Table(s) 
+tablesupdated = Table(s) updated
+
+xform_help_empty = Empty records can be found using <br />"(empty)"
+xform_help_multipleselect = Select multiple records pressing CTRL/CMD Key
+updatetable_with_delete = clean up Fields
+
+xform_relation_move_first_data = move selected record to start
+xform_relation_move_up_data = move selected record up
+xform_relation_move_down_data = move selected record down
+xform_relation_move_last_data = move selected record to end
+xform_relation_choose_entry = select record
+xform_relation_delete_entry = delete selected record
+
+truncate_table = erase data
+table_truncated = All records have been erased 
+table_not_found = Table not found
+truncate_table_confirm = Are you sure to delete all Data records??
+xform_table_overview = Table Overview
+
+xform_manager_edit_table = edit table
+xform_manager_add_table = add table
+
+# tables.inc.php
+importcsv = import CSV
+tbl_active = active
+tbl_inactive = inactive
+
+xform_tbl_active = active
+xform_tbl_inactive = inactive
+
+xform_manager_table_updated = Table and Fields created / updated
+xform_manager_table_entry_saved = Entry saved
+xform_manager_table_enter_name = Please enter a name
+xform_manager_table_enter_specialchars = Please enter only alphabetic characters
+xform_manager_table_exists = This Table name already exists!
+
+xform_manager_table_prio = Priority
+xform_manager_table_name = Name
+xform_manager_name = Identifier
+xform_manager_table_description = Description
+xform_manager_entries_per_page = Datasets per Page
+xform_manager_search_active = Search active
+xform_manager_enter_number = Please enter a number of records per page
+xform_manager_table_hide = Hidden in navigation
+xform_manager_table_allow_export = Export allowed
+xform_manager_table_allow_import = Import allowed
+
+xform_manager_table_updated = Data updated
+xform_manager_table_added = Data added
+xform_manager_table_deleted = Table deleted
+xform_manager_table_add = add table
+xform_manager_table_update = Update tables and fields
+xform_manager_table_import = Import table
+
+
+# edit.inc.php
+thankyouforupdate = Thanks for updating.
+thankyouforentry = Thanks for adding a new entry.
+editdata = edit data
+adddata = add data
+searchtext = Search request
+searchfields = Tables to be searched in
+add = add
+edit = edit
+save = save
+delete = delete
+search = search
+export = export data
+import = import data
+datadeleted = record was deleted
+openerinfo = Opener-Info
+
+
+
+# field.inc.php
+tablenotexists = Table does not exist!
+tablefield = Table field
+values = Values
+validates = Validation
+actios = Actions
+actions = Actions
+validatenamenotempty = Name cannot be empty
+validatenamepregmatch = Please only enter alphbetic characters and "_"
+validatenamecheck = Name already in database
+donotsaveindb = Do not save in database
+hideinlist = Hide in list
+useassearchfieldalidatenamenotempty = Use as search field
+tablefielddeleted = Field deleted
+tablefieldnotfound = Field not found
+addtablefield = add field
+table = Table
+editfield = edit field
+choosenadd = select field
+choosenadd_description = Please choose a field that you want to use. Available fields are value-fields (to add data) validate-fields (to validate the added data).
+editfield = edit field
+addfield = add field
+
+
+
+
+
+
+
+xform_id_is_missing = ID missing
+xform_id_missing_info = Table doesn't provide an ID column with autoincrement. XFORM cannot use this. Please update your table and / or add the field ID manually.
+
+
+
+
+
+
+
