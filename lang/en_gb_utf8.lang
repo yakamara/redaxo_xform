@@ -1,0 +1,19 @@
+
+
+xform_format_datetime = d.m.Y H:i:s
+xform_format_date = d.m.Y
+xform_format_time = H:i
+
+xform_overview = Overview
+xform_description = Description
+xform_back_to_overview = back to Overview
+xform_table_name = MySQL Table name
+
+xform_description_all = <p>In the module are the definitions important that are separated in 3 types.<p /><h5>Values</h5> <p>These are Typs that are visible directly in the form: Textareas, selectboxes, checkboxes etc., but hidden fields as well.</p><h5 >Validate</h5><p>Validate the field input before saving to the database: (notEmpty) or String, Integer or anything else. Or check for uniqueness of the input data.</p><h5>Action</h5><p>Used for further processing of the input data, eg. send an email template or save to the database...</p><h2>Type Overview</h2>
+
+submit = submit
+
+xform_install_only_utf8 = XForm only works using UTF8 as a charset in REDAXO
+xform_install_phpmailer_version_problem = PHPMailer requires at least version {0} and must be installed.
+
+xform_install_checkphpversion = Tha PHP Version is insufficient. Version 5.3 or later is required. Currently, Version {0} is installed.
