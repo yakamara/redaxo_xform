@@ -145,10 +145,10 @@ if($show_editpage) {
   };
   $em_url = $em_url_filter.$em_url_set;
   $em_rex_list = "";
-  $em_rex_list .= '&amp;list='.urlencode(rex_request('list','string'));
-  $em_rex_list .= '&amp;sort='.urlencode(rex_request('sort','string'));
-  $em_rex_list .= '&amp;sorttype='.urlencode(rex_request('sorttype','string'));
-  $em_rex_list .= '&amp;start='.urlencode(rex_request('start','string'));
+  $em_rex_list .= '&list='.urlencode(rex_request('list','string'));
+  $em_rex_list .= '&sort='.urlencode(rex_request('sort','string'));
+  $em_rex_list .= '&sorttype='.urlencode(rex_request('sorttype','string'));
+  $em_rex_list .= '&start='.urlencode(rex_request('start','string'));
 
 
 
@@ -187,7 +187,22 @@ if($show_editpage) {
 
   }
 
+  // -------------- delete dataset
+  if($func == "dataset_delete" && $this->hasDataPageFunction("truncate_table"))
+  {
 
+    $delete = TRUE;
+    if(rex_register_extension_point('XFORM_DATA_DATASET_DELETE', $delete, array("table"=>$table)))
+    {
+      $query = "delete from ".$table["table_name"].$this->getDataListQueryWhere($rex_xform_filter, $rex_xform_searchfields , $rex_xform_searchtext );
+      $delsql = new rex_sql;
+      $delsql->setQuery($query);
+      echo rex_info($I18N->msg("dataset_deleted"));
+      $func = "";
+
+      rex_register_extension_point('XFORM_DATA_DATASET_DELETED', "", array("table"=>$table));
+    }
+  }
 
   // -------------- truncate table
   if($func == "truncate_table" && $this->hasDataPageFunction("truncate_table"))
@@ -203,7 +218,58 @@ if($show_editpage) {
 
       rex_register_extension_point('XFORM_DATA_TABLE_TRUNCATED', "", array("table"=>$table));
     }
+  }
 
+  // -------------- export dataset
+  if($func == "dataset_export" && $this->hasDataPageFunction("export")) {
+  
+    ob_end_clean();
+    
+    $sql = $this->getDataListQuery($table, $rex_xform_filter, $rex_xform_searchfields, $rex_xform_searchtext);
+    
+    $data = "";
+    $fields = array();
+    $g = rex_sql::factory();
+    $g->setQuery($sql);
+    
+    foreach($g->getArray() as $d) {
+      if($data == "") {
+        foreach($d as $a => $b) {
+          $fields[] = '"'.$a.'"';
+        }
+        $data = implode(';',$fields);
+      }
+    
+      foreach($d as $a => $b) {
+        $d[$a] = '"'.str_replace('"','""',$b).'"';
+      }
+      $data .= "\n".implode(';',$d);
+    }
+    
+    // ----- download - save as
+    
+    $filename = 'export_data_'.date('YmdHis').'.csv';
+    $filesize = strlen($data);
+    $filetype = "application/octetstream";
+    $expires = "Mon, 01 Jan 2000 01:01:01 GMT";
+    $last_modified = "Mon, 01 Jan 2000 01:01:01 GMT";
+    
+    header("Expires: ".$expires); // Date in the past
+    header("Last-Modified: " . $last_modified); // always modified
+    header("Cache-Control: no-store, no-cache, must-revalidate"); // HTTP/1.1
+    header("Cache-Control: post-check=0, pre-check=0", false);
+    header("Pragma: no-cache");
+        header('Pragma: private');
+        header('Cache-control: private, must-revalidate');
+    header('Content-Type: '.$filetype.'; name="'.$filename.'"');
+    header('Content-Disposition: attachment; filename="'.$filename.'"');
+    header('Content-Description: "'.$filename.'"');
+    header('Content-Length: '.$filesize);
+    
+    echo $data;
+    
+    exit;
+  
   }
 
 
@@ -389,10 +455,8 @@ if($show_editpage) {
 
       $checkboxes = '';
       $fields = array_merge(array(array('f1'=>'id','f2'=>'ID','type_id'=>'value','search'=>1,'list_hidden'=>0)),$fields); // manually inject "id" into avail fields..
-      foreach($fields as $field)
-      {
-        if($field["type_id"] == "value" && $field["search"] == 1)
-        {
+      foreach($fields as $field) {
+        if($field["type_id"] == "value" && $field["search"] == 1) {
           $checked = in_array($field["f1"],$rex_xform_searchfields) ? 'checked="checked"' : '';
           $checkboxes .= '<span class="xform-manager-searchfield"><input type="checkbox" name="rex_xform_searchfields[]" value="'.$field["f1"].'" class="" id="'.$field["f1"].'" '.$checked.' />&nbsp;<label for="'.$field["f1"].'">'.rex_translate($field["f2"]).'</label></span>';
         }
@@ -400,14 +464,25 @@ if($show_editpage) {
       $suchform = '';
       $suchform .= '<form action="'.$_SERVER['PHP_SELF'].'" method="post" ><div>';
 
-      foreach($this->getLinkVars() as $k => $v)
-      {
+      foreach($this->getLinkVars() as $k => $v) {
         $suchform .= '<input type="hidden" name="'.$k.'" value="'.addslashes($v).'" />';
       }
 
-      if(count($rex_xform_filter)>0) { foreach($rex_xform_filter as $k => $v) { $suchform .= '<input type="hidden" name="rex_xform_filter['.$k.']" value="'.htmlspecialchars(stripslashes($v)).'" />'; } }
-      if(count($rex_xform_set)>0) { foreach($rex_xform_set as $k => $v) { $suchform .= '<input type="hidden" name="rex_xform_set['.$k.']" value="'.htmlspecialchars(stripslashes($v)).'" />'; } }
-      if(count($rex_xform_manager_opener)>0) { foreach($rex_xform_manager_opener as $k => $v) { $suchform .= '<input type="hidden" name="rex_xform_manager_opener['.$k.']" value="'.htmlspecialchars(stripslashes($v)).'" />'; } }
+      if(count($rex_xform_filter)>0) { 
+        foreach($rex_xform_filter as $k => $v) { 
+          $suchform .= '<input type="hidden" name="rex_xform_filter['.$k.']" value="'.htmlspecialchars(stripslashes($v)).'" />'; 
+        } 
+      }
+      if(count($rex_xform_set)>0) { 
+        foreach($rex_xform_set as $k => $v) { 
+          $suchform .= '<input type="hidden" name="rex_xform_set['.$k.']" value="'.htmlspecialchars(stripslashes($v)).'" />'; 
+        } 
+      }
+      if(count($rex_xform_manager_opener)>0) { 
+        foreach($rex_xform_manager_opener as $k => $v) { 
+          $suchform .= '<input type="hidden" name="rex_xform_manager_opener['.$k.']" value="'.htmlspecialchars(stripslashes($v)).'" />'; 
+        } 
+      }
 
       if($list != "") { $suchform .= '<input type="hidden" name="list" value="'.htmlspecialchars(stripslashes($list)).'" />'; };
       if($start != "") { $suchform .= '<input type="hidden" name="start" value="'.htmlspecialchars(stripslashes($start)).'" />'; };
@@ -417,105 +492,35 @@ if($show_editpage) {
       $suchform .= '<input type="hidden" name="rex_xform_search" value="1" />';
       $suchform .= '</div>';
       
-      $suchform .= '<table width="770" cellpadding="5" cellspacing="1" border="0" style="background-color:#ffffff" class="rex-table">';
-      $suchform .= '<tr>
+      $suchform .= '
+        <table width="770" cellpadding="5" cellspacing="1" border="0" class="rex-table">
+        <thead>
+        <tr>
           <th>'.$I18N->msg('searchtext').' [<a href="#" id="xform_help_empty_toggler">?</a>]</th>
           <th>'.$I18N->msg('searchfields').'</th>
           <th>&nbsp;</th>
-        </tr>';
-      $suchform .= '<tr>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
           <td class="grey" valign="top"><input type="text" name="rex_xform_searchtext" value="'.htmlspecialchars(stripslashes($rex_xform_searchtext)).'" size="30" />
-          <p id="xform_help_empty" style="display:none;">'.$I18N->msg('xform_help_empty').'</p></td>
+            <p id="xform_help_empty" style="display:none;">'.$I18N->msg('xform_help_empty').'</p></td>
           <td class="grey" valign="top">'.$checkboxes.'</td>
-          <td class="grey" valign="top"><input type="submit" name="send" value="'.$I18N->msg('search').'"  class="inp100" />';
-      if(rex_request('rex_xform_search')==1 && rex_request('rex_xform_searchtext')!='')
-      {
-        $suchform .= '&nbsp;<input type="button" name="reset" value="'.$I18N->msg('form_reset').'" class="inp100" id="xform_search_reset"/>';
-      }
-      $suchform .= '</td>
-        </tr>';
-      $suchform .= '</table>';
+          <td class="grey" valign="top"><input type="submit" name="send" value="'.$I18N->msg('search').'"  class="inp100" /></td>
+        </tr>
+        </tbody>
+        </table>';
+
       $suchform .= '</form>';
 
-      //echo $suchform;
-    }else{
-    $suchform = '';
+    } else{
+      $suchform = '';
     }
 
-    $where = false;
-
-    // ---------- SQL AUFBAUEN
-    $sql = "select * from ".$table["table_name"];
-
-
-
-    //-------------------------------------------------------------------
-    //TABELLENFELDER AUCH NACH PRIO AUSGEBEN
-
-    $sql_felder = new rex_sql;
-    $sql_felder->debugsql = 0;
-    $sql_felder->setQuery("SELECT * FROM rex_xform_field WHERE table_name='".$table["table_name"]."' AND type_id='value' ORDER BY prio");
-
-    $felder = '';
-    $max = $sql_felder->getRows();
-    if ($max > 0){
-      for($i=0;$i<$sql_felder->getRows();$i++)
-      {
-        $felder .= '`'.$sql_felder->getValue("f1").'`';
-
-        if ($i<$max-1) $felder .= ",";
-        $sql_felder->counter++;
-
-      }
-
-      // ---------- SQL AUFBAUEN
-      $sql = "select `id`,".$felder." from `".$table["table_name"]."`";
-
-    }
-
-
-
-    if(count($rex_xform_filter)>0)
-    {
-      $where = true;
-      $sql .= ' where ';
-      $sql_filter = '';
-      foreach($rex_xform_filter as $k => $v)
-      {
-        if($sql_filter != '') {
-          $sql_filter .= ' AND ';
-        }
-        $sql_filter .= '`'.$k.'`="'.$v.'"';
-      }
-      $sql .= $sql_filter;
-    }
-
-    if($rex_xform_search == 1)
-    {
-      if(is_array($rex_xform_searchfields) && count($rex_xform_searchfields)>0 && $rex_xform_searchtext != ""){
-        if(!$where) {
-          $sql .= ' WHERE ';
-        }
-        $sf = array();
-        foreach($rex_xform_searchfields as $cs) {
-          if($rex_xform_searchtext== "(empty)") $sf[] = ' (`'.$cs.'` = "" or `'.$cs.'` IS NULL) ';
-          elseif($rex_xform_searchtext== "!(empty)") $sf[] = ' (`'.$cs.'` <> "" and `'.$cs.'` IS NOT NULL) ';
-          else $sf[] = " `".$cs."` LIKE  '%".$rex_xform_searchtext."%'";
-        }
-        if(count($sf)>0) {
-          $sql .= '( '.implode(" OR ",$sf).' )';
-        }
-      }
-    }
     
-    $sql = rex_register_extension_point('XFORM_DATA_LIST_SQL',$sql);
+    // -------------------------------------------------------------------
 
-    // ********************************************* Export
-    // export is here because the query has been build here.
-    if($func == "export" && $this->hasDataPageFunction("export"))
-    {
-      include $REX["INCLUDE_PATH"].'/addons/xform/plugins/manager/pages/data_export.inc.php';
-    }
+    $sql = $this->getDataListQuery($table, $rex_xform_filter, $rex_xform_searchfields, $rex_xform_searchtext);
 
     // ---------- LISTE AUSGEBEN
     if(!isset($table["list_amount"]) || $table["list_amount"]<1) { $table["list_amount"] = 30; }
@@ -580,6 +585,34 @@ if($show_editpage) {
       }
     }
 
+    // hat diese Tabelle relationen ?
+    // 55 	rex_lit_titel 	40 	  value 	  be_manager_relation 	area_id 	Region 	rex_lit_area 	name 	1 	0
+    // id 	table_name 	    prio 	type_id 	type_name 	          f1 	      f2 	    f3 	          f4 	  f5 	
+
+
+// *********************************************
+
+    function my_callback($params)
+    {
+      $id = $params["list"]->getValue("id");
+      $c = rex_sql::factory();
+      // $c->debugsql = 1;
+      $c->setQuery('select count(id) as counter from '.$params['params']["table"].' where FIND_IN_SET('.$id.', '.$params['params']["field"].');');
+      return $c->getValue("counter");
+    }
+    $gr = rex_sql::factory();
+    // $gr->debugsql = 1;
+    $gr->setQuery('select * from rex_xform_field where type_name="be_manager_relation" and f3="'.$table["table_name"].'"');
+    $relation_fields = $gr->getArray();
+    foreach($relation_fields as $t) {
+      $rel_id = "rel-".$t["table_name"]."-".$t["f1"];
+      $list->addColumn($rel_id,"");
+      $list->setColumnFormat($rel_id, 'custom', 'my_callback', array('table' => $t["table_name"], 'field' => $t["f1"]));
+      $list->setColumnLabel($rel_id,"Counter [".$t["table_name"].".".$t["f1"]."]");
+    }
+
+// *********************************************
+
     $list = rex_register_extension_point('XFORM_DATA_LIST', $list, array("table"=>$table));
     echo '
     <div class="rex-addon-output">
@@ -602,16 +635,14 @@ if($show_editpage) {
 
     if(($table["export"] == 1 && $this->hasDataPageFunction("export")) or ($table["import"] == 1 && $this->hasDataPageFunction("import")))
     {
-      // EXPORT FUNC
       if($table["export"] == 1 && $this->hasDataPageFunction("export")) {
-        echo ' | <a href="index.php?'.htmlspecialchars($link_vars).'&amp;func=export&amp;'.htmlspecialchars($em_url.$em_rex_list).'">'.$I18N->msg("export").'</a>';
+        echo ' | <a href="index.php?'.htmlspecialchars($link_vars).'&amp;func=dataset_export&amp;'.htmlspecialchars($em_url.$em_rex_list).'">'.$I18N->msg("export").'</a>';
       }
-      // IMPORT FUNC
       if(!$popup && $table["import"] == 1 && $this->hasDataPageFunction("import")) {
         echo ' | <a href="index.php?'.htmlspecialchars($link_vars).'&amp;func=import">'.$I18N->msg("import").'</a>';
       }
-      // TRUNCATE FUNC
       if($this->hasDataPageFunction("truncate_table")) {
+        echo ' | <a href="index.php?'.htmlspecialchars($link_vars).'&amp;func=dataset_delete&amp;'.htmlspecialchars($em_url.$em_rex_list).'" id="dataset-delete">'.$I18N->msg("dataset_delete").'</a>';
         echo ' | <a href="index.php?'.htmlspecialchars($link_vars).'&amp;func=truncate_table&amp;'.htmlspecialchars($em_url.$em_rex_list).'" id="truncate-table">'.$I18N->msg("truncate_table").'</a>';
       }
     }
@@ -641,6 +672,7 @@ if($show_editpage) {
       jQuery("#xform_help_empty_toggler").click(function(){jQuery("#xform_help_empty").slideToggle("fast");});
       jQuery("#xform_search_reset").click(function(){window.location.href = "index.php?page=xform&subpage=manager&tripage=data_edit&table_name='.$table["table_name"].'&rex_xform_search=1";});
       jQuery("a.#truncate-table").click(function(){if(confirm("'.$I18N->msg("truncate_table_confirm").'")){return true;} else {return false;}});
+      jQuery("a.#dataset-delete").click(function(){if(confirm("'.$I18N->msg("dataset_delete_confirm").'")){return true;} else {return false;}});
     /* ]]> */</script>';
 
   }

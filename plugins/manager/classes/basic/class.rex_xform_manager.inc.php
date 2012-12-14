@@ -67,13 +67,129 @@ if (!class_exists('rex_xform_manager'))
     }
 
 
-    function getDataPage()
+
+
+    // ---------------------------------- data functions
+
+    public function getDataPage()
     {
-      // TODO
       global $REX,$I18N;
       include $REX["INCLUDE_PATH"]."/addons/xform/plugins/manager/inc/data_edit.inc.php";
     }
 
+    public function getDataListQueryWhere($rex_xform_filter = array(), $rex_xform_searchfields = array(), $rex_xform_searchtext = "")
+    {
+      $sql = "";
+      if(count($rex_xform_filter)>0) {
+        $sql_filter = '';
+        foreach($rex_xform_filter as $k => $v) {
+          if($sql_filter != '') {
+            $sql_filter .= ' AND ';
+          }
+          $sql_filter .= '`'.$k.'`="'.$v.'"';
+        }
+        $sql .= $sql_filter;
+      }
+  
+      if(is_array($rex_xform_searchfields) && count($rex_xform_searchfields)>0 && $rex_xform_searchtext != ""){
+        $sf = array();
+        foreach($rex_xform_searchfields as $cs) {
+          if($rex_xform_searchtext== "(empty)") {
+            $sf[] = ' (`'.$cs.'` = "" or `'.$cs.'` IS NULL) ';
+          } elseif($rex_xform_searchtext== "!(empty)") { 
+            $sf[] = ' (`'.$cs.'` <> "" and `'.$cs.'` IS NOT NULL) ';
+          }else {
+            $sf[] = " `".$cs."` LIKE  '%".$rex_xform_searchtext."%'";
+          }
+        }
+        if(count($sf)>0) {
+          $sql .= '( '.implode(" OR ",$sf).' )';
+        }
+      }
+      
+      if($sql != "") { $sql = ' where '.$sql; }
+      return $sql;
+    }
+
+
+
+    public function getDataListQuery($table, $rex_xform_filter = array(), $rex_xform_searchfields = array(), $rex_xform_searchtext = "")
+    {
+    
+      $where = false;
+
+      $sql = "select * from ".$table["table_name"];
+  
+      $sql_felder = new rex_sql;
+      $sql_felder->setQuery("SELECT * FROM rex_xform_field WHERE table_name='".$table["table_name"]."' AND type_id='value' ORDER BY prio");
+  
+      $felder = '';
+      $max = $sql_felder->getRows();
+      if ($max > 0) {
+        for($i=0;$i<$sql_felder->getRows();$i++) {
+          $felder .= '`'.$sql_felder->getValue("f1").'`';
+          if ($i<$max-1) {
+            $felder .= ",";
+          }
+          $sql_felder->counter++;
+        }
+        $sql = "select `id`,".$felder." from `".$table["table_name"]."`";
+      }
+    
+      $sql .= $this->getDataListQueryWhere($rex_xform_filter, $rex_xform_searchfields, $rex_xform_searchtext);
+      $sql = rex_register_extension_point('XFORM_DATA_LIST_SQL',$sql);
+    
+      return $sql;
+    }
+
+    
+
+
+
+
+
+    // ---------------------------------- table functions
+
+
+    public function setFilterTable($table)
+    {
+      $this->filterTables[$table] = $table;
+    }
+
+    public function getFilterTables()
+    {
+      if(isset($this->filterTables) && is_array($this->filterTables))
+      return $this->filterTables;
+      else
+      return array();
+    }
+
+    public function getTables()
+    {
+      global $REX;
+
+      $where = '';
+      foreach($this->getFilterTables() as $t) {
+        if($where != "")
+        $where .= ' OR ';
+        $where .= '(table_name = "'.$t.'")';
+      }
+
+      if($where != "") {
+        $where = ' where '.$where;
+      }
+
+      $tb = rex_sql::factory();
+      // $tb->debugsql = 1;
+      $tb->setQuery('select * from rex_xform_table '.$where.' order by prio,name');
+      return $tb->getArray();
+    }
+
+
+
+
+
+    // ---------------------------------- field functions
 
     function getFieldPage()
     {
@@ -86,39 +202,6 @@ if (!class_exists('rex_xform_manager'))
 
     // ----- Allgemeine Methoden
 
-    function setFilterTable($table)
-    {
-      $this->filterTables[$table] = $table;
-    }
-
-    function getFilterTables()
-    {
-      if(isset($this->filterTables) && is_array($this->filterTables))
-      return $this->filterTables;
-      else
-      return array();
-    }
-
-    function getTables()
-    {
-      global $REX;
-
-      $where = '';
-      foreach($this->getFilterTables() as $t)
-      {
-        if($where != "")
-        $where .= ' OR ';
-        $where .= '(table_name = "'.$t.'")';
-      }
-
-      if($where != "")
-      $where = ' where '.$where;
-
-      $tb = rex_sql::factory();
-      // $tb->debugsql = 1;
-      $tb->setQuery('select * from rex_xform_table '.$where.' order by prio,name');
-      return $tb->getArray();
-    }
 
 
     // ----- Felder
@@ -171,10 +254,11 @@ if (!class_exists('rex_xform_manager'))
     }
 
     function getFilterFields() {
-      if(!is_array($this->DataPageFilterFields))
-      return array();
-      else
-      return $this->DataPageFilterFields;
+      if(!is_array($this->DataPageFilterFields)) {
+        return array();
+      }else {
+        return $this->DataPageFilterFields;
+      }
     }
 
     function createTable($mifix = "", $data_table, $params = array(), $debug = FALSE)

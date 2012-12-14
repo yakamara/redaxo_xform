@@ -47,6 +47,11 @@ if($REX["REDAXO"] && !$REX['SETUP'])
       if($table['status'] == 1 && $table['hidden'] != 1 && $REX['USER'] && ($REX['USER']->isAdmin() || $REX['USER']->hasPerm($table_perm)))
       {
         $table_name = rex_translate($table['name']);
+        
+        if($I18N) {
+          $I18N->addMsg($table['table_name'],$table_name);
+        }
+        
         $be_page = new rex_be_page($table_name, array('page' => 'xform', 'subpage' => 'manager', 'tripage' => 'data_edit', 'table_name' => $table['table_name']));
         $be_page->setHref('index.php?page=xform&subpage=manager&tripage=data_edit&table_name='.$table['table_name']);
         $subpages[] = new rex_be_main_page($mypage, $be_page);

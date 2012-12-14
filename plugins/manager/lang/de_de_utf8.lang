@@ -20,10 +20,10 @@ xform_relation_move_last_data = Ausgewählten Datensatz an das Ende verschieben
 xform_relation_choose_entry = Datensatz auswählen
 xform_relation_delete_entry = Ausgewählten Datensatz löschen
 
-truncate_table = Daten löschen
-table_truncated = Daten wurden komplett gelöscht
+truncate_table = Tabelle leeren
+table_truncated = Tabelle wurde geleert
 table_not_found = Die Tabelle wurde nicht gefunden
-truncate_table_confirm = Wirklich alle Datensaetze der Tabelle loeschen?
+truncate_table_confirm = Wirklich die Tabelle leeren?
 xform_table_overview = Tabellenübersicht
 
 xform_manager_edit_table = Tabelle editieren
@@ -74,11 +74,14 @@ edit = editieren
 save = speichern
 delete = löschen
 search = suchen
-export = Datenexport
-import = Datenimport
+export = Export
+import = Import
 datadeleted = Datensatz wurde gelöscht
 openerinfo = Opener-Info
 
+dataset_delete = löschen
+dataset_deleted = Datenergebnis wurde geleert
+dataset_delete_confirm = Wirklich das Datenergebnis leeren?
 
 
 # field.inc.php
