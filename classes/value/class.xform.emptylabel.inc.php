@@ -12,7 +12,7 @@ class rex_xform_emptylabel extends rex_xform_abstract
 
   function getDescription()
   {
-    return "text -> Beispiel: text|label|Bezeichnung|defaultwert|[no_db]";
+    return "text -> Beispiel: emptylabel|label|";
   }
 
   function getDefinitions()
