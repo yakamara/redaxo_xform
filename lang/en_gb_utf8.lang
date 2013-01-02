@@ -1,4 +1,4 @@
-
+# Addon: XForm en_gb_utf8
 
 xform_format_datetime = d.m.Y H:i:s
 xform_format_date = d.m.Y
@@ -6,14 +6,24 @@ xform_format_time = H:i
 
 xform_overview = Overview
 xform_description = Description
-xform_back_to_overview = back to Overview
-xform_table_name = MySQL Table name
+xform_back_to_overview = Back to overview
 
-xform_description_all = <p>In the module are the definitions important that are separated in 3 types.<p /><h5>Values</h5> <p>These are Typs that are visible directly in the form: Textareas, selectboxes, checkboxes etc., but hidden fields as well.</p><h5 >Validate</h5><p>Validate the field input before saving to the database: (notEmpty) or String, Integer or anything else. Or check for uniqueness of the input data.</p><h5>Action</h5><p>Used for further processing of the input data, eg. send an email template or save to the database...</p><h2>Type Overview</h2>
+xform_table_name = MySQL table name
+xform_setup = Setup
+xform_setup_install_modul = Install Module
+xform_setup_install_modul_description = In order to use XForm meaningfully, you have to installe a module:
+xform_setup_install_xform_modul = Install XForm Module
+xform_setup_update_following_modul = Update following XForm Module "{0}"
+
+
+
+
+xform_description_all = <p>In the module especially the field definitions are important which are structured in three types.<p /><h5>Value Fields</h5> <p>Theses are the fields which usually appear in a form. These can be simple text fields, select fields, checkboxes etc., but also hidden fields, birthday date, database select fields etc.</p><h5 >Validate Fields</h5><p>These are the fields that check the values of the value fields. Means: with them it can be controlled if a value has been typed in (notEmpty) or if its string, integer or other. Also there can be controlled if there already exists a database field with this value etc.</p><h5>Action Fields</h5><p>Are important for later use. Shall an email be sent and/or shall an entry into the database be made etc....</p><h2>Types Overview</h2>
 
 submit = submit
 
-xform_install_only_utf8 = XForm only works using UTF8 as a charset in REDAXO
-xform_install_phpmailer_version_problem = PHPMailer requires at least version {0} and must be installed.
+xform_install_only_utf8 = XForm runs only with the charset utf8 activated in REDAXO.
 
-xform_install_checkphpversion = Tha PHP Version is insufficient. Version 5.3 or later is required. Currently, Version {0} is installed.
+xform_install_phpmailer_version_problem = PHPMailer needs at least version {0} and has to be installed.
+
+xform_install_checkphpversion = The PHP version is not sufficient. At least version 5.3. is needed. Currently version {0} is installed.
