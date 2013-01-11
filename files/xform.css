@@ -70,7 +70,7 @@ ul.xform {
 .xform label,
 .xform span.as-label {
   float: left;
-  width: 245px;
+  width: 220px;
   padding-left:6px;
 }
 .xform label.captcha {
