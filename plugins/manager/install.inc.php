@@ -9,6 +9,8 @@ $sql->setQuery('CREATE TABLE IF NOT EXISTS `rex_xform_table` (
   `name` varchar(100) NOT NULL,
   `description` text NOT NULL,
   `list_amount` tinyint(3) unsigned NOT NULL DEFAULT 50,
+  `list_sortfield` varchar(100) NOT NULL,
+  `list_sortorder` varchar(4) NOT NULL,
   `prio` int(11) NOT NULL,
   `search` tinyint(4) NOT NULL,
   `hidden` tinyint(4) NOT NULL,
