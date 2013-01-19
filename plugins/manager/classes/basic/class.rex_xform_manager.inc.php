@@ -135,7 +135,7 @@ if (!class_exists('rex_xform_manager'))
         }
         $fieldarray = explode(',', $felder);
         $sortarray = array('asc', 'desc');
-        (in_array($fieldarray)) ? $sortfield = $table['list_sortfield'] : $sortfield = 'id';
+        (in_array('`'.$table['list_sortfield'].'`',$fieldarray)) ? $sortfield = $table['list_sortfield'] : $sortfield = 'id';
         (in_array(strtolower($table['list_sortorder']), $sortarray)) ? $sortorder = strtolower($table['list_sortorder']) : $sortorder = 'asc';
         
         $sql = "select `id`,".$felder." from `".$table["table_name"]."` order by ".$sortfield." ".$sortorder;
