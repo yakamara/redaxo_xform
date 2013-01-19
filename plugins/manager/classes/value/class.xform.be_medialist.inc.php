@@ -25,10 +25,29 @@ class rex_xform_be_medialist extends rex_xform_abstract
         next($medialistarray);
       }
     }
-
+    
+    // Preview
+    (intval($this->getElement(3))==1) ? $widgetclass = 'rex-widget-medialist rex-widget-preview rex-widget-preview-image-manager' : $widgetclass = 'rex-widget-medialist';
+   
+    // Medialist arguments
+    $args = '';
+    // Category ID
+    $argvalue = intval($this->getElement(4));
+    if($argvalue>0)
+        $args .= '&amp;rex_file_category='.$argvalue;
+    
+    // Types
+    $argvalue = trim($this->getElement(5));
+    if(!empty($argvalue)) {
+        $argvalue = str_replace(',', '%2C', $argvalue);
+        $args .= '&amp;args[types]='.$argvalue;
+    }
+    
+    (empty($args)) ? $tmp_medialist_open = $tmp_medialist : $tmp_medialist_open = $tmp_medialist.',\''.$args.'\'';
+    
     $ausgabe .= '
     <div class="rex-widget">
-      <div class="rex-widget-medialist">
+      <div class="'.$widgetclass.'">
         <input type="hidden" name="'.$this->getFieldName().'" id="REX_MEDIALIST_'.$tmp_medialist.'" value="'.htmlspecialchars(stripslashes($this->getValue())) . '" />
         <p class="rex-widget-field">
           <select name="MEDIALIST_SELECT['.$tmp_medialist.']" id="REX_MEDIALIST_SELECT_'.$tmp_medialist.'" size="8">
@@ -44,7 +63,7 @@ class rex_xform_be_medialist extends rex_xform_abstract
             <a href="#" class="rex-icon-file-bottom" onclick="moveREXMedialist('.$tmp_medialist.',\'bottom\');return false;" title="'. $I18N->msg('var_medialist_move_bottom') .'"></a>
           </span>
           <span class="rex-widget-column">
-            <a href="#" class="rex-icon-file-open" onclick="openREXMedialist('.$tmp_medialist.');return false;" title="'. $I18N->msg('var_media_open') .'"></a>
+            <a href="#" class="rex-icon-file-open" onclick="openREXMedialist('.$tmp_medialist_open.');return false;" title="'. $I18N->msg('var_media_open') .'"></a>
             <a href="#" class="rex-icon-file-add" onclick="addREXMedialist('.$tmp_medialist.');return false;" title="'. $I18N->msg('var_media_new') .'"></a>
             <a href="#" class="rex-icon-file-delete" onclick="deleteREXMedialist('.$tmp_medialist.');return false;" title="'. $I18N->msg('var_media_remove') .'"></a>
             <a href="#" class="rex-icon-file-view" onclick="viewREXMedialist('.$tmp_medialist.');return false;" title="'. $I18N->msg('var_media_open') .'"></a>
@@ -66,13 +85,13 @@ class rex_xform_be_medialist extends rex_xform_abstract
       </div>';
 
     $this->params["value_pool"]["email"][$this->getElement(1)] = stripslashes($this->getValue());
-    if ($this->getElement(3) != "no_db") $this->params["value_pool"]["sql"][$this->getElement(1)] = $this->getValue();
+    if ($this->getElement(6) != "no_db") $this->params["value_pool"]["sql"][$this->getElement(1)] = $this->getValue();
 
   }
 
   function getDescription()
   {
-    return "be_medialist -> Beispiel: be_medialist|label|Bezeichnung|no_db";
+    return "be_medialist -> Beispiel: be_medialist|label|Bezeichnung|preview|category|no_db|";
   }
 
   function getDefinitions()
@@ -83,6 +102,9 @@ class rex_xform_be_medialist extends rex_xform_abstract
             'values' => array(
               array( 'type' => 'name',   'label' => 'Name' ),
               array( 'type' => 'text',   'label' => 'Bezeichnung'),
+              array( 'type' => 'text',   'label' => 'Preview (0/1) (opt)'),
+              array( 'type' => 'text',   'label' => 'Medienpool Kategorie (opt)'),  
+              array( 'type' => 'text',   'label' => 'Types (opt)')
             ),
             'description' => 'Medialiste, welches Dateien aus dem Medienpool holt',
             'dbtype' => 'text'
