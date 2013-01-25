@@ -185,17 +185,18 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
 
       // mit --- keine auswahl ---
 
-      if($this->be_em["relation_type"] == 1)
-      {
+      if($this->be_em["relation_type"] == 1) {
         $SEL->setName($this->getFieldName().'[]');
         $SEL->setMultiple(TRUE);
         $SEL->setSize(5);
 
-      }elseif($this->be_em["eoption"] == 1)
-      {
+      }elseif($this->be_em["eoption"] == 1) {
         $SEL->setName($this->getFieldName());
         $SEL->addOption("-", "");
 
+      }else {
+        $SEL->setName($this->getFieldName());
+     
       }
 
       foreach($sss->getArray() as $v)
