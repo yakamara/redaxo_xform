@@ -3,10 +3,16 @@
 class rex_xform_date extends rex_xform_abstract
 {
 
-  function preValidateAction()
+  function preValidateAction() 
   {
-    if(is_array($this->getValue()))
-    {
+  
+    if($this->getElement(6) == 1 && $this->params["send"] == 0 && $this->params["main_id"] < 1) {
+      $this->setValue(date("Y-m-d"));
+      
+    }
+  
+    if(is_array($this->getValue())) {
+
       $a = $this->getValue();
 
       $year = (int) substr(@$a["year"],0,4);
@@ -23,7 +29,7 @@ class rex_xform_date extends rex_xform_abstract
   }
 
 
-  function enterObject()
+  function enterObject() 
   {
   
     $r = $this->getValue();
@@ -32,8 +38,7 @@ class rex_xform_date extends rex_xform_abstract
     $month = "00";
     $year = "0000";
 
-    if ($r != "") 
-    {
+    if ($r != "") {
       $year = (int) substr($this->getValue(),0,4);
       $month = (int) substr($this->getValue(),5,2);
       $day = (int) substr($this->getValue(),8,2);
@@ -46,8 +51,7 @@ class rex_xform_date extends rex_xform_abstract
     $isodatum = sprintf ("%04d-%02d-%02d", $year, $month, $day);
 
     $wc = "";
-    if (isset($this->params["warning"][$this->getId()])) 
-    {
+    if (isset($this->params["warning"][$this->getId()])) {
       $wc = ' '.$this->params["warning"][$this->getId()];
     }
 
@@ -128,7 +132,7 @@ class rex_xform_date extends rex_xform_abstract
 
   function getDescription()
   {
-    return "date -> Beispiel: date|feldname|Text *|jahrstart|jahrsende|[Anzeigeformat###Y###-###M###-###D###]";
+    return "date -> Beispiel: date|feldname|Text *|jahrstart|jahrsende|[Anzeigeformat###Y###-###M###-###D###]|[1/Aktuelles Datum voreingestellt]";
   }
 
   function getDefinitions()
@@ -142,6 +146,7 @@ class rex_xform_date extends rex_xform_abstract
         array( 'type' => 'text', 'label' => '[Startjahr]'),
         array( 'type' => 'text', 'label' => '[Endjahr]'),
         array( 'type' => 'text', 'label' => '[Anzeigeformat###Y###-###M###-###D###]]'),
+        array( 'type' => 'boolean', 'label' => 'Aktuelles Datum voreingestellt'),
         ),
       'description' => 'Datums Eingabe',
       'dbtype' => 'date'
