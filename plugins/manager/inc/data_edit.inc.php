@@ -592,7 +592,7 @@ if($show_editpage) {
 
 // *********************************************
 
-    function my_callback($params)
+    function xform_data_list_callback($params)
     {
       $id = $params["list"]->getValue("id");
       $c = rex_sql::factory();
@@ -607,7 +607,7 @@ if($show_editpage) {
     foreach($relation_fields as $t) {
       $rel_id = "rel-".$t["table_name"]."-".$t["f1"];
       $list->addColumn($rel_id,"");
-      $list->setColumnFormat($rel_id, 'custom', 'my_callback', array('table' => $t["table_name"], 'field' => $t["f1"]));
+      $list->setColumnFormat($rel_id, 'custom', 'xform_data_list_callback', array('table' => $t["table_name"], 'field' => $t["f1"]));
       $list->setColumnLabel($rel_id,"Counter [".$t["table_name"].".".$t["f1"]."]");
     }
 
