@@ -62,7 +62,7 @@ if(rex_request('send',"int",0) == 1)
         $mc = array();
         foreach($fieldarray as $k => $v)
         {
-          if(!array_key_exists($fieldarray[$k],$rfields))
+          if(!array_key_exists($fieldarray[$k],$rfields) && $fieldarray[$k] != "id")
           {
             $mc[$fieldarray[$k]] = $fieldarray[$k];
           }
