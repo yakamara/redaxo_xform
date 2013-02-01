@@ -13,7 +13,7 @@ class rex_xform_time extends rex_xform_abstract
       $min = (int) @$a["min"];
 
       $r =
-        str_pad($hour, 3, "0", STR_PAD_LEFT).":".
+        str_pad($hour, 2, "0", STR_PAD_LEFT).":".
         str_pad($min, 2, "0", STR_PAD_LEFT).":00";
 
       $this->setValue($r);
@@ -33,14 +33,28 @@ class rex_xform_time extends rex_xform_abstract
     if ($r != "") 
     {
       $r = explode(":",$r);
-      $hour = (int) $r[0];
-      $min   = (int) $r[1];
+      
+      if(count($r) == 1) {
+        $hour = (int) substr($r[0],0,2);        
+        $min = (int) substr($r[0],2,2);        
+      
+      } else {
+        if(isset($r[0])) {
+          $hour = (int) substr($r[0],0,2);
+        }
+        if(isset($r[1])) {
+          $min  = (int) substr($r[1],0,2);
+        }
+      }
+
     }
     
-    $hour = str_pad($hour, 3, "0", STR_PAD_LEFT);
+    $hour = str_pad($hour, 2, "0", STR_PAD_LEFT);
     $min = str_pad($min, 2, "0", STR_PAD_LEFT);
       
     $isotime = $hour.":".$min.":00";
+
+
 
     $wc = "";
     if (isset($this->params["warning"][$this->getId()])) 
