@@ -91,6 +91,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
     
     // ---------- connected, fix values
     if(isset($this->params["rex_xform_set"][$this->getName()])) {
+        
       $values = $this->getValue();
       $values[] = $this->params["rex_xform_set"][$this->getName()];
       $this->setValue($values);
@@ -99,13 +100,11 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
 
     
     // ---------- Value angleichen -> immer Array mit IDs daraus machen
-    if(!is_array($this->getValue())) 
-    {
-      if(trim($this->getValue()) == "") 
-      {
+    if(!is_array($this->getValue())) {
+    
+      if(trim($this->getValue()) == "") {
         $this->setValue(array());
-      }else 
-      {
+      }else {
         $this->setValue(explode(",",$this->getValue()));
       }
     }
@@ -185,18 +184,16 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
 
       // mit --- keine auswahl ---
 
-      if($this->be_em["relation_type"] == 1) {
+      $SEL->setName($this->getFieldName());
+
+      if ($this->be_em["relation_type"] == 1) {
         $SEL->setName($this->getFieldName().'[]');
         $SEL->setMultiple(TRUE);
         $SEL->setSize(5);
 
-      }elseif($this->be_em["eoption"] == 1) {
-        $SEL->setName($this->getFieldName());
+      } else if($this->be_em["eoption"] == 1) {
         $SEL->addOption("-", "");
 
-      }else {
-        $SEL->setName($this->getFieldName());
-     
       }
 
       foreach($sss->getArray() as $v)
