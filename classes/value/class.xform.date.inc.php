@@ -3,7 +3,7 @@
 class rex_xform_date extends rex_xform_abstract
 {
 
-  function preValidateAction() 
+  function preValidateAction()
   {
   
     if($this->getElement(6) == 1 && $this->params["send"] == 0 && $this->params["main_id"] < 1) {
@@ -11,8 +11,8 @@ class rex_xform_date extends rex_xform_abstract
       
     }
   
-    if(is_array($this->getValue())) {
-
+    if(is_array($this->getValue()))
+    {
       $a = $this->getValue();
 
       $year = (int) substr(@$a["year"],0,4);
@@ -29,7 +29,7 @@ class rex_xform_date extends rex_xform_abstract
   }
 
 
-  function enterObject() 
+  function enterObject()
   {
   
     $r = $this->getValue();
@@ -39,9 +39,22 @@ class rex_xform_date extends rex_xform_abstract
     $year = "0000";
 
     if ($r != "") {
-      $year = (int) substr($this->getValue(),0,4);
-      $month = (int) substr($this->getValue(),5,2);
-      $day = (int) substr($this->getValue(),8,2);
+
+      if(strlen($r) == 8) {
+      
+        // 20000101
+        $year = (int) substr($this->getValue(),0,4);
+        $month = (int) substr($this->getValue(),4,2);
+        $day = (int) substr($this->getValue(),6,2);
+      
+      } else {
+    
+        // 2000-01-01
+        $year = (int) substr($this->getValue(),0,4);
+        $month = (int) substr($this->getValue(),5,2);
+        $day = (int) substr($this->getValue(),8,2);
+
+      }
     }
     
     $year = str_pad($year, 4, "0", STR_PAD_LEFT);
@@ -51,7 +64,8 @@ class rex_xform_date extends rex_xform_abstract
     $isodatum = sprintf ("%04d-%02d-%02d", $year, $month, $day);
 
     $wc = "";
-    if (isset($this->params["warning"][$this->getId()])) {
+    if (isset($this->params["warning"][$this->getId()])) 
+    {
       $wc = ' '.$this->params["warning"][$this->getId()];
     }
 
