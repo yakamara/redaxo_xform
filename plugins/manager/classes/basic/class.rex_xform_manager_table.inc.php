@@ -31,7 +31,7 @@ class rex_xform_manager_table {
     else return FALSE;
   }
 
-  function factory($values)
+  static function factory($values)
   {
     $a = new rex_xform_manager_table($values);
     return $a;
@@ -41,7 +41,7 @@ class rex_xform_manager_table {
 
   // -------------------------------------------------------------------------
 
-  function getTables($f = array())
+  static function getTables($f = array())
   {
 
     $where = array();
@@ -81,7 +81,7 @@ class rex_xform_manager_table {
 
   }
 
-  function getTablesAsArray($f = array())
+  static function getTablesAsArray($f = array())
   {
     $tables = rex_xform_manager_table::getTables($f);
     $return = array();
@@ -99,7 +99,7 @@ class rex_xform_manager_table {
 
   // -------------------------------------------------------------------------
 
-  function getMaximumPrio($table_name)
+  static function getMaximumPrio($table_name)
   {
     $sql = 'select max(prio) as prio from rex_xform_field where table_name="'.$table_name.'" order by prio';
     $gf = rex_sql::factory();
@@ -109,7 +109,7 @@ class rex_xform_manager_table {
 
   }
 
-  function hasId($table_name)
+  static function hasId($table_name)
   {
     global $REX;
     // $sql = 'show columns from '.$table_name;
@@ -122,7 +122,7 @@ class rex_xform_manager_table {
     else return FALSE;
   }
 
-  function getXFormFields($table_name, $filter = array())
+  static function getXFormFields($table_name, $filter = array())
   {
     $add_sql = "";
     foreach($filter as $k => $v) {
@@ -143,15 +143,13 @@ class rex_xform_manager_table {
 
   }
 
-  function getXFormFieldsByType($table_name,$type_id="value")
+  static function getXFormFieldsByType($table_name,$type_id="value")
   {
     return rex_xform_manager_table::getXFormFields($table_name, array("type_id" => $type_id));
 
   }
 
-
-
-  function getFields($table_name)
+  static function getFields($table_name)
   {
     global $REX;
     $sql = 'show columns from '.$table_name;
@@ -172,7 +170,7 @@ class rex_xform_manager_table {
 
   }
 
-  function getMissingFields($table_name)
+  static function getMissingFields($table_name)
   {
     $xfields = rex_xform_manager_table::getXFormFields($table_name);
     $rfields = rex_xform_manager_table::getFields($table_name);

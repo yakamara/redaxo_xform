@@ -485,12 +485,7 @@ class rex_xform
     return $ValueObjects;
   }
 
-
-
-
-
-
-  function includeClass($type_id, $class)
+  static function includeClass($type_id, $class)
   {
     global $REX;
 
@@ -621,7 +616,7 @@ class rex_xform
 
   // ----- Hilfsfunktionen -----
 
-  function unhtmlentities($text)
+  static function unhtmlentities($text)
   {
     if (!function_exists('unhtmlentities'))
     {
@@ -640,7 +635,7 @@ class rex_xform
   }
 
 
-  function showHelp($return=false,$script=false)
+  static function showHelp($return=false,$script=false)
   {
 
     global $REX;
@@ -799,7 +794,7 @@ class rex_xform
   }
 
 
-  function getTypeArray()
+  static function getTypeArray()
   {
 
     global $REX;

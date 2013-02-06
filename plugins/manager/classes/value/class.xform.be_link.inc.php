@@ -85,7 +85,7 @@ class rex_xform_be_link extends rex_xform_abstract
   }
 
 
-  function getListValue($params)
+  static function getListValue($params)
   {
     if(intval($params['value'])<1)
     {

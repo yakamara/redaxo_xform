@@ -446,7 +446,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
     );
   }
 
-  function getListValue($params)
+  static function getListValue($params)
   {
 
     if(!isset(rex_xform_be_manager_relation::$xform_list_values[$params['params']['field']['f3']]) || count(rex_xform_be_manager_relation::$xform_list_values[$params['params']['field']['f3']]) == 0)

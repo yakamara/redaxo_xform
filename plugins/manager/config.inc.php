@@ -15,7 +15,7 @@ if($REX["REDAXO"] && !$REX['SETUP'])
   $I18N->appendFile($REX['INCLUDE_PATH'].'/addons/xform/plugins/manager/lang/');
 
   // $REX['ADDON']['name'][$mypage] = $I18N->msg("xform_table_manager");
-  $REX['ADDON']['version'][$mypage] = '2.9.3';
+  $REX['ADDON']['version'][$mypage] = '4.5';
   $REX['ADDON']['author'][$mypage] = 'Jan Kristinus';
   $REX['ADDON']['supportpage'][$mypage] = 'www.yakamara.de/tag/redaxo/';
   $REX['ADDON']['navigation'][$mypage] = array(

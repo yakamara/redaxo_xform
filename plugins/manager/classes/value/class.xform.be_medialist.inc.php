@@ -89,7 +89,7 @@ class rex_xform_be_medialist extends rex_xform_abstract
       );
   }
 
-  function getListValue($params)
+  static function getListValue($params)
   {
   
     $return = $params['subject'];

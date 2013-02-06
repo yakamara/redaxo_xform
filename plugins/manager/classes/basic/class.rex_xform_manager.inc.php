@@ -215,7 +215,7 @@ if (!class_exists('rex_xform_manager'))
       return $tb->getArray();
     }
 
-    function checkField($l,$v,$p)
+    static function checkField($l,$v,$p)
     {
       global $REX;
       $q = 'select * from rex_xform_field where table_name="'.$p["table_name"].'" and '.$l.'="'.$v.'" LIMIT 1';
@@ -232,7 +232,7 @@ if (!class_exists('rex_xform_manager'))
       }
     }
 
-    function checkLabelInTable($l,$v)
+    static function checkLabelInTable($l,$v)
     {
       global $REX;
       $q = 'select * from rex_xform_table where '.$l.'="'.$v.'" LIMIT 1';

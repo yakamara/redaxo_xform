@@ -20,7 +20,7 @@ function rex_xform_list_ep ($params)
 
 class rex_xform_list extends rex_list {
 
-  function factory($query, $rowsPerPage = 30, $listName = null, $debug = false, $class = null)
+  static function factory($query, $rowsPerPage = 30, $listName = null, $debug = false, $class = null)
   {
     // keine spezielle klasse angegeben -> default klasse verwenden?
     if(!$class)

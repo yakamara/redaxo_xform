@@ -4,7 +4,7 @@ class rex_xform_emailtemplate
 {
 
 
-  function getTemplate($name)
+  static function getTemplate($name)
   {
     global $REX;
     $gt = rex_sql::factory();
@@ -17,7 +17,7 @@ class rex_xform_emailtemplate
     return FALSE;
   }
 
-  function replaceVars($template, $er = array())
+  static function replaceVars($template, $er = array())
   {
     global $REX;
     
@@ -54,14 +54,14 @@ class rex_xform_emailtemplate
     return $template;
   }
 
-  function makeSingleLine($str)
+  static function makeSingleLine($str)
   {
     $str = str_replace("\n","",$str);
     $str = str_replace("\r","",$str);
     return $str;
   }
 
-  function sendMail($template, $template_name = "")
+  static function sendMail($template, $template_name = "")
   {
   
     $r = rex_register_extension_point('XFORM_EMAIL_BEFORE_SEND',array(
