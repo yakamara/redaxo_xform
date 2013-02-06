@@ -112,6 +112,10 @@ ul.xform {
   /*border: 1px solid #999;*/
 }
 
+.xform textarea.short {
+  height: 80px;
+}
+
 .xform .formtable table {
   clear: both;
   margin-left: 245px;
