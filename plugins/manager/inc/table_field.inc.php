@@ -239,7 +239,15 @@ if( ($func == "add" || $func == "edit" )  && isset($types[$type_id][$type_name])
   $xform->setValueField("hidden", array("type_name",$type_name,"REQUEST"));
   $xform->setValueField("hidden", array("type_id",$type_id,"REQUEST"));
 
-  $xform->setValueField("text", array("prio","Prioritaet",(rex_xform_manager_table::getMaximumPrio($table["table_name"])+10)));
+
+  $max_prio = (int)rex_xform_manager_table::getMaximumPrio($table["table_name"]);
+  $next_prio = $max_prio + 10;
+  preg_match('/[0-9]$/', $max_prio, $matches);
+  if ((int)$matches[0] > 0) {
+    $next_prio = $next_prio - (int)$matches[0];
+  }
+  $xform->setValueField("text", array("prio","Prioritaet",($next_prio)));
+  
 
   $i = 0;
   foreach($types[$type_id][$type_name]['values'] as $v)
