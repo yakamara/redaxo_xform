@@ -12,6 +12,14 @@ $mypage = 'manager';
 
 if($REX["REDAXO"] && !$REX['SETUP'])
 {
+  
+  //Wenn Sort-Felder nicht vorhanden: Neu anlegen
+  $sql = rex_sql::factory();
+  $sql->getArray('SHOW COLUMNS FROM rex_xform_table like "list_sort%"');
+  if($sql->getRows()<2) {
+    $sql->setQuery('ALTER TABLE rex_xform_table ADD (`list_sortfield` varchar(100) NOT NULL, `list_sortorder` varchar(4) NOT NULL)');
+  }
+  
   $I18N->appendFile($REX['INCLUDE_PATH'].'/addons/xform/plugins/manager/lang/');
 
   // $REX['ADDON']['name'][$mypage] = $I18N->msg("xform_table_manager");
