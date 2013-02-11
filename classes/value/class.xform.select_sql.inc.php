@@ -130,7 +130,7 @@ class rex_xform_select_sql extends rex_xform_abstract
   }
 
 
-  function getListValue($params)
+  static function getListValue($params)
   {
     $return = array();
 

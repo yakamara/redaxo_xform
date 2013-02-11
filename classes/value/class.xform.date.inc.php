@@ -167,7 +167,7 @@ class rex_xform_date extends rex_xform_abstract
       );
   }
 
-  function getListValue($params)
+  static function getListValue($params)
   {
     global $I18N;
     $format = $I18N->msg("xform_format_date");
