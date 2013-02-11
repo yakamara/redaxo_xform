@@ -2,8 +2,13 @@
 #rex-footer,
 #rex-navi-logout,
 #rex-title,
-#rex-navi-main {
+#rex-navi-main,
+#rex-extra {
 display:none;
+}
+
+body#rex-page-xform {
+  background: #f9f9f9;
 }
 
 body #rex-website {
