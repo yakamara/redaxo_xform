@@ -163,7 +163,7 @@ if($show_editpage) {
   // -------------- Import
   if(!$popup && $func == "import" && $this->hasDataPageFunction("import")) {
     include $REX["INCLUDE_PATH"].'/addons/xform/plugins/manager/pages/data_import.inc.php';
-    echo '<br />&nbsp;<br /><table cellpadding="5" class="rex-table"><tr><td><a href="index.php?'.$link_vars.$em_url.$em_rex_list.'"><b>&laquo; '.$I18N->msg('back_to_overview').'</b></a></td></tr></table>';
+    echo '<table cellpadding="5" class="rex-table"><tr><td><a href="index.php?'.$link_vars.$em_url.$em_rex_list.'"><b>&laquo; '.$I18N->msg('back_to_overview').'</b></a></td></tr></table><br />';
 
   }
 
