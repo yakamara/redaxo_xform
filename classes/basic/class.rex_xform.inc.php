@@ -397,7 +397,7 @@ class rex_xform
         if($hasWarningMessages)
         {
           foreach($this->objparams["warning_messages"] as $k => $v) {
-            $warningListOut .= '<li>'. rex_translate($v) .'</li>';
+            $warningListOut .= '<li>'. rex_translate($v, null, false) .'</li>';
           }
         }
         if($this->objparams["unique_error"] != '')
