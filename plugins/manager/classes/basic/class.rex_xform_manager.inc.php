@@ -133,7 +133,12 @@ if (!class_exists('rex_xform_manager'))
           }
           $sql_felder->counter++;
         }
-        $sql = "select `id`,".$felder." from `".$table["table_name"]."`";
+        $fieldarray = explode(',', $felder);
+        $sortarray = array('asc', 'desc');
+        (in_array('`'.$table['list_sortfield'].'`',$fieldarray)) ? $sortfield = $table['list_sortfield'] : $sortfield = 'id';
+        (in_array(strtolower($table['list_sortorder']), $sortarray)) ? $sortorder = strtolower($table['list_sortorder']) : $sortorder = 'asc';
+        
+        $sql = "select `id`,".$felder." from `".$table["table_name"]."` order by ".$sortfield." ".$sortorder;
       }
     
       $sql .= $this->getDataListQueryWhere($rex_xform_filter, $rex_xform_searchfields, $rex_xform_searchtext);

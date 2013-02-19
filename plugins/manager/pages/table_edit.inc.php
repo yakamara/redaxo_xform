@@ -55,6 +55,8 @@ if( ($func == "add" || $func == "edit") && $REX['USER']->isAdmin() )
   $xform->setValueField("checkbox",array("status",$I18N->msg("tbl_active")));
   // $xform->setValueField("fieldset",array("fs-list","Liste"));
   $xform->setValueField("text",array("list_amount",$I18N->msg("xform_manager_entries_per_page"),"50"));
+  $xform->setValueField("text",array("list_sortfield",$I18N->msg("xform_manager_sort_field"),"id"));
+  $xform->setValueField("text",array("list_sortorder",$I18N->msg("xform_manager_sort_order"),"desc"));
   $xform->setValueField("checkbox",array("search",$I18N->msg("xform_manager_search_active")));
   $xform->setValidateField("type",array("list_amount","int",$I18N->msg("xform_manager_enter_number")));
 
@@ -142,6 +144,8 @@ if($show_list && $REX['USER']->isAdmin()){
   // $list->setColumnParams("id", array("table_id"=>"###id###","func"=>"edit"));
   $list->removeColumn("id");
   $list->removeColumn("list_amount");
+  $list->removeColumn("list_sortfield");
+  $list->removeColumn("list_sortorder");
   $list->removeColumn("search");
   $list->removeColumn("hidden");
   $list->removeColumn("export");
