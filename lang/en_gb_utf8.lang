@@ -27,3 +27,4 @@ xform_install_only_utf8 = XForm runs only with the charset utf8 activated in RED
 xform_install_phpmailer_version_problem = PHPMailer needs at least version {0} and has to be installed.
 
 xform_install_checkphpversion = The PHP version is not sufficient. At least version 5.3. is needed. Currently version {0} is installed.
+xform_install_redaxo_version_problem = The REDAXO version is not sufficient. At least version {0} is needed.
