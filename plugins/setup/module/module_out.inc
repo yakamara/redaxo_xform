@@ -23,7 +23,7 @@ if("REX_IS_VALUE[6]" == "true")
   $e3 = ''; $e4 = '';
   if ($html == "0") {
     $e3 = '<div class="rex-message"><div class="rex-info"><p>';
-    $e4 = ''</p></div></div>'';
+    $e4 = '</p></div></div>';
   }
   
   $t = str_replace("<br />","",rex_xform::unhtmlentities('REX_VALUE[6]'));
