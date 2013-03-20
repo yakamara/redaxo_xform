@@ -1,20 +1,71 @@
+
+.xform table.rex-xform-be-table {
+  width: auto;
+  margin-left: 210px;
+}
+
+
 .xform {
   clear: both;
   float: left;
   width: 100%;
+  background-color: #DFE9E9;
 }
-ul.xform {
-  float: none;
-  width: auto;
+
+.xform-highlight {
+  display: inline-block;
+  padding: 7px 0;
+  background-color: #DFE9E9;
+  font-weight: bold;
 }
+.xform-highlight.xform-as-label {
+  margin-left: 5px;
+  width: 195px;
+}
+
+
 .xform fieldset {
   clear: both;
-  /*padding: .5em;
-  margin-bottom: 1em;*/
 }
+
+/* ----------------------------------------------- legend */
+.xform h3,
 .xform legend {
-  padding: .5em;
+  padding: 7px 5px;
   font-weight: bold;
+}
+
+
+/* ----------------------------------------------- container */
+.xform p,
+.xform .xform-element,
+.xform .formlangtextarea {
+  float: left;
+  width: 100%;
+  padding: 5px 0;
+  background-color: #EFF9F9;
+  border-bottom: 1px solid #fff;
+}
+.xform  p.formtable,
+.xform .formlangtextarea p {
+  border-bottom: 0;
+}
+
+
+
+/* ----------------------------------------------- label */
+.xform label,
+.xform-as-label {
+  float: left;
+  width: 200px;
+  padding: 5px;
+}
+
+
+/* ----------------------------------------------- submit */
+.xform input.submit {
+  margin-left: 210px;
+  cursor: pointer;
 }
 
 
