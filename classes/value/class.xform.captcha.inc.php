@@ -41,10 +41,10 @@ class rex_xform_captcha extends rex_xform_abstract
     if($this->getElement(3) != "")
     {
       // TODO: ? vorhanden oder nicht
-      $link = $this->getELement(3).'?captcha=show&'.time();
+      $link = $this->getElement(3).'?captcha=show&'.time().microtime();
     }else {
 
-      $link = rex_getUrl($this->params["article_id"],$this->params["clang"],array("captcha"=>"show"),"&");
+      $link = rex_getUrl($this->params["article_id"],$this->params["clang"],array("captcha"=>"show"),"&").'&'.time().microtime();
     }
 
     if ($wc != '')
