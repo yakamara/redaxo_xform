@@ -27,16 +27,16 @@ ul.xform {
 
 
 /*  --------------------------------------- Container Formelement */
-.xform p,
-.xform .xform-element,
+.xform p, 
+.xform .xform-element, 
 .xform .formlangtextarea {
-  float: left;
-  width: 100%;
-  margin-bottom: .2em;
-  padding-bottom: .2em;
-  margin-top: .2em;
-  padding-top: .2em;
-  border-bottom:1px solid white;
+    border-bottom: 1px solid white;
+    float: left;
+    margin-bottom: 0em !important;
+    margin-top: 0px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    width: 100%;
 }
 .xform .formlangtextarea p {
   border-bottom:0;
@@ -60,10 +60,6 @@ ul.xform {
 .xform div.form_google_geocode .form_google_geocode_map {
   clear: both;
   margin-left: 245px;
-}
-
-#rex-page-xform div.rex-area-content {
-  padding: 0 0 0 1px;
 }
 
 /*  --------------------------------------- Labels */

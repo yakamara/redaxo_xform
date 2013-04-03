@@ -41,21 +41,27 @@ foreach($tables as $t) {
   }
 }
 
-
-echo '<table cellpadding="5" class="rex-table" id="xform-alltables">';
-echo '<tr><td>';
+$table_echo = '';
+//echo '<table cellpadding="5" class="rex-table" id="xform-alltables">';
+//echo '<tr><td>';
 foreach($tables as $t) {
   if($t["table_name"] == $table["table_name"]) {
-    echo '<b>'.rex_translate($t["name"]).' ['.$t["table_name"].']</b> ';
-  }else {
-    echo ' d<a href="index.php?'.$link_vars.'&table_name='.$t["table_name"].'">'.rex_translate($t["name"]).' ['.$t["table_name"].']</a> ';
+    $table_echo .= '<b>'.rex_translate($t["name"]).' ['.$t["table_name"].']</b> ';
+  } else {
+    $table_echo .= ' <a href="index.php?'.$link_vars.'&table_name='.$t["table_name"].'">'.rex_translate($t["name"]).' ['.$t["table_name"].']</a> ';
   }
 }
-echo '</td></tr>';
-echo '';
-if($table["description"] != "") echo "<tr><td>".$table["description"].'</td></tr>';
+//echo '</td></tr>';
+//echo '';
+if($table["description"] != "") {
+    //echo "<tr><td>".$table["description"].'</td></tr>';
+    $table_echo .= '<p>' . $table["description"] . '</p>';
+}
 // if($rex_em_opener_info != "") { echo ' - '.$I18N->msg("openerinfo").': '.$rex_em_opener_info; }
-echo '</table><br />';
+//echo '</table><br />';
+
+echo rex_content_block($table_echo);
+
 $table["fields"] = $this->getTableFields($table["table_name"]);
 
 
@@ -124,16 +130,19 @@ if($func == "choosenadd")
     <?php } ?>
 
 
-    <div class="rex-addon-output"><div class="rex-area-col-2">
+      <div class="rex-addon-output xform-table_field">
+        <div class="rex-area-col-2">
 
-      <div class="rex-area-col-a"><h3 class="rex-hl2">beliebte <?php echo $TYPE['value']; ?></h3><div class="rex-area-content"><p class="rex-tx1"><?php
+        <div class="rex-area-col-a">
+            <h3 class="rex-hl2">beliebte <?php echo $TYPE['value']; ?></h3>
+            <div class="rex-area-content"><p class="rex-tx1"><?php
       if(isset($types['value']))
       {
         ksort($types['value']);
         foreach($types['value'] as $k => $v)
         {
           if(isset($v["famous"]) && $v["famous"]) {
-            echo '<p class="rex-button"><a class="rex-button" href="'.$link.'type_id=value&type_name='.$k.'&type_real_field='.$type_real_field.'">'.$k.'</a> '.$v['description'].'</p>';
+            echo '<p class="rex-button"><a class="rex-button" href="'.$link.'type_id=value&type_name='.$k.'&type_real_field='.$type_real_field.'">'.$k.'</a> <span>'.$v['description'].'</span></p>';
           }
         }
       }
@@ -146,7 +155,7 @@ if($func == "choosenadd")
         foreach($types['validate'] as $k => $v)
         {
           if(isset($v["famous"]) && $v["famous"]) {
-          echo '<p class="rex-button"><a class="rex-button" href="'.$link.'type_id=validate&type_name='.$k.'">'.$k.'</a> '.$v['description'].'</p>';
+          echo '<p class="rex-button"><a class="rex-button" href="'.$link.'type_id=validate&type_name='.$k.'">'.$k.'</a> <span>'.$v['description'].'</span></p>';
           }
         }
       }
@@ -154,8 +163,8 @@ if($func == "choosenadd")
 
     </div></div>
 
-
-    <div class="rex-addon-output"><div class="rex-area-col-2">
+      <div class="rex-addon-output xform-table_field">
+          <div class="rex-area-col-2">
 
       <div class="rex-area-col-a"><h3 class="rex-hl2"><?php echo $TYPE['value']; ?></h3><div class="rex-area-content"><p class="rex-tx1"><?php
       if(isset($types['value']))
@@ -164,7 +173,7 @@ if($func == "choosenadd")
         foreach($types['value'] as $k => $v)
         {
           if(!isset($v["famous"]) || $v["famous"] !== TRUE) {
-          echo '<p class="rex-button"><a class="rex-button" href="'.$link.'type_id=value&type_name='.$k.'&type_real_field='.$type_real_field.'">'.$k.'</a> '.$v['description'].'</p>';
+          echo '<p class="rex-button"><a class="rex-button" href="'.$link.'type_id=value&type_name='.$k.'&type_real_field='.$type_real_field.'">'.$k.'</a> <span>'.$v['description'].'</span></p>';
           }
         }
       }
@@ -177,7 +186,7 @@ if($func == "choosenadd")
         foreach($types['validate'] as $k => $v)
         {
           if(!isset($v["famous"]) || $v["famous"] !== TRUE) {
-          echo '<p class="rex-button"><a class="rex-button" href="'.$link.'type_id=validate&type_name='.$k.'">'.$k.'</a> '.$v['description'].'</p>';
+          echo '<p class="rex-button"><a class="rex-button" href="'.$link.'type_id=validate&type_name='.$k.'">'.$k.'</a> <span>'.$v['description'].'</span></p>';
           }
         }
       }
@@ -207,9 +216,8 @@ if($func == "choosenadd")
 
   }
 
-  echo '<br /><table cellpadding="5" class="rex-table"><tr><td>
-    <a href="index.php?'.$link_vars.'&amp;table_name='.$table["table_name"].'"><b>&laquo; '.$I18N->msg('back_to_overview').'</b></a>
-    </td></tr></table>';
+  $table_echo = '<a href="index.php?'.$link_vars.'&amp;table_name='.$table["table_name"].'"><b>&laquo; '.$I18N->msg('back_to_overview').'</b></a>';
+    echo rex_content_block($table_echo);
 
 }
 
@@ -372,14 +380,15 @@ if( ($func == "add" || $func == "edit" )  && isset($types[$type_id][$type_name])
   if($xform->objparams["form_show"])
   {
     if($func == "add")
-      echo '<div class="rex-area"><h3 class="rex-hl2">'.$I18N->msg("addfield").' "'. $type_name .'"</h3><div class="rex-area-content">';
+      echo '<div class="rex-addon-output"><h3 class="rex-hl2">'.$I18N->msg("addfield").' "'. $type_name .'"</h3><div class="rex-addon-content">';
     else
-      echo '<div class="rex-area"><h3 class="rex-hl2">'.$I18N->msg("editfield").' "'. $type_name .'"</h3><div class="rex-area-content">';
+      echo '<div class="rex-addon-output"><h3 class="rex-hl2">'.$I18N->msg("editfield").' "'. $type_name .'"</h3><div class="rex-addon-content">';
     echo $form;
     echo '</div></div>';
-    echo '<br />&nbsp;<br /><table cellpadding="5" class="rex-table"><tr><td>
-      <a href="index.php?'.$link_vars.'&amp;table_name='.$table["table_name"].'"><b>&laquo; '.$I18N->msg('back_to_overview').'</b></a>
-      </td></tr></table>';
+
+      $table_echo = '<a href="index.php?'.$link_vars.'&amp;table_name='.$table["table_name"].'"><b>&laquo; '.$I18N->msg('back_to_overview').'</b></a>';
+      echo rex_content_block($table_echo);
+
     $func = "";
   }else
   {
@@ -503,13 +512,21 @@ if($func == "list"){
       return rex_xform_list_format($p, $p["list"]->getColumnLink($I18N->msg("delete"),$I18N->msg("delete")));
     }
 
-    echo '<table cellpadding=5 class=rex-table>
-    <tr><td><a href=index.php?'.$link_vars.'&table_name='.$table["table_name"].'&func=choosenadd><b>+ '.$I18N->msg("addtablefield").'</b></td>
-    <td style="text-align:right;">
-      <a href=index.php?'.$link_vars.'&table_name='.$table["table_name"].'&func=updatetable><b>o '.$I18N->msg("updatetable").'</b></a>
-      <a href=index.php?'.$link_vars.'&table_name='.$table["table_name"].'&func=updatetablewithdelete><b>o '.$I18N->msg("updatetable_with_delete").'</b></a>
-      </td></tr>
-    </table><br />';
+
+
+        $table_echo = '
+            <div class="rex-area-col-2">
+                <div class="rex-area-col-a">
+                    <a href=index.php?'.$link_vars.'&table_name='.$table["table_name"].'&func=choosenadd><b>+ '.$I18N->msg("addtablefield").'</b></a>
+                </div>
+                <div class="rex-area-col-b rex-algn-rght">
+                  <a href=index.php?'.$link_vars.'&table_name='.$table["table_name"].'&func=updatetable><b>o '.$I18N->msg("updatetable").'</b></a>
+                  <a href=index.php?'.$link_vars.'&table_name='.$table["table_name"].'&func=updatetablewithdelete><b>o '.$I18N->msg("updatetable_with_delete").'</b></a>
+                </div>
+            </div>
+            <div class="rex-clearer"></div>
+            ';
+      echo rex_content_block($table_echo);
 
     $sql = 'select * from rex_xform_field where table_name="'.$table["table_name"].'" order by prio';
     $list = rex_list::factory($sql,30);

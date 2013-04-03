@@ -190,7 +190,7 @@ if(rex_request('send',"int",0) == 1)
 if($show_importform){
 
   ?>
-  <div class="rex-area"><h3 class="rex-hl2">CSV Datei importieren</h3><div class="rex-area-content"><div id="rex-xform-import" class="xform">
+  <div class="rex-addon-output"><h3 class="rex-hl2">CSV Datei importieren</h3><div class="rex-addon-content"><div id="rex-xform-import" class="xform">
 
   <form action="index.php" method="post" enctype="multipart/form-data">
 

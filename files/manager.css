@@ -34,3 +34,15 @@ body#rex-page-xform .xform-manager-searchfield{
   
 }
 
+.xform-table_field p.rex-button {
+    padding-left: 140px;
+}
+.xform-table_field p.rex-button a.rex-button {
+    float: left;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-left: -140px;
+}
+.xform-table_field p.rex-button span {
+    display: block;
+}

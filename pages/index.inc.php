@@ -3,10 +3,8 @@
 $page = 'xform';
 
 include $REX["INCLUDE_PATH"]."/layout/top.php";
-echo '<div id="rex-addon-output">';
 
 $subpage = rex_request("subpage","string");
-
 
 function deep_in_array($value, $array, $case_insensitive = false)
 {
@@ -45,8 +43,6 @@ if ($subpage != "")
   echo '</ul></div>';
   echo '</div>';
 }
-
-echo '</div>';
 
 include $REX["INCLUDE_PATH"]."/layout/bottom.php";
 

@@ -68,13 +68,13 @@ if( ($func == "add" || $func == "edit") && $REX['USER']->isAdmin() )
   {
     if($func == "edit")
     {
-      echo '<div class="rex-area"><h3 class="rex-hl2">'.$I18N->msg("xform_manager_edit_table").'</h3><div class="rex-area-content">';
+      echo '<div class="rex-addon-output"><h3 class="rex-hl2">'.$I18N->msg("xform_manager_edit_table").'</h3><div class="rex-addon-content">';
     }else{
-      echo '<div class="rex-area"><h3 class="rex-hl2">'.$I18N->msg("xform_manager_add_table").'</h3><div class="rex-area-content">';
+      echo '<div class="rex-addon-output"><h3 class="rex-hl2">'.$I18N->msg("xform_manager_add_table").'</h3><div class="rex-addon-content">';
     }
     echo $form;
     echo '</div></div>';
-    echo '<br />&nbsp;<br /><table cellpadding="5" class="rex-table"><tr><td><a href="index.php?page='.$page.'&amp;subpage='.$subpage.'"><b>&laquo; '.$I18N->msg('xform_back_to_overview').'</b></a></td></tr></table>';
+    echo rex_content_block('<a href="index.php?page='.$page.'&amp;subpage='.$subpage.'"><b>&laquo; '.$I18N->msg('xform_back_to_overview').'</b></a>');
     $show_list = FALSE;
   }else
   {
@@ -129,11 +129,9 @@ if($show_list && $REX['USER']->isAdmin()){
     return $list->getValue("status") == 1 ? '<span style="color:green;">'.$I18N->msg("xform_tbl_active").'</span>' : '<span style="color:red;">'.$I18N->msg("xform_tbl_inactive").'</span>';
   }
 
-  echo "<table cellpadding=5 class=rex-table><tr><td>
-    <a href=index.php?page=".$page."&subpage=".$subpage."&func=add><b>+ ".$I18N->msg("xform_manager_table_add")."</b></a>
-    <!-- |  <a href=index.php?page=".$page."&subpage=".$subpage."&func=table_import><b>".$I18N->msg("xform_manager_table_import")."</b></a> -->
-
-    </td></tr></table><br />";
+//<!-- |  <a href=index.php?page=".$page."&subpage=".$subpage."&func=table_import><b>".$I18N->msg("xform_manager_table_import")."</b></a> -->
+  $table_echo = "<a href=index.php?page=".$page."&subpage=".$subpage."&func=add><b>+ ".$I18N->msg("xform_manager_table_add")."</b></a>";
+  echo rex_content_block($table_echo);
 
   $sql = "select * from $table order by prio,table_name";
 

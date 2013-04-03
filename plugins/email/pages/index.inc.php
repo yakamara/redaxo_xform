@@ -18,14 +18,10 @@ $template_id = rex_request("template_id","int");
 if($func == "add" || $func == "edit")
 {
 
-  echo '<div class="rex-toolbar"><div class="rex-toolbar-content">';
-  echo '<p><a class="rex-back" href="index.php?page='.$page.'&amp;subpage='.$subpage.'">'.$I18N->msg('xform_back_to_overview').'</a></p>';
-  echo '</div></div>';
+  echo rex_content_block('<a class="rex-back" href="index.php?page='.$page.'&amp;subpage='.$subpage.'">'.$I18N->msg('xform_back_to_overview').'</a>');
 
-  echo '<div class="rex-content-block"><div class="rex-content-block-content">
-  <p>Durch folgende Markierungen <b>###field###</b> kann man die in den Formularen eingegebenen Felder hier im E-Mail Template verwenden. Weiterhin sind
-  alle REDAXO Variablen wie $REX["SERVER"] als <b>###REX_SERVER###</b> verwendbar. Urlencoded, z.b. für Links, bekommt man diese Werte über <b>+++field+++</b></p>
-  </div></div>';
+  echo rex_content_block('<p>Durch folgende Markierungen <b>###field###</b> kann man die in den Formularen eingegebenen Felder hier im E-Mail Template verwenden. Weiterhin sind
+  alle REDAXO Variablen wie $REX["SERVER"] als <b>###REX_SERVER###</b> verwendbar. Urlencoded, z.b. für Links, bekommt man diese Werte über <b>+++field+++</b></p>');
 
   echo '<div class="rex-addon-output">';
 

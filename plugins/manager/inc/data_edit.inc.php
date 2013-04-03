@@ -163,8 +163,7 @@ if($show_editpage) {
   // -------------- Import
   if(!$popup && $func == "import" && $this->hasDataPageFunction("import")) {
     include $REX["INCLUDE_PATH"].'/addons/xform/plugins/manager/pages/data_import.inc.php';
-    echo '<table cellpadding="5" class="rex-table"><tr><td><a href="index.php?'.$link_vars.$em_url.$em_rex_list.'"><b>&laquo; '.$I18N->msg('back_to_overview').'</b></a></td></tr></table><br />';
-
+    echo rex_content_block('<a href="index.php?'.$link_vars.$em_url.$em_rex_list.'"><b>&laquo; '.$I18N->msg('back_to_overview').'</b></a>');
   }
 
 
@@ -277,7 +276,7 @@ if($show_editpage) {
   // -------------- form
   if(($func == "add"  && $this->hasDataPageFunction("add")) || $func == "edit")
   {
-    $back = '<table cellpadding="5" class="rex-table"><tr><td><a href="index.php?'.$link_vars.$em_url.$em_rex_list.'"><b>&laquo; '.$I18N->msg('back_to_overview').'</b></a></td></tr></table>';
+    $back = rex_content_block('<a href="index.php?'.$link_vars.$em_url.$em_rex_list.'"><b>&laquo; '.$I18N->msg('back_to_overview').'</b></a>');
 
     $xform = new rex_xform;
     // $xform->setDebug(TRUE);
@@ -404,29 +403,29 @@ if($show_editpage) {
     if($xform->objparams["form_show"] || ($xform->objparams["form_showformafterupdate"] )) 
     {
 
-      echo $back.'<br />';
+      echo $back;
 
       if($func == "edit") 
       {
         echo '
-          <div class="rex-area">
+          <div class="rex-addon-output">
             <h3 class="rex-hl2">'.$I18N->msg("editdata").'</h3>
-            <div class="rex-area-content">'.$form.'</div>
+            <div class="rex-addon-content">'.$form.'</div>
           </div>';
         
       }else 
       {
         echo '
-          <div class="rex-area">
+          <div class="rex-addon-output">
             <h3 class="rex-hl2">'.$I18N->msg("adddata").'</h3>
-            <div class="rex-area-content">'.$form.'</div>
+            <div class="rex-addon-content">'.$form.'</div>
           </div>';
 
       }
 
       echo rex_register_extension_point('XFORM_DATA_FORM', '', array("form" => $form, "func" => $func, "this" => $this, "table"=>$table));
 
-      echo '<br />&nbsp;<br />'.$back;
+      echo $back;
 
       $show_list = FALSE;
 
