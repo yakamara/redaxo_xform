@@ -18,9 +18,16 @@ $REX['ADDON']['author'][$mypage] = 'Jan Kristinus';
 $REX['ADDON']['supportpage'][$mypage] = 'www.yakamara.de/tag/xform/';
 $REX['PERM'][] = 'xform[]';
 
-$REX['ADDON']['xform']['classpaths']['value'] = array($REX['INCLUDE_PATH'].'/addons/xform/classes/value/');
-$REX['ADDON']['xform']['classpaths']['validate'] = array($REX['INCLUDE_PATH'].'/addons/xform/classes/validate/');
-$REX['ADDON']['xform']['classpaths']['action'] = array($REX['INCLUDE_PATH'].'/addons/xform/classes/action/');
+if(empty($REX['ADDON']['xform']['classpaths']['value']) OR !is_array($REX['ADDON']['xform']['classpaths']['value']))
+  $REX['ADDON']['xform']['classpaths']['value'] = array();
+if(empty($REX['ADDON']['xform']['classpaths']['action']) OR !is_array($REX['ADDON']['xform']['classpaths']['action']))
+  $REX['ADDON']['xform']['classpaths']['action'] = array();
+if(empty($REX['ADDON']['xform']['classpaths']['validate']) OR !is_array($REX['ADDON']['xform']['classpaths']['validate']))
+  $REX['ADDON']['xform']['classpaths']['validate'] = array();
+
+$REX['ADDON']['xform']['classpaths']['value'][] = $REX['INCLUDE_PATH'].'/addons/xform/classes/value/';
+$REX['ADDON']['xform']['classpaths']['validate'][] = $REX['INCLUDE_PATH'].'/addons/xform/classes/validate/';
+$REX['ADDON']['xform']['classpaths']['action'][] = $REX['INCLUDE_PATH'].'/addons/xform/classes/action/';
 
 include ($REX['INCLUDE_PATH'].'/addons/'.$mypage.'/classes/basic/class.rex_radio.inc.php');
 include ($REX['INCLUDE_PATH'].'/addons/'.$mypage.'/classes/basic/class.rex_xform_list.inc.php');
