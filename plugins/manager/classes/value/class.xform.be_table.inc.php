@@ -58,26 +58,28 @@ class rex_xform_be_table extends rex_xform_abstract
       // print_r($_REQUEST["v"][$id]);
 
       $i=0;
-      foreach($_REQUEST["v"][$id] as $c)
-      {
-        for($r=0;$r<=$columns;$r++)
-        {
-          if (!isset($values[$r])) $values[$r] = "";
-          if ($i>0) $values[$r] .= ',';
-          if (isset($c[$r])) $values[$r] .= trim($c[$r]);
-        }
-        $i++;
+      if (isset($_REQUEST["v"][$id])) {
+          foreach($_REQUEST["v"][$id] as $c) {
+          {
+            for($r=0;$r<=$columns;$r++)
+            {
+              if (!isset($values[$r])) $values[$r] = "";
+              if ($i>0) $values[$r] .= ',';
+              if (isset($c[$r])) $values[$r] .= trim($c[$r]);
+            }
+            $i++;
+          }
+    
+          // die nur den Trenner haben loeschen
+          if (count($values) > 0) {
+            foreach ($values as $key => $val) {
+              if (trim($val) == ',')
+                unset($values[$key]);
+            }
+            $values = array_values($values);
+          }
       }
-
-      // die nur den Trenner haben loeschen
-      if (count($values) > 0) {
-        foreach ($values as $key => $val) {
-          if (trim($val) == ',')
-            unset($values[$key]);
-        }
-        $values = array_values($values);
-      }
-
+          
       $this->setValue("");
       $i=0;
       foreach($values as $value)
