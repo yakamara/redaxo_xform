@@ -58,17 +58,28 @@ class rex_xform_be_table extends rex_xform_abstract
       // print_r($_REQUEST["v"][$id]);
 
       $i=0;
-      foreach($_REQUEST["v"][$id] as $c)
-      {
-        for($r=0;$r<=$columns;$r++)
-        {
-          if (!isset($values[$r])) $values[$r] = "";
-          if ($i>0) $values[$r] .= ',';
-          if (isset($c[$r])) $values[$r] .= $c[$r];
-        }
-        $i++;
+      if (isset($_REQUEST["v"][$id])) {
+          foreach($_REQUEST["v"][$id] as $c) {
+          {
+            for($r=0;$r<=$columns;$r++)
+            {
+              if (!isset($values[$r])) $values[$r] = "";
+              if ($i>0) $values[$r] .= ',';
+              if (isset($c[$r])) $values[$r] .= trim($c[$r]);
+            }
+            $i++;
+          }
+    
+          // die nur den Trenner haben loeschen
+          if (count($values) > 0) {
+            foreach ($values as $key => $val) {
+              if (trim($val) == ',')
+                unset($values[$key]);
+            }
+            $values = array_values($values);
+          }
       }
-
+          
       $this->setValue("");
       $i=0;
       foreach($values as $value)
@@ -103,7 +114,7 @@ class rex_xform_be_table extends rex_xform_abstract
 
     $out_row_add .= '<a href="javascript:void(0);" onclick="rex_xform_table_addRow'.$id.'(jQuery(\'#xform_table'.$id.'\'))">+ Reihe hinzufügen</a>';
 
-    $out .= '<table id="xform_table'.$id.'"><tr>';
+    $out .= '<table class="rex-table rex-xform-be-table" id="xform_table'.$id.'"><tr>';
     for($r=0;$r<$columns;$r++)
     {
       $out .= '<th>';
