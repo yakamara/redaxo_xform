@@ -1,21 +1,26 @@
 <?php
 
+/**
+ * XForm
+ * @author jan.kristinus[at]redaxo[dot]org Jan Kristinus
+ * @author <a href="http://www.yakamara.de">www.yakamara.de</a>
+ */
+
 $page = rex_request('page', 'string');
 $subpage = rex_request('subpage', 'string');
 $tripage = rex_request('tripage', 'string');
 $table_name = rex_request('table_name', 'string');
 
-switch($tripage)
-{
+switch ($tripage) {
   case 'table_field':
-    rex_title("XForm", $REX['ADDON']['xform']['SUBPAGES']);
+    rex_title('XForm', $REX['ADDON']['xform']['SUBPAGES']);
     require $REX['INCLUDE_PATH'] . '/addons/xform/plugins/manager/pages/table_field.inc.php';
     break;
 
   case 'table_import':
     // TODO:
-    rex_title("XForm", $REX['ADDON']['xform']['SUBPAGES']);
-    echo "TODO:";
+    rex_title('XForm', $REX['ADDON']['xform']['SUBPAGES']);
+    echo 'TODO:';
     require $REX['INCLUDE_PATH'] . '/addons/xform/plugins/manager/pages/table_import.inc.php';
     break;
 
@@ -24,6 +29,6 @@ switch($tripage)
     break;
 
   default:
-    rex_title("XForm", $REX['ADDON']['xform']['SUBPAGES']);
+    rex_title('XForm', $REX['ADDON']['xform']['SUBPAGES']);
     require $REX['INCLUDE_PATH'] . '/addons/xform/plugins/manager/pages/table_edit.inc.php';
 }

@@ -2,25 +2,22 @@
 
 /**
  * XForm
- *
- * @author jan.kristinus[at]redaxo[dot]de Jan Kristinus
+ * @author jan.kristinus[at]redaxo[dot]org Jan Kristinus
  * @author <a href="http://www.yakamara.de">www.yakamara.de</a>
- *
- * @package redaxo4
- * @version svn:$Id$
  */
 
 class rex_xform_abstract
 {
 
-  var $params = array(); // allgemeine parameter der
+  var $params = array();
   var $obj;
-  var $elements = array(); // lokale elemente
-  var $element_values = array(); // Werte aller Value Objekte
+  var $elements = array();
+  var $element_values = array();
 
   var $id;
   var $value;
   var $name;
+  var $label;
   var $type;
   var $keys = array();
 
@@ -51,6 +48,10 @@ class rex_xform_abstract
   {
     return $this->value;
   }
+
+
+
+  //  ------------ keys
 
   function getFieldId($k="")
   {
@@ -83,7 +84,7 @@ class rex_xform_abstract
   }
 
 
-  // ------------
+  // ------------ helpers
 
   function setKey($k,$v)
   {
@@ -101,16 +102,13 @@ class rex_xform_abstract
       $v = $this->getValue();
     }
 
-    if(is_array($v))
-    {
+    if(is_array($v)) {
       return $v;
-    }else
-    {
-      if(isset($this->keys[$v])) 
-      {
+      
+    }else {
+      if(isset($this->keys[$v]))  {
         return $this->keys[$v];
-      }else 
-      {
+      }else {
         return $v;
       }
     }
@@ -121,12 +119,23 @@ class rex_xform_abstract
     $this->keys = array();
   }
 
+  function encodeChars($chars, $text) {
+    $text_encoded = str_replace('@'.$chars.'@', sha1('@'.$chars.'@'), $text);
+    return $text_encoded;
+  }
+
+  function decodeChars($chars, $text) {
+    $text_decoded = str_replace( sha1('@'.$chars.'@'), $chars, $text);
+    return $text_decoded;
+  }
+
   // ------------
 
   function loadParams(&$params, $elements = array())
   {
     $this->params = &$params;
     $this->elements = $elements;
+    $this->setLabel($this->getElement(2));
     $this->setName($this->getElement(1));
     $this->type = $this->getElement(0);
   }
@@ -141,6 +150,30 @@ class rex_xform_abstract
     return $this->name;
   }
 
+  function setLabel($label)
+  {
+    $this->label = $label;
+  }
+
+  function getLabel()
+  {
+    return $this->getLabelStyle($this->label);
+  }
+
+  function getLabelStyle($label) {
+  
+    $label = rex_translate($label, null, false);
+
+    if($this->params["form_label_type"] == "html") {
+
+    } else {
+      $label = nl2br(htmlspecialchars($label));
+
+    }
+    return $label;
+    return '<span style="color:#f90">'.($label).'</span>';
+  }
+
   function setValueObjects(&$obj)
   {
     $this->obj = &$obj;
@@ -152,7 +185,6 @@ class rex_xform_abstract
   }
 
   // ------------ Trigger
-
 
   function enterObject() 
   {

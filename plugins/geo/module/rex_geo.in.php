@@ -1,7 +1,11 @@
 <?php
 
-// TABLE SELECT
-////////////////////////////////////////////////////////////////////////////////
+/**
+ * XForm
+ * @author jan.kristinus[at]redaxo[dot]org Jan Kristinus
+ * @author <a href="http://www.yakamara.de">www.yakamara.de</a>
+ */
+
 $gc = rex_sql::factory();
 $gc->setQuery('SHOW TABLES');
 $tables = $gc->getArray();
@@ -18,7 +22,7 @@ $tbl_sel = $tbl_sel->get();
 
 ?>
 <style type="text/css" media="screen">
-  /*BAISC MODUL STYLE*/
+  /*BASIS MODUL STYLE*/
   #xform-modul                       {margin:0;padding:0;line-height:25px;}
   #xform-modul fieldset              {background:#E4E1D1;margin:-20px 0 0 0;padding: 4px 10px 10px 10px;-moz-border-radius:6px;-webkit-border-radius:6px;border-radius:6px;}
   #xform-modul fieldset legend       {display:block !important;position:relative !important;height:auto !important;top:0 !important;left:0 !important;width:100% !important;margin:0 0 0 0 !important;padding:30px 0 0 0px !important;background:transparent !important;border-bottom:1px solid #B1B1B1 !important;color:gray;font-size:14px;font-weight:bold;}

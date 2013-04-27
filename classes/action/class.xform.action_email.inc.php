@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * XForm
+ * @author jan.kristinus[at]redaxo[dot]org Jan Kristinus
+ * @author <a href="http://www.yakamara.de">www.yakamara.de</a>
+ */
+
 class rex_xform_action_email extends rex_xform_action_abstract
 {
 
@@ -11,10 +17,9 @@ class rex_xform_action_email extends rex_xform_action_abstract
     $mail_subject = $this->getElement(4);
     $mail_body = $this->getElement(5);
 
-    foreach ($this->params["value_pool"]["email"] as $search => $replace)
-    {
-      $mail_body = str_replace('###'. $search .'###', $replace, $mail_body);
-      $mail_body = str_replace('+++'. $search .'+++', urlencode($replace), $mail_body);
+    foreach ($this->params['value_pool']['email'] as $search => $replace) {
+      $mail_body = str_replace('###' . $search . '###', $replace, $mail_body);
+      $mail_body = str_replace('+++' . $search . '+++', urlencode($replace), $mail_body);
     }
 
     $mail = new rex_mailer();
@@ -31,9 +36,7 @@ class rex_xform_action_email extends rex_xform_action_abstract
 
   function getDescription()
   {
-    return "action|email|from@email.de|to@email.de|Mailsubject|Mailbody###name###";
+    return 'action|email|from@email.de|to@email.de|Mailsubject|Mailbody###name###';
   }
 
 }
-
-?>

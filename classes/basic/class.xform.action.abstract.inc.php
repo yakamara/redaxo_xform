@@ -2,12 +2,8 @@
 
 /**
  * XForm
- *
- * @author jan.kristinus[at]redaxo[dot]de Jan Kristinus
+ * @author jan.kristinus[at]redaxo[dot]org Jan Kristinus
  * @author <a href="http://www.yakamara.de">www.yakamara.de</a>
- *
- * @package redaxo4
- * @version svn:$Id$
  */
 
 class rex_xform_action_abstract
@@ -32,17 +28,17 @@ class rex_xform_action_abstract
 
   function execute()
   {
-    return FALSE;
+    return false;
   }
 
   function getDescription()
   {
-    return "Es existiert keine Klassenbeschreibung";
+    return 'Es existiert keine Klassenbeschreibung';
   }
 
   function getLongDescription()
   {
-    return "Es existiert keine ausfuehrliche Klassenbeschreibung";
+    return 'Es existiert keine ausfuehrliche Klassenbeschreibung';
   }
 
   function getDefinitions()
@@ -52,8 +48,8 @@ class rex_xform_action_abstract
 
   function getElement($i)
   {
-    if(!isset($this->elements[$i]))
-      return FALSE;
+    if (!isset($this->elements[$i]))
+      return false;
     else
       return $this->elements[$i];
   }

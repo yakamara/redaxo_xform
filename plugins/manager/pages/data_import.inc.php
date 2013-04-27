@@ -1,42 +1,45 @@
 <?php
 
-ini_set("auto_detect_line_endings", true);
+/**
+ * XForm
+ * @author jan.kristinus[at]redaxo[dot]org Jan Kristinus
+ * @author <a href="http://www.yakamara.de">www.yakamara.de</a>
+ */
 
-$show_importform = TRUE;
-$show_list = FALSE;
+ini_set('auto_detect_line_endings', true);
+
+$show_importform = true;
+$show_list = false;
 
 $rfields = rex_xform_manager_table::getFields($table['table_name']);
 
-$replacefield = rex_request("replacefield","string");
-$divider = rex_request("divider","string",";");
-$missing_columns = rex_request("missing_columns","int");
-$debug = rex_request("debug","string");
+$replacefield = rex_request('replacefield', 'string');
+$divider = rex_request('divider', 'string', ';');
+$missing_columns = rex_request('missing_columns', 'int');
+$debug = rex_request('debug', 'string');
 
-if($replacefield == "") $replacefield = "id";
-if(!in_array($divider,array(";",",","tab"))) $divider = ",";
-if($missing_columns != 2 && $missing_columns != 3) $missing_columns = 1;
-if($debug != 1) $debug = 0;
+if ($replacefield == '') $replacefield = 'id';
+if (!in_array($divider, array(';', ',', 'tab'))) $divider = ',';
+if ($missing_columns != 2 && $missing_columns != 3) $missing_columns = 1;
+if ($debug != 1) $debug = 0;
 
 
-if(rex_request('send',"int",0) == 1)
-{
+if (rex_request('send', 'int', 0) == 1) {
   // Daten wurden übertragen
 
-  if(!isset($_FILES['file_new']) || $_FILES['file_new']["tmp_name"] == "")
-  {
+  if (!isset($_FILES['file_new']) || $_FILES['file_new']['tmp_name'] == '') {
     echo rex_warning('Bitte laden Sie eine Importdatei hoch');
 
-  }else
-  {
+  } else {
 
-    $func = "";
-    $show_importform = FALSE;
+    $func = '';
+    $show_importform = false;
 
     $fieldarray = array();
     $filename = $_FILES['file_new']['tmp_name'];
 
     $div = $divider;
-    if($div == "tab") $div = "\t";
+    if ($div == 'tab') $div = "\t";
 
     $counter = 0;  // importierte
     $dcounter = 0; // nicht imporierte
@@ -46,61 +49,50 @@ if(rex_request('send',"int",0) == 1)
     $errorcounter = 0;
 
     $i = rex_sql::factory();
-    if($debug) {
+    if ($debug) {
       $i->debugsql = 1;
     }
-    $fp = fopen($filename,'r');
-    while ( ($line_array = fgetcsv ($fp, 30384, $div)) !== FALSE )
-    {
+    $fp = fopen($filename, 'r');
+    while ( ($line_array = fgetcsv($fp, 30384, $div)) !== false ) {
 
-      if(count($fieldarray) == 0)
-      {
+      if (count($fieldarray) == 0) {
         // ******************* first line
 
         $fieldarray = $line_array;
 
         $mc = array();
-        foreach($fieldarray as $k => $v)
-        {
-          if(!array_key_exists($fieldarray[$k],$rfields) && $fieldarray[$k] != "id")
-          {
+        foreach ($fieldarray as $k => $v) {
+          if (!array_key_exists($fieldarray[$k], $rfields) && $fieldarray[$k] != 'id') {
             $mc[$fieldarray[$k]] = $fieldarray[$k];
           }
         }
 
-        if(count($mc)>0)
-        {
-          if($missing_columns == 3)
-          {
-            echo rex_warning('Es fehlen folgende Felder: '.implode(", ",$mc));
-            $show_importform = TRUE;
-            $func = "import";
+        if (count($mc) > 0) {
+          if ($missing_columns == 3) {
+            echo rex_warning('Es fehlen folgende Felder: ' . implode(', ', $mc));
+            $show_importform = true;
+            $func = 'import';
             break;
-            
-          }elseif($missing_columns == 2)
-          {
-            $error = FALSE;
-            foreach($mc as $mcc)
-            {
-              $sql = 'ALTER TABLE `'.$table['table_name'].'` ADD `'.mysql_real_escape_string($mcc).'` TEXT NOT NULL;';
+
+          } elseif ($missing_columns == 2) {
+            $error = false;
+            foreach ($mc as $mcc) {
+              $sql = 'ALTER TABLE `' . $table['table_name'] . '` ADD `' . mysql_real_escape_string($mcc) . '` TEXT NOT NULL;';
               $upd = rex_sql::factory();
               $upd->setQuery($sql);
 
-              if($upd->getError())
-              {
-                $error = TRUE;
-                echo rex_warning('Feld "'.$mcc.'" konnte nicht angelegt werden: '.$upd->getError());
-                
-              }else
-              {
-                echo rex_info('Feld "'.$mcc.'" wurde angelegt');
+              if ($upd->getError()) {
+                $error = true;
+                echo rex_warning('Feld "' . $mcc . '" konnte nicht angelegt werden: ' . $upd->getError());
+
+              } else {
+                echo rex_info('Feld "' . $mcc . '" wurde angelegt');
               }
 
             }
-            if($error)
-            {
+            if ($error) {
               echo rex_warning('Import wurde abgebrochen, da Fehler aufgetaucht sind.');
-              $show_importform = TRUE;
+              $show_importform = true;
               break;
             }
 
@@ -111,25 +103,19 @@ if(rex_request('send',"int",0) == 1)
         }
 
 
-      }else
-      {
-        if(!$line_array) 
-        {
+      } else {
+        if (!$line_array) {
           break;
-        
-        }else
-        {
+
+        } else {
 
           $counter++;
           $i->setTable($table['table_name']);
-          $replacevalue = "";
-          foreach($line_array as $k => $v)
-          {
-            if($fieldarray[$k] != "" && (array_key_exists($fieldarray[$k],$rfields) || $fieldarray[$k] == "id"))
-            {
-              $i->setValue($fieldarray[$k],mysql_real_escape_string($v));
-              if($replacefield == $fieldarray[$k])
-              {
+          $replacevalue = '';
+          foreach ($line_array as $k => $v) {
+            if ($fieldarray[$k] != '' && (array_key_exists($fieldarray[$k], $rfields) || $fieldarray[$k] == 'id')) {
+              $i->setValue($fieldarray[$k], mysql_real_escape_string($v));
+              if ($replacefield == $fieldarray[$k]) {
                 $replacevalue = $v;
               }
             }
@@ -138,43 +124,40 @@ if(rex_request('send',"int",0) == 1)
           // noch abfrage ob
           // $replacefield
           $cf = rex_sql::factory();
-          $cf->setQuery('select * from '.$table['table_name'].' where '.$replacefield.'="'.mysql_real_escape_string($replacevalue).'"');
+          $cf->setQuery('select * from ' . $table['table_name'] . ' where ' . $replacefield . '="' . mysql_real_escape_string($replacevalue) . '"');
 
-          if($cf->getRows()>0)
-          {
-            $i->setWhere($replacefield.'="'.mysql_real_escape_string($replacevalue).'"');
+          if ($cf->getRows() > 0) {
+            $i->setWhere($replacefield . '="' . mysql_real_escape_string($replacevalue) . '"');
             $i->update();
             $error = $i->getError();
-            if($error == "") {
+            if ($error == '') {
               $rcounter++;
-            }else {
+            } else {
               $dcounter++;
-              echo rex_warning('Datensatz konnte nicht importiert werden: '.$error);
+              echo rex_warning('Datensatz konnte nicht importiert werden: ' . $error);
             }
-          }else
-          {
+          } else {
             $i->insert();
             $error = $i->getError();
-            if($error == "") {
+            if ($error == '') {
               $icounter++;
-            }else {
+            } else {
               $dcounter++;
-              echo rex_warning('Datensatz konnte nicht importiert werden: '.$error);
+              echo rex_warning('Datensatz konnte nicht importiert werden: ' . $error);
             }
           }
 
         }
       }
 
-      $show_list = TRUE;
+      $show_list = true;
 
     }
 
-    echo rex_info('Es wurden '.($icounter+$rcounter).' Datensätze importiert. Davon waren '.$icounter.' neue Datensätze und '.$rcounter.' Datensätze wurden ersetzt.');
+    echo rex_info('Es wurden ' . ($icounter + $rcounter) . ' Datensätze importiert. Davon waren ' . $icounter . ' neue Datensätze und ' . $rcounter . ' Datensätze wurden ersetzt.');
 
-    if($dcounter >0)
-    {
-      echo rex_warning('Es wurde/n '.$dcounter.' Datensätze nicht importiert.');
+    if ($dcounter > 0) {
+      echo rex_warning('Es wurde/n ' . $dcounter . ' Datensätze nicht importiert.');
     }
 
   }
@@ -187,7 +170,7 @@ if(rex_request('send',"int",0) == 1)
 
 
 
-if($show_importform){
+if ($show_importform) {
 
   ?>
   <div class="rex-addon-output"><h3 class="rex-hl2">CSV Datei importieren</h3><div class="rex-addon-content"><div id="rex-xform-import" class="xform">
@@ -197,9 +180,8 @@ if($show_importform){
       <p class="rex-tx1">Hiermit können Sie Daten in diese Tabelle importieren. BItte beachten Sie, dass Sie nur Textdateien importieren können und in der ersten Zeile die Felddefinitionen vorhanden sein müssen</p>
 
       <?php
-      foreach($this->getLinkVars() as $k => $v)
-      {
-        echo '<input type="hidden" name="'.$k.'" value="'.addslashes($v).'" />';
+      foreach ($this->getLinkVars() as $k => $v) {
+        echo '<input type="hidden" name="' . $k . '" value="' . addslashes($v) . '" />';
       }
       ?>
       <input type="hidden" name="func" value="import" />
@@ -208,7 +190,7 @@ if($show_importform){
 <!--
         <p class="formcheckbox formlabel-debug" id="xform-formular-debug">
 
-        <input type="checkbox" class="checkbox" name="debug" id="xform-debug" value="1" <?php if($debug == 1) echo 'checked'; ?> />
+        <input type="checkbox" class="checkbox" name="debug" id="xform-debug" value="1" <?php if ($debug == 1) echo 'checked'; ?> />
         <label class="checkbox " for="xform-debug" >Debug</label>
       </p>
 -->
@@ -224,11 +206,11 @@ if($show_importform){
       </p>';
 
       $radio = new rex_radio();
-      $radio->setId("missing_columns");
-      $radio->setName("missing_columns");
-      $radio->addOption("dann Spalte ignorieren.", "1");
-      $radio->addOption("dann Spalte als TEXT in der Datenbank anlegen (Zur Verwaltung müssen später diese Felder noch bestimmt werden).", "2");
-      $radio->addOption("dann Import abbrechen.", "3");
+      $radio->setId('missing_columns');
+      $radio->setName('missing_columns');
+      $radio->addOption('dann Spalte ignorieren.', '1');
+      $radio->addOption('dann Spalte als TEXT in der Datenbank anlegen (Zur Verwaltung müssen später diese Felder noch bestimmt werden).', '2');
+      $radio->addOption('dann Import abbrechen.', '3');
       // $SEL->setStyle(' class="select ' . $wc . '"');
       $radio->setSelected($missing_columns);
       echo $radio->get();
@@ -239,12 +221,12 @@ if($show_importform){
         <label class="select " for="divider" >Trennzeichen</label>
         <?php
         $a = new rex_select();
-        $a->setName("divider");
-        $a->setId("divider");
+        $a->setName('divider');
+        $a->setId('divider');
         $a->setSize(1);
-        $a->addOption("Semikolon (;)",";");
-        $a->addOption("Komma (,)",",");
-        $a->addOption("Tabulator","tab");
+        $a->addOption('Semikolon (;)', ';');
+        $a->addOption('Komma (,)', ',');
+        $a->addOption('Tabulator', 'tab');
         $a->setSelected($divider);
         echo $a->get();
         ?>
@@ -269,4 +251,3 @@ if($show_importform){
   <?php
 
 }
-

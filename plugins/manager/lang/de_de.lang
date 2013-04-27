@@ -12,6 +12,7 @@ tablesupdated = Tabelle/n wurde/n aktualisiert
 xform_help_empty = Leereinträge können mit <br />"(empty)" gesucht werden
 xform_help_multipleselect = Mehrfachauswahl mit gedrückter CTRL/CMD Taste
 updatetable_with_delete = mit Feldlöschung
+updatetable_with_delete_confirm = Wirklich aktualisieren mit Feldlöschung ?
 
 xform_relation_move_first_data = Ausgewählten Datensatz an den Anfang verschieben
 xform_relation_move_up_data = Ausgewählten Datensatz nach oben verschieben
@@ -23,11 +24,12 @@ xform_relation_delete_entry = Ausgewählten Datensatz löschen
 truncate_table = Tabelle leeren
 table_truncated = Tabelle wurde geleert
 table_not_found = Die Tabelle wurde nicht gefunden
-truncate_table_confirm = Wirklich die Tabelle leeren?
+truncate_table_confirm = Wirklich die komplette Tabelle leeren?
 xform_table_overview = Tabellenübersicht
 
 xform_manager_edit_table = Tabelle editieren
 xform_manager_add_table = Tabelle hinzufügen
+
 
 # tables.inc.php
 importcsv = CSV Importieren
@@ -74,12 +76,15 @@ edit = editieren
 save = speichern
 delete = löschen
 search = suchen
-export = Export
+export = exportieren
 import = Import
 datadeleted = Datensatz wurde gelöscht
 openerinfo = Opener-Info
 
-dataset_delete = löschen
+xform_table_info = Info
+xform_dataset = Datenergebnis
+
+dataset_delete = Datenergebnis löschen
 dataset_deleted = Datenergebnis wurde geleert
 dataset_delete_confirm = Wirklich das Datenergebnis leeren?
 
@@ -107,17 +112,5 @@ addfield = Feld hinzufügen
 editfield = Felder bearbeiten
 
 
-
-
-
-
-
 xform_id_is_missing = ID fehlt
 xform_id_missing_info = Die Tabelle hat leider kein ID Feld mit autoincrement. Somit kann XFORM nicht damit arbeiten. Bitte aktualisieren Sie die Tabelle und legen notfalls die ID manuell an.
-
-
-
-
-
-
-

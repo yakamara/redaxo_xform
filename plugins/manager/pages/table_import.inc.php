@@ -3,6 +3,9 @@ noch nicht fertig.. Um fremde Tabellen zu übernehmen
 
 <?php
 
+// TODO:
+
+
 // ********************************************* TABLE IMPORT
 
 /*

@@ -2,12 +2,8 @@
 
 /**
  * XForm
- *
- * @author jan.kristinus[at]redaxo[dot]de Jan Kristinus
+ * @author jan.kristinus[at]redaxo[dot]org Jan Kristinus
  * @author <a href="http://www.yakamara.de">www.yakamara.de</a>
- *
- * @package redaxo4
- * @version svn:$Id$
  */
 
 class rex_xform_validate_abstract
@@ -28,15 +24,12 @@ class rex_xform_validate_abstract
   function setObjects(&$Objects)
   {
     $this->obj = &$Objects;
-    $tmp_Objects = explode(",", $this->getElement(2));
+    $tmp_Objects = explode(',', $this->getElement(2));
 
-    foreach($tmp_Objects as $tmp_Object)
-    {
-      $tmp_FoundObject=false;
-      foreach($Objects as $Object)
-      {
-        if(strcmp($Object->getName(),trim($tmp_Object))==0)
-        {
+    foreach ($tmp_Objects as $tmp_Object) {
+      $tmp_FoundObject = false;
+      foreach ($Objects as $Object) {
+        if (strcmp($Object->getName(), trim($tmp_Object)) == 0) {
           $this->obj_array[] = &$Object;
           $tmp_FoundObject = true;
           break;
@@ -48,17 +41,17 @@ class rex_xform_validate_abstract
 
   function enterObject()
   {
-    return "";
+    return '';
   }
 
   function getDescription()
   {
-    return "";
+    return '';
   }
 
   function getLongDescription()
   {
-    return "";
+    return '';
   }
 
   function getDefinitions()
@@ -68,8 +61,8 @@ class rex_xform_validate_abstract
 
   function getElement($i)
   {
-    if(!isset($this->elements[$i]))
-      return "";
+    if (!isset($this->elements[$i]))
+      return '';
     else
       return $this->elements[$i];
   }

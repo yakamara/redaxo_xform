@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * XForm
+ * @author jan.kristinus[at]redaxo[dot]org Jan Kristinus
+ * @author <a href="http://www.yakamara.de">www.yakamara.de</a>
+ */
+
 $sql = rex_sql::factory();
 
 $sql->setQuery('CREATE TABLE IF NOT EXISTS `rex_xform_table` (
@@ -50,7 +56,5 @@ $sql->setQuery('CREATE TABLE IF NOT EXISTS `rex_xform_relation` (
   `target_table` VARCHAR( 100 ) NOT NULL ,
   `target_id` INT NOT NULL
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
-
-
 
 $REX['ADDON']['install']['manager'] = 1;

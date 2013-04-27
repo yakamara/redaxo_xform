@@ -1,13 +1,18 @@
 <?php
 
+/**
+ * XForm
+ * @author jan.kristinus[at]redaxo[dot]org Jan Kristinus
+ * @author <a href="http://www.yakamara.de">www.yakamara.de</a>
+ */
+
 class rex_xform_objparams extends rex_xform_abstract
 {
 
   function init()
   {
     $value = trim($this->getElement(2));
-    switch($value)
-    {
+    switch ($value) {
       case 'false';
         $value = false;
         break;
@@ -17,9 +22,9 @@ class rex_xform_objparams extends rex_xform_abstract
         break;
 
       default:
-        $value = ((string)(int)$value === $value) ? (int) $value : $value;
+        $value = ((string) (int) $value === $value) ? (int) $value : $value;
     }
-    
+
     $this->params[trim($this->getElement(1))] = $value;
   }
 
@@ -29,9 +34,7 @@ class rex_xform_objparams extends rex_xform_abstract
 
   function getDescription()
   {
-    return "objparams -> Beispiel: objparams|key|newvalue|";
+    return 'objparams -> Beispiel: objparams|key|newvalue|';
   }
 
 }
-
-?>

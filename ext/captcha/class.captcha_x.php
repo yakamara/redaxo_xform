@@ -45,7 +45,8 @@
  * @package CAPTCHA X
  * @license GPL
  */
-class captcha_x {
+class captcha_x
+{
 
     /**
      * Parsed captcha_x.ini
@@ -67,8 +68,9 @@ class captcha_x {
      * @return void
      * @constructor
      */
-    function captcha_x () {
-        $this->INI = parse_ini_file ( dirname ( __FILE__) . '/captcha_x.ini', true);
+    function captcha_x()
+    {
+        $this->INI = parse_ini_file( dirname( __FILE__) . '/captcha_x.ini', true);
     }
 
 /* ========== PUBLIC METHODS ========== */
@@ -79,20 +81,21 @@ class captcha_x {
      * @access public
      * @return void
      */
-    function handle_request () {
-        extract ( $this->INI);
+    function handle_request()
+    {
+        extract( $this->INI);
 
-        $this->letters = $this->_get_random_letters ();
-        $this->_put_md5_into_session ();
+        $this->letters = $this->_get_random_letters();
+        $this->_put_md5_into_session();
 
-        $this->image = $this->_create_img_base ();
-        $this->_add_dust_and_scratches ( $bg_color_2);
-        $this->_print_letters ();
-        $this->_add_dust_and_scratches ( $bg_color_1);
+        $this->image = $this->_create_img_base();
+        $this->_add_dust_and_scratches( $bg_color_2);
+        $this->_print_letters();
+        $this->_add_dust_and_scratches( $bg_color_1);
 
-        header("Content-type: image/jpeg");
-        imagejpeg ( $this->image);
-        imagedestroy ( $this->image);
+        header('Content-type: image/jpeg');
+        imagejpeg( $this->image);
+        imagedestroy( $this->image);
     }
 
     /**
@@ -102,16 +105,17 @@ class captcha_x {
      * @access public
      * @return boolean
      */
-    function validate ( $user_string) {
-        extract ( $this->INI);
+    function validate( $user_string)
+    {
+        extract( $this->INI);
 
-        if(!isset($_SESSION)) session_start ();
+        if (!isset($_SESSION)) session_start();
 
         if ( ! $case_sensitive) {
-            $user_string = strtolower ( $user_string);
+            $user_string = strtolower( $user_string);
         }
 
-        $md5 = md5 ( $user_string);
+        $md5 = md5( $user_string);
         if ( isset($_SESSION['captcha']) && $md5 == $_SESSION['captcha']) {
             return true;
         }
@@ -126,22 +130,23 @@ class captcha_x {
      * @access private
      * @return void
      */
-    function _add_dust_and_scratches ( $color) {
-        extract ( $this->INI);
+    function _add_dust_and_scratches( $color)
+    {
+        extract( $this->INI);
 
         $max_x = $width - 1;
         $max_y = $height - 1;
 
-        $color = $this->_split ( $color);
+        $color = $this->_split( $color);
 
-        $color = imagecolorallocate ( $this->image, $color[0], $color[1], $color[2]);
+        $color = imagecolorallocate( $this->image, $color[0], $color[1], $color[2]);
 
         for ( $i = 0; $i < $noise; ++$i) {
 
-            if ( rand ( 1, 100) > $dust_vs_scratches) {
-                imageline ( $this->image, rand ( 0, $max_x), rand ( 0, $max_y), rand ( 0, $max_x), rand ( 0, $max_y), $color);
+            if ( rand( 1, 100) > $dust_vs_scratches) {
+                imageline( $this->image, rand( 0, $max_x), rand( 0, $max_y), rand( 0, $max_x), rand( 0, $max_y), $color);
             } else {
-                imagesetpixel ( $this->image, rand ( 0, $max_x), rand ( 0, $max_y), $color);
+                imagesetpixel( $this->image, rand( 0, $max_x), rand( 0, $max_y), $color);
             }
         }
     }
@@ -152,13 +157,14 @@ class captcha_x {
      * @access private
      * $return resource
      */
-    function _create_img_base () {
-        extract ( $this->INI);
+    function _create_img_base()
+    {
+        extract( $this->INI);
 
-        $bg_color = $this->_split ( $bg_color_1);
+        $bg_color = $this->_split( $bg_color_1);
         // phpinfo();
-        $img = imagecreate ( $width, $height);
-        imagecolorallocate ( $img, $bg_color[0], $bg_color[1], $bg_color[2]);
+        $img = imagecreate( $width, $height);
+        imagecolorallocate( $img, $bg_color[0], $bg_color[1], $bg_color[2]);
 
         return $img;
     }
@@ -169,14 +175,15 @@ class captcha_x {
      * @access private
      * @return array
      */
-    function _get_random_letters () {
-        extract ( $this->INI);
+    function _get_random_letters()
+    {
+        extract( $this->INI);
 
-        $letters = $this->_split ( $letters);
-        $letters_max = (count ( $letters) - 1);
+        $letters = $this->_split( $letters);
+        $letters_max = (count( $letters) - 1);
 
         for ( $i = 0; $i < $letters_no; ++$i) {
-            $letter_index = rand ( 0, $letters_max);
+            $letter_index = rand( 0, $letters_max);
             $rtn_val[] = $letters[$letter_index];
         }
 
@@ -192,29 +199,30 @@ class captcha_x {
      * @access private
      * @return void
      */
-    function _print_letters () {
-        extract ( $this->INI);
+    function _print_letters()
+    {
+        extract( $this->INI);
 
         // whether use the local fonts or the system fonts
         if ( $use_local_fonts) {
-            $font_path = realpath ( dirname ( __FILE__) . '/fonts');
-            if ( @putenv ( 'GDFONTPATH=' . $font_path) === false) {
+            $font_path = realpath( dirname( __FILE__) . '/fonts');
+            if ( @putenv( 'GDFONTPATH=' . $font_path) === false) {
                 $no_putenv = true;
             }
         }
         // Fehler bei Windows
-        if (strtoupper(substr(php_uname('s'), 0, 3)) == "WIN" || substr(PHP_OS, 0, 3) == "WIN")
+        if (strtoupper(substr(php_uname('s'), 0, 3)) == 'WIN' || substr(PHP_OS, 0, 3) == 'WIN')
           $no_putenv = true;
 
-        list ( $padding_top, $padding_right, $padding_bottom, $padding_left) = $this->_split ( $padding);
+        list ( $padding_top, $padding_right, $padding_bottom, $padding_left) = $this->_split( $padding);
         $box_width       = ( $width - ( $padding_left + $padding_right)) / $letters_no;
         $box_height      = $height - ( $padding_top + $padding_bottom);
 
-        $font_size       = $this->_split ( $font_size);
-        $font_size_count = ( count ( $font_size) - 1);
+        $font_size       = $this->_split( $font_size);
+        $font_size_count = ( count( $font_size) - 1);
 
-        $fonts           = $this->_split ( $fonts);
-        $fonts_count     = ( count ( $fonts) - 1);
+        $fonts           = $this->_split( $fonts);
+        $fonts_count     = ( count( $fonts) - 1);
 
         // f****** safe-mode settings
         if (isset($no_putenv) && $no_putenv) {
@@ -226,30 +234,30 @@ class captcha_x {
         }
 
         // sem pridat podporu pro #xxx a #xxxxxx resolve_color()
-        $fg_colors_count = ( count ( $fg_colors) - 1);
+        $fg_colors_count = ( count( $fg_colors) - 1);
         foreach ( $fg_colors as $fg_color) {
-            $a[] = $this->_split ( $fg_color);
+            $a[] = $this->_split( $fg_color);
         }
         $fg_colors = $a;
         unset ( $a);
 
         for ( $i = 0; $i < $letters_no; ++$i) {
-            $size_index     = rand ( 0, $font_size_count);
+            $size_index     = rand( 0, $font_size_count);
             $size           = $font_size[$size_index];
 
-            $angle          = (( rand ( 0, ( $letter_precession * 2)) - $letter_precession) + 360) % 360;
+            $angle          = (( rand( 0, ( $letter_precession * 2)) - $letter_precession) + 360) % 360;
 
             $x              = $padding_left + ( $box_width * $i);
             $y              = $padding_top + $size + ( ( $box_height - $size) / 2);
 
-            $color_index    = ( rand ( 0, $fg_colors_count));
+            $color_index    = ( rand( 0, $fg_colors_count));
             $color          = $fg_colors[$color_index];
-            $color          = imagecolorallocate ( $this->image, $color[0], $color[1], $color[2]);
+            $color          = imagecolorallocate( $this->image, $color[0], $color[1], $color[2]);
 
-            $font_index     = rand ( 0, $fonts_count);
+            $font_index     = rand( 0, $fonts_count);
             $font           = $fonts[$font_index];
 
-            imagettftext ( $this->image, $size, $angle, $x, $y, $color, $font, $this->letters[$i]);
+            imagettftext( $this->image, $size, $angle, $x, $y, $color, $font, $this->letters[$i]);
         }
     }
 
@@ -259,18 +267,19 @@ class captcha_x {
      * @access private
      * @return void
      */
-    function _put_md5_into_session () {
-        extract ( $this->INI);
-        if(!isset($_SESSION))
+    function _put_md5_into_session()
+    {
+        extract( $this->INI);
+        if (!isset($_SESSION))
           session_start();
 
-        $string              = implode ( '', $this->letters);
+        $string              = implode( '', $this->letters);
 
         if ( ! $case_sensitive) {
-            $string = strtolower ( $string);
+            $string = strtolower( $string);
         }
 
-        $md5                 = md5 ( $string);
+        $md5                 = md5( $string);
         $_SESSION['captcha'] = $md5;
     }
 
@@ -281,9 +290,10 @@ class captcha_x {
      * @param string $s to be split
      * @return array
      */
-    function _split ( $s) {
-        $a = @preg_split ( '/\s?,\s?/', $s, -1, PREG_SPLIT_NO_EMPTY);
-        if ( is_array ( $a)) {
+    function _split( $s)
+    {
+        $a = @preg_split( '/\s?,\s?/', $s, -1, PREG_SPLIT_NO_EMPTY);
+        if ( is_array( $a)) {
             return $a;
         }
     }

@@ -1,7 +1,13 @@
 <?php
 
+/**
+ * XForm
+ * @author jan.kristinus[at]redaxo[dot]org Jan Kristinus
+ * @author <a href="http://www.yakamara.de">www.yakamara.de</a>
+ */
+
 // module:xform_basic_in
-// v0.2.1
+// v0.2.2
 // --------------------------------------------------------------------------------
 
 // DEBUG SELECT
@@ -197,7 +203,7 @@ $mail_display = ($sel=='' || $sel==0) ?'style="display:none"':'';
 
   </fieldset>
 
-  <p id="modulinfo">XForm Formbuilder v0.2.1</p>
+  <p id="modulinfo">XForm Formbuilder v0.2.2</p>
 
 </div><!-- #xform-modul -->
 

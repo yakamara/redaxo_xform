@@ -1,48 +1,53 @@
 <?php
 
+/**
+ * XForm
+ * @author jan.kristinus[at]redaxo[dot]org Jan Kristinus
+ * @author <a href="http://www.yakamara.de">www.yakamara.de</a>
+ */
+
 class rex_xform_google_geocode extends rex_xform_abstract
 {
 
   function enterObject()
   {
 
-    $labels = explode(",",$this->getElement(2)); // Fields of Position
+    $labels = explode(',', $this->getElement(2)); // Fields of Position
     $label_lng = $labels[0];
     $label_lat = $labels[1];
 
-    $value_lng = "0";
-    $value_lat = "0";
+    $value_lng = '0';
+    $value_lat = '0';
 
-    $address = explode(",",$this->getElement(3)); // Fields of getPosition
+    $address = explode(',', $this->getElement(3)); // Fields of getPosition
 
     $label = $this->getElement(4);
 
     $map_width = 400;
-    if ($this->getElement(5) != "") $map_width = (int) $this->getElement(5);
+    if ($this->getElement(5) != '') $map_width = (int) $this->getElement(5);
     $map_height = 200;
-    if ($this->getElement(6) != "") $map_height = (int) $this->getElement(6);
+    if ($this->getElement(6) != '') $map_height = (int) $this->getElement(6);
 
-    foreach($this->obj as $o)
-    {
-      if($o->getName() == $label_lng) 		$value_lng = floatval($o->getValue());
-      if($o->getName() == $label_lat) 		$value_lat = floatval($o->getValue());
+    foreach ($this->obj as $o) {
+      if ($o->getName() == $label_lng)     $value_lng = floatval($o->getValue());
+      if ($o->getName() == $label_lat)     $value_lat = floatval($o->getValue());
     }
 
-    if ($this->getValue() == "" && !$this->params["send"]) {
+    if ($this->getValue() == '' && !$this->params['send']) {
       $this->setValue($this->getElement(4));
     }
 
-    $wc = "";
-    if (isset($this->params["warning"][$this->getId()])) $wc = $this->params["warning"][$this->getId()];
+    $wc = '';
+    if (isset($this->params['warning'][$this->getId()])) $wc = $this->params['warning'][$this->getId()];
 
-    $output = "";
+    $output = '';
     // Script nur beim ersten mal ausgeben
     if (!defined('REX_XFORM_GOOGLE_GEOCODE_JSCRIPT')) {
       define('REX_XFORM_GOOGLE_GEOCODE_JSCRIPT', true);
       $output .= '<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>';
     }
 
-    $map_id = 'map_canvas'.$this->getId();
+    $map_id = 'map_canvas' . $this->getId();
 
   echo '<script type="text/javascript">
   //<![CDATA[
@@ -50,14 +55,14 @@ class rex_xform_google_geocode extends rex_xform_abstract
   var rex_geo_coder = function()
   {
 
-    var myLatlng = new google.maps.LatLng('.$value_lat.', '.$value_lng.');
+    var myLatlng = new google.maps.LatLng(' . $value_lat . ', ' . $value_lng . ');
       var myOptions = {
         zoom: 8,
         center: myLatlng,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       }
 
-      var map = new google.maps.Map(document.getElementById("'.$map_id.'"), myOptions);
+      var map = new google.maps.Map(document.getElementById("' . $map_id . '"), myOptions);
 
     var marker = new google.maps.Marker({
           position: myLatlng,
@@ -73,8 +78,8 @@ class rex_xform_google_geocode extends rex_xform_abstract
 
     rex_geo_updatePosition = function(latLng) {
 
-      jQuery(".formlabel-'.$label_lat.' input").val(latLng.lat());
-      jQuery(".formlabel-'.$label_lng.' input").val(latLng.lng());
+      jQuery(".formlabel-' . $label_lat . ' input").val(latLng.lat());
+      jQuery(".formlabel-' . $label_lng . ' input").val(latLng.lng());
 
     }
 
@@ -118,8 +123,8 @@ class rex_xform_google_geocode extends rex_xform_abstract
     rex_geo_resetPosition = function() {
 
       jQuery(function($){
-        $(".formlabel-'.$label_lat.' input").val("0");
-        $(".formlabel-'.$label_lng.' input").val("0");
+        $(".formlabel-' . $label_lat . ' input").val("0");
+        $(".formlabel-' . $label_lng . ' input").val("0");
       });
 
       marker.setMap(null);
@@ -129,7 +134,7 @@ class rex_xform_google_geocode extends rex_xform_abstract
   }
 
   jQuery(function($){
-    rex_geo_coder'.$this->getId().' = new rex_geo_coder();
+    rex_geo_coder' . $this->getId() . ' = new rex_geo_coder();
   });
 
   //]]>
@@ -137,45 +142,43 @@ class rex_xform_google_geocode extends rex_xform_abstract
   ';
 
     $output .= '
-      <div class="xform-element form_google_geocode '.$this->getHTMLClass().'" id="'.$this->getHTMLId().'">
-        <label class="text '.$wc.'" for="'.$this->getFieldId().'">'.$label.'</label>
+      <div class="xform-element form_google_geocode ' . $this->getHTMLClass() . '" id="' . $this->getHTMLId() . '">
+        <label class="text ' . $wc . '" for="' . $this->getFieldId() . '">' . $label . '</label>
         <p class="form_google_geocode">';
 
-    $output .= '<a href="#" onclick="rex_geo_getPosition(\''.implode(",",str_replace('"','',$address)).'\')">Geodaten holen</a> | ';
+    $output .= '<a href="#" onclick="rex_geo_getPosition(\'' . implode(',', str_replace('"', '', $address)) . '\')">Geodaten holen</a> | ';
 
     $output .= '<a href="#" onclick="rex_geo_resetPosition()">Geodaten nullen</a></p>
-        <div class="form_google_geocode_map" id="'.$map_id.'" style="width:'.$map_width.'px; height:'.$map_height.'px">Google Map</div>
+        <div class="form_google_geocode_map" id="' . $map_id . '" style="width:' . $map_width . 'px; height:' . $map_height . 'px">Google Map</div>
       </div>';
 
-    $this->params["form_output"][$this->getId()] = $output;
+    $this->params['form_output'][$this->getId()] = $output;
 
   }
 
   function getDescription()
   {
-    return "google_geocode -> Beispiel: google_geocode|gcode|pos_lng,pos_lat|strasse,plz,ort|Google Map|width|height|
-    ";
+    return 'google_geocode -> Beispiel: google_geocode|gcode|pos_lng,pos_lat|strasse,plz,ort|Google Map|width|height|
+    ';
   }
 
   function getDefinitions()
   {
     return array(
-            'type' => 'value',
-            'name' => 'google_geocode',
-            'values' => array(
-              array( 'type' => 'name',   'label' => 'Name' ),
-              array( 'type' => 'getNames',	'label' => '"lng"-name,"lat"-name'),
-              array( 'type' => 'getNames','label' => 'Names Positionsfindung'),
-              array( 'type' => 'text',     'label' => 'Bezeichnung'),
-              array( 'type' => 'text',     'label' => 'Map-Breite'),
-              array( 'type' => 'text',     'label' => 'Map-H&ouml;he'),
-            ),
-            'description' => 'GoogeMap Positionierung',
-            'dbtype' => 'text'
-      );
+      'type' => 'value',
+      'name' => 'google_geocode',
+      'values' => array(
+        array( 'type' => 'name',   'label' => 'Name' ),
+        array( 'type' => 'getNames',  'label' => '"lng"-name,"lat"-name'),
+        array( 'type' => 'getNames', 'label' => 'Names Positionsfindung'),
+        array( 'type' => 'text',     'label' => 'Bezeichnung'),
+        array( 'type' => 'text',     'label' => 'Map-Breite'),
+        array( 'type' => 'text',     'label' => 'Map-H&ouml;he'),
+      ),
+      'description' => 'GoogeMap Positionierung',
+      'dbtype' => 'text'
+    );
 
   }
 
 }
-
-?>

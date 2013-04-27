@@ -108,8 +108,69 @@ ul.xform {
   /*border: 1px solid #999;*/
 }
 
-.xform textarea.short {
+.xform textarea.span8,
+.xform input.text.span8{
+  width: 400px;
+}
+
+.xform textarea.span7,
+.xform input.text.span7{
+  width: 350px;
+}
+
+.xform textarea.span6,
+.xform input.text.span6{
+  width: 300px;
+}
+
+.xform textarea.span5,
+.xform input.text.span5{
+  width: 250px;
+}
+
+.xform textarea.span4,
+.xform input.text.span4{
+  width: 200px;
+}
+
+.xform textarea.span3,
+.xform input.text.span3{
+  width: 150px;
+}
+
+.xform textarea.span2,
+.xform input.text.span2{
+  width: 100px;
+}
+
+.xform textarea.span1,
+.xform input.text.span1{
+  width: 50px;
+}
+
+.xform textarea.short1 {
+  height: 40px;
+}
+
+.xform textarea.short,
+.xform textarea.short2 {
   height: 80px;
+}
+
+.xform textarea.short3 {
+  height: 120px;
+}
+
+.xform textarea.short4 {
+  height: 160px;
+}
+
+.xform textarea.short5 {
+  height: 200px;
+}
+
+.xform textarea.short6 {
+  height: 240px;
 }
 
 .xform .formtable table {
@@ -273,3 +334,8 @@ ul.xform.type li:last-child {
   border-bottom:0;
 }
 
+/* ----------------------------------- REX corrections */
+
+div.rex-content-block {
+    clear: both;
+}

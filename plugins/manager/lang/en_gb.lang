@@ -1,11 +1,7 @@
-# addon: XForm Table Manager Plugin en_gb_utf8
-
 xform_table_manager = Table Manager
 
 navigation_manager = Tables
 
-com_group_name = Community Groups
-com_auth_facebook_facebookid = Facebook ID
 
 # xform manager
 alltables = all tables
@@ -16,6 +12,7 @@ tablesupdated = table/s got updatet
 xform_help_empty = empty entries can be searched with (empty)
 xform_help_multipleselect = multiple select with pushed down CTRL/CMD key
 updatetable_with_delete = with field deletion
+updatetable_with_delete_confirm = Really update with field delete ?
 
 xform_relation_move_first_data = put selected data set at the beginning
 xform_relation_move_up_data = put selected data set to top
@@ -32,6 +29,7 @@ xform_table_overview = table overview
 
 xform_manager_edit_table = edit table
 xform_manager_add_table = add table
+
 
 # tables.inc.php
 importcsv = import csv file
@@ -78,11 +76,17 @@ edit = edit
 save = save
 delete = delete
 search = search
-export = data export
+export = export
 import = data import
 datadeleted = data set deleted
 openerinfo = opener info
 
+xform_table_info = info
+xform_dataset = dataset
+
+dataset_delete = delete dataset
+dataset_deleted = dataset has been deleted
+dataset_delete_confirm = Really delete dataset?
 
 
 # field.inc.php
@@ -104,22 +108,9 @@ table = table
 editfield = edit field
 choosenadd = select fields
 choosenadd_description = Please select the field which you want to use for your administration. There are value field which are usually used for entries as also validate fields which validate value fields on certain criteria.
-
 addfield = add field
 editfield = edit fields
 
 
-
-
-
-
-
 xform_id_is_missing = ID missing
 xform_id_missing_info = Die Tabelle hat leider kein ID Feld mit autoincrement. Somit kann XFORM nicht damit arbeiten. Bitte aktualisieren Sie die Tabelle und legen notfalls die ID manuell an.
-
-
-
-
-
-
-

@@ -1,7 +1,13 @@
 <?php
 
+/**
+ * XForm
+ * @author jan.kristinus[at]redaxo[dot]org Jan Kristinus
+ * @author <a href="http://www.yakamara.de">www.yakamara.de</a>
+ */
+
 // module:xform_basic_out
-// v0.2
+// v0.2.2
 //--------------------------------------------------------------------------------
 
 $xform = new rex_xform;

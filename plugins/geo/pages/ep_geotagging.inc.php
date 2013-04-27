@@ -1,67 +1,65 @@
 <?php
 
-$table = $params["table"];
-// echo '<pre>';var_dump($params); echo '</pre>';
+/**
+ * XForm
+ * @author jan.kristinus[at]redaxo[dot]org Jan Kristinus
+ * @author <a href="http://www.yakamara.de">www.yakamara.de</a>
+ */
+
+$table = $params['table'];
 
 // ist feld google_geocode vorhanden ?
+$fields = rex_xform_manager_table::getXFormFields($table['table_name'], array('type_id' => 'value', 'type_name' => 'google_geocode'));
 
-$fields = rex_xform_manager_table::getXFormFields($table["table_name"],array("type_id"=>"value","type_name"=>"google_geocode"));
+if (count($fields) > 0) {
 
-if(count($fields)>0)
-{
-
-  $func = rex_request("geo_func","string");
-  $field = rex_request("geo_field","string");
-  if($func == "get_data")
-  {
+  $func = rex_request('geo_func', 'string');
+  $field = rex_request('geo_field', 'string');
+  if ($func == 'get_data') {
     $data = array();
     ob_end_clean();
-    if(array_key_exists($field,$fields)) {
-      $address_fields = explode(",",$fields[$field]["f3"]);
+    if (array_key_exists($field, $fields)) {
+      $address_fields = explode(',', $fields[$field]['f3']);
       $fs = array();
-      foreach($address_fields as $f) {
-        $fs[] = '`'.mysql_real_escape_string(trim($f)).'`';
+      foreach ($address_fields as $f) {
+        $fs[] = '`' . mysql_real_escape_string(trim($f)) . '`';
       }
-      $concat = 'CONCAT('.implode(' , ",", ',$fs).') as address';
+      $concat = 'CONCAT(' . implode(' , ",", ', $fs) . ') as address';
 
-      $pos_fields = explode(",",$fields[$field]["f2"]);
-      if(count($pos_fields) == 2)
-      {
+      $pos_fields = explode(',', $fields[$field]['f2']);
+      if (count($pos_fields) == 2) {
         $pos_lng = $pos_fields[0];
         $pos_lat = $pos_fields[1];
 
         $gd = rex_sql::factory();
         // $gd->debugsql = 1;
-        $gd->setQuery('select id, '.$concat.' from '.$table["table_name"].' where '.$pos_lng.'="" or '.$pos_lng.' IS NULL or '.$pos_lat.'="" or '.$pos_lat.' IS NULL LIMIT 200'); // 1000
+        $gd->setQuery('select id, ' . $concat . ' from ' . $table['table_name'] . ' where ' . $pos_lng . '="" or ' . $pos_lng . ' IS NULL or ' . $pos_lat . '="" or ' . $pos_lat . ' IS NULL LIMIT 200'); // 1000
         $data = ($gd->getArray());
       }
     }
     echo json_encode($data);
     exit;
-  }elseif($func == "save_data")
-  {
+  } elseif ($func == 'save_data') {
     ob_end_clean();
-    $data = "0";
-    if(array_key_exists($field,$fields)) {
-      $data_lng = rex_request("geo_lng","string");
-      $data_lat = rex_request("geo_lat","string");
-      $data_id = rex_request("geo_id","int",0);
-      $pos_fields = explode(",",$fields[$field]["f2"]);
-      if(count($pos_fields) == 2)
-      {
+    $data = '0';
+    if (array_key_exists($field, $fields)) {
+      $data_lng = rex_request('geo_lng', 'string');
+      $data_lat = rex_request('geo_lat', 'string');
+      $data_id = rex_request('geo_id', 'int', 0);
+      $pos_fields = explode(',', $fields[$field]['f2']);
+      if (count($pos_fields) == 2) {
         $pos_lng = $pos_fields[0];
         $pos_lat = $pos_fields[1];
         $gd = rex_sql::factory();
-        $gd->setQuery('select id, `'.mysql_real_escape_string($pos_lat).'`, `'.mysql_real_escape_string($pos_lng).'` from '.$table["table_name"].' where id='.$data_id.'');
-        if($gd->getRows()==1 && $data_lng != "" && $data_lat != "")
-        {
+        $gd->setQuery('select id, `' . mysql_real_escape_string($pos_lat) . '`, `' . mysql_real_escape_string($pos_lng) . '` from ' . $table['table_name'] . ' where id=' . $data_id . '');
+        if ($gd->getRows() == 1 && $data_lng != '' && $data_lat != '') {
           $sd = rex_sql::factory();
-          $sd->setTable($table["table_name"]);
-          $sd->setWhere('id='.$data_id);
-          $sd->setValue($pos_lat,$data_lat);
-          $sd->setValue($pos_lng,$data_lng);
+          $sd->setTable($table['table_name']);
+          $sd->setWhere('id=' . $data_id);
+          $sd->setValue($pos_lat, $data_lat);
+          $sd->setValue($pos_lng, $data_lng);
           $sd->update();
-          $data = "1";
+          $data = '1';
         }
       }
     }
@@ -158,14 +156,10 @@ if(count($fields)>0)
 
 ?><div class="rex-addon-output"><h2 class="rex-hl2">PlugIn: <a href="javascript:void(0);" onclick="jQuery('#rex-xform-geo-description').toggle()">Google Geo Plugin</a></h2><div id="rex-xform-geo-description" style="display:none;" class="rex-addon-content"><p class="rex-tx1" style="margin-bottom:0">Geotagging der Inhalte (Beschränkt auf 1000 Datensaetze am Tag, ansonsten kann man von Google gesperrt werden. Bitte deswegen darauf achten, dass diese Funktion angemessen verwendet wird. Standard sind 200 Datensätze auf einen Schlag. Jeder "." der nach der Ausführung auftaucht ist ein Datensatz der aktualisiert wurde). Die Daten müssen, aufgrund von Lizenzen, über die Googlemap verwendet werden.</p><?php
 
-  foreach($fields as $k => $v){
-    echo '<p class="rex-button" style="margin-bottom:0"><br /><a class="rex-button" href="javascript:void(0)" onclick="xform_geo_updates(\''.$table["table_name"].'\',\''.$k.'\')">Google Geotagging</a> &nbsp;Hiermit werden alle Datensätze anhand des Felder "'.$k.'" nach fehlenden Geopositionen durchsucht und neu gesetzt. [<span id="xform_geo_count_'.$k.'"></span>]</p>';
+  foreach ($fields as $k => $v) {
+    echo '<p class="rex-button" style="margin-bottom:0"><br /><a class="rex-button" href="javascript:void(0)" onclick="xform_geo_updates(\'' . $table['table_name'] . '\',\'' . $k . '\')">Google Geotagging</a> &nbsp;Hiermit werden alle Datensätze anhand des Felder "' . $k . '" nach fehlenden Geopositionen durchsucht und neu gesetzt. [<span id="xform_geo_count_' . $k . '"></span>]</p>';
   }
 
   echo '</div></div>';
 
 }
-
-
-
-?>

@@ -1,37 +1,40 @@
 <?php
 
+/**
+ * XForm
+ * @author jan.kristinus[at]redaxo[dot]org Jan Kristinus
+ * @author <a href="http://www.yakamara.de">www.yakamara.de</a>
+ */
+
 class rex_xform_hidden extends rex_xform_abstract
 {
 
   public function setValue($value)
   {
-    if ($this->getElement(3)=="REQUEST" && isset($_REQUEST[$this->getName()]))
-    {
+    if ($this->getElement(3) == 'REQUEST' && isset($_REQUEST[$this->getName()])) {
       $this->value = stripslashes(rex_request($this->getName()));
 
-    }else
-    {
+    } else {
       $this->value = $this->getElement(2);
 
     }
-    
+
   }
 
   public function enterObject()
   {
+    $this->params['form_output'][$this->getId()] = "\n" . '<input type="hidden" name="' . $this->getName() . '" id="' . $this->getHTMLId() . '" value="' . htmlspecialchars($this->getValue()) . '" />';
 
-    $this->params["form_output"][$this->getId()] = "\n".'<input type="hidden" name="'.$this->getName().'" id="'.$this->getHTMLId().'" value="'.htmlspecialchars($this->getValue()).'" />';
-
-    $this->params["value_pool"]["email"][$this->getName()] = $this->getValue();
-    if ($this->getElement(4) != "no_db")
-      $this->params["value_pool"]["sql"][$this->getName()] = $this->getValue();
+    $this->params['value_pool']['email'][$this->getName()] = $this->getValue();
+    if ($this->getElement(4) != 'no_db')
+      $this->params['value_pool']['sql'][$this->getName()] = $this->getValue();
   }
 
   public function getDescription()
   {
-    return "
-        hidden -> Beispiel: hidden|status|(default)value||[no_db]<br />	hidden -> Beispiel: hidden|job_id|my_id|REQUEST|[no_db]
-    ";
+    return '
+        hidden -> Beispiel: hidden|name|(default)value||[no_db]<br />  hidden -> Beispiel: hidden|job_id|my_id|REQUEST|[no_db]
+    ';
   }
 
   public function getLongDescription()

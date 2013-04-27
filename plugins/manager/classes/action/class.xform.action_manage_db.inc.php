@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * XForm
+ * @author jan.kristinus[at]redaxo[dot]org Jan Kristinus
+ * @author <a href="http://www.yakamara.de">www.yakamara.de</a>
+ */
+
 class rex_xform_action_manage_db extends rex_xform_action_abstract
 {
 
@@ -22,60 +28,52 @@ class rex_xform_action_manage_db extends rex_xform_action_abstract
 
     // $this->params["debug"]= TRUE;
     $sql = rex_sql::factory();
-    if ($this->params["debug"]) $sql->debugsql = TRUE;
+    if ($this->params['debug']) $sql->debugsql = true;
 
-    $main_table = "";
-    if ($this->getElement(2) != "")
-    {
+    $main_table = '';
+    if ($this->getElement(2) != '') {
       $main_table = $this->getElement(2);
-    }else{
-      $main_table = $this->params["main_table"];
+    } else {
+      $main_table = $this->params['main_table'];
     }
 
-    if ($main_table == "")
-    {
-      $this->params["form_show"] = TRUE;
-      $this->params["hasWarnings"] = TRUE;
-      $this->params["warning_messages"][] = $this->params["Error-Code-InsertQueryError"];
-      return FALSE;
+    if ($main_table == '') {
+      $this->params['form_show'] = true;
+      $this->params['hasWarnings'] = true;
+      $this->params['warning_messages'][] = $this->params['Error-Code-InsertQueryError'];
+      return false;
     }
 
     $sql->setTable($main_table);
 
-    $where = "";
-    if (trim($this->getElement(3)) != "")
-    {
+    $where = '';
+    if (trim($this->getElement(3)) != '') {
       $where = trim($this->getElement(3));
     }
 
     // SQL Objekt mit Werten f�llen
-    foreach($this->params["value_pool"]["sql"] as $key => $value)
-    {
+    foreach ($this->params['value_pool']['sql'] as $key => $value) {
       $sql->setValue($key, $value);
-      if ($where != "")
-      {
-        $where = str_replace('###'.$key.'###',addslashes($value),$where);
+      if ($where != '') {
+        $where = str_replace('###' . $key . '###', addslashes($value), $where);
       }
     }
 
-    if ($where != "")
-    {
+    if ($where != '') {
       $sql->setWhere($where);
       $sql->update();
-      $flag = "update";
-    }else
-    {
+      $flag = 'update';
+    } else {
       $sql->insert();
-      $flag = "insert";
+      $flag = 'insert';
       $id = $sql->getLastId();
 
-      $this->params["value_pool"]["email"]["ID"] = $id;
+      $this->params['value_pool']['email']['ID'] = $id;
       // $this->params["value_pool"]["sql"]["ID"] = $id;
-      if ($id == 0)
-      {
-        $this->params["form_show"] = TRUE;
-        $this->params["hasWarnings"] = TRUE;
-        $this->params["warning_messages"][] = $this->params["Error-Code-InsertQueryError"];
+      if ($id == 0) {
+        $this->params['form_show'] = true;
+        $this->params['hasWarnings'] = true;
+        $this->params['warning_messages'][] = $this->params['Error-Code-InsertQueryError'];
       }
     }
 
@@ -85,9 +83,7 @@ class rex_xform_action_manage_db extends rex_xform_action_abstract
 
   function getDescription()
   {
-    return "action|manage_db|tblname|[where]";
+    return 'action|manage_db|tblname|[where]';
   }
 
 }
-
-?>

@@ -35,8 +35,15 @@ function xform_manager_openDatalist(id, field, link, multiple)
   newLinkMapWindow(link+'&rex_xform_manager_opener[id]='+id+'&rex_xform_manager_opener[field]='+field+'&rex_xform_manager_opener[multiple]='+multiple);
 }
 
-function xform_manager_deleteDatalist(id){
-  deleteREX(id, 'XFORM_MANAGER_DATALIST_', 'XFORM_MANAGER_DATALIST_SELECT_');
+function xform_manager_deleteDatalist(id, multiple){
+  if(multiple == 1) {
+    deleteREX(id, 'XFORM_MANAGER_DATALIST_', 'XFORM_MANAGER_DATALIST_SELECT_');
+  } else {
+    var a = new getObj("XFORM_MANAGER_DATANAME_"+id);
+    a.obj.value = "";
+    var a = new getObj("XFORM_MANAGER_DATA_"+id);
+    a.obj.value = "";
+  }
 }
 
 function xform_manager_moveDatalist(id, direction){
@@ -63,7 +70,7 @@ function xform_manager_setData(id, data_id, data_name, multiple){
   }else {
     var data_field_name = "XFORM_MANAGER_DATANAME_"+id;
     var data_field_id = "XFORM_MANAGER_DATA_"+id;
-      opener.document.getElementById(data_field_name).value = data_name;
+    opener.document.getElementById(data_field_name).value = data_name;
     opener.document.getElementById(data_field_id).value = data_id;
     self.close();
   }

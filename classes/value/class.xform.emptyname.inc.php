@@ -6,33 +6,30 @@
  * @author <a href="http://www.yakamara.de">www.yakamara.de</a>
  */
 
-class rex_xform_html extends rex_xform_abstract
+class rex_xform_emptyname extends rex_xform_abstract
 {
 
   function enterObject()
   {
-    $this->params['form_output'][$this->getId()] = $this->getElement(2);
+
   }
 
   function getDescription()
   {
-    return htmlspecialchars(stripslashes('html -> Beispiel: html|name|<div class="block"></div>'));
+    return 'emptyname -> Beispiel: emptyname|name|';
   }
 
   function getDefinitions()
   {
-
     return array(
       'type' => 'value',
-      'name' => 'html',
+      'name' => 'emptyname',
       'values' => array(
         array( 'type' => 'name',   'label' => 'Feld' ),
-        array( 'type' => 'textarea',    'label' => 'HTML'),
       ),
-      'description' => 'Nur für die Ausgabe gedacht',
+      'description' => 'Ein leeres Feld - unsichtbar im Formular',
       'dbtype' => 'text'
     );
 
   }
-
 }
