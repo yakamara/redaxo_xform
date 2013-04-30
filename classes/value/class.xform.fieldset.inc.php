@@ -24,7 +24,7 @@ class rex_xform_fieldset extends rex_xform_abstract
 
     $legend = '';
     if ($this->getElement(2) != '') {
-      $legend = '<legend id="' . $this->getFieldId() . '">' . $this->name() . '</legend>';
+      $legend = '<legend id="' . $this->getFieldId() . '">' . $this->getLabel() . '</legend>';
     }
 
     $option = $this->getElement(4);
