@@ -15,10 +15,10 @@ class rex_xform_action_abstract
   var $elements = array();
   var $action = array();
 
-  function loadParams(&$params, &$elements)
+  function loadParams(&$params, $elements)
   {
     $this->params = &$params;
-    $this->elements = &$elements;
+    $this->elements = $elements;
   }
 
   function setObjects(&$obj)

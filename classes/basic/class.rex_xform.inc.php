@@ -27,6 +27,8 @@ class rex_xform
     $this->objparams['submit_btn_label'] = 'Abschicken';
     $this->objparams['submit_btn_show'] = true;
 
+    $this->objparams['values'] = array();
+    $this->objparams['validates'] = array();
     $this->objparams['actions'] = array();
 
     $this->objparams['error_class'] = 'form_warning';
@@ -188,30 +190,76 @@ class rex_xform
 
     $ValueObjects = array();
     $ValidateObjects = array();
+    $ActionObjects = array();
 
-    // *************************************************** ABGESCHICKT PARAMENTER
+    $this->objparams['values'] = $ValueObjects;
+    $this->objparams['validates'] = $ValidateObjects;
+    $this->objparams['actions'] = $ActionObjects;
+
+    // *************************************************** VALUE OBJECT INIT
+
+    $rows = count($this->objparams['form_elements']);
+
+    for ($i = 0; $i < $rows; $i++) {
+
+      $element = $this->objparams['form_elements'][$i];
+
+      if ($element[0] == 'validate') {
+
+        foreach ($REX['ADDON']['xform']['classpaths']['validate'] as $validate_path) {
+          $classname = 'rex_xform_validate_' . trim($element[1]);
+          if (@include_once ($validate_path . 'class.xform.validate_' . trim($element[1]) . '.inc.php')) {
+            $ValidateObject = new $classname;
+            $ValidateObject->loadParams($this->objparams, $element);
+            $ValidateObjects[$element[1]][] = $ValidateObject;
+            break;
+          }
+        }
+
+      } elseif ($element[0] == 'action') {
+        foreach ($REX['ADDON']['xform']['classpaths']['action'] as $action_path) {
+          $classname = 'rex_xform_action_' . trim($element[1]);
+          if (@include_once ($action_path . 'class.xform.action_' . trim($element[1]) . '.inc.php')) {
+            $ActionObjects[$i] = new $classname;
+            $ActionObjects[$i]->loadParams($this->objparams, $element);
+            break;
+          }
+        }
+
+      } else {
+        foreach ($REX['ADDON']['xform']['classpaths']['value'] as $value_path) {
+          $classname = 'rex_xform_' . trim($element[0]);
+          if (@include_once ($value_path . 'class.xform.' . trim($element[0]) . '.inc.php')) {
+            $ValueObjects[$i] = new $classname;
+            $ValueObjects[$i]->loadParams($this->objparams, $element);
+            $ValueObjects[$i]->setId($i);
+            $ValueObjects[$i]->init();
+            break;
+          }
+
+        }
+        $rows = count($this->objparams['form_elements']); // if elements have changed -> new rowcount
+      }
+
+      // special case - submit button shows up by default
+      if(($rows-1) == $i && $this->objparams['submit_btn_show']) {
+        $rows++;
+        $this->objparams['form_elements'][] = array('submit', 'rex_xform_submit', $this->objparams['submit_btn_label'], 'no_db');
+        $this->objparams['submit_btn_show'] = false;
+      }
+
+    }
+
+    foreach($ValueObjects as $ValueObject) {
+      $ValueObject->setValue($this->getFieldValue($ValueObject->getId(), '', $ValueObject->getName()));
+      $ValueObject->setValueObjects($ValueObjects);
+    }
+
+    // *************************************************** OBJECT PARAM "send"
     $this->objparams['send'] = 0;
-
     if ($this->getFieldValue('send', '', 'send') == '1') {
       $this->objparams['send'] = 1;
     }
-
-
-    // *************************************************** VALUE OBJEKTE
-    $rows = count($this->objparams['form_elements']);
-    for ($i = 0; $i < $rows; $i++) {
-      $element = $this->objparams['form_elements'][$i];
-      $ValueObjects = $this->_setValueElement($ValueObjects, $element, $i);
-      $rows = count($this->objparams['form_elements']); // if elements have changed -> new rowcount
-    }
-
-    // *************************************************** VALUE OBJEKTE
-    if ($this->objparams['submit_btn_show']) {
-      $i++;
-      $element = array('submit', 'rex_xform_submit', $this->objparams['submit_btn_label'], 'no_db');
-      $ValueObjects = $this->_setValueElement($ValueObjects, $element, $i);
-    }
-
 
     // *************************************************** PRE VALUES
     // Felder aus Datenbank auslesen - Sofern Aktualisierung
@@ -250,62 +298,47 @@ class rex_xform
     // *************************************************** VALIDATE OBJEKTE
 
     // ***** PreValidateActions
-    foreach ($ValueObjects as $value_object) {
-      $value_object->preValidateAction();
+    foreach ($ValueObjects as $ValueObject) {
+      $ValueObject->preValidateAction();
     }
 
-    for ($i = 0; $i < count($this->objparams['form_elements']); $i++) {
-      $element = $this->objparams['form_elements'][$i];
-      if ($element[0] == 'validate') {
-        foreach ($REX['ADDON']['xform']['classpaths']['validate'] as $validate_path) {
-          $classname = 'rex_xform_validate_' . trim($element[1]);
-          if (@include_once ($validate_path . 'class.xform.validate_' . trim($element[1]) . '.inc.php')) {
-            $count = 0;
-            if (isset($ValidateObjects[$element[1]])) $count = count($ValidateObjects[$element[1]]);
-            $ValidateObjects[$element[1]][$count] = new $classname;
-            $ValidateObjects[$element[1]][$count]->loadParams($this->objparams, $element);
-            $ValidateObjects[$element[1]][$count]->setObjects($ValueObjects);
-            break;
-          }
-        }
+    foreach($ValidateObjects as $ValidateType) {
+      foreach ($ValidateType as $ValidateObject) {
+        $ValidateObject->setObjects($ValueObjects);
       }
     }
-
 
     // ***** Validieren
     if ($this->objparams['send'] == 1) {
-      if (isset($ValidateObjects) && count($ValidateObjects) > 0) {
-        foreach ($ValidateObjects as $vObj) {
-          foreach ($vObj as $xoObject) {
-            $xoObject->enterObject();
-          }
+      foreach($ValidateObjects as $ValidateType) {
+        foreach ($ValidateType as $ValidateObject) {
+          $ValidateObject->enterObject();
         }
       }
     }
 
-
     // ***** PostValidateActions
-    foreach ($ValueObjects as $value_object) {
-      $value_object->postValidateAction();
+    foreach ($ValueObjects as $ValueObject) {
+      $ValueObject->postValidateAction();
     }
 
     // *************************************************** FORMULAR ERSTELLEN
 
-    foreach ($ValueObjects as $value_object) {
-      $value_object->enterObject();
+    foreach ($ValueObjects as $ValueObject) {
+      $ValueObject->enterObject();
     }
 
     if ($this->objparams['send'] == 1) {
-      foreach ($ValidateObjects as $vObj) {
-        foreach ($vObj as $xoObject) {
-          $xoObject->postValueAction();
+      foreach ($ValidateObjects as $ValidateType) {
+        foreach ($ValidateType as $ValidateObject) {
+          $ValidateObject->postValueAction();
         }
       }
     }
 
     // ***** PostFormActions
-    foreach ($ValueObjects as $value_object) {
-      $value_object->postFormAction();
+    foreach ($ValueObjects as $ValueObject) {
+      $ValueObject->postFormAction();
     }
 
 
@@ -316,49 +349,26 @@ class rex_xform
       $this->objparams['value_pool']['email']['ID'] = $this->objparams['main_id'];
     }
 
-    for ($i = 0; $i < count($this->objparams['form_elements']); $i++) {
-      $element = $this->objparams['form_elements'][$i];
-      if ($element[0] == 'action') {
-        $this->objparams['actions'][] = array(
-          'type' => trim($element[1]),
-          'elements' => $element,
-        );
-      }
-    }
-
     $hasWarnings = count($this->objparams['warning']) != 0;
     $hasWarningMessages = count($this->objparams['warning_messages']) != 0;
 
     // ----- Actions
     if ($this->objparams['send'] == 1 && !$hasWarnings && !$hasWarningMessages) {
-      $this->objparams['form_show'] = false;
 
-      $i = -1;
-      if (count($this->objparams['actions'])) {
-        foreach ($this->objparams['actions'] as $action) {
-          $i++;
-          foreach ($REX['ADDON']['xform']['classpaths']['action'] as $action_path) {
-            $type = 'action_' . $action['type'];
-            if (@include_once ($action_path . 'class.xform.' . $type . '.inc.php')) {
-              $classname = 'rex_xform_' . $type;
-              $actions[$i] = new $classname;
-              $actions[$i]->loadParams($this->objparams, $action['elements']);
-              $actions[$i]->setObjects($ValueObjects);
-            }
-          }
-        }
-        foreach ($actions as $action) {
-          $action->execute();
-        }
+      $this->objparams['form_show'] = false;
+      foreach ($ActionObjects as $ActionObject) {
+        $ActionObject->setObjects($ValueObjects);
       }
 
+      foreach ($ActionObjects as $ActionObject) {
+        $ActionObject->execute();
+      }
       $this->objparams['actions_executed'] = true;
 
-      // PostActions
-      foreach ($ValueObjects as $value_object) {
-        $value_object->postAction($this->objparams['value_pool']['email'], $this->objparams['value_pool']['sql']);
+      // ----- Value - PostActions
+      foreach ($ValueObjects as $ValueObject) {
+        $ValueObject->postAction($this->objparams['value_pool']['email'], $this->objparams['value_pool']['sql']);
       }
-
       $this->objparams['postactions_executed'] = true;
 
     }
@@ -437,34 +447,6 @@ class rex_xform
 
     return $this->objparams['output'];
 
-  }
-
-
-
-  private function _setValueElement(&$ValueObjects, $element, $i)
-  {
-    global $REX;
-    if ($element[0] == 'validate') {
-
-    } elseif ($element[0] == 'action') {
-
-    } else {
-      foreach ($REX['ADDON']['xform']['classpaths']['value'] as $value_path) {
-        $classname = 'rex_xform_' . trim($element[0]);
-        if (@include_once ($value_path . 'class.xform.' . trim($element[0]) . '.inc.php')) {
-          $ValueObjects[$i] = new $classname;
-          $ValueObjects[$i]->loadParams($this->objparams, $element);
-          $ValueObjects[$i]->setId($i);
-          $ValueObjects[$i]->init();
-          $ValueObjects[$i]->setValue($this->getFieldValue($i, '', $ValueObjects[$i]->getName()));
-          $ValueObjects[$i]->setValueObjects($ValueObjects);
-          break;
-
-        }
-      }
-    }
-
-    return $ValueObjects;
   }
 
   static function includeClass($type_id, $class)

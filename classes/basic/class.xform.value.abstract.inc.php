@@ -174,9 +174,9 @@ class rex_xform_abstract
     return '<span style="color:#f90">'.($label).'</span>';
   }
 
-  function setValueObjects(&$obj)
+  function setValueObjects($ValueObjects)
   {
-    $this->obj = &$obj;
+    $this->obj = $ValueObjects;
   }
 
   function getValueObjects()
