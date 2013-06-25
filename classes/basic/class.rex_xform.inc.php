@@ -47,6 +47,7 @@ class rex_xform
     $this->objparams['form_show'] = true;
     $this->objparams['form_name'] = 'formular';
     $this->objparams['form_id'] = 'form_formular';
+    $this->objparams['form_class'] = 'rex-xform';
     $this->objparams['form_wrap'] = array('<div id="rex-xform" class="xform">', '</div>'); // or: <div id="rex-xform" class="xform">#</div>
 
     $this->objparams['form_label_type'] = 'html'; // plain
@@ -430,7 +431,7 @@ class rex_xform
 
       // -------------------- formOut
       $formOut = $warningOut;
-      $formOut .= '<form action="' . $this->objparams['form_action'] . '" method="' . $this->objparams['form_method'] . '" id="' . $this->objparams['form_id'] . '" enctype="multipart/form-data">';
+      $formOut .= '<form action="' . $this->objparams['form_action'] . '" method="' . $this->objparams['form_method'] . '" id="' . $this->objparams['form_id'] . '" class="' . $this->objparams['form_class'] . '" enctype="multipart/form-data">';
       $formOut .= $formFieldsOut;
       $formOut .= $hiddenOut;
       for ($i = 0; $i < $this->objparams['fieldsets_opened']; $i++) {
