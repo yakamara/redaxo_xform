@@ -9,12 +9,10 @@ ul.xform {
 }
 .xform fieldset {
   clear: both;
-  /*padding: .5em;
-  margin-bottom: 1em;*/
 }
 .xform legend {
-  padding: .5em;
   font-weight: bold;
+  padding: 7px 5px;
 }
 
 
@@ -184,6 +182,7 @@ ul.xform {
 /*  --------------------------------------- Submit */
 .xform input.submit {
   margin-left: 227px;
+  cursor: pointer;
 }
 
 /*  --------------------------------------- Checkbox */
@@ -217,7 +216,7 @@ ul.xform {
   /*border: 1px solid #333333;*/
   display: block;
   margin: 0 0 2px 0;
-  padding: 2px 0 2px 1%;
+  padding: 7px 6px;
   /*padding: 0 10px;*/
   width: 99%;
 }
@@ -225,6 +224,14 @@ ul.xform {
 .xform fieldset {
   /*padding-top:15px;*/
 }
+
+/*  --------------------------------------- be_table */
+
+.xform table.rex-xform-be-table {
+  width: auto;
+  margin-left: 220px;
+} 
+
 
 
 /*  --------------------------------------- Form Lang-textarea */
