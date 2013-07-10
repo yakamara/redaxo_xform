@@ -111,6 +111,7 @@ choosenadd_description = Bitte wählen Sie das Feld aus, welches Sie bei Ihrer V
 addfield = Feld hinzufügen
 editfield = Felder bearbeiten
 
+add_row = Reihe hinzufügen
 
 xform_id_is_missing = ID fehlt
 xform_id_missing_info = Die Tabelle hat leider kein ID Feld mit autoincrement. Somit kann XFORM nicht damit arbeiten. Bitte aktualisieren Sie die Tabelle und legen notfalls die ID manuell an.

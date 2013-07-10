@@ -9,10 +9,63 @@
 class rex_xform_be_table extends rex_xform_abstract
 {
 
+  function preValidateAction()
+  {
+    $columns = (int) $this->getElement(3);
+    if ($columns < 1) $columns = 1;
+    $id = $this->getId();
+    $values = array();
+    if ($this->params['send']) {
+
+      $i = 0;
+      
+      $search = array(",",";");
+      $replace = array('‚','⁏'); // , -> alt-s 
+      
+      if (isset($_REQUEST['v'][$id])) {
+          foreach ($_REQUEST['v'][$id] as $c) {
+            for ($r = 0; $r < count($c); $r++) {
+              if (!isset($values[$r])) $values[$r] = '';
+              if ($i > 0) $values[$r] .= ',';
+              if (isset($c[$r])) $values[$r] .= str_replace($search,$replace,trim($c[$r]));
+            }
+            $i++;
+            // die nur den Trenner haben loeschen
+            if (count($values) > 0) {
+              foreach ($values as $key => $val) {
+                if (trim($val) == ',')
+                  unset($values[$key]);
+              }
+            }
+          }
+      }
+
+      $this->setValue('');
+      $i = 0;
+      foreach ($values as $value) {
+        if ($i > 0) $this->setValue($this->getValue() . ';');
+        $v = explode(',', $value);
+        $e = '';
+        $j = 0;
+        for ($r = 0; $r < $columns; $r++) {
+          if ($j > 0) $e .= ',';
+          $e .= $v[$r];
+          $j++;
+        }
+        $this->setValue($this->getValue() . $e);
+        $i++;
+      }
+
+    }
+  
+  }
+
   function enterObject()
   {
 
-    $columns =   (int) $this->getElement(3);
+    global $I18N;
+
+    $columns = (int) $this->getElement(3);
     if ($columns < 1) $columns = 1;
 
     $column_names = explode(',', $this->getElement(4));
@@ -43,7 +96,7 @@ class rex_xform_be_table extends rex_xform_abstract
       for ($r = 0; $r < $columns; $r++) {
         $out .= '<td><input type="text" name="v[' . $id . '][' . $r . '][]" value="" /></td>';
       }
-      $out .= '<td><a href="javascript:void(0)" onclick="rex_xform_table_deleteRow' . $id . '( jQuery(this) )">- löschen</a></td>';
+      $out .= '<td><a href="javascript:void(0)" onclick="rex_xform_table_deleteRow' . $id . '( jQuery(this) )">- '.$I18N->msg("delete").'</a></td>';
       $out .= '</tr>';
 
       $out .= '\');
@@ -52,63 +105,20 @@ class rex_xform_be_table extends rex_xform_abstract
 
     }
 
-
     </script>';
 
+    $values = explode(';', $this->getValue());
 
-    $values = array();
-    if ($this->params['send']) {
-
-      $i = 0;
-      if (isset($_REQUEST['v'][$id])) {
-          foreach ($_REQUEST['v'][$id] as $c) {
-
-            for ($r = 0; $r < count($c); $r++) {
-              if (!isset($values[$r])) $values[$r] = '';
-              if ($i > 0) $values[$r] .= ',';
-              if (isset($c[$r])) $values[$r] .= trim($c[$r]);
-            }
-            $i++;
-
-            // die nur den Trenner haben loeschen
-            if (count($values) > 0) {
-              foreach ($values as $key => $val) {
-                if (trim($val) == ',')
-                  unset($values[$key]);
-              }
-            }
-          }
-      }
-
-      $this->setValue('');
-      $i = 0;
-      foreach ($values as $value) {
-        if ($i > 0) $this->setValue($this->getValue() . ';');
-        $v = explode(',', $value);
-        $e = '';
-        $j = 0;
-        for ($r = 0; $r < $columns; $r++) {
-          if ($j > 0) $e .= ',';
-          $e .= $v[$r];
-          $j++;
-        }
-        $this->setValue($this->getValue() . $e);
-        $i++;
-      }
-
-
-    } else {
-      $values = explode(';', $this->getValue());
-    }
-
+    /*
     if ($this->getValue() == '' && $this->params['send']) {
       $this->params['warning'][$this->getId()] = $this->params['error_class'];
     }
+    */
 
     $wc = '';
     if (isset($this->params['warning'][$this->getId()])) $wc = $this->params['warning'][$this->getId()];
 
-    $out_row_add .= '<a href="javascript:void(0);" onclick="rex_xform_table_addRow' . $id . '(jQuery(\'#xform_table' . $id . '\'))">+ Reihe hinzufügen</a>';
+    $out_row_add .= '<a href="javascript:void(0);" onclick="rex_xform_table_addRow' . $id . '(jQuery(\'#xform_table' . $id . '\'))">+ '.$I18N->msg("add_row").'</a>';
 
     $out .= '<table class="rex-table rex-xform-be-table" id="xform_table' . $id . '"><tr>';
     for ($r = 0; $r < $columns; $r++) {
@@ -121,7 +131,6 @@ class rex_xform_be_table extends rex_xform_abstract
 
 
     foreach ($values as $value) {
-      // asdhoisad,1khasodha,asdasdasd,asdasdas
       $v = explode(',', $value);
 
       $out .= '<tr>';
@@ -129,7 +138,7 @@ class rex_xform_be_table extends rex_xform_abstract
         $tmp = ''; if (isset($v[$r])) $tmp = $v[$r];
         $out .= '<td><input type="text" name="v[' . $id . '][' . $r . '][]" value="' . $tmp . '" /></td>';
       }
-      $out .= '<td><a href="javascript:void(0)" onclick="rex_xform_table_deleteRow' . $id . '(jQuery(this))">- löschen</a></td>';
+      $out .= '<td><a href="javascript:void(0)" onclick="rex_xform_table_deleteRow' . $id . '(jQuery(this))">- '.$I18N->msg("delete").'</a></td>';
       $out .= '</tr>';
     }
     $out .= '</table><br />';
