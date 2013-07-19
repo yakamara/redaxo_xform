@@ -89,7 +89,7 @@ jQuery(document).ready(function(){
 
   var map_options = {
     div_id: "rex-googlemap",
-    dataUrl: "/index.php?article_id=<?php echo $REX["ARTICLE_ID"]; ?>&rex_geo_func=datalist",
+    dataUrl: "<?php echo  rex_geturl($REX["ARTICLE_ID"],'',array("rex_geo_func" => "datalist")); ?>",
     page_size: <?php echo $page_size; ?>,
     page_loading: '<div class="rex-geo-loading"></div>',
     sidebar_view: '<?php echo $view; ?>',
