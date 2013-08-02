@@ -13,7 +13,9 @@ var rex_xform_geomap = function(loaded_options) {
       dataUrlBounds: "",
       fulltext: 0,
       fulltext_height: 50,
-      sidebar_view: "###id###",
+      sidebar_view: "SIDEBAR: ###id###",
+      print_view: "PRINT: ###id###",
+      map_view: "MAP: ###id###",
       splitkey: "rex_geo",
       page_loading: "<p>loading ...</p>",
       marker_icon_normal: "",
@@ -201,15 +203,19 @@ var rex_xform_geomap = function(loaded_options) {
   self.addSidebar = function(data_sidebar) {
     r = self.options.sidebar_view;
     jQuery.each(data_sidebar, function(index, value) {
-      r = r.split("###"+index+"###").join(value);
+			r = r.split("###"+index+"###").join(self.escapeHTML(value));
+			r = r.split("***"+index+"***").join(escape(value));
+			r = r.split("---"+index+"---").join(value);
     });
     return r;
   };
 
   self.addInfowindow = function(data_sidebar) {
-    r = self.options.sidebar_view;
+    r = self.options.map_view;
     jQuery.each(data_sidebar, function(index, value) {
-      r = r.split("###"+index+"###").join(value);
+			r = r.split("###"+index+"###").join(self.escapeHTML(value));
+			r = r.split("***"+index+"***").join(escape(value));
+			r = r.split("---"+index+"---").join(value);
     });
     return r;
   };
@@ -263,6 +269,10 @@ var rex_xform_geomap = function(loaded_options) {
       jQuery("#"+self.marker[i]["id"]).bind("mouseout", i, self.sidebarMouseOut );
     }
 
+  };
+
+  self.escapeHTML = function(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   };
 
 };

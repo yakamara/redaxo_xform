@@ -1,11 +1,7 @@
 <?php
 
-/**
- * XForm
- * @author jan.kristinus[at]redaxo[dot]org Jan Kristinus
- * @author <a href="http://www.yakamara.de">www.yakamara.de</a>
- */
-
+// TABLE SELECT
+////////////////////////////////////////////////////////////////////////////////
 $gc = rex_sql::factory();
 $gc->setQuery('SHOW TABLES');
 $tables = $gc->getArray();
@@ -20,9 +16,20 @@ foreach ($tables as $key => $value)
 $tbl_sel->setSelected('REX_VALUE[1]');
 $tbl_sel = $tbl_sel->get();
 
+$plz_tbl_sel = new rex_select;
+$plz_tbl_sel->setName('VALUE[8]');
+$plz_tbl_sel->setSize(1);
+$plz_tbl_sel->addOption('Keine Tabelle ausgewählt', '');
+foreach ($tables as $key => $value) {
+  $plz_tbl_sel->addOption(current($value), current($value));
+}
+$plz_tbl_sel->setSelected('REX_VALUE[8]');
+$plz_tbl_sel = $plz_tbl_sel->get();
+
+
 ?>
 <style type="text/css" media="screen">
-  /*BASIS MODUL STYLE*/
+  /*BAISC MODUL STYLE*/
   #xform-modul                       {margin:0;padding:0;line-height:25px;}
   #xform-modul fieldset              {background:#E4E1D1;margin:-20px 0 0 0;padding: 4px 10px 10px 10px;-moz-border-radius:6px;-webkit-border-radius:6px;border-radius:6px;}
   #xform-modul fieldset legend       {display:block !important;position:relative !important;height:auto !important;top:0 !important;left:0 !important;width:100% !important;margin:0 0 0 0 !important;padding:30px 0 0 0px !important;background:transparent !important;border-bottom:1px solid #B1B1B1 !important;color:gray;font-size:14px;font-weight:bold;}
@@ -76,6 +83,17 @@ $tbl_sel = $tbl_sel->get();
     <li>Feld(name) der Quell-Tabelle welcher die Lng (longitude) Position enthält</li>
     </ul>
 
+	<hr />
+	
+	<label>PLZ-Tabelle [optional]</label>
+    <?php echo $plz_tbl_sel;?>
+	
+	<label>PLZ Felder [plz,lat,lng,city,state] <span>[<a href="#" class="help-toggler">?</a>]</span></label>
+    <input type="text" name="VALUE[9]" value="REX_VALUE[9]" />
+    <ul class="help">
+    <li>Feldnamen kommasepariert</li>
+    </ul>
+	  
     <hr />
 
     <label>Zu beziehende Felder <span>[<a href="#" class="help-toggler">?</a>]</span></label>
@@ -99,12 +117,27 @@ $tbl_sel = $tbl_sel->get();
 
     <hr />
 
-    <label>Sidebar/Infobox HTML <span>[<a href="#" class="help-toggler">?</a>]</span></label>
+    <label>Sidebar HTML <span>[<a href="#" class="help-toggler">?</a>]</span></label>
     <textarea rows="6" name="VALUE[7]" class="fullwidth">REX_VALUE[7]</textarea>
     <ul class="help">
-    <li>Mit ###id### als Ersetzungen</li>
+    <li>Mit ###id### als Ersetzungen, ***id*** für urlencoded Ersetzungen</li>
     </ul>
 
+    <label>Map HTML <span>[<a href="#" class="help-toggler">?</a>]</span></label>
+    <textarea rows="6" name="VALUE[10]" class="fullwidth">REX_VALUE[10]</textarea>
+    <ul class="help">
+    <li>Mit ###id### als Ersetzungen, ***id*** für urlencoded Ersetzungen</li>
+    </ul>
+	  	  
+    <label>Druckversion HTML <span>[<a href="#" class="help-toggler">?</a>]</span></label>
+    <textarea rows="6" name="VALUE[11]" class="fullwidth">REX_VALUE[11]</textarea>
+    <ul class="help">
+    <li>Mit ###id### als Ersetzungen, ***id*** für urlencoded Ersetzungen</li>
+    </ul>
+	  
+	  
+	  
+	  
   </fieldset>
   <p id="modulinfo">XForm GeoModul v1.1</p>
 </div><!-- #xform-modul -->
