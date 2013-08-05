@@ -1669,4 +1669,57 @@ class rex_xform_manager
 
   }
 
+  function checkMediaInUse($params)
+  {
+    global $REX, $I18N;
+
+    $warning = $params['subject'];
+
+    $sql = rex_sql::factory();
+    $sql->setQuery('SELECT `table_name`, `type_name`, `f1` FROM `' . $REX['TABLE_PREFIX'] . 'xform_field` WHERE `type_id`="value" AND `type_name` IN("be_medialist","be_mediapool")');
+
+    $rows = $sql->getRows();
+
+    if ($rows == 0)
+      return $warning;
+
+    $where = array();
+    $filename = addslashes($params['filename']);
+    while ($sql->hasNext()) {
+      $table = $sql->getValue('table_name');
+      switch ($sql->getValue('type_name')) {
+        case 'be_mediapool':
+          $where[$table][] = $sql->getValue('f1') . '="' . $filename . '"';
+          break;
+        case 'be_medialist':
+          $where[$table][] = 'FIND_IN_SET("' . $filename . '", ' . $sql->getValue('f1') . ')';
+          break;
+        default :
+          trigger_error('Unexpected fieldtype "' . $sql->getValue('type_name') . '"!', E_USER_ERROR);
+      }
+      $sql->next();
+    }
+
+    $tupel = '';
+    foreach ($where as $table => $cond) {
+      $sql->setQuery('SELECT id FROM ' . $table . ' WHERE ' . implode(' OR ', $cond));
+
+      while ($sql->hasNext()) {
+        $sql_tupel = rex_sql::factory();
+        $sql_tupel->setQuery('SELECT name FROM `' . $REX['TABLE_PREFIX'] . 'xform_table` WHERE `table_name`="' . $table . '"');
+
+        $tupel .= '<li><a href="javascript:openPage(\'index.php?page=xform&amp;subpage=manager&amp;tripage=data_edit&amp;table_name=' . $table . '&amp;data_id=' . $sql->getValue('id') . '&amp;func=edit\')">' . $sql_tupel->getValue('name') . ' [id=' . $sql->getValue('id') . ']</a></li>';
+
+        $sql->next();
+      }
+    }
+
+    if ($tupel != '') {
+      $warning[] = 'Tabelle<br /><ul>' . $tupel . '</ul>';
+    }
+
+    return $warning;
+  }
+
+
 }
