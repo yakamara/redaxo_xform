@@ -34,6 +34,9 @@ if ($REX['REDAXO'] && !$REX['SETUP']) {
     }
 
   $REX['ADDON']['xform']['SUBPAGES'][] = array('manager' , $I18N->msg('xform_table_manager'));
+  
+  // Register EP for Mediapool File-Delete
+  rex_register_extension('OOMEDIA_IS_IN_USE', 'rex_xform_manager::checkMediaInUse');
 
   $t = new rex_xform_manager();
   $tables = $t->getTables();
