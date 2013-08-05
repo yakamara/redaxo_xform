@@ -42,7 +42,7 @@ xform_tbl_inactive = not active
 xform_manager_table_updated = Tables and fields got created and/or updated
 xform_manager_table_entry_saved = Thank you for the edit.
 xform_manager_table_enter_name = Please fill in the table name
-xform_manager_table_enter_specialchars = Please fill in only letters for the table name
+xform_manager_table_enter_specialchars = Please fill in only letters and numbers for the table name. First char must be a letter
 xform_manager_table_exists = This table name already exists
 
 xform_manager_table_prio = priority
@@ -111,7 +111,6 @@ choosenadd_description = Please select the field which you want to use for your 
 addfield = add field
 editfield = edit fields
 
-add_row = add row
 
 xform_id_is_missing = ID missing
 xform_id_missing_info = Die Tabelle hat leider kein ID Feld mit autoincrement. Somit kann XFORM nicht damit arbeiten. Bitte aktualisieren Sie die Tabelle und legen notfalls die ID manuell an.
