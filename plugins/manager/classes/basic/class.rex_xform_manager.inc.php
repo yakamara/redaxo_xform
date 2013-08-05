@@ -1811,7 +1811,7 @@ if ($type_real_field == '' && count($mfields) > 0 ) {
   
     if ($tupel != '')
     {
-      $warning[] = 'Tabelle<br /><ul>'.$tupel.'</ul>';
+      $warning[] = $I18N->msg('table').'<br/><ul>'.$tupel.'</ul>';
     }
   
     return $warning;
