@@ -42,7 +42,37 @@ class rex_xform_manager_table
     return $a;
   }
 
+  // -------------------------------------------------------------------------
 
+  static function checkTableName($table)
+  {
+    preg_match("/([a-z])+([0-9a-z\_])*/", $table, $matches);
+    if (count($matches) > 0 && current($matches) == $table) {
+      return true;
+    }
+    return false;
+  }
+
+
+  // -------------------------------------------- xform custom function
+
+  static function xform_checkTableName($label = '', $table = '', $params = '')
+  {
+    return self::checkTableName($table);
+  }
+
+  static function xform_existTableName($l = '', $v = '', $params = '')
+  {
+    global $REX;
+    $q = 'select * from rex_xform_table where table_name="' . $v . '" LIMIT 1';
+    $c = rex_sql::factory();
+    // $c->debugsql = 1;
+    $c->setQuery($q);
+    if ($c->getRows() > 0) {
+      return true;
+    }
+    return false;
+  }
 
   // -------------------------------------------------------------------------
 

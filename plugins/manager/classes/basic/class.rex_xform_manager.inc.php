@@ -13,13 +13,6 @@ if (!function_exists('rex_xform_manager_checkField')) {
   }
 }
 
-if (!function_exists('rex_xform_manager_checkLabelInTable')) {
-  function rex_xform_manager_checkLabelInTable($l, $v)
-  {
-    return rex_xform_manager::checkLabelInTable($l, $v);
-  }
-}
-
 class rex_xform_manager
 {
 
@@ -1495,24 +1488,8 @@ class rex_xform_manager
     if ($c->getRows() > 0) {
       // FALSE -> Warning = TRUE;
       return true;
-    } else {
-      return false;
     }
-  }
-
-  static function checkLabelInTable($l, $v)
-  {
-    global $REX;
-    $q = 'select * from rex_xform_table where ' . $l . '="' . $v . '" LIMIT 1';
-    $c = rex_sql::factory();
-    // $c->debugsql = 1;
-    $c->setQuery($q);
-    if ($c->getRows() > 0) {
-      // FALSE -> Warning = TRUE;
-      return true;
-    } else {
-      return false;
-    }
+    return false;
   }
 
   function setFilterFields($DataPageFilterFields = array())
