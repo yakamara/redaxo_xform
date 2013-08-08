@@ -231,8 +231,8 @@ switch($rex_geo_func)
 					"id" => $p[$zip_fields[0]],
 					"label" => $p[$zip_fields[0]].' - '.$p[$zip_fields[3]].' / '.$p[$zip_fields[4]],
 					"value" => $p[$zip_fields[3]],
-					"lat" => $zip_fields[1],
-					"lng" => $zip_fields[2]
+					"lat" => $p[$zip_fields[1]],
+					"lng" => $p[$zip_fields[2]]
 
 				);
 			}
