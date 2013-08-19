@@ -9,7 +9,7 @@
 class rex_xform_lang_textarea extends rex_xform_abstract
 {
 
-  function getLangDivider()
+  static function getLangDivider()
   {
     return '^^^^°°°°';
   }
@@ -82,7 +82,7 @@ class rex_xform_lang_textarea extends rex_xform_abstract
 
     $this->params['form_output'][$this->getId()] = $tmp . $script;
 
-    $this->setValue(implode($this->getLangDivider(), $text));
+    $this->setValue(implode(self::getLangDivider(), $text));
 
     $this->params['value_pool']['email'][$this->getName()] = stripslashes($this->getValue());
     if ($this->getElement(3) != 'no_db')
