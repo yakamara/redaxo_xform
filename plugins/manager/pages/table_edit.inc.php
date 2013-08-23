@@ -8,8 +8,8 @@
 
 // ********************************************* TABLE ADD/EDIT/LIST
 
-$table = 'rex_xform_table';
-$table_field = 'rex_xform_field';
+$table = $REX['TABLE_PREFIX'].'xform_table';
+$table_field = $REX['TABLE_PREFIX'].'xform_field';
 
 $func = rex_request('func', 'string', '');
 $page = rex_request('page', 'string', '');

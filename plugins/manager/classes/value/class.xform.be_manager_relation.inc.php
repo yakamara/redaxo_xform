@@ -59,7 +59,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
           select
             target_id as id
           from
-            rex_xform_relation
+            '.$REX['TABLE_PREFIX'].'xform_relation
           where
             source_table="' . $this->be_em['source_table'] . '" and
             source_name="' . $this->getName() . '" and
@@ -358,13 +358,13 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
 
     $d = rex_sql::factory();
     $d->debugsql = $this->params['debug'];
-    $d->setQuery('delete from rex_xform_relation where source_table="' . $this->be_em['source_table'] . '" and source_name="' . $this->getName() . '" and source_id="' . $source_id . '"');
+    $d->setQuery('delete from '.$REX['TABLE_PREFIX'].'xform_relation where source_table="' . $this->be_em['source_table'] . '" and source_name="' . $this->getName() . '" and source_id="' . $source_id . '"');
 
     if (count($values) > 0) {
       $i = rex_sql::factory();
       $i->debugsql = $this->params['debug'];
       foreach ($values as $v) {
-        $i->setTable('rex_xform_relation');
+        $i->setTable($REX['TABLE_PREFIX'].'xform_relation');
         $i->setValue('source_table', $this->be_em['source_table']);
         $i->setValue('source_name', $this->getName());
         $i->setValue('source_id', $source_id);

@@ -8,7 +8,7 @@
 
 $sql = rex_sql::factory();
 
-$sql->setQuery('CREATE TABLE IF NOT EXISTS `rex_xform_table` (
+$sql->setQuery('CREATE TABLE IF NOT EXISTS `'.$REX['TABLE_PREFIX'].'xform_table` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `status` tinyint(4) NOT NULL,
   `table_name` varchar(100) NOT NULL,
@@ -24,9 +24,9 @@ $sql->setQuery('CREATE TABLE IF NOT EXISTS `rex_xform_table` (
   UNIQUE(`table_name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
-$sql->setQuery('ALTER TABLE `rex_xform_table` CHANGE `prio` `prio` INT NOT NULL');
+$sql->setQuery('ALTER TABLE `'.$REX['TABLE_PREFIX'].'xform_table` CHANGE `prio` `prio` INT NOT NULL');
 
-$sql->setQuery('CREATE TABLE IF NOT EXISTS `rex_xform_field` (
+$sql->setQuery('CREATE TABLE IF NOT EXISTS `'.$REX['TABLE_PREFIX'].'xform_field` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `table_name` varchar(100) NOT NULL,
   `prio` int(11) NOT NULL,
@@ -46,9 +46,9 @@ $sql->setQuery('CREATE TABLE IF NOT EXISTS `rex_xform_field` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
-$sql->setQuery('ALTER TABLE `rex_xform_field` CHANGE `prio` `prio` INT NOT NULL');
+$sql->setQuery('ALTER TABLE `'.$REX['TABLE_PREFIX'].'xform_field` CHANGE `prio` `prio` INT NOT NULL');
 
-$sql->setQuery('CREATE TABLE IF NOT EXISTS `rex_xform_relation` (
+$sql->setQuery('CREATE TABLE IF NOT EXISTS `'.$REX['TABLE_PREFIX'].'xform_relation` (
   `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
   `source_table` VARCHAR( 100 ) NOT NULL ,
   `source_name` VARCHAR( 100 ) NOT NULL ,
