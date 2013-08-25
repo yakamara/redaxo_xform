@@ -852,7 +852,7 @@ class rex_xform_manager
     }
 
     $sql .= $this->getDataListQueryWhere($rex_xform_filter, $rex_xform_searchfields, $rex_xform_searchtext);
-    $sql = rex_register_extension_point('XFORM_DATA_LIST_SQL', $sql);
+    $sql = rex_register_extension_point('XFORM_DATA_LIST_SQL', $sql, array('table' => $table));
 
     return $sql;
   }
