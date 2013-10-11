@@ -27,6 +27,7 @@ class rex_xform_action_email extends rex_xform_action_abstract
     $mail->WordWrap = 80;
     $mail->FromName = $mail_from;
     $mail->From = $mail_from;
+    $mail->Sender = $mail_from;
     $mail->Subject = $mail_subject;
     $mail->Body = nl2br($mail_body);
     $mail->AltBody = strip_tags($mail_body);
