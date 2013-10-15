@@ -1669,7 +1669,7 @@ class rex_xform_manager
 
   }
 
-  function checkMediaInUse($params)
+  static function checkMediaInUse($params)
   {
     global $REX, $I18N;
 
