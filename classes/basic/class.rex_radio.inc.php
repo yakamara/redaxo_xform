@@ -13,7 +13,7 @@ class rex_radio
   var $options;
   var $option_selected;
 
-  public function rex_select()
+  public function rex_radio()
   {
     $this->init();
   }
