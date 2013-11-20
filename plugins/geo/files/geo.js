@@ -55,6 +55,12 @@ var rex_xform_geomap = function(loaded_options) {
     google.maps.event.addListener(self.map, 'dragend', self.refresh);
     google.maps.event.addListener(self.map, 'resize', self.refresh);
     google.maps.event.addListener(self.map, 'zoom_changed', self.refresh);
+    
+    google.maps.event.addListener(self.map, 'center_changed', function() {
+       window.setTimeout(function() {
+            self.refresh(1);
+       }, 1000);
+    });
 
     if(self.options.fulltext == 1) {
       jQuery("#"+self.options.search_id+" a").bind("click", self.refresh );
@@ -240,6 +246,15 @@ var rex_xform_geomap = function(loaded_options) {
     self.page = 0;
     self.getData();
   };
+  
+  self.focusMarker = function(e) {
+  	id_split = this.id.split(self.options.splitkey);
+        id = id_split[1];
+  	var data_marker = self.data[id];
+	var myLatlng = new google.maps.LatLng(data_marker.lat, data_marker.lng);
+	self.map.setCenter(myLatlng);
+	self.map.setZoom(15);
+  }
 
   self.setSidebar = function() {
     self.sidebar = "";
@@ -267,6 +282,7 @@ var rex_xform_geomap = function(loaded_options) {
     for (var i = 0; i < self.marker.length; ++i) {
       jQuery("#"+self.marker[i]["id"]).bind("mouseover", i, self.sidebarMouseOver );
       jQuery("#"+self.marker[i]["id"]).bind("mouseout", i, self.sidebarMouseOut );
+      jQuery("#"+self.marker[i]["id"]).bind("click", i, self.focusMarker );
     }
 
   };
