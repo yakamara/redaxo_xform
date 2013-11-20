@@ -1,0 +1,12 @@
+
+xform_setup = Setup
+
+
+xform_setup_install_modul = Install Module
+xform_setup_install_modul_description = In order to use XForm meaningfully, you have to installe a module:
+xform_setup_install_xform_modul = Install XForm Module
+xform_setup_update_following_modul = Update following XForm Module "{0}"
+
+xform_setup_copytables = Take tabledefinitions of this table "{0}"
+
+xform_setup_table_copied = Tabledefinitions of "{0}" have been taken

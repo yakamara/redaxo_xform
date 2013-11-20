@@ -39,7 +39,7 @@ tbl_inactive = not active
 xform_tbl_active = active
 xform_tbl_inactive = not active
 
-xform_manager_table_updated = Tables and fields got created and/or updated
+xform_manager_table_updated = Thank you for the update.
 xform_manager_table_entry_saved = Thank you for the edit.
 xform_manager_table_enter_name = Please fill in the table name
 xform_manager_table_enter_specialchars = Please fill in only letters and numbers for the table name. First char must be a letter
@@ -109,7 +109,7 @@ editfield = edit field
 choosenadd = select fields
 choosenadd_description = Please select the field which you want to use for your administration. There are value field which are usually used for entries as also validate fields which validate value fields on certain criteria.
 addfield = add field
-editfield = edit fields
+editfields = edit fields
 
 
 xform_id_is_missing = ID missing

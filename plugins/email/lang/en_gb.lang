@@ -7,7 +7,6 @@ xform_email_subject = subject
 xform_email_body = body
 xform_email_body_html = body (Html)
 xform_email_add_template = add e-mail template
-
 xform_email_header_template_description = description
 xform_email_header_template_mail_from = sender mail
 xform_email_header_template_mail_from_name = sender name
@@ -15,13 +14,8 @@ xform_email_header_template_subject = subject
 xform_email_create_template = create template
 xform_email_header_template_functions = functions
 xform_email_templates_not_found = no templates found
-xform_delete_template = delete
+xform_email_delete_template = delete
 xform_email_info_template_deleted = template got deleted
 xform_email_attachments = attachements
 
-
-
-
-
-
-
+xform_delete_template = delete
