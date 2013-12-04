@@ -197,6 +197,8 @@ class rex_xform
     $this->objparams['validates'] = $ValidateObjects;
     $this->objparams['actions'] = $ActionObjects;
 
+    $this->objparams['send'] = 0;
+
     // *************************************************** VALUE OBJECT INIT
 
     $rows = count($this->objparams['form_elements']);
@@ -257,7 +259,6 @@ class rex_xform
     }
 
     // *************************************************** OBJECT PARAM "send"
-    $this->objparams['send'] = 0;
     if ($this->getFieldValue('send', '', 'send') == '1') {
       $this->objparams['send'] = 1;
     }
