@@ -54,8 +54,6 @@ class rex_xform_google_geocode extends rex_xform_abstract
 var rex_geo_coder = function() {
 
     var myLatlng = new google.maps.LatLng(' . $value_lat . ', ' . $value_lng . ');
-    
-    alert(" lat: ' . $value_lat . ' -- lng: ' . $value_lng . '"); 
 
     var myOptions = {
       zoom: 8,
