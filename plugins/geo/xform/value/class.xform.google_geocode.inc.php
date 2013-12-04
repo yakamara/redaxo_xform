@@ -29,8 +29,8 @@ class rex_xform_google_geocode extends rex_xform_abstract
     if ($this->getElement(6) != '') $map_height = (int) $this->getElement(6);
 
     foreach ($this->obj as $o) {
-      if ($o->getName() == $label_lng)     $value_lng = floatval($o->getValue());
-      if ($o->getName() == $label_lat)     $value_lat = floatval($o->getValue());
+      if ($o->getName() == $label_lng)     $value_lng = $this->floattostr($o->getValue());
+      if ($o->getName() == $label_lat)     $value_lat = $this->floattostr($o->getValue());
     }
 
     if ($this->getValue() == '' && !$this->params['send']) {
@@ -49,96 +49,98 @@ class rex_xform_google_geocode extends rex_xform_abstract
 
     $map_id = 'map_canvas' . $this->getId();
 
-  echo '<script type="text/javascript">
-  //<![CDATA[
+    $output .= '<script type="text/javascript">
 
-  var rex_geo_coder = function()
-  {
+var rex_geo_coder = function() {
 
     var myLatlng = new google.maps.LatLng(' . $value_lat . ', ' . $value_lng . ');
-      var myOptions = {
-        zoom: 8,
-        center: myLatlng,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-      }
+    
+    alert(" lat: ' . $value_lat . ' -- lng: ' . $value_lng . '"); 
 
-      var map = new google.maps.Map(document.getElementById("' . $map_id . '"), myOptions);
+    var myOptions = {
+      zoom: 8,
+      center: myLatlng,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    }
 
-    var marker = new google.maps.Marker({
-          position: myLatlng,
-          map: map,
-          draggable: true
-      });
+    var map = new google.maps.Map(document.getElementById("' . $map_id . '"), myOptions);
+
+
+    marker = new google.maps.Marker({
+        position: myLatlng,
+        map: map,
+        draggable: true
+    });
+
+
+
 
     google.maps.event.addListener(marker, "dragend", function() {
-      rex_geo_updatePosition(marker.getPosition());
+        rex_geo_updatePosition(marker.getPosition());
     });
+
+
+    rex_geo_updatePosition = function(latLng) {
+        jQuery(".formlabel-' . $label_lat . ' input").val( latLng.lat() );
+        jQuery(".formlabel-' . $label_lng . ' input").val( latLng.lng() );
+    }
 
     geocoder = new google.maps.Geocoder();
 
-    rex_geo_updatePosition = function(latLng) {
-
-      jQuery(".formlabel-' . $label_lat . ' input").val(latLng.lat());
-      jQuery(".formlabel-' . $label_lng . ' input").val(latLng.lng());
-
-    }
-
     rex_geo_getPosition = function(address) {
+        fields = address.split(",");
+        for(i=0;i<fields.length;i++) {
+            jQuery(function($){
+                fields[i] = $(".formlabel-"+fields[i].trim()+" input").val();
+            });
+        }
 
-      fields = address.split(",");
-      for(i=0;i<fields.length;i++)
-      {
-        jQuery(function($){
-          fields[i] = $(".formlabel-"+fields[i].trim()+" input").val();
-        });
-      }
+        address = fields.join(",");
 
-      address = fields.join(",");
-
-      geocoder.geocode( { "address": address}, function(results, status) {
+        geocoder.geocode( { "address": address }, function(results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
-              if (status != google.maps.GeocoderStatus.ZERO_RESULTS) {
+                if (status != google.maps.GeocoderStatus.ZERO_RESULTS) {
+                    map.setCenter(results[0].geometry.location);
+                    marker.setMap(null);
+                    marker = new google.maps.Marker({
+                        position: results[0].geometry.location,
+                        map: map,
+                        title: address,
+                        draggable: true
+                    });
+                    google.maps.event.addListener(marker, "dragend", function() {
+                        rex_geo_updatePosition(marker.getPosition());
+                    });
+                    rex_geo_updatePosition(marker.getPosition());
 
-                map.setCenter(results[0].geometry.location);
+                } else {
+                    alert("No results found");
 
-                marker = new google.maps.Marker({
-                    position: results[0].geometry.location,
-                    map: map,
-                    title:address,
-                draggable: true
-                });
-
-          rex_geo_updatePosition(marker.getPosition());
-
-              } else {
-                // alert("No results found");
-              }
+                }
             } else {
-              // alert("Geocode was not successful for the following reason: " + status);
+                alert("Geocode was not successful for the following reason: " + status);
+
             }
-          });
+        });
 
     }
 
     rex_geo_resetPosition = function() {
-
-      jQuery(function($){
-        $(".formlabel-' . $label_lat . ' input").val("0");
-        $(".formlabel-' . $label_lng . ' input").val("0");
-      });
-
-      marker.setMap(null);
+        jQuery(function($){
+            $(".formlabel-' . $label_lat . ' input").val("0");
+            $(".formlabel-' . $label_lng . ' input").val("0");
+        });
+        marker.setMap(null);
 
     }
 
-  }
+}
 
-  jQuery(function($){
+jQuery(function($){
     rex_geo_coder' . $this->getId() . ' = new rex_geo_coder();
-  });
+});
 
-  //]]>
-  </script>
+</script>
   ';
 
     $output .= '
@@ -146,9 +148,9 @@ class rex_xform_google_geocode extends rex_xform_abstract
         <label class="text ' . $wc . '" for="' . $this->getFieldId() . '">' . $label . '</label>
         <p class="form_google_geocode">';
 
-    $output .= '<a href="#" onclick="rex_geo_getPosition(\'' . implode(',', str_replace('"', '', $address)) . '\')">Geodaten holen</a> | ';
+    $output .= '<a href="javascript:void(0);" onclick="rex_geo_getPosition(\'' . implode(',', str_replace('"', '', $address)) . '\')">Geodaten holen</a> | ';
 
-    $output .= '<a href="#" onclick="rex_geo_resetPosition()">Geodaten nullen</a></p>
+    $output .= '<a href="javascript:void(0);" onclick="rex_geo_resetPosition()">Geodaten nullen</a></p>
         <div class="form_google_geocode_map" id="' . $map_id . '" style="width:' . $map_width . 'px; height:' . $map_height . 'px">Google Map</div>
       </div>';
 
@@ -179,6 +181,12 @@ class rex_xform_google_geocode extends rex_xform_abstract
       'dbtype' => 'text'
     );
 
+  }
+  
+  function floattostr( $val )
+  {
+      preg_match( "#^([\+\-]|)([0-9]*)(\.([0-9]*?)|)(0*)$#", trim($val), $o );
+      return $o[1].sprintf('%d',$o[2]).($o[3]!='.'?$o[3]:'');
   }
 
 }
