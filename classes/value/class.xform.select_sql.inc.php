@@ -13,82 +13,108 @@ class rex_xform_select_sql extends rex_xform_abstract
 
   function enterObject()
   {
+
     $multiple = (int) $this->getElement(8);
-    if ($multiple != 1) {
+    if($multiple != 1) {
       $multiple = 0;
     }
 
-    $size = (int) $this->getElement(9);
-    if ($size < 1) {
-      $size = 1;
-    }
-
-    $SEL = new rex_select();
-    $SEL->setId($this->getHTMLId() . '-s');
-
-    if ($multiple) {
-      $SEL->setName($this->getFieldName() . '[]');
-      $SEL->setMultiple();
-      $SEL->setSize($size);
-    } else {
-      $SEL->setName($this->getFieldName());
-      $SEL->setSize(1);
-    }
-
-
+    // ----- query
     $sql = $this->getElement(3);
 
-    $teams = rex_sql::factory();
-    $teams->debugsql = $this->params['debug'];
-    $teams->setQuery($sql);
+    $options_sql = rex_sql::factory();
+    $options_sql->debugsql = $this->params['debug'];
+    $options_sql->setQuery($sql);
 
-    $sqlnames = array();
-
-    if (!$multiple && $this->getElement(6) == 1) {
-      $SEL->addOption($this->getElement(7), '0');
-    }
-
-    foreach ($teams->getArray() as $t) {
+    $options = array();
+    $option_names = array();
+    foreach($options_sql->getArray() as $t) {
       $v = $t['name'];
       $k = $t['id'];
-      $SEL->addOption($this->getLabelStyle($v), $k);
-      $sqlnames[$k] = $t['name'];
+      $options[$k] = $v;
+      $option_names[$k] = $t['name'];
+
     }
+
+    // ----- default value
+    if ($this->getValue()=='' && $this->getElement(4) != '') {
+      $this->setValue($this->getElement(4));
+
+    }
+
+    // ----- build select
+    $select = new rex_select();
+    $select->setId($this->getHTMLId().'-s');
+
+    if($multiple) {
+
+      $size = (int) $this->getElement(9);
+      if($size < 1 || $multiple == 0) {
+        $size = 1;
+      }
+
+      $select->setName($this->getFieldName().'[]');
+      $select->setMultiple();
+      $select->setSize($size);
+
+      foreach($options as $k => $v) {
+        $select->addOption($v, $k);
+
+      }
+
+      $form_class = 'formselect formselect-multiple-'.$size;
+
+      if (!is_array($this->getValue())) {
+        $this->setValue(explode(',', stripslashes($this->getValue())));
+
+      }
+
+      foreach ($this->getValue() as $v) {
+        $select->setSelected($v);
+
+      }
+
+      $this->setValue(implode(',',$this->getValue()));
+
+
+    } else {
+
+      $select->setName($this->getFieldName());
+      $select->setSize(1);
+
+      // mit --- keine auswahl ---
+      if ($this->getElement(6) == 1) {
+        $select->addOption($this->getElement(7), '0');
+
+      }
+
+      foreach($options as $k => $v) {
+        $select->addOption($v, $k);
+
+      }
+
+      $select->setSelected( stripslashes($this->getValue()));
+
+      $form_class = 'formselect';
+    }
+
 
     $wc = '';
     if (isset($this->params['warning'][$this->getId()])) {
       $wc = $this->params['warning'][$this->getId()];
     }
+    $select->setStyle(' class="select ' . $wc . '"');
 
-    $SEL->setStyle(' class="select ' . $wc . '"');
-
-    if ($this->getValue() == '' && $this->getElement(4) != '') {
-      $this->setValue($this->getElement(4));
-    }
-
-    if (!is_array($this->getValue())) {
-      $this->setValue(explode(',', $this->getValue()));
-    }
-
-    foreach ($this->getValue() as $v) {
-      $SEL->setSelected($v);
-    }
-
-    $form_class = '';
-    if ($multiple) {
-      $form_class = ' formselect-multiple-' . $size;
-    }
-
-    $this->params['form_output'][$this->getId()] = '
-      <p class="formselect' . $form_class . '"  id="' . $this->getHTMLId() . '">
-        <label class="select ' . $wc . '" for="' . $this->getHTMLId() . '-s" >' . $this->getLabel() . '</label>
-        ' . $SEL->get() . '
+    $this->params["form_output"][$this->getId()] = '
+      <p class="formselect'.$form_class.'"  id="'.$this->getHTMLId().'">
+        <label class="select ' . $wc . '" for="' . $this->getHTMLId() . '-s" >' . rex_translate($this->getElement(2)) . '</label>
+        ' . $select->get() . '
       </p>';
 
-    $this->setValue(implode(',', $this->getValue()));
-    $this->params['value_pool']['email'][$this->getName()] = stripslashes($this->getValue());
+    $this->params['value_pool']['email'][$this->getElement(1)] = stripslashes($this->getValue());
     if ($this->getElement(5) != 'no_db') {
-      $this->params['value_pool']['sql'][$this->getName()] = $this->getValue();
+      $this->params['value_pool']['sql'][$this->getElement(1)] = $this->getValue();
+
     }
 
   }
@@ -96,7 +122,7 @@ class rex_xform_select_sql extends rex_xform_abstract
 
   function getDescription()
   {
-    return 'select_sql -> Beispiel: select_sql|name|label|select id,name from table order by name|[defaultvalue]|[no_db]|1/0 Leeroption|Leeroptionstext|1/0 Multiple Feld';
+    return 'select_sql -> Beispiel: select_sql|label|Bezeichnung:|select id,name from table order by name|[defaultvalue]|[no_db]|1/0 Leeroption|Leeroptionstext|1/0 Multiple Feld';
   }
 
 
@@ -114,7 +140,8 @@ class rex_xform_select_sql extends rex_xform_abstract
         array( 'type' => 'boolean', 'label' => 'Leeroption'),
         array( 'type' => 'text',    'label' => 'Text bei Leeroption (Bitte auswählen)'),
         array( 'type' => 'boolean', 'label' => 'Mehrere Felder möglich'),
-        array( 'type' => 'text',    'label' => 'Höhe der Auswahlbox'),
+        array( 'type' => 'text',    'label' => 'Höhe der Auswahlbox')
+
       ),
       'description' => 'Hiermit kann man SQL Abfragen als Selectbox nutzen',
       'dbtype' => 'text'
@@ -126,13 +153,50 @@ class rex_xform_select_sql extends rex_xform_abstract
   {
     $return = array();
 
+    $query = $params['params']['field']['f3'];
+    $pos = strrpos(strtoupper($query), "ORDER BY ");
+    if ( $pos !== FALSE) {
+      $query = substr($query, 0, $pos);
+    }
+
+    $pos = strrpos(strtoupper($query), "LIMIT ");
+    if ( $pos !== FALSE) {
+      $query = substr($query, 0, $pos);
+    }
+
+    $multiple = (int) $params['params']['field']['f8'];
+    if($multiple != 1) {
+      $where = ' `id`="'.mysql_real_escape_string($params['value']).'"';
+
+
+    } else {
+      $where = ' FIND_IN_SET(`id`,"'.mysql_real_escape_string($params['value']).'")';
+
+    }
+
+    $pos = strrpos(strtoupper($query), "WHERE ");
+    if ( $pos !== FALSE) {
+      $query = substr($query, 0, $pos).' WHERE '.$where.' AND '.substr($query, $pos + strlen("WHERE "));
+
+    } else {
+      $query .= ' WHERE '.$where;
+
+    }
+
     $db = rex_sql::factory();
-    $db_array = $db->getDBArray($params['params']['field']['f3'] . ' WHERE FIND_IN_SET(`id`,"' . $params['value'] . '")');
-    foreach ($db_array as $entry) {
+    // $db->debugsql = 1;
+    $db_array = $db->getArray($query);
+
+    foreach($db_array as $entry) {
       $return[] = $entry['name'];
     }
 
-    return implode('<br />', $return);
+
+    if (count($return) == 0 && $params['value'] != "" && $params['value'] != "0") {
+      $return[] = $params['value'];
+    }
+
+    return implode("<br />",$return);
   }
 
 }
