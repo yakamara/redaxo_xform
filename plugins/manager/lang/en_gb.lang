@@ -113,4 +113,27 @@ editfields = edit fields
 
 
 xform_id_is_missing = ID missing
-xform_id_missing_info = Die Tabelle hat leider kein ID Feld mit autoincrement. Somit kann XFORM nicht damit arbeiten. Bitte aktualisieren Sie die Tabelle und legen notfalls die ID manuell an.
+xform_id_missing_info = [en] Die Tabelle hat leider kein ID Feld mit autoincrement. Somit kann XFORM nicht damit arbeiten. Bitte aktualisieren Sie die Tabelle und legen notfalls die ID manuell an.
+
+# import
+xform_manager_import_error_missingfile = [en] Bitte laden Sie eine Importdatei hoch
+xform_manager_import_error_missingfields = [en] Es fehlen folgende Felder: {0}
+xform_manager_import_error_field = [en] Feld "{0}" konnte nicht angelegt werden: "{1}"
+xform_manager_import_field_added = [en] Feld "{0}" wurde angelegt
+xform_manager_import_error_import_stopped = [en] Import wurde abgebrochen, da Fehler aufgetaucht sind.
+xform_manager_import_error_dataimport = [en] Datensatz konnte nicht importiert werden: {0}
+xform_manager_import_error_dataimport = [en] Es wurden {0} Datensätze importiert. Davon waren {1} neue Datensätze und {2} Datensätze wurden ersetzt.
+xform_manager_import_info_data_imported = [en] Es wurde/n {0} Datensätze nicht importiert.
+xform_manager_import_error_not_started = [en] Import wurde nicht gestartet.
+xform_manager_import_csv = [en] CSV Datei importieren
+xform_manager_import_csv_info = [en] Hiermit können Sie Daten in diese Tabelle importieren. BItte beachten Sie, dass Sie nur Textdateien importieren können und in der ersten Zeile die Felddefinitionen vorhanden sein müssen
+xform_manager_import_if_no_column = [en] Wenn Spalte in der Datenbank nicht vorhanden ist, 
+xform_manager_import_if_no_column_ignore = [en] dann Spalte ignorieren.
+xform_manager_import_if_no_column_addtext = [en] dann Spalte als TEXT in der Datenbank anlegen (Zur Verwaltung müssen später diese Felder noch bestimmt werden).
+xform_manager_import_if_no_column_break = [en] dann Import abbrechen.
+xform_manager_import_divider = [en] Trennzeichen
+xform_manager_import_divider_semicolon = [en] Semikolon
+xform_manager_import_divider_comma = [en] Komma
+xform_manager_import_divider_tab = [en] Tabulator
+xform_manager_import_unique_field = [en] Wenn dieses Feld identisch ist, dann wird der Datensatz ersetzt
+xform_manager_import_start = [en] Hinzufügen
