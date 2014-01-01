@@ -780,8 +780,8 @@ class rex_xform_manager
          jQuery("#searchtoggler").click(function(){jQuery("#searchblock").slideToggle("fast");});
          jQuery("#xform_help_empty_toggler").click(function(){jQuery("#xform_help_empty").slideToggle("fast");});
          jQuery("#xform_search_reset").click(function(){window.location.href = "index.php?page=xform&subpage=manager&tripage=data_edit&table_name=' . $table['table_name'] . '&rex_xform_search=1";});
-         jQuery("a.#truncate-table").click(function(){if(confirm("' . $I18N->msg('truncate_table_confirm') . '")){return true;} else {return false;}});
-         jQuery("a.#dataset-delete").click(function(){if(confirm("' . $I18N->msg('dataset_delete_confirm') . '")){return true;} else {return false;}});
+         jQuery("#truncate-table").click(function(){if(confirm("' . $I18N->msg('truncate_table_confirm') . '")){return true;} else {return false;}});
+         jQuery("#dataset-delete").click(function(){if(confirm("' . $I18N->msg('dataset_delete_confirm') . '")){return true;} else {return false;}});
        /* ]]> */</script>';
 
      }
