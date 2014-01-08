@@ -70,7 +70,7 @@ if ($func == '') {
 
   echo '<div class="rex-addon-output-v2">';
   /** Suche  **/
-  $add_sql = '';
+  $add_sql = ' ORDER BY name';
   $link  = '';
 
   $sql = "select * from $table " . $add_sql;
