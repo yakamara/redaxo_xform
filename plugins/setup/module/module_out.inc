@@ -16,7 +16,7 @@ $form_data = 'REX_VALUE[3]';
 $form_data = trim(str_replace("<br />","",rex_xform::unhtmlentities($form_data)));
 $xform->setFormData($form_data);
 
-if (preg_match_all('/{([^}]*)}/', $form_data, $matches)) {
+if (preg_match_all('/{{{([^}]*)}}}/', $form_data, $matches)) {
 	foreach ($matches[1] as $match) {
 			$form_data = str_replace("{{{".$match."}}}",$form_vars[$match],$form_data);
 	}	
