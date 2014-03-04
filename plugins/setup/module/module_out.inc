@@ -14,7 +14,6 @@ $xform = new rex_xform;
 if ("REX_VALUE[7]" == 1) { $xform->setDebug(TRUE); }
 $form_data = 'REX_VALUE[3]';
 $form_data = trim(str_replace("<br />","",rex_xform::unhtmlentities($form_data)));
-$xform->setFormData($form_data);
 
 if (preg_match_all('/{{{([^}]*)}}}/', $form_data, $matches)) {
 	foreach ($matches[1] as $match) {
@@ -22,6 +21,8 @@ if (preg_match_all('/{{{([^}]*)}}}/', $form_data, $matches)) {
 	}	
 }
 
+
+$xform->setFormData($form_data);
 $xform->setRedaxoVars(REX_ARTICLE_ID,REX_CLANG_ID); 
 
 ?>REX_PHP_VALUE[9]<?php
