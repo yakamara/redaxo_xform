@@ -163,7 +163,7 @@ if ($show_list && $REX['USER']->isAdmin()) {
   $list->setColumnFormat('status', 'custom', 'rex_xform_status_col');
   $list->setColumnParams('table_name', array('table_id' => '###id###', 'func' => 'edit'));
 
-  $list->addColumn($I18N->msg('edit'), $I18N->msg('editfield'));
+  $list->addColumn($I18N->msg('edit'), $I18N->msg('editfields'));
   $list->setColumnParams($I18N->msg('edit'), array('subpage' => 'manager', 'tripage' => 'table_field', 'table_name' => '###table_name###'));
 
   $list->addColumn($I18N->msg('delete'), $I18N->msg('delete'));
