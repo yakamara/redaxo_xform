@@ -31,14 +31,9 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
 
     $this->be_em['eoption'] = (int) $this->getElement(6); // "Leer" Option
 
-    $this->be_em['page'] = $this->getElement(8); // page=editme
-    if ($this->be_em['page'] == '') {
-      $this->be_em['page'] = 'editme';
-    }
-
-    $this->be_em['subpage'] = $this->getElement(9); // page=editme
-    if ($this->be_em['subpage'] == '') {
-      $this->be_em['subpage'] = $this->be_em['target_table'];
+    $this->be_em['size'] = (int) $this->getElement(8); // boxsize
+    if ($this->be_em['size']<1) {
+      $this->be_em['size'] = 5;
     }
 
     if ($this->be_em['eoption'] != 1) {
@@ -170,7 +165,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
       if ($this->be_em['relation_type'] == 1) {
         $SEL->setName($this->getFieldName() . '[]');
         $SEL->setMultiple(true);
-        $SEL->setSize(5);
+        $SEL->setSize($this->be_em['size']);
 
       } elseif ($this->be_em['eoption'] == 1) {
         $SEL->addOption('-', '');
@@ -211,7 +206,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
             <div class="rex-widget-xform-manager-datalist">
               <input type="hidden" name="' . $this->getFieldName() . '" id="XFORM_MANAGER_DATALIST_' . $this->getId() . '" value="' . implode(',', $this->getValue()) . '" />
               <p class="rex-widget-field">
-                <select name="XFORM_MANAGER_DATALIST_SELECT[' . $this->getId() . ']" id="XFORM_MANAGER_DATALIST_SELECT_' . $this->getId() . '" size="8">';
+                <select name="XFORM_MANAGER_DATALIST_SELECT[' . $this->getId() . ']" id="XFORM_MANAGER_DATALIST_SELECT_' . $this->getId() . '" size="'.$this->be_em['size'].'">';
         foreach ($this->getValue() as $k) {
           $out .= '<option value="' . $k . '">' . $value_names[$k] . '</option>';
         }
@@ -403,8 +398,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
         array( 'type' => 'select',      'label' => 'Mehrfachauswahl', 'default' => '', 'definition' => 'select (single)=0,select (multiple)=1,popup (single)=2,popup (multiple)=3' ), // ,popup (multiple / relation)=4
         array( 'type' => 'boolean',    'label' => 'Mit "Leer-Option"' ),
         array( 'type' => 'text',    'label' => 'Fehlermeldung wenn "Leer-Option" nicht aktiviert ist.'),
-        array( 'type' => 'text',    'label' => 'REX Page (opt)'),
-        array( 'type' => 'text',    'label' => 'REX Subpage (opt)'),
+        array( 'type' => 'text', 'name' => 'boxheight',    'label' => 'Höhe der Auswahlbox'),
       ),
       'description' => 'Hiermit kann man Verkn&uuml;pfungen zu anderen Tabellen setzen',
       'dbtype' => 'text'
