@@ -19,6 +19,10 @@ $markup_marker = 'REX_VALUE[6]';
 $markup_marker = htmlspecialchars_decode($markup_marker, ENT_QUOTES);
 $markup_marker = str_replace('<br />','',$markup_marker);
 
+$max_zoom = (int) "REX_VALUE[4]";
+if ($max_zoom <1 || $max_zoom >16) {
+  $max_zoom = 8;
+}
 
 $marker_image_normal = '/files/REX_MEDIA[1]';
 $marker_image_hover = '/files/REX_MEDIA[2]';
@@ -33,11 +37,6 @@ $marker_image_hover = '/files/REX_MEDIA[2]';
 
 $id_selector = 'qsgm-'.$slice_id;
 $map_selector = 'google-contact-map-'.$slice_id;
-
-// TODO: Mindestzoom einbauen. siehe wenn nur ein Eintrag vorhanden ist
-// TODO: 
-
-
 
 // ----- OUTPUT START
 
@@ -178,7 +177,7 @@ echo '</script>';
                 if (marker_counter > 0) {
                   mapref.fitBounds(bounds);
                   var listener = google.maps.event.addListener(mapref, "idle", function() { 
-                  if (mapref.getZoom() > 8) mapref.setZoom(8); 
+                  if (mapref.getZoom() > <?php echo $max_zoom; ?>) mapref.setZoom(<?php echo $max_zoom; ?>); 
                       google.maps.event.removeListener(listener); 
                   });
                 }
@@ -247,10 +246,10 @@ echo '</script>';
             var myOptions1 = {
                 content: "",
                 disableAutoPan: false,
-                pixelOffset: new google.maps.Size(-130, -255), // 260 190
+                pixelOffset: new google.maps.Size(-130, 0), // -130, -255 / 260 190
                 zIndex: null,
                 boxStyle: {
-                    background: "", opacity: 1, width: "260px", height: "240px"
+                    background: "", opacity: 1, width: "260px" //, height: "240px"
                 },
                 closeBoxURL: "",
                 isHidden: false

@@ -26,10 +26,30 @@ echo $select->get();
 
 <tr>
 <td>Kategorietabelle:</td>
-<td colspan="3"><?php 
+<td><?php 
 $cat_select->setName("VALUE[3]");
 $cat_select->setSelected("REX_VALUE[3]");
 echo $cat_select->get();
+?></td>
+
+<td>Maximaler Zoom:</td>
+<td><?php  
+
+$max_zoom = (int) "REX_VALUE[4]";
+if ($max_zoom <1 || $max_zoom >16) {
+  $max_zoom = 8;
+}
+
+$zoom_select = new rex_select();
+$zoom_select->setName("VALUE[4]");
+$zoom_select->setSelected($max_zoom);
+
+for($zoom=1;$zoom<=16;$zoom++) {
+  $zoom_select->addOption($zoom,$zoom);
+}
+$zoom_select->setSize(1);
+echo $zoom_select->get();
+
 ?></td>
 </tr>
 
