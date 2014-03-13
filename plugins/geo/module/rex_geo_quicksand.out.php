@@ -1,5 +1,6 @@
 <?php
 
+//    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&amp;"></script>
 //    <script src="/assets/vendor/jquery.min.js"></script>
 //    <script src="/assets/vendor/jquery.quicksand.js"></script>
 //    <script src="/assets/vendor/infobox.js"></script>
