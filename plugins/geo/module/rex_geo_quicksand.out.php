@@ -57,26 +57,27 @@ echo '<ul class="filter-list">'.implode("", $navi).'</ul>';
 
 // ----- Markers & DIV
 
-class rex_var_qsgm extends rex_var
-{
-    function getBEOutput(& $sql, $content)
-    {
-        $var = 'REX_DATA';
-        $matches = $this->getVarParams($content, $var);
-        foreach ($matches as $match) {
-            list ($param_str, $args) = $match;
-            list ($field, $args) = $this->extractArg('field', $args, 0);
-            if($field != "") {
-                $varname = '$__rex_data'; // $varname = str_replace('"', '\"', $varname);
-                $value =  "";
-                $value = rex_var::handleGlobalVarParams($varname, $args, $sql->getValue($field));
-                $content = str_replace($var . '[' . $param_str . ']', $value, $content);
-            }
-        }
-        return $content;
-    }
+if (!class_exists("rex_var_qsgm extends")) {
+	class rex_var_qsgm extends rex_var
+	{
+	    function getBEOutput(& $sql, $content)
+	    {
+	        $var = 'REX_DATA';
+	        $matches = $this->getVarParams($content, $var);
+	        foreach ($matches as $match) {
+	            list ($param_str, $args) = $match;
+	            list ($field, $args) = $this->extractArg('field', $args, 0);
+	            if($field != "") {
+	                $varname = '$__rex_data'; // $varname = str_replace('"', '\"', $varname);
+	                $value =  "";
+	                $value = rex_var::handleGlobalVarParams($varname, $args, $sql->getValue($field));
+	                $content = str_replace($var . '[' . $param_str . ']', $value, $content);
+	            }
+	        }
+	        return $content;
+	    }
+	}
 }
-
 
 
 
