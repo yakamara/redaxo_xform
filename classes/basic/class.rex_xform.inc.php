@@ -9,8 +9,6 @@
 class rex_xform
 {
 
-  var $ValueObjectsparams;
-
   function rex_xform()
   {
     global $REX;
@@ -189,13 +187,9 @@ class rex_xform
 
     $preg_user_vorhanden = "~\*|:|\(.*\)~Usim"; // Preg der Bestimmte Zeichen/Zeichenketten aus der Bezeichnung entfernt
 
-    $ValueObjects = array();
-    $ValidateObjects = array();
-    $ActionObjects = array();
-
-    $this->objparams['values'] = $ValueObjects;
-    $this->objparams['validates'] = $ValidateObjects;
-    $this->objparams['actions'] = $ActionObjects;
+    $this->objparams['values'] = array();
+    $this->objparams['validates'] = array();
+    $this->objparams['actions'] = array();
 
     $this->objparams['send'] = 0;
 
@@ -214,7 +208,7 @@ class rex_xform
           if (@include_once ($validate_path . 'class.xform.validate_' . trim($element[1]) . '.inc.php')) {
             $ValidateObject = new $classname;
             $ValidateObject->loadParams($this->objparams, $element);
-            $ValidateObjects[$element[1]][] = $ValidateObject;
+            $this->objparams['validates'][$element[1]][] = $ValidateObject;
             break;
           }
         }
@@ -223,8 +217,8 @@ class rex_xform
         foreach ($REX['ADDON']['xform']['classpaths']['action'] as $action_path) {
           $classname = 'rex_xform_action_' . trim($element[1]);
           if (@include_once ($action_path . 'class.xform.action_' . trim($element[1]) . '.inc.php')) {
-            $ActionObjects[$i] = new $classname;
-            $ActionObjects[$i]->loadParams($this->objparams, $element);
+            $this->objparams['actions'][$i] = new $classname;
+            $this->objparams['actions'][$i]->loadParams($this->objparams, $element);
             break;
           }
         }
@@ -233,10 +227,10 @@ class rex_xform
         foreach ($REX['ADDON']['xform']['classpaths']['value'] as $value_path) {
           $classname = 'rex_xform_' . trim($element[0]);
           if (@include_once ($value_path . 'class.xform.' . trim($element[0]) . '.inc.php')) {
-            $ValueObjects[$i] = new $classname;
-            $ValueObjects[$i]->loadParams($this->objparams, $element);
-            $ValueObjects[$i]->setId($i);
-            $ValueObjects[$i]->init();
+            $this->objparams['values'][$i] = new $classname;
+            $this->objparams['values'][$i]->loadParams($this->objparams, $element);
+            $this->objparams['values'][$i]->setId($i);
+            $this->objparams['values'][$i]->init();
             break;
           }
 
@@ -253,9 +247,9 @@ class rex_xform
 
     }
 
-    foreach($ValueObjects as $ValueObject) {
+    foreach($this->objparams['values'] as $ValueObject) {
       $ValueObject->setValue($this->getFieldValue($ValueObject->getId(), '', $ValueObject->getName()));
-      $ValueObject->setValueObjects($ValueObjects);
+      $ValueObject->setValueObjects($this->objparams['values']);
     }
 
     // *************************************************** OBJECT PARAM "send"
@@ -291,7 +285,7 @@ class rex_xform
           }
         }
         if ($element[0] != 'validate' && $element[0] != 'action') {
-          $ValueObjects[$i]->setValue($this->getFieldValue($i, '', $ValueObjects[$i]->getName()));
+          $this->objparams['values'][$i]->setValue($this->getFieldValue($i, '', $this->objparams['values'][$i]->getName()));
         }
       }
     }
@@ -300,19 +294,19 @@ class rex_xform
     // *************************************************** VALIDATE OBJEKTE
 
     // ***** PreValidateActions
-    foreach ($ValueObjects as $ValueObject) {
+    foreach ($this->objparams['values'] as $ValueObject) {
       $ValueObject->preValidateAction();
     }
 
-    foreach($ValidateObjects as $ValidateType) {
+    foreach($this->objparams['validates'] as $ValidateType) {
       foreach ($ValidateType as $ValidateObject) {
-        $ValidateObject->setObjects($ValueObjects);
+        $ValidateObject->setObjects($this->objparams['values']);
       }
     }
 
     // ***** Validieren
     if ($this->objparams['send'] == 1) {
-      foreach($ValidateObjects as $ValidateType) {
+      foreach($this->objparams['validates'] as $ValidateType) {
         foreach ($ValidateType as $ValidateObject) {
           $ValidateObject->enterObject();
         }
@@ -320,18 +314,18 @@ class rex_xform
     }
 
     // ***** PostValidateActions
-    foreach ($ValueObjects as $ValueObject) {
+    foreach ($this->objparams['values'] as $ValueObject) {
       $ValueObject->postValidateAction();
     }
 
     // *************************************************** FORMULAR ERSTELLEN
 
-    foreach ($ValueObjects as $ValueObject) {
+    foreach ($this->objparams['values'] as $ValueObject) {
       $ValueObject->enterObject();
     }
 
     if ($this->objparams['send'] == 1) {
-      foreach ($ValidateObjects as $ValidateType) {
+      foreach ($this->objparams['validates'] as $ValidateType) {
         foreach ($ValidateType as $ValidateObject) {
           $ValidateObject->postValueAction();
         }
@@ -339,7 +333,7 @@ class rex_xform
     }
 
     // ***** PostFormActions
-    foreach ($ValueObjects as $ValueObject) {
+    foreach ($this->objparams['values'] as $ValueObject) {
       $ValueObject->postFormAction();
     }
 
@@ -358,17 +352,17 @@ class rex_xform
     if ($this->objparams['send'] == 1 && !$hasWarnings && !$hasWarningMessages) {
 
       $this->objparams['form_show'] = false;
-      foreach ($ActionObjects as $ActionObject) {
-        $ActionObject->setObjects($ValueObjects);
+      foreach ($this->objparams['actions'] as $ActionObject) {
+        $ActionObject->setObjects($this->objparams['values']);
       }
 
-      foreach ($ActionObjects as $ActionObject) {
+      foreach ($this->objparams['actions'] as $ActionObject) {
         $ActionObject->execute();
       }
       $this->objparams['actions_executed'] = true;
 
       // ----- Value - PostActions
-      foreach ($ValueObjects as $ValueObject) {
+      foreach ($this->objparams['values'] as $ValueObject) {
         $ValueObject->postAction($this->objparams['value_pool']['email'], $this->objparams['value_pool']['sql']);
       }
       $this->objparams['postactions_executed'] = true;
