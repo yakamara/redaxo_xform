@@ -46,6 +46,11 @@ class rex_xform_action_abstract
     return array();
   }
 
+  function setElement($i, $v) 
+  {
+    $this->elements[$i] = $v;
+  }
+
   function getElement($i)
   {
     if (!isset($this->elements[$i]))
