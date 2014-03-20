@@ -25,10 +25,37 @@ class rex_xform_textarea extends rex_xform_abstract
       $wc = ' ' . $this->params['warning'][$this->getId()];
     }
 
+    $placeholder = $this->getElement('placeholder');
+    if ($placeholder != "") {
+      $placeholder = ' placeholder="'.$placeholder.'"';
+    }
+
+    $required = $this->getElement('required');
+    if ($required != 0) {
+      $required = ' required="required"';
+    } else {
+      $required = '';
+    }
+
+    $pattern = $this->getElement('pattern');
+    if ($pattern != "") {
+      $pattern = ' pattern="'.$pattern.'"';
+    }
+    
+    $readonly = $this->getElement('readonly');
+    if ($readonly != "") {
+      $readonly = ' readonly="readonly"';
+    }
+
+    $disabled = $this->getElement('disabled');
+    if ($disabled != "") {
+      $disabled = ' disabled="disabled"';
+    }
+
     $this->params['form_output'][$this->getId()] = '
     <p class="formtextarea" id="' . $this->getHTMLId() . '">
       <label class="textarea ' . $wc . '" for="' . $this->getFieldId() . '" >' . $this->getLabel() . '</label>
-      <textarea class="textarea' . $classes . $wc . '" name="' . $this->getFieldName() . '" id="' . $this->getFieldId() . '" cols="80" rows="10">' . htmlspecialchars(stripslashes($this->getValue())) . '</textarea>
+      <textarea class="textarea' . $classes . $wc . '" name="' . $this->getFieldName() . '" id="' . $this->getFieldId() . '" cols="80" rows="10" '.$placeholder.$required.$pattern.$readonly.$disabled.'>' . htmlspecialchars(stripslashes($this->getValue())) . '</textarea>
     </p>';
 
     $this->params['value_pool']['email'][$this->getName()] = stripslashes($this->getValue());
