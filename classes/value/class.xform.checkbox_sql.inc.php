@@ -34,11 +34,15 @@ class rex_xform_checkbox_sql extends rex_xform_abstract
     
     
     $proofed_values = array();
+    $proofed_name_values = array();
     foreach($values as $value) {
       if (array_key_exists($value, $options)) {
          $proofed_values[$value] = $value;
+         $proofed_name_values[$value] = $options[$value];
       }
     }
+
+    $this->setValue(implode(",", $proofed_values));
 
     $wc = "";
 
@@ -61,7 +65,7 @@ class rex_xform_checkbox_sql extends rex_xform_abstract
     }
 
     $this->params['form_output'][$this->getId()] = implode("\n", $html_checkboxes);
-    $this->params['value_pool']['email'][$this->getName()] = implode(",",$this->getValue());
+    $this->params['value_pool']['email'][$this->getName()] = implode(", ", $proofed_name_values);
     if ($this->getElement("no_db") != 1) {
         $this->params['value_pool']['sql'][$this->getName()] = $this->getValue();
     }
