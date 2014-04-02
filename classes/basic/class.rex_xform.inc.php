@@ -33,8 +33,8 @@ class rex_xform
     $this->objparams['unique_error'] = '';
     $this->objparams['unique_field_warning'] = 'not unique';
 
-    $this->objparams['article_id'] = 0;
-    $this->objparams['clang'] = 0;
+    $this->objparams['article_id'] = '';
+    $this->objparams['clang'] = '';
 
     $this->objparams['real_field_names'] = false;
 
