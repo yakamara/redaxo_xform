@@ -1347,6 +1347,59 @@ class rex_xform_manager
 
 
 
+    if ($func == 'show_form_notation') {
+
+
+        $formbuilder_fields = $this->getTableFields($table['table_name']);
+
+
+        // Optional .. kann auch geloescht werden. Dient nur zu Hilfe beim Aufbau
+        // von XForm-Formularen über php
+        // Textblock gibt den formalarblock als text aus, um diesen in das xform modul einsetzen zu können.
+        //  show_notation=1
+        $text_block = '';
+        $text_block_pipe = '';
+        foreach ($formbuilder_fields as $field) {
+            $values = array();
+            
+            for ($i = 1; $i < 10; $i++) {
+                $values[] = $field['f' . $i];
+            }
+
+            if ($field['type_id'] == 'value') {
+
+                $text_block .= "\n" . '$xform->setValueField(\'' . $field['type_name'] . '\', array("' . rtrim(implode('","', $values), '","') . '"));';
+
+            } elseif ($field['type_id'] == 'validate') {
+
+                $text_block .= "\n" . '$xform->setValidateField(\'' . $field['type_name'] . '\', array("' . rtrim(implode('","', $values), '","') . '"));';
+            } elseif ($field['type_id'] == 'action') {
+
+                $text_block .= "\n" . '$xform->setActionField(\'' . $field['type_name'] . '\', array("' . rtrim(implode('","', $values), '","') . '"));';
+            }
+            
+            $text_block_pipe .= "\n" . $field['type_name'] . '|' . rtrim(implode('|', $values), '|') . '|';
+        }
+        
+        echo '<div class="rex-addon-output">';
+        echo '<h2 class="rex-hl2">PHP</h2>';
+        echo '<div class="rex-addon-content">';
+        echo '<pre class="rex-code"><code>' . $text_block . '</code></pre>';
+        echo '</div></div>';
+
+        echo '<div class="rex-addon-output">';
+        echo '<h2 class="rex-hl2">Pipe</h2>';
+        echo '<div class="rex-addon-content">';
+        echo '<pre class="rex-code"><code>' . $text_block_pipe . '</code></pre>';
+        echo '</div></div>';
+
+
+
+        $func = 'list';
+    }
+
+
+
 
 
     // ********************************************* LIST
@@ -1404,6 +1457,7 @@ class rex_xform_manager
                    <a href="index.php?' . $link_vars . '&table_name=' . $table['table_name'] . '&func=choosenadd"><b>+ ' . $I18N->msg('addtablefield') . '</b></a>
                </div>
                <div class="rex-area-col-b rex-algn-rght">
+                 <a href="index.php?' . $link_vars . '&table_name=' . $table['table_name'] . '&func=show_form_notation"><b>o ' . $I18N->msg('show_form_notation') . '</b></a>
                  <a href="index.php?' . $link_vars . '&table_name=' . $table['table_name'] . '&func=updatetable"><b>o ' . $I18N->msg('updatetable') . '</b></a>
                  <a href="index.php?' . $link_vars . '&table_name=' . $table['table_name'] . '&func=updatetablewithdelete" onclick="return confirm(\'' . $I18N->msg('updatetable_with_delete_confirm') . '\')"><b>o ' . $I18N->msg('updatetable_with_delete') . '</b></a>
                </div>
