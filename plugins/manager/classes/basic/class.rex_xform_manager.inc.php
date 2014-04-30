@@ -1369,16 +1369,19 @@ class rex_xform_manager
             if ($field['type_id'] == 'value') {
 
                 $text_block .= "\n" . '$xform->setValueField(\'' . $field['type_name'] . '\', array("' . rtrim(implode('","', $values), '","') . '"));';
+                $text_block_pipe .= "\n" . $field['type_name'] . '|' . rtrim(implode('|', $values), '|') . '|';
 
             } elseif ($field['type_id'] == 'validate') {
 
                 $text_block .= "\n" . '$xform->setValidateField(\'' . $field['type_name'] . '\', array("' . rtrim(implode('","', $values), '","') . '"));';
+                $text_block_pipe .= "\n" . 'validate|' . $field['type_name'] . '|' . rtrim(implode('|', $values), '|') . '|';
+            
             } elseif ($field['type_id'] == 'action') {
 
                 $text_block .= "\n" . '$xform->setActionField(\'' . $field['type_name'] . '\', array("' . rtrim(implode('","', $values), '","') . '"));';
+                $text_block_pipe .= "\n" . 'action|' . $field['type_name'] . '|' . rtrim(implode('|', $values), '|') . '|';
+                
             }
-            
-            $text_block_pipe .= "\n" . $field['type_name'] . '|' . rtrim(implode('|', $values), '|') . '|';
         }
         
         echo '<div class="rex-addon-output">';
