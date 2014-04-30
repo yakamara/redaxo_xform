@@ -110,6 +110,7 @@ choosenadd = select fields
 choosenadd_description = Please select the field which you want to use for your administration. There are value field which are usually used for entries as also validate fields which validate value fields on certain criteria.
 addfield = add field
 editfields = edit fields
+show_form_notation = show field definitions
 
 
 xform_id_is_missing = ID missing
