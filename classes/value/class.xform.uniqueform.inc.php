@@ -9,35 +9,37 @@
 class rex_xform_uniqueform extends rex_xform_abstract
 {
 
-  function enterObject()
-  {
+    function enterObject()
+    {
 
-    $table = $this->getElement(2);
+        $table = $this->getElement(2);
 
-    if (!$this->params['send']) {
-      $this->setValue(md5($_SERVER['REMOTE_ADDR'] . time()));
+        if (!$this->params['send']) {
+            $this->setValue(md5($_SERVER['REMOTE_ADDR'] . time()));
 
-    } else {
-      $sql = 'select ' . $this->getName() . ' from ' . $table . ' WHERE ' . $this->getName() . '="' . $this->getValue() . '" LIMIT 1';
-      $cd = rex_sql::factory();
-      if ($this->params['debug']) $cd->debugsql = true;
+        } else {
+            $sql = 'select ' . $this->getName() . ' from ' . $table . ' WHERE ' . $this->getName() . '="' . $this->getValue() . '" LIMIT 1';
+            $cd = rex_sql::factory();
+            if ($this->params['debug']) {
+                $cd->debugsql = true;
+            }
 
-      $cd->setQuery($sql);
-      if ($cd->getRows() == 1) {
-        $this->params['warning'][$this->getId()] = $this->getElement(3);
-        $this->params['warning_messages'][$this->getId()] = $this->getElement(3);
-      }
+            $cd->setQuery($sql);
+            if ($cd->getRows() == 1) {
+                $this->params['warning'][$this->getId()] = $this->getElement(3);
+                $this->params['warning_messages'][$this->getId()] = $this->getElement(3);
+            }
+
+        }
+
+        $this->params['form_output'][$this->getId()] = '<input type="hidden" name="' . $this->getFieldName() . '" value="' . htmlspecialchars(stripslashes($this->getValue())) . '" />';
+        $this->params['value_pool']['email'][$this->getName()] = stripslashes($this->getValue());
+        $this->params['value_pool']['sql'][$this->getName()] = stripslashes($this->getValue());
 
     }
 
-    $this->params['form_output'][$this->getId()] = '<input type="hidden" name="' . $this->getFieldName() . '" value="' . htmlspecialchars(stripslashes($this->getValue())) . '" />';
-    $this->params['value_pool']['email'][$this->getName()] = stripslashes($this->getValue());
-    $this->params['value_pool']['sql'][$this->getName()] = stripslashes($this->getValue());
-
-  }
-
-  function getDescription()
-  {
-    return 'uniqueform -> Beispiel: uniqueform|name|table|Fehlermeldung';
-  }
+    function getDescription()
+    {
+        return 'uniqueform -> Beispiel: uniqueform|name|table|Fehlermeldung';
+    }
 }

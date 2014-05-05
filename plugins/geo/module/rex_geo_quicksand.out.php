@@ -13,14 +13,14 @@ $table_cat = 'REX_VALUE[3]';
 
 $markup_div = 'REX_VALUE[5]';
 $markup_div = htmlspecialchars_decode($markup_div, ENT_QUOTES);
-$markup_div = str_replace('<br />','',$markup_div);
+$markup_div = str_replace('<br />', '', $markup_div);
 
 $markup_marker = 'REX_VALUE[6]';
 $markup_marker = htmlspecialchars_decode($markup_marker, ENT_QUOTES);
-$markup_marker = str_replace('<br />','',$markup_marker);
+$markup_marker = str_replace('<br />', '', $markup_marker);
 
-$max_zoom = (int) "REX_VALUE[4]";
-if ($max_zoom <1 || $max_zoom >16) {
+$max_zoom = (int) 'REX_VALUE[4]';
+if ($max_zoom < 1 || $max_zoom > 16) {
   $max_zoom = 8;
 }
 
@@ -35,48 +35,48 @@ $marker_image_hover = '/files/REX_MEDIA[2]';
 // $marker_image_normal
 // $marker_image_hover
 
-$id_selector = 'qsgm-'.$slice_id;
-$map_selector = 'google-contact-map-'.$slice_id;
+$id_selector = 'qsgm-' . $slice_id;
+$map_selector = 'google-contact-map-' . $slice_id;
 
 // ----- OUTPUT START
 
-echo '<div class="googlemap"><div id="'.$map_selector.'" style="width: 100%; height: 380px;"></div></div>';
-echo '<section class="content" id="'.$id_selector.'">';
+echo '<div class="googlemap"><div id="' . $map_selector . '" style="width: 100%; height: 380px;"></div></div>';
+echo '<section class="content" id="' . $id_selector . '">';
 // ----- Filter Navi
 
 $sql = rex_sql::factory();
-$sql->setQuery('select * from '.mysql_real_escape_string($table_cat));
+$sql->setQuery('select * from ' . mysql_real_escape_string($table_cat));
 $navi = array();
 $navi[] = '<li data-value="region-all"><a class="active" href="javascript:void(0);">###allregions###</a></li>';
-foreach($sql->getArray() as $r) {
-    $navi[] = '<li data-value="region-'.$r['id'].'"><a href="javascript:void(0);">'.$r['name'].'</a></li>';
+foreach ($sql->getArray() as $r) {
+    $navi[] = '<li data-value="region-' . $r['id'] . '"><a href="javascript:void(0);">' . $r['name'] . '</a></li>';
 }
-echo '<ul class="filter-list">'.implode("", $navi).'</ul>';
+echo '<ul class="filter-list">' . implode('', $navi) . '</ul>';
 
 
 
 // ----- Markers & DIV
 
-if (!class_exists("rex_var_qsgm extends")) {
-	class rex_var_qsgm extends rex_var
-	{
-	    function getBEOutput(& $sql, $content)
-	    {
-	        $var = 'REX_DATA';
-	        $matches = $this->getVarParams($content, $var);
-	        foreach ($matches as $match) {
-	            list ($param_str, $args) = $match;
-	            list ($field, $args) = $this->extractArg('field', $args, 0);
-	            if($field != "") {
-	                $varname = '$__rex_data'; // $varname = str_replace('"', '\"', $varname);
-	                $value =  "";
-	                $value = rex_var::handleGlobalVarParams($varname, $args, $sql->getValue($field));
-	                $content = str_replace($var . '[' . $param_str . ']', $value, $content);
-	            }
-	        }
-	        return $content;
-	    }
-	}
+if (!class_exists('rex_var_qsgm extends')) {
+    class rex_var_qsgm extends rex_var
+    {
+        function getBEOutput(& $sql, $content)
+        {
+            $var = 'REX_DATA';
+            $matches = $this->getVarParams($content, $var);
+            foreach ($matches as $match) {
+                list ($param_str, $args) = $match;
+                list ($field, $args) = $this->extractArg('field', $args, 0);
+                if ($field != '') {
+                    $varname = '$__rex_data'; // $varname = str_replace('"', '\"', $varname);
+                    $value =  '';
+                    $value = rex_var::handleGlobalVarParams($varname, $args, $sql->getValue($field));
+                    $content = str_replace($var . '[' . $param_str . ']', $value, $content);
+                }
+            }
+            return $content;
+        }
+    }
 }
 
 
@@ -87,11 +87,11 @@ $markers_map = array();
 $markers_div = array();
 
 $sql = rex_sql::factory();
-$sql->setQuery('SELECT * FROM '.mysql_real_escape_string($table_data));
+$sql->setQuery('SELECT * FROM ' . mysql_real_escape_string($table_data));
 
-for($i=0;$i<$sql->getRows();$i++) {
+for ($i = 0; $i < $sql->getRows(); $i++) {
 
-    $id = $sql->getValue("id");
+    $id = $sql->getValue('id');
     $region = $sql->getValue($table_cat_field);
 
     $c_markup_div = $markup_div;
@@ -103,27 +103,27 @@ for($i=0;$i<$sql->getRows();$i++) {
     // nl2br um Umbrüche im Datensatz zu erzwingen
     $c_markup_marker = nl2br($rex_var_qsgm->getFEOutput($sql, preg_replace('/[\n\r\f\t]/', '', $c_markup_marker)));
 
-    $markers_div[]  = '<li data-id="id-'.$id.'" data-type="region-'.$region.'">'.$c_markup_div.'</li>';
+    $markers_div[]  = '<li data-id="id-' . $id . '" data-type="region-' . $region . '">' . $c_markup_div . '</li>';
 
     $markers_map[] = '
-markers["'.$id.'"] = new Object;
-markers["'.$id.'"]["lng"] = "'.$sql->getValue("pos_lng").'";
-markers["'.$id.'"]["lat"] = "'.$sql->getValue("pos_lat").'";
-markers["'.$id.'"]["link"] = "#";
-markers["'.$id.'"]["marker"] = "'.html_entity_decode(preg_replace('/[\n\r\f\t]/', '', addslashes($c_markup_marker))).'";
-markers["'.$id.'"]["address"] = "";
-	';
+markers["' . $id . '"] = new Object;
+markers["' . $id . '"]["lng"] = "' . $sql->getValue('pos_lng') . '";
+markers["' . $id . '"]["lat"] = "' . $sql->getValue('pos_lat') . '";
+markers["' . $id . '"]["link"] = "#";
+markers["' . $id . '"]["marker"] = "' . html_entity_decode(preg_replace('/[\n\r\f\t]/', '', addslashes($c_markup_marker))) . '";
+markers["' . $id . '"]["address"] = "";
+    ';
 
 
     $sql->next();
 }
 
-echo '<ul class="blocks3units marker-list">'.implode("",$markers_div).'</ul>';
+echo '<ul class="blocks3units marker-list">' . implode('', $markers_div) . '</ul>';
 
 echo '<script type="text/javascript">
 var markers = [];
 ';
-echo implode("",$markers_map);
+echo implode('', $markers_map);
 echo '</script>';
 
 ?></section>
@@ -134,11 +134,11 @@ echo '</script>';
 
     $(window).load(function(){
 
-        var $itemsHolder = $('#<?php echo $id_selector;?> .marker-list');
+        var $itemsHolder = $('#<?php echo $id_selector; ?> .marker-list');
         var $itemsClone = $itemsHolder.clone();
         var $filterClass = "";
 
-        $('#<?php echo $id_selector;?> .filter-list li').click(function(e) {
+        $('#<?php echo $id_selector; ?> .filter-list li').click(function(e) {
 
             $(this).parent().find("li a").each(function(){
               $(this).removeClass("active");
@@ -173,15 +173,15 @@ echo '</script>';
                     bounds.extend( markers[id].getPosition() );
                     marker_counter++;
                 });
-                
+
                 if (marker_counter > 0) {
                   mapref.fitBounds(bounds);
-                  var listener = google.maps.event.addListener(mapref, "idle", function() { 
-                  if (mapref.getZoom() > <?php echo $max_zoom; ?>) mapref.setZoom(<?php echo $max_zoom; ?>); 
-                      google.maps.event.removeListener(listener); 
+                  var listener = google.maps.event.addListener(mapref, "idle", function() {
+                  if (mapref.getZoom() > <?php echo $max_zoom; ?>) mapref.setZoom(<?php echo $max_zoom; ?>);
+                      google.maps.event.removeListener(listener);
                   });
                 }
-                
+
             }
             );
         });
@@ -239,8 +239,8 @@ echo '</script>';
             <?php
 
             // TODO: Marker Höhe auslesen und den Offset anpassen
-            // TODO: Infowindow Höhe auslesen und enstprechend Offset setzen            
-            
+            // TODO: Infowindow Höhe auslesen und enstprechend Offset setzen
+
             ?>
 
             var myOptions1 = {
@@ -287,21 +287,21 @@ echo '</script>';
                             markers[index].setIcon(image_normal);
                         });
                         google.maps.event.addListener(markers[index], 'click', onMarkerClick);
-                        
+
                         bounds.extend( markers[index].getPosition() );
                     }
                 }
             });
-            
-            mapref.fitBounds(bounds);              
-            
+
+            mapref.fitBounds(bounds);
+
         }
         initialize_referenzen_map<?php echo $slice_id; ?>();
         initialize_hover<?php echo $slice_id; ?>(0);
 
         var init = 0;
         function initialize_hover<?php echo $slice_id; ?>(init) {
-            $("#<?php echo $id_selector;?> .marker-list li").hover(function() {
+            $("#<?php echo $id_selector; ?> .marker-list li").hover(function() {
                 var id = $(this).attr("data-id").replace("id-","");
                 if (init != 1) {
                     markers[id].setAnimation(google.maps.Animation.BOUNCE);

@@ -9,30 +9,30 @@
 class rex_xform_html extends rex_xform_abstract
 {
 
-  function enterObject()
-  {
-    $this->params['form_output'][$this->getId()] = $this->getElement(2);
-  }
+    function enterObject()
+    {
+        $this->params['form_output'][$this->getId()] = $this->getElement(2);
+    }
 
-  function getDescription()
-  {
-    return htmlspecialchars(stripslashes('html -> Beispiel: html|name|<div class="block"></div>'));
-  }
+    function getDescription()
+    {
+        return htmlspecialchars(stripslashes('html -> Beispiel: html|name|<div class="block"></div>'));
+    }
 
-  function getDefinitions()
-  {
+    function getDefinitions()
+    {
 
-    return array(
-      'type' => 'value',
-      'name' => 'html',
-      'values' => array(
-        array( 'type' => 'name',   'label' => 'Feld' ),
-        array( 'type' => 'textarea',    'label' => 'HTML'),
-      ),
-      'description' => 'Nur für die Ausgabe gedacht',
-      'dbtype' => 'text'
-    );
+        return array(
+            'type' => 'value',
+            'name' => 'html',
+            'values' => array(
+                array( 'type' => 'name',   'label' => 'Feld' ),
+                array( 'type' => 'textarea',    'label' => 'HTML'),
+            ),
+            'description' => 'Nur für die Ausgabe gedacht',
+            'dbtype' => 'text'
+        );
 
-  }
+    }
 
 }

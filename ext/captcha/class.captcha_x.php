@@ -109,7 +109,9 @@ class captcha_x
     {
         extract( $this->INI);
 
-        if (!isset($_SESSION)) session_start();
+        if (!isset($_SESSION)) {
+            session_start();
+        }
 
         if ( ! $case_sensitive) {
             $user_string = strtolower( $user_string);
@@ -211,8 +213,9 @@ class captcha_x
             }
         }
         // Fehler bei Windows
-        if (strtoupper(substr(php_uname('s'), 0, 3)) == 'WIN' || substr(PHP_OS, 0, 3) == 'WIN')
+        if (strtoupper(substr(php_uname('s'), 0, 3)) == 'WIN' || substr(PHP_OS, 0, 3) == 'WIN') {
           $no_putenv = true;
+        }
 
         list ( $padding_top, $padding_right, $padding_bottom, $padding_left) = $this->_split( $padding);
         $box_width       = ( $width - ( $padding_left + $padding_right)) / $letters_no;
@@ -270,8 +273,9 @@ class captcha_x
     function _put_md5_into_session()
     {
         extract( $this->INI);
-        if (!isset($_SESSION))
+        if (!isset($_SESSION)) {
           session_start();
+        }
 
         $string              = implode( '', $this->letters);
 

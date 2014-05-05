@@ -27,98 +27,98 @@ $table_name = rex_request("table_name","string");
 if($table_name != "")
 {
 
-  if(in_array($table_name,$REX["EM_TABLES_EXISTS"]))
-  {
-    echo rex_warning('Tabelle ist bereits aufgenommen.');
-
-  }elseif(in_array($table_name,$REX["EM_TABLES_FORBIDDEN"]))
-  {
-    echo rex_warning('Der Import dieser Tabelle ist nicht erlaubt.');
-
-  }else
-  {
-
-    $t = rex_sql::factory();
-    $t->debugsql = 1;
-    $t->setQuery('SELECT COLUMN_NAME, EXTRA, COLUMN_KEY, DATA_TYPE, COLUMN_TYPE, IS_NULLABLE, COLUMN_DEFAULT FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = "'.$table_name.'"');
-
-    if($t->getRows()==0)
+    if(in_array($table_name,$REX["EM_TABLES_EXISTS"]))
     {
-      echo rex_warning('Tabelle wurde nicht gefunden oder hat keine Spalten.');
+        echo rex_warning('Tabelle ist bereits aufgenommen.');
+
+    }elseif(in_array($table_name,$REX["EM_TABLES_FORBIDDEN"]))
+    {
+        echo rex_warning('Der Import dieser Tabelle ist nicht erlaubt.');
 
     }else
     {
-      $show_tablelist = FALSE;
-      $c = array();
-      foreach($t->getArray() as $v) { $c[$v["COLUMN_NAME"]] = $v; }
 
-      if( !isset($c["id"]) || $c["id"]["EXTRA"] != "auto_increment")
-      {
-        echo rex_warning('Es können nur Tabellen importiert werden die ein Feld "id" mit EXTRA: "auto_increment" und COLUMN_KEY:"unique" haben.');
+        $t = rex_sql::factory();
+        $t->debugsql = 1;
+        $t->setQuery('SELECT COLUMN_NAME, EXTRA, COLUMN_KEY, DATA_TYPE, COLUMN_TYPE, IS_NULLABLE, COLUMN_DEFAULT FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = "'.$table_name.'"');
 
-      }else
-      {
-
-        echo "<br />Tabelle wird umbenannt in : newname. ";
-
-        $imf = array()
-        $prio = 0;
-        foreach($c as $feld => $v)
+        if($t->getRows()==0)
         {
-          $prio = $prio + 10;
-          switch($v["DATA_TYPE"])
-          {
-            case("int"):
+            echo rex_warning('Tabelle wurde nicht gefunden oder hat keine Spalten.');
 
-              break;
-            case("varchar"):
+        }else
+        {
+            $show_tablelist = FALSE;
+            $c = array();
+            foreach($t->getArray() as $v) { $c[$v["COLUMN_NAME"]] = $v; }
 
-              break;
-            case("float"):
+            if( !isset($c["id"]) || $c["id"]["EXTRA"] != "auto_increment")
+            {
+                echo rex_warning('Es können nur Tabellen importiert werden die ein Feld "id" mit EXTRA: "auto_increment" und COLUMN_KEY:"unique" haben.');
 
-              break;
-            case("varchar"):
+            }else
+            {
 
-              break;
-            case("text"):
-            default:
+                echo "<br />Tabelle wird umbenannt in : newname. ";
 
-              break;
-          }
+                $imf = array()
+                $prio = 0;
+                foreach($c as $feld => $v)
+                {
+                    $prio = $prio + 10;
+                    switch($v["DATA_TYPE"])
+                    {
+                        case("int"):
+
+                            break;
+                        case("varchar"):
+
+                            break;
+                        case("float"):
+
+                            break;
+                        case("varchar"):
+
+                            break;
+                        case("text"):
+                        default:
+
+                            break;
+                    }
 
 
 
 
-          echo "<br />$feld -> ".$v["DATA_TYPE"]."--".$v["EXTRA"]."--".$v["COLUMN_DEFAULT"];
+                    echo "<br />$feld -> ".$v["DATA_TYPE"]."--".$v["EXTRA"]."--".$v["COLUMN_DEFAULT"];
 
 
 
 
 
-        rex_em_data_buchhandlung 	100 	value 	text 	name 	Name
+                rex_em_data_buchhandlung     100     value     text     name     Name
 
 
+
+
+
+                }
+
+
+                // echo '<pre>'; var_dump($c); echo '</pre>';
+
+                $show_tablelist = FALSE;
+                // $list = rex_list::factory('SELECT COLUMN_NAME, EXTRA, COLUMN_KEY, DATA_TYPE, COLUMN_TYPE, IS_NULLABLE, COLUMN_DEFAULT FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = "'.$table_name.'"', 100);
+                // echo $list->get();
+
+            }
 
 
 
         }
 
-
-        // echo '<pre>'; var_dump($c); echo '</pre>';
-
-        $show_tablelist = FALSE;
-        // $list = rex_list::factory('SELECT COLUMN_NAME, EXTRA, COLUMN_KEY, DATA_TYPE, COLUMN_TYPE, IS_NULLABLE, COLUMN_DEFAULT FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = "'.$table_name.'"', 100);
-        // echo $list->get();
-
-      }
-
-
-
     }
 
-  }
-
-  // rex_yb_book
+    // rex_yb_book
 
 
 }
@@ -131,37 +131,34 @@ if($table_name != "")
 
 function rex_em_status_col($params)
 {
-  global $I18N,$REX;
-  $list = $params["list"];
-  if(in_array($list->getValue("table_name"),$REX["EM_TABLES_EXISTS"]))
-    return 'bereits aufgenommen';
-  elseif(in_array($list->getValue("table_name"),$REX["EM_TABLES_FORBIDDEN"]))
-    return 'Import nicht erlaubt';
-  else
-    return '<a href="?page=editme&subpage=table_import&table_name='.$list->getValue("table_name").'">Tabelle importieren</a>';
+    global $I18N,$REX;
+    $list = $params["list"];
+    if(in_array($list->getValue("table_name"),$REX["EM_TABLES_EXISTS"]))
+        return 'bereits aufgenommen';
+    elseif(in_array($list->getValue("table_name"),$REX["EM_TABLES_FORBIDDEN"]))
+        return 'Import nicht erlaubt';
+    else
+        return '<a href="?page=editme&subpage=table_import&table_name='.$list->getValue("table_name").'">Tabelle importieren</a>';
 }
 
 
 if($show_tablelist) {
 
-  $sql = 'SELECT table_name, table_type, engine FROM INFORMATION_SCHEMA.TABLES where table_type="BASE TABLE"';
+    $sql = 'SELECT table_name, table_type, engine FROM INFORMATION_SCHEMA.TABLES where table_type="BASE TABLE"';
 
-  $list = rex_list::factory($sql,100);
+    $list = rex_list::factory($sql,100);
 
-  // $list->setColumnParams("id", array("table_id"=>"###id###","func"=>"edit"));
-  $list->removeColumn("id");
-  $list->removeColumn("table_type");
-  $list->removeColumn("engine");
+    // $list->setColumnParams("id", array("table_id"=>"###id###","func"=>"edit"));
+    $list->removeColumn("id");
+    $list->removeColumn("table_type");
+    $list->removeColumn("engine");
 
-  $list->addColumn("status","status");
-  $list->setColumnFormat('status', 'custom', 'rex_em_status_col');
-  $list->setColumnParams("name", array("table_id"=>"###id###","func"=>"edit"));
+    $list->addColumn("status","status");
+    $list->setColumnFormat('status', 'custom', 'rex_em_status_col');
+    $list->setColumnParams("name", array("table_id"=>"###id###","func"=>"edit"));
 
-  echo $list->get();
+    echo $list->get();
 
 }
 
 */
-
-?>
-

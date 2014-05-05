@@ -9,18 +9,18 @@
 class rex_xform_action_html extends rex_xform_action_abstract
 {
 
-  function execute()
-  {
+    function execute()
+    {
 
-    $html = $this->getElement(2);
-    echo $html;
+        $html = $this->getElement(2);
+        echo $html;
 
-    return true;
-  }
+        return true;
+    }
 
-  function getDescription()
-  {
-    return 'action|html|&lt;b&gt;fett&lt;/b&gt;';
-  }
+    function getDescription()
+    {
+        return 'action|html|&lt;b&gt;fett&lt;/b&gt;';
+    }
 
 }

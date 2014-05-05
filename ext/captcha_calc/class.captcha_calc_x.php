@@ -109,7 +109,9 @@ class captcha_calc_x
     {
         extract( $this->INI);
 
-        if (!isset($_SESSION)) session_start();
+        if (!isset($_SESSION)) {
+            session_start();
+        }
 
         if ( ! $case_sensitive) {
             $user_string = strtolower( $user_string);
@@ -180,8 +182,9 @@ class captcha_calc_x
         extract( $this->INI);
        $rtn_val = array();
        for ( $i = 0; $i < $letters_no; ++$i) {
-        if (count($rtn_val) > 0)
+        if (count($rtn_val) > 0) {
       $rtn_val[] = '+';
+        }
       $rtn_val[] = rand(0, 9);
 
         }
@@ -209,8 +212,9 @@ class captcha_calc_x
             }
         }
         // Fehler bei Windows
-        if (strtoupper(substr(php_uname('s'), 0, 3)) == 'WIN' || substr(PHP_OS, 0, 3) == 'WIN')
+        if (strtoupper(substr(php_uname('s'), 0, 3)) == 'WIN' || substr(PHP_OS, 0, 3) == 'WIN') {
           $no_putenv = true;
+        }
 
         list ( $padding_top, $padding_right, $padding_bottom, $padding_left) = $this->_split( $padding);
         $box_width       = ( $width - ( $padding_left + $padding_right)) / count($this->letters);
@@ -268,8 +272,9 @@ class captcha_calc_x
     function _put_md5_into_session()
     {
         extract( $this->INI);
-        if (!isset($_SESSION))
+        if (!isset($_SESSION)) {
           session_start();
+        }
 
         $string = implode( '', $this->letters);
         eval("\$string = $string;");

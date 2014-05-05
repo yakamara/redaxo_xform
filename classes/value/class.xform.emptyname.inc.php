@@ -9,27 +9,27 @@
 class rex_xform_emptyname extends rex_xform_abstract
 {
 
-  function enterObject()
-  {
+    function enterObject()
+    {
 
-  }
+    }
 
-  function getDescription()
-  {
-    return 'emptyname -> Beispiel: emptyname|name|';
-  }
+    function getDescription()
+    {
+        return 'emptyname -> Beispiel: emptyname|name|';
+    }
 
-  function getDefinitions()
-  {
-    return array(
-      'type' => 'value',
-      'name' => 'emptyname',
-      'values' => array(
-        array( 'type' => 'name',   'label' => 'Feld' ),
-      ),
-      'description' => 'Ein leeres Feld - unsichtbar im Formular',
-      'dbtype' => 'text'
-    );
+    function getDefinitions()
+    {
+        return array(
+            'type' => 'value',
+            'name' => 'emptyname',
+            'values' => array(
+                array( 'type' => 'name',   'label' => 'Feld' ),
+            ),
+            'description' => 'Ein leeres Feld - unsichtbar im Formular',
+            'dbtype' => 'text'
+        );
 
-  }
+    }
 }

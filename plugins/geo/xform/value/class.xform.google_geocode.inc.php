@@ -24,13 +24,21 @@ class rex_xform_google_geocode extends rex_xform_abstract
     $label = $this->getElement(4);
 
     $map_width = 400;
-    if ($this->getElement(5) != '') $map_width = (int) $this->getElement(5);
+    if ($this->getElement(5) != '') {
+        $map_width = (int) $this->getElement(5);
+    }
     $map_height = 200;
-    if ($this->getElement(6) != '') $map_height = (int) $this->getElement(6);
+    if ($this->getElement(6) != '') {
+        $map_height = (int) $this->getElement(6);
+    }
 
     foreach ($this->obj as $o) {
-      if ($o->getName() == $label_lng)     $value_lng = $this->floattostr($o->getValue());
-      if ($o->getName() == $label_lat)     $value_lat = $this->floattostr($o->getValue());
+      if ($o->getName() == $label_lng) {
+          $value_lng = $this->floattostr($o->getValue());
+      }
+      if ($o->getName() == $label_lat) {
+          $value_lat = $this->floattostr($o->getValue());
+      }
     }
 
     if ($this->getValue() == '' && !$this->params['send']) {
@@ -38,7 +46,9 @@ class rex_xform_google_geocode extends rex_xform_abstract
     }
 
     $wc = '';
-    if (isset($this->params['warning'][$this->getId()])) $wc = $this->params['warning'][$this->getId()];
+    if (isset($this->params['warning'][$this->getId()])) {
+        $wc = $this->params['warning'][$this->getId()];
+    }
 
     $output = '';
     // Script nur beim ersten mal ausgeben
@@ -165,26 +175,26 @@ jQuery(function($){
   function getDefinitions()
   {
     return array(
-      'type' => 'value',
-      'name' => 'google_geocode',
-      'values' => array(
-        array( 'type' => 'name',   'label' => 'Name' ),
-        array( 'type' => 'getNames',  'label' => '"lng"-name,"lat"-name'),
-        array( 'type' => 'getNames', 'label' => 'Names Positionsfindung'),
-        array( 'type' => 'text',     'label' => 'Bezeichnung'),
-        array( 'type' => 'text',     'label' => 'Map-Breite'),
-        array( 'type' => 'text',     'label' => 'Map-H&ouml;he'),
-      ),
-      'description' => 'GoogeMap Positionierung',
-      'dbtype' => 'text'
+        'type' => 'value',
+        'name' => 'google_geocode',
+        'values' => array(
+            array( 'type' => 'name',   'label' => 'Name' ),
+            array( 'type' => 'getNames',  'label' => '"lng"-name,"lat"-name'),
+            array( 'type' => 'getNames', 'label' => 'Names Positionsfindung'),
+            array( 'type' => 'text',     'label' => 'Bezeichnung'),
+            array( 'type' => 'text',     'label' => 'Map-Breite'),
+            array( 'type' => 'text',     'label' => 'Map-H&ouml;he'),
+        ),
+        'description' => 'GoogeMap Positionierung',
+        'dbtype' => 'text'
     );
 
   }
-  
+
   function floattostr( $val )
   {
       preg_match( "#^([\+\-]|)([0-9]*)(\.([0-9]*?)|)(0*)$#", trim($val), $o );
-      return $o[1].sprintf('%d',$o[2]).($o[3]!='.'?$o[3]:'');
+      return $o[1] . sprintf('%d', $o[2]) . ($o[3] != '.' ? $o[3] : '');
   }
 
 }

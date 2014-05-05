@@ -9,66 +9,67 @@
 class rex_xform_validate_abstract
 {
 
-  var $params = array();
-  var $obj;
-  var $elements;
-  var $obj_array;
-  var $Objects; // die verschiedenen Value Objekte
+    var $params = array();
+    var $obj;
+    var $elements;
+    var $obj_array;
+    var $Objects; // die verschiedenen Value Objekte
 
-  function loadParams(&$params, $elements)
-  {
-    $this->params = &$params;
-    $this->elements = $elements;
-  }
-
-  function setObjects(&$Objects)
-  {
-    $this->obj = &$Objects;
-    $tmp_Objects = explode(',', $this->getElement(2));
-
-    foreach ($tmp_Objects as $tmp_Object) {
-      $tmp_FoundObject = false;
-      foreach ($Objects as $Object) {
-        if (strcmp($Object->getName(), trim($tmp_Object)) == 0) {
-          $this->obj_array[] = &$Object;
-          $tmp_FoundObject = true;
-          break;
-        }
-      }
+    function loadParams(&$params, $elements)
+    {
+        $this->params = &$params;
+        $this->elements = $elements;
     }
 
-  }
+    function setObjects(&$Objects)
+    {
+        $this->obj = &$Objects;
+        $tmp_Objects = explode(',', $this->getElement(2));
 
-  function enterObject()
-  {
-    return '';
-  }
+        foreach ($tmp_Objects as $tmp_Object) {
+            $tmp_FoundObject = false;
+            foreach ($Objects as $Object) {
+                if (strcmp($Object->getName(), trim($tmp_Object)) == 0) {
+                    $this->obj_array[] = &$Object;
+                    $tmp_FoundObject = true;
+                    break;
+                }
+            }
+        }
 
-  function getDescription()
-  {
-    return '';
-  }
+    }
 
-  function getLongDescription()
-  {
-    return '';
-  }
+    function enterObject()
+    {
+        return '';
+    }
 
-  function getDefinitions()
-  {
-    return array();
-  }
+    function getDescription()
+    {
+        return '';
+    }
 
-  function getElement($i)
-  {
-    if (!isset($this->elements[$i]))
-      return '';
-    else
-      return $this->elements[$i];
-  }
+    function getLongDescription()
+    {
+        return '';
+    }
 
-  function postValueAction()
-  {
-  }
+    function getDefinitions()
+    {
+        return array();
+    }
+
+    function getElement($i)
+    {
+        if (!isset($this->elements[$i])) {
+            return '';
+        } else {
+            return $this->elements[$i];
+        }
+    }
+
+    function postValueAction()
+    {
+    }
 
 }

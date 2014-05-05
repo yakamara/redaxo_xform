@@ -9,30 +9,31 @@
 class rex_xform_action_callback extends rex_xform_action_abstract
 {
 
-  function execute()
-  {
+    function execute()
+    {
 
-    if (!$this->getElement(2))
-      return false;
+        if (!$this->getElement(2)) {
+            return false;
+        }
 
-    $f = $this->getElement(2);
+        $f = $this->getElement(2);
 
-    if (strpos($f, '::') !== false) {
-      $f = explode('::', $f, 2);
-      if (is_callable($f[0], $f[1])) {
-        call_user_func($f, $this);
-      }
-    } elseif (function_exists($f)) {
-      $f($this);
+        if (strpos($f, '::') !== false) {
+            $f = explode('::', $f, 2);
+            if (is_callable($f[0], $f[1])) {
+                call_user_func($f, $this);
+            }
+        } elseif (function_exists($f)) {
+            $f($this);
+        }
+
+        return;
+
     }
 
-    return;
-
-  }
-
-  function getDescription()
-  {
-    return 'action|callback|mycallback / myclass::mycallback';
-  }
+    function getDescription()
+    {
+        return 'action|callback|mycallback / myclass::mycallback';
+    }
 
 }

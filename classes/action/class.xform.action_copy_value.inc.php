@@ -9,26 +9,26 @@
 class rex_xform_action_copy_value extends rex_xform_action_abstract
 {
 
-  function execute()
-  {
+    function execute()
+    {
 
-    $label_from = $this->getElement(2);
-    $label_to = $this->getElement(3);
+        $label_from = $this->getElement(2);
+        $label_to = $this->getElement(3);
 
-    foreach ($this->params['value_pool']['sql'] as $key => $value) {
-      if ($label_from == $key) {
-        $this->params['value_pool']['sql'][$label_to] = $value;
-        break;
-      }
+        foreach ($this->params['value_pool']['sql'] as $key => $value) {
+            if ($label_from == $key) {
+                $this->params['value_pool']['sql'][$label_to] = $value;
+                break;
+            }
+        }
+
+        return;
+
     }
 
-    return;
-
-  }
-
-  function getDescription()
-  {
-    return 'action|copy_value|label_from|label_to';
-  }
+    function getDescription()
+    {
+        return 'action|copy_value|label_from|label_to';
+    }
 
 }

@@ -9,246 +9,251 @@
 class rex_xform_mediafile extends rex_xform_abstract
 {
 
-  function enterObject()
-  {
+    function enterObject()
+    {
 
-    global $REX;
+        global $REX;
 
-    // MEDIAPOOL
-    $mediacatid     = ($this->getElement(8) == '') ? 0 : (int) $this->getElement(8);
-    $mediapool_user = ($this->getElement(9) == '') ? 'xform::mediafile' : $this->getElement(9);
-    $pool           = $this->params['value_pool']['email'];
-    $mediapool_user = preg_replace_callback('/###(\w+)###/',
-                              function ($m) use ($pool) {
-                                return isset($pool[$m[1]])
-                                     ? $pool[$m[1]]
-                                     : 'key not found';
-                              },
-                              $mediapool_user);
+        // MEDIAPOOL
+        $mediacatid     = ($this->getElement(8) == '') ? 0 : (int) $this->getElement(8);
+        $mediapool_user = ($this->getElement(9) == '') ? 'xform::mediafile' : $this->getElement(9);
+        $pool           = $this->params['value_pool']['email'];
+        $mediapool_user = preg_replace_callback('/###(\w+)###/',
+                                                            function ($m) use ($pool) {
+                                                                return isset($pool[$m[1]])
+                                                                         ? $pool[$m[1]]
+                                                                         : 'key not found';
+                                                            },
+                                                            $mediapool_user);
 
-    // MIN/MAX SIZES
-    $sizes   = explode(',', $this->getElement(3));
-    $minsize = count($sizes) > 1 ? (int) ($sizes[0] * 1024) : 0;
-    $maxsize = count($sizes) > 1 ? (int) ($sizes[1] * 1024) : (int) ($sizes[0] * 1024);
+        // MIN/MAX SIZES
+        $sizes   = explode(',', $this->getElement(3));
+        $minsize = count($sizes) > 1 ? (int) ($sizes[0] * 1024) : 0;
+        $maxsize = count($sizes) > 1 ? (int) ($sizes[1] * 1024) : (int) ($sizes[0] * 1024);
 
-    // ERR MSGS
-    $error                 = array();
-    $err_msgs              = explode(',', $this->getElement(6)); // min_err,max_err,type_err,empty_err
-    $err_msgs['min_err']   = $err_msgs[0];
-    $err_msgs['max_err']   = isset($err_msgs[1]) ? $err_msgs[1] : $err_msgs[0];
-    $err_msgs['type_err']  = isset($err_msgs[2]) ? $err_msgs[2] : $err_msgs[0];
-    $err_msgs['empty_err'] = isset($err_msgs[3]) ? $err_msgs[3] : $err_msgs[0];
+        // ERR MSGS
+        $error                 = array();
+        $err_msgs              = explode(',', $this->getElement(6)); // min_err,max_err,type_err,empty_err
+        $err_msgs['min_err']   = $err_msgs[0];
+        $err_msgs['max_err']   = isset($err_msgs[1]) ? $err_msgs[1] : $err_msgs[0];
+        $err_msgs['type_err']  = isset($err_msgs[2]) ? $err_msgs[2] : $err_msgs[0];
+        $err_msgs['empty_err'] = isset($err_msgs[3]) ? $err_msgs[3] : $err_msgs[0];
 
-    $rdelete  = md5($this->getFieldName('delete'));
-    $rfile    = 'file_' . md5($this->getFieldName('file'));
-    $filename = $this->getValue();
+        $rdelete  = md5($this->getFieldName('delete'));
+        $rfile    = 'file_' . md5($this->getFieldName('file'));
+        $filename = $this->getValue();
 
-    // SIZE CHECK
-    if ( $this->params['send'] && isset($_FILES[$rfile]) && $_FILES[$rfile]['name'] != '' && ($_FILES[$rfile]['size'] > $maxsize || $_FILES[$rfile]['size'] < $minsize) ) {
-      if ($_FILES[$rfile]['size'] < $minsize) {
-        $error[] = $err_msgs['min_err'];
-      }
-      if ($_FILES[$rfile]['size'] > $maxsize) {
-        $error[] = $err_msgs['max_err'];
-      }
-      unset($_FILES[$rfile]);
-      $this->setValue('');
-    }
-
-    if ($this->params['send']) {
-      if (isset($_REQUEST[$rdelete]) && $_REQUEST[$rdelete] == 1) {
-        $this->setValue('');
-      }
-
-      if (isset($_FILES[$rfile]) &&  $_FILES[$rfile]['name'] != '' ) {
-        $FILE['size']     = $_FILES[$rfile]['size'];
-        $FILE['name']     = $_FILES[$rfile]['name'];
-        $FILE['type']     = $_FILES[$rfile]['type'];
-        $FILE['tmp_name'] = $_FILES[$rfile]['tmp_name'];
-        $FILE['error']    = $_FILES[$rfile]['error'];
-
-        // EXTENSION CHECK
-        $extensions_array = explode(',', $this->getElement(4));
-        $ext = '.' . pathinfo($FILE['name'], PATHINFO_EXTENSION);
-        if (!in_array(strtolower($ext), $extensions_array) && !in_array(strtoupper($ext), $extensions_array)) {
-          $error[] = $err_msgs['type_err'];
-        } else {
-          $NEWFILE = $this->saveMedia($FILE, $REX['INCLUDE_PATH'] . '/../../files/', $extensions_array, $mediacatid, $mediapool_user);
-
-          if ($NEWFILE['ok']) {
-            $this->setValue($NEWFILE['filename']);
-
-          } else {
+        // SIZE CHECK
+        if ( $this->params['send'] && isset($_FILES[$rfile]) && $_FILES[$rfile]['name'] != '' && ($_FILES[$rfile]['size'] > $maxsize || $_FILES[$rfile]['size'] < $minsize) ) {
+            if ($_FILES[$rfile]['size'] < $minsize) {
+                $error[] = $err_msgs['min_err'];
+            }
+            if ($_FILES[$rfile]['size'] > $maxsize) {
+                $error[] = $err_msgs['max_err'];
+            }
+            unset($_FILES[$rfile]);
             $this->setValue('');
-            $error[] = 'unknown_save_error';
-          }
         }
 
-      }
+        if ($this->params['send']) {
+            if (isset($_REQUEST[$rdelete]) && $_REQUEST[$rdelete] == 1) {
+                $this->setValue('');
+            }
+
+            if (isset($_FILES[$rfile]) &&  $_FILES[$rfile]['name'] != '' ) {
+                $FILE['size']     = $_FILES[$rfile]['size'];
+                $FILE['name']     = $_FILES[$rfile]['name'];
+                $FILE['type']     = $_FILES[$rfile]['type'];
+                $FILE['tmp_name'] = $_FILES[$rfile]['tmp_name'];
+                $FILE['error']    = $_FILES[$rfile]['error'];
+
+                // EXTENSION CHECK
+                $extensions_array = explode(',', $this->getElement(4));
+                $ext = '.' . pathinfo($FILE['name'], PATHINFO_EXTENSION);
+                if (!in_array(strtolower($ext), $extensions_array) && !in_array(strtoupper($ext), $extensions_array)) {
+                    $error[] = $err_msgs['type_err'];
+                } else {
+                    $NEWFILE = $this->saveMedia($FILE, $REX['INCLUDE_PATH'] . '/../../files/', $extensions_array, $mediacatid, $mediapool_user);
+
+                    if ($NEWFILE['ok']) {
+                        $this->setValue($NEWFILE['filename']);
+
+                    } else {
+                        $this->setValue('');
+                        $error[] = 'unknown_save_error';
+                    }
+                }
+
+            }
+        }
+
+        if ($this->params['send']) {
+
+            $this->params['value_pool']['email'][$this->getElement(1)] = stripslashes($this->getValue());
+            if ($this->getElement(7) != 'no_db') {
+                $this->params['value_pool']['sql'][$this->getElement(1)] = $this->getValue();
+            }
+        }
+
+        ## check for required file
+        if ($this->params['send'] && $this->getElement(5) == 1 && $this->getValue() == '') {
+            $error[] = $err_msgs['empty_err'];
+        }
+
+        $tmp = '';
+        $check_delete = '';
+
+        if ($this->getValue() != '') {
+            $this->setElement(2, $this->getElement(2) . '<br />Dateiname: <a href="files/' . $this->getValue() . '">' . $this->getValue() . '</a><br />');
+
+            $fileendung = substr(strtolower($this->getValue()), -4);
+            if ($fileendung == '.jpg' || $fileendung == '.png' || $fileendung == '.gif') {
+                $this->setElement(2, $this->getElement(2) . '<br /><img src="?rex_img_type=profileimage&amp;rex_img_file=' . $this->getValue() . '" />');
+            }
+            $check_delete = '
+                <span class="formmcheckbox" style="width:300px;clear:none;">
+                    <input id="' . $this->getFieldId('delete') . '" type="checkbox" name="' . $rdelete . '" value="1" />
+                    <label for="' . $this->getFieldId('delete') . '">Datei löschen</label>
+                </span>
+                ';
+                // $this->getElement(2) = "";
+        }
+
+        ## setting up error Message
+        if ($this->params['send'] && count($error) > 0) {
+            $this->params['warning'][$this->getId()] = $this->params['error_class'];
+            $this->params['warning_messages'][$this->getId()] = implode(', ', $error);
+        }
+
+        $wc = '';
+        if (isset($this->params['warning'][$this->getId()])) {
+            $wc = $this->params['warning'][$this->getId()];
+        }
+
+        $out = '
+            <input type="hidden" name="' . $this->getFieldName() . '" value="' . $this->getValue() . '" />
+            <p class="' . $this->getHTMLClass() . ' formlabel-' . $this->getName() . '" id="' . $this->getHTMLId() . '">
+                <label class="text ' . $wc . '" for="' . $this->getFieldId() . '" >' . $this->getLabel() . '</label>
+                ' . $check_delete . '
+                <input class="uploadbox clickmedia ' . $wc . '" id="' . $this->getFieldId() . '" name="' . $rfile . '" type="file" />
+            </p>';
+
+        $this->params['form_output'][$this->getId()] = $out;
+
     }
 
-    if ($this->params['send']) {
-
-      $this->params['value_pool']['email'][$this->getElement(1)] = stripslashes($this->getValue());
-      if ($this->getElement(7) != 'no_db')
-        $this->params['value_pool']['sql'][$this->getElement(1)] = $this->getValue();
+    function getDescription()
+    {
+        return 'mediafile -> Beispiel: mediafile|name|label|groesseinkb|endungenmitpunktmitkommasepariert|pflicht=1|min_err,max_err,type_err,empty_err|[no_db]|mediacatid|user';
     }
 
-    ## check for required file
-    if ($this->params['send'] && $this->getElement(5) == 1 && $this->getValue() == '') {
-      $error[] = $err_msgs['empty_err'];
+
+    function getDefinitions()
+    {
+
+        return array(
+            'type' => 'value',
+            'name' => 'mediafile',
+            'values' => array(
+                array( 'type' => 'label',   'label' => 'Label' ),
+                array( 'type' => 'text',    'label' => 'Bezeichnung'),
+                array( 'type' => 'text',    'label' => 'Maximale Größe in Kb oder Range 100,500'),
+                array( 'type' => 'text',    'label' => 'Welche Dateien sollen erlaubt sein, kommaseparierte Liste. ".gif,.png"'),
+                array( 'type' => 'boolean', 'label' => 'Pflichtfeld'),
+                array( 'type' => 'text',    'label' => 'min_err,max_err,type_err,empty_err'),
+                array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 0),
+                array( 'type' => 'text',    'label' => 'Mediakategorie ID'),
+                array( 'type' => 'text',    'label' => 'Mediapool User (createuser/updateuser)'),
+            ),
+            'description' => 'Mediafeld, welches Dateien aus dem Medienpool holt',
+            'dbtype' => 'text'
+        );
     }
 
-    $tmp = '';
-    $check_delete = '';
+    function saveMedia($FILE, $filefolder, $extensions_array, $rex_file_category, $mediapool_user)
+    {
 
-    if ($this->getValue() != '') {
-      $this->setElement(2, $this->getElement(2) . '<br />Dateiname: <a href="files/' . $this->getValue() . '">' . $this->getValue() . '</a><br />');
+        global $REX;
 
-      $fileendung = substr(strtolower($this->getValue()), -4);
-      if ($fileendung == '.jpg' || $fileendung == '.png' || $fileendung == '.gif') {
-        $this->setElement(2, $this->getElement(2) . '<br /><img src="?rex_img_type=profileimage&amp;rex_img_file=' . $this->getValue() . '" />');
-      }
-      $check_delete = '
-        <span class="formmcheckbox" style="width:300px;clear:none;">
-          <input id="' . $this->getFieldId('delete') . '" type="checkbox" name="' . $rdelete . '" value="1" />
-          <label for="' . $this->getFieldId('delete') . '">Datei löschen</label>
-        </span>
-        ';
-        // $this->getElement(2) = "";
-    }
+        $FILENAME = $FILE['name'];
+        $FILESIZE = $FILE['size'];
+        $FILETYPE = $FILE['type'];
+        $NFILENAME = '';
+        $message = '';
 
-    ## setting up error Message
-    if ($this->params['send'] && count($error) > 0) {
-      $this->params['warning'][$this->getId()] = $this->params['error_class'];
-      $this->params['warning_messages'][$this->getId()] = implode(', ', $error);
-    }
+        // ----- neuer filename und extension holen
+        $NFILENAME = strtolower(preg_replace('/[^a-zA-Z0-9.\-\$\+]/', '_', $FILENAME));
+        if (strrpos($NFILENAME, '.') != '') {
+            $NFILE_NAME = substr($NFILENAME, 0, strlen($NFILENAME) - (strlen($NFILENAME) - strrpos($NFILENAME, '.')));
+            $NFILE_EXT  = substr($NFILENAME, strrpos($NFILENAME, '.'), strlen($NFILENAME) - strrpos($NFILENAME, '.'));
+        } else {
+            $NFILE_NAME = $NFILENAME;
+            $NFILE_EXT  = '';
+        }
 
-    $wc = '';
-    if (isset($this->params['warning'][$this->getId()])) {
-      $wc = $this->params['warning'][$this->getId()];
-    }
+        // ---- ext checken
+        $ERROR_EXT = array('.php', '.php3', '.php4', '.php5', '.phtml', '.pl', '.asp', '.aspx', '.cfm');
+        if (in_array($NFILE_EXT, $ERROR_EXT)) {
+            $NFILE_NAME .= $NFILE_EXT;
+            $NFILE_EXT = '.txt';
+        }
 
-    $out = '
-      <input type="hidden" name="' . $this->getFieldName() . '" value="' . $this->getValue() . '" />
-      <p class="' . $this->getHTMLClass() . ' formlabel-' . $this->getName() . '" id="' . $this->getHTMLId() . '">
-        <label class="text ' . $wc . '" for="' . $this->getFieldId() . '" >' . $this->getLabel() . '</label>
-        ' . $check_delete . '
-        <input class="uploadbox clickmedia ' . $wc . '" id="' . $this->getFieldId() . '" name="' . $rfile . '" type="file" />
-      </p>';
+        $standard_extensions_array = array('.rtf', '.pdf', '.doc', '.gif', '.jpg', '.jpeg');
+        if (count($extensions_array) == 0) {
+            $extensions_array = $standard_extensions_array;
+        }
 
-    $this->params['form_output'][$this->getId()] = $out;
+        if (!in_array($NFILE_EXT, $extensions_array)) {
+            $RETURN = false;
+            $RETURN['ok'] = false;
+            return $RETURN;
+        }
 
-  }
+        $NFILENAME = $NFILE_NAME . $NFILE_EXT;
 
-  function getDescription()
-  {
-    return 'mediafile -> Beispiel: mediafile|name|label|groesseinkb|endungenmitpunktmitkommasepariert|pflicht=1|min_err,max_err,type_err,empty_err|[no_db]|mediacatid|user';
-  }
+        // ----- filexists ? -> _1 ..
+        if (file_exists($filefolder . '/' . $NFILENAME)) {
+            for ($cf = 1; $cf < 1000; $cf++) {
+                $NFILENAME = $NFILE_NAME . '_' . $cf . '.' . $NFILE_EXT;
+                if (!file_exists($filefolder . '/' . $NFILENAME)) {
+                    break;
+                }
+            }
+        }
 
+        // ----- dateiupload
+        $upload = true;
+        if (!move_uploaded_file($FILE['tmp_name'], $filefolder . "/$NFILENAME") ) {
+            if (!copy($FILE['tmp_name'], $filefolder . '/' . $NFILENAME)) {
+                $message .= 'move file $NFILENAME failed | ';
+                $RETURN = false;
+                $RETURN['ok'] = false;
+                return $RETURN;
+            }
+        }
 
-  function getDefinitions()
-  {
+        @chmod($filefolder . '/' . $NFILENAME, $REX['FILEPERM']);
+        $RETURN['type'] = $FILETYPE;
+        $RETURN['msg'] = $message;
+        $RETURN['ok'] = true;
+        $RETURN['filename'] = $NFILENAME;
 
-    return array(
-      'type' => 'value',
-      'name' => 'mediafile',
-      'values' => array(
-        array( 'type' => 'label',   'label' => 'Label' ),
-        array( 'type' => 'text',    'label' => 'Bezeichnung'),
-        array( 'type' => 'text',    'label' => 'Maximale Größe in Kb oder Range 100,500'),
-        array( 'type' => 'text',    'label' => 'Welche Dateien sollen erlaubt sein, kommaseparierte Liste. ".gif,.png"'),
-        array( 'type' => 'boolean', 'label' => 'Pflichtfeld'),
-        array( 'type' => 'text',    'label' => 'min_err,max_err,type_err,empty_err'),
-        array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 0),
-        array( 'type' => 'text',    'label' => 'Mediakategorie ID'),
-        array( 'type' => 'text',    'label' => 'Mediapool User (createuser/updateuser)'),
-      ),
-      'description' => 'Mediafeld, welches Dateien aus dem Medienpool holt',
-      'dbtype' => 'text'
-    );
-  }
+        $FILESQL = rex_sql::factory();
+        // $FILESQL->debugsql=1;
+        $FILESQL->setTable($REX['TABLE_PREFIX'] . 'file');
+        $FILESQL->setValue('filetype', $FILETYPE);
+        $FILESQL->setValue('filename', $NFILENAME);
+        $FILESQL->setValue('originalname', $FILENAME);
+        $FILESQL->setValue('filesize', $FILESIZE);
+        $FILESQL->setValue('category_id', $rex_file_category);
+        $FILESQL->setValue('createdate', time());
+        $FILESQL->setValue('createuser', $mediapool_user);
+        $FILESQL->setValue('updatedate', time());
+        $FILESQL->setValue('updateuser', $mediapool_user);
+        $FILESQL->insert();
 
-  function saveMedia($FILE, $filefolder, $extensions_array, $rex_file_category, $mediapool_user)
-  {
-
-    global $REX;
-
-    $FILENAME = $FILE['name'];
-    $FILESIZE = $FILE['size'];
-    $FILETYPE = $FILE['type'];
-    $NFILENAME = '';
-    $message = '';
-
-    // ----- neuer filename und extension holen
-    $NFILENAME = strtolower(preg_replace('/[^a-zA-Z0-9.\-\$\+]/', '_', $FILENAME));
-    if (strrpos($NFILENAME, '.') != '') {
-      $NFILE_NAME = substr($NFILENAME, 0, strlen($NFILENAME) - (strlen($NFILENAME) - strrpos($NFILENAME, '.')));
-      $NFILE_EXT  = substr($NFILENAME, strrpos($NFILENAME, '.'), strlen($NFILENAME) - strrpos($NFILENAME, '.'));
-    } else {
-      $NFILE_NAME = $NFILENAME;
-      $NFILE_EXT  = '';
-    }
-
-    // ---- ext checken
-    $ERROR_EXT = array('.php', '.php3', '.php4', '.php5', '.phtml', '.pl', '.asp', '.aspx', '.cfm');
-    if (in_array($NFILE_EXT, $ERROR_EXT)) {
-      $NFILE_NAME .= $NFILE_EXT;
-      $NFILE_EXT = '.txt';
-    }
-
-    $standard_extensions_array = array('.rtf', '.pdf', '.doc', '.gif', '.jpg', '.jpeg');
-    if (count($extensions_array) == 0) $extensions_array = $standard_extensions_array;
-
-    if (!in_array($NFILE_EXT, $extensions_array)) {
-      $RETURN = false;
-      $RETURN['ok'] = false;
-      return $RETURN;
-    }
-
-    $NFILENAME = $NFILE_NAME . $NFILE_EXT;
-
-    // ----- filexists ? -> _1 ..
-    if (file_exists($filefolder . '/' . $NFILENAME)) {
-      for ($cf = 1; $cf < 1000; $cf++) {
-        $NFILENAME = $NFILE_NAME . '_' . $cf . '.' . $NFILE_EXT;
-        if (!file_exists($filefolder . '/' . $NFILENAME)) break;
-      }
-    }
-
-    // ----- dateiupload
-    $upload = true;
-    if (!move_uploaded_file($FILE['tmp_name'], $filefolder . "/$NFILENAME") ) {
-      if (!copy($FILE['tmp_name'], $filefolder . '/' . $NFILENAME)) {
-        $message .= 'move file $NFILENAME failed | ';
-        $RETURN = false;
-        $RETURN['ok'] = false;
         return $RETURN;
-      }
     }
-
-    @chmod($filefolder . '/' . $NFILENAME, $REX['FILEPERM']);
-    $RETURN['type'] = $FILETYPE;
-    $RETURN['msg'] = $message;
-    $RETURN['ok'] = true;
-    $RETURN['filename'] = $NFILENAME;
-
-    $FILESQL = rex_sql::factory();
-    // $FILESQL->debugsql=1;
-    $FILESQL->setTable($REX['TABLE_PREFIX'] . 'file');
-    $FILESQL->setValue('filetype', $FILETYPE);
-    $FILESQL->setValue('filename', $NFILENAME);
-    $FILESQL->setValue('originalname', $FILENAME);
-    $FILESQL->setValue('filesize', $FILESIZE);
-    $FILESQL->setValue('category_id', $rex_file_category);
-    $FILESQL->setValue('createdate', time());
-    $FILESQL->setValue('createuser', $mediapool_user);
-    $FILESQL->setValue('updatedate', time());
-    $FILESQL->setValue('updateuser', $mediapool_user);
-    $FILESQL->insert();
-
-    return $RETURN;
-  }
 
 
 }

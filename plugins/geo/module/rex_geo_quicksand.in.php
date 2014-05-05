@@ -4,16 +4,16 @@
 
 <tr>
 <td>Datentabelle:</td>
-<td><?php $tables = rex_sql::factory()->getArray('show tables;'); 
+<td><?php $tables = rex_sql::factory()->getArray('show tables;');
 $select = new rex_select();
-foreach($tables as $table) {
-  $select->addOption(current($table),current($table));
+foreach ($tables as $table) {
+    $select->addOption(current($table), current($table));
 }
 $select->setSize(1);
 $cat_select = clone $select;
 
-$select->setName("VALUE[1]");
-$select->setSelected("REX_VALUE[1]");
+$select->setName('VALUE[1]');
+$select->setSelected('REX_VALUE[1]');
 echo $select->get();
 
 ?></td>
@@ -26,26 +26,26 @@ echo $select->get();
 
 <tr>
 <td>Kategorietabelle:</td>
-<td><?php 
-$cat_select->setName("VALUE[3]");
-$cat_select->setSelected("REX_VALUE[3]");
+<td><?php
+$cat_select->setName('VALUE[3]');
+$cat_select->setSelected('REX_VALUE[3]');
 echo $cat_select->get();
 ?></td>
 
 <td>Maximaler Zoom:</td>
-<td><?php  
+<td><?php
 
-$max_zoom = (int) "REX_VALUE[4]";
-if ($max_zoom <1 || $max_zoom >16) {
-  $max_zoom = 8;
+$max_zoom = (int) 'REX_VALUE[4]';
+if ($max_zoom < 1 || $max_zoom > 16) {
+    $max_zoom = 8;
 }
 
 $zoom_select = new rex_select();
-$zoom_select->setName("VALUE[4]");
+$zoom_select->setName('VALUE[4]');
 $zoom_select->setSelected($max_zoom);
 
-for($zoom=1;$zoom<=16;$zoom++) {
-  $zoom_select->addOption($zoom,$zoom);
+for ($zoom = 1; $zoom <= 16; $zoom++) {
+    $zoom_select->addOption($zoom, $zoom);
 }
 $zoom_select->setSize(1);
 echo $zoom_select->get();

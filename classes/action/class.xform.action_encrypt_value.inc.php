@@ -9,43 +9,45 @@
 class rex_xform_action_encrypt_value extends rex_xform_action_abstract
 {
 
-  function execute()
-  {
+    function execute()
+    {
 
-    $f = $this->getElement(3); // the function
-    if (!function_exists($f)) {
-      $f = 'md5';
-    } // default func = md5
+        $f = $this->getElement(3); // the function
+        if (!function_exists($f)) {
+            $f = 'md5';
+        } // default func = md5
 
-    // Labels to get
-    $l = explode(',', $this->getElement(2));
+        // Labels to get
+        $l = explode(',', $this->getElement(2));
 
-    // Label to save in
-    $ls = @$this->getElement(4);
-    if ($ls == '')
-      $ls = $l[0];
-    if ($ls == '')
-      return false;
+        // Label to save in
+        $ls = @$this->getElement(4);
+        if ($ls == '') {
+            $ls = $l[0];
+        }
+        if ($ls == '') {
+            return false;
+        }
 
-    // $this->params["value_pool"]["sql"] = Array for database
-    $k = '';
-    foreach ($this->params['value_pool']['sql'] as $key => $value) {
-      if (in_array($key, $l)) {
-        $k .= $value;
-      }
+        // $this->params["value_pool"]["sql"] = Array for database
+        $k = '';
+        foreach ($this->params['value_pool']['sql'] as $key => $value) {
+            if (in_array($key, $l)) {
+                $k .= $value;
+            }
+        }
+
+        if ($k != '') {
+            $this->params['value_pool']['sql'][$ls] = $f($k); $this->params['value_pool']['email'][$ls] = $f($k);
+        }
+
+        return;
+
     }
 
-    if ($k != '') {
-      $this->params['value_pool']['sql'][$ls] = $f($k); $this->params['value_pool']['email'][$ls] = $f($k);
+    function getDescription()
+    {
+        return 'action|encrypt|label[,label2,label3]|md5|[save_in_this_label]';
     }
-
-    return;
-
-  }
-
-  function getDescription()
-  {
-    return 'action|encrypt|label[,label2,label3]|md5|[save_in_this_label]';
-  }
 
 }

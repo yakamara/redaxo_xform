@@ -1,48 +1,48 @@
- 
+
 #rex-xform .rex-widget-field {
-  padding-top: 0px; 
-  margin-top: 0px;
-}  
-  
+    padding-top: 0px;
+    margin-top: 0px;
+}
+
 #rex-xform div.rex-widget {
-  clear:none;
-  float:left;
-  display:block;
-  margin:0px;
-  width:390px;
-  /*margin-left:245px;*/
-  }
+    clear:none;
+    float:left;
+    display:block;
+    margin:0px;
+    width:390px;
+    /*margin-left:245px;*/
+    }
 #rex-xform div.rex-widget input.text {
-  padding: 2px;
-  width: 290px;
-  }
+    padding: 2px;
+    width: 290px;
+    }
 #rex-xform div.rex-widget select{
-  width:335px;
-  }
+    width:335px;
+    }
 div#rex-title h1 span {
-  color:#CBCBCB;
-  font-size:0.5em;
-  }
+    color:#CBCBCB;
+    font-size:0.5em;
+    }
 
 body#rex-page-xform .xform-manager-searchfield{
-  background:silver;
-  color:white;
-  padding:3px;
-  border-radius:5px;
-  margin:1px;
-  display:inline-block;
-  
+    background:silver;
+    color:white;
+    padding:3px;
+    border-radius:5px;
+    margin:1px;
+    display:inline-block;
+
 }
 
 .xform-table_field p.rex-button {
-    padding-left: 140px;
+        padding-left: 140px;
 }
 .xform-table_field p.rex-button a.rex-button {
-    float: left;
-    padding-top: 0;
-    padding-bottom: 0;
-    margin-left: -140px;
+        float: left;
+        padding-top: 0;
+        padding-bottom: 0;
+        margin-left: -140px;
 }
 .xform-table_field p.rex-button span {
-    display: block;
+        display: block;
 }

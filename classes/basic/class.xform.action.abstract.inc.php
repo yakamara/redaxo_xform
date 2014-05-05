@@ -9,59 +9,60 @@
 class rex_xform_action_abstract
 {
 
-  var $obj;
+    var $obj;
 
-  var $params = array();
-  var $elements = array();
-  var $action = array();
+    var $params = array();
+    var $elements = array();
+    var $action = array();
 
-  function loadParams(&$params, $elements)
-  {
-    $this->params = &$params;
-    $this->elements = $elements;
-  }
+    function loadParams(&$params, $elements)
+    {
+        $this->params = &$params;
+        $this->elements = $elements;
+    }
 
-  function setObjects(&$obj)
-  {
-    $this->obj = &$obj;
-  }
+    function setObjects(&$obj)
+    {
+        $this->obj = &$obj;
+    }
 
-  function execute()
-  {
-    return false;
-  }
+    function execute()
+    {
+        return false;
+    }
 
-  function getDescription()
-  {
-    return 'Es existiert keine Klassenbeschreibung';
-  }
+    function getDescription()
+    {
+        return 'Es existiert keine Klassenbeschreibung';
+    }
 
-  function getLongDescription()
-  {
-    return 'Es existiert keine ausfuehrliche Klassenbeschreibung';
-  }
+    function getLongDescription()
+    {
+        return 'Es existiert keine ausfuehrliche Klassenbeschreibung';
+    }
 
-  function getDefinitions()
-  {
-    return array();
-  }
+    function getDefinitions()
+    {
+        return array();
+    }
 
-  function setElement($i, $v) 
-  {
-    $this->elements[$i] = $v;
-  }
+    function setElement($i, $v)
+    {
+        $this->elements[$i] = $v;
+    }
 
-  function getElement($i)
-  {
-    if (!isset($this->elements[$i]))
-      return false;
-    else
-      return $this->elements[$i];
-  }
+    function getElement($i)
+    {
+        if (!isset($this->elements[$i])) {
+            return false;
+        } else {
+            return $this->elements[$i];
+        }
+    }
 
-  function getParam($param)
-  {
-    return $this->params[$param];
-  }
+    function getParam($param)
+    {
+        return $this->params[$param];
+    }
 
 }

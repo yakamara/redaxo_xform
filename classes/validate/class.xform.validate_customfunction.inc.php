@@ -9,70 +9,70 @@
 class rex_xform_validate_customfunction extends rex_xform_validate_abstract
 {
 
-  function enterObject()
-  {
-    if ($this->params['send'] == '1') {
+    function enterObject()
+    {
+        if ($this->params['send'] == '1') {
 
-      $label = $this->getElement(2);
-      $func = $this->getElement(3);
-      $parameter = $this->getElement(4);
+            $label = $this->getElement(2);
+            $func = $this->getElement(3);
+            $parameter = $this->getElement(4);
 
-      $true = true;
-      if (substr($func, 0, 1) == '!') {
-          $true = false;
-          $func = substr($func, 1);
-      }
+            $true = true;
+            if (substr($func, 0, 1) == '!') {
+                    $true = false;
+                    $func = substr($func, 1);
+            }
 
-      foreach ($this->obj_array as $Object) {
+            foreach ($this->obj_array as $Object) {
 
-        $method = explode('::', $func);
-        if ( count($method) == 2 ) {
+                $method = explode('::', $func);
+                if ( count($method) == 2 ) {
 
-          if ( !method_exists($method[0], $method[1]) ) {
-            $this->params['warning'][$Object->getId()] = $this->params['error_class'];
-            $this->params['warning_messages'][$Object->getId()] = 'ERROR: customfunction "' . $func . '" not found';
+                    if ( !method_exists($method[0], $method[1]) ) {
+                        $this->params['warning'][$Object->getId()] = $this->params['error_class'];
+                        $this->params['warning_messages'][$Object->getId()] = 'ERROR: customfunction "' . $func . '" not found';
 
-          } elseif ( $method[0]::$method[1]($label, $Object->getValue(), $parameter) === $true) {
-            $this->params['warning'][$Object->getId()] = $this->params['error_class'];
-            $this->params['warning_messages'][$Object->getId()] = $this->getElement(5);
+                    } elseif ( $method[0]::$method[1]($label, $Object->getValue(), $parameter) === $true) {
+                        $this->params['warning'][$Object->getId()] = $this->params['error_class'];
+                        $this->params['warning_messages'][$Object->getId()] = $this->getElement(5);
 
-          }
+                    }
 
-        } elseif (function_exists($func)) {
-          if ($func($label, $Object->getValue(), $parameter) === $true) {
-            $this->params['warning'][$Object->getId()] = $this->params['error_class'];
-            $this->params['warning_messages'][$Object->getId()] = $this->getElement(5);
+                } elseif (function_exists($func)) {
+                    if ($func($label, $Object->getValue(), $parameter) === $true) {
+                        $this->params['warning'][$Object->getId()] = $this->params['error_class'];
+                        $this->params['warning_messages'][$Object->getId()] = $this->getElement(5);
 
-          }
+                    }
 
-        } else {
-          $this->params['warning'][$Object->getId()] = $this->params['error_class'];
-          $this->params['warning_messages'][$Object->getId()] = 'ERROR: customfunction "' . $func . '" not found';
+                } else {
+                    $this->params['warning'][$Object->getId()] = $this->params['error_class'];
+                    $this->params['warning_messages'][$Object->getId()] = 'ERROR: customfunction "' . $func . '" not found';
 
+                }
+            }
         }
-      }
     }
-  }
 
-  function getDescription()
-  {
-    return 'customfunction -> prüft über customfunc, beispiel: validate|customfunction|label|[!]function/class::method|weitere_parameter|warning_message';
-  }
+    function getDescription()
+    {
+        return 'customfunction -> prüft über customfunc, beispiel: validate|customfunction|label|[!]function/class::method|weitere_parameter|warning_message';
+    }
 
-  function getDefinitions()
-  {
-    return array(
-      'type' => 'validate',
-      'name' => 'customfunction',
-      'values' => array(
-        array( 'type' => 'select_name', 'label' => 'Name'),
-        array( 'type' => 'text',  'label' => 'Name der Funktion' ),
-        array( 'type' => 'text',   'label' => 'Weitere Parameter'),
-        array( 'type' => 'text',   'label' => 'Fehlermeldung'),
-      ),
-      'description' => 'Mit eigener Funktion vergleichen',
-    );
+    function getDefinitions()
+    {
+        return array(
+            'type' => 'validate',
+            'name' => 'customfunction',
+            'values' => array(
+                array( 'type' => 'select_name', 'label' => 'Name'),
+                array( 'type' => 'text',  'label' => 'Name der Funktion' ),
+                array( 'type' => 'text',   'label' => 'Weitere Parameter'),
+                array( 'type' => 'text',   'label' => 'Fehlermeldung'),
+            ),
+            'description' => 'Mit eigener Funktion vergleichen',
+        );
 
-  }
+    }
 
 }
