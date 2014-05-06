@@ -29,7 +29,7 @@ class rex_xform_objparams extends rex_xform_abstract
         $when = trim($this->getElement(3));
 
         if ($when == 'runtime') {
-            $this->setObjectParamsValue($key);
+            $this->setObjectParamsValue($key, $value);
 
         }
 
