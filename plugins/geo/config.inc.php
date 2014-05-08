@@ -8,6 +8,8 @@
 
 $REX['ADDON']['xform']['classpaths']['value'][] = $REX['INCLUDE_PATH'] . '/addons/xform/plugins/geo/classes/value/';
 
+$REX['ADDON']['xform']['templatepaths'][] = $REX['INCLUDE_PATH'] . '/addons/xform/plugins/geo/templates/';
+
 if ($REX['REDAXO'] && !$REX['SETUP']) {
 
     // $I18N->appendFile($REX['INCLUDE_PATH'].'/addons/xform/plugins/geo/lang/');

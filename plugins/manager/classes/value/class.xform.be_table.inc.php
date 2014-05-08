@@ -25,28 +25,28 @@ class rex_xform_be_table extends rex_xform_abstract
             $replace = array('‚', '⁏'); // , -> alt-s
 
             if (isset($_REQUEST['v'][$id])) {
-                    foreach ($_REQUEST['v'][$id] as $c) {
-                        for ($r = 0; $r < count($c); $r++) {
-                            if (!isset($values[$r])) {
-                                $values[$r] = '';
-                            }
-                            if ($i > 0) {
-                                $values[$r] .= ',';
-                            }
-                            if (isset($c[$r])) {
-                                $values[$r] .= str_replace($search, $replace, trim($c[$r]));
-                            }
+                foreach ($_REQUEST['v'][$id] as $c) {
+                    for ($r = 0; $r < count($c); $r++) {
+                        if (!isset($values[$r])) {
+                            $values[$r] = '';
                         }
-                        $i++;
-                        // die nur den Trenner haben loeschen
-                        if (count($values) > 0) {
-                            foreach ($values as $key => $val) {
-                                if (trim($val) == ',') {
-                                    unset($values[$key]);
-                                }
+                        if ($i > 0) {
+                            $values[$r] .= ',';
+                        }
+                        if (isset($c[$r])) {
+                            $values[$r] .= str_replace($search, $replace, trim($c[$r]));
+                        }
+                    }
+                    $i++;
+                    // die nur den Trenner haben loeschen
+                    if (count($values) > 0) {
+                        foreach ($values as $key => $val) {
+                            if (trim($val) == ',') {
+                                unset($values[$key]);
                             }
                         }
                     }
+                }
             }
 
             $this->setValue('');
@@ -75,103 +75,28 @@ class rex_xform_be_table extends rex_xform_abstract
 
     function enterObject()
     {
-
-        global $I18N;
-
-        $columns = (int) $this->getElement(3);
-        if ($columns < 1) {
-            $columns = 1;
+        $columnsCount = max(1, (int) $this->getElement(3));
+        $columns = explode(',', $this->getElement(4));
+        if (count($columns) < $columnsCount) {
+            $columns = array_pad($columns, $columnsCount, '');
+        } elseif (count($columns) > $columnsCount) {
+            $columns = array_slice($columns, 0, $columnsCount);
         }
-
-        $column_names = explode(',', $this->getElement(4));
-
-        $id = $this->getId();
 
         // "1,1000,121;10,900,1212;100,800,1212;"
 
-        $out_row_add = '';
-        $out = '<script>
-
-        function rex_xform_table_deleteRow' . $id . '(obj)
-        {
-            tr = obj.parent("td").parent("tr");
-            tr.fadeOut("normal", function()
-                {
-                    tr.remove();
-                }
-            );
-        }
-
-        function rex_xform_table_addRow' . $id . '(table)
-        {
-
-            jQuery(function($) { table.append(\'';
-
-            $out .= '<tr>';
-            for ($r = 0; $r < $columns; $r++) {
-                $out .= '<td><input type="text" name="v[' . $id . '][' . $r . '][]" value="" /></td>';
+        $data = array();
+        $rows = explode(';', $this->getValue());
+        foreach ($rows as $rawRow) {
+            $row = array();
+            $rawColumns = explode(',', $rawRow);
+            for ($i = 0; $i < $columnsCount; ++$i) {
+                $row[$i] = isset($rawColumns[$i]) ? $rawColumns[$i] : '';
             }
-            $out .= '<td><a href="javascript:void(0)" onclick="rex_xform_table_deleteRow' . $id . '( jQuery(this) )">- ' . $I18N->msg('delete') . '</a></td>';
-            $out .= '</tr>';
-
-            $out .= '\');
-
-                    })
-
+            $data[] = $row;
         }
 
-        </script>';
-
-        $values = explode(';', $this->getValue());
-
-        /*
-        if ($this->getValue() == '' && $this->params['send']) {
-            $this->params['warning'][$this->getId()] = $this->params['error_class'];
-        }
-        */
-
-        $wc = '';
-        if (isset($this->params['warning'][$this->getId()])) {
-            $wc = $this->params['warning'][$this->getId()];
-        }
-
-        $out_row_add .= '<a href="javascript:void(0);" onclick="rex_xform_table_addRow' . $id . '(jQuery(\'#xform_table' . $id . '\'))">+ ' . $I18N->msg('add_row') . '</a>';
-
-        $out .= '<table class="rex-table rex-xform-be-table" id="xform_table' . $id . '"><tr>';
-        for ($r = 0; $r < $columns; $r++) {
-            $out .= '<th>';
-            if (isset($column_names[$r])) {
-                $out .= $column_names[$r];
-            }
-            $out .= '</th>';
-        }
-        $out .= '</tr>';
-
-
-        foreach ($values as $value) {
-            $v = explode(',', $value);
-
-            $out .= '<tr>';
-            for ($r = 0; $r < $columns; $r++) {
-                $tmp = ''; if (isset($v[$r])) {
-                    $tmp = $v[$r];
-                }
-                $out .= '<td><input type="text" name="v[' . $id . '][' . $r . '][]" value="' . $tmp . '" /></td>';
-            }
-            $out .= '<td><a href="javascript:void(0)" onclick="rex_xform_table_deleteRow' . $id . '(jQuery(this))">- ' . $I18N->msg('delete') . '</a></td>';
-            $out .= '</tr>';
-        }
-        $out .= '</table><br />';
-
-        $this->params['form_output'][$this->getId()] = '
-            <div class="xform-element ' . $this->getHTMLClass() . '" id="' . $this->getHTMLId() . '">
-                <p class="formtable ' . $wc . '">
-                <label class="table ' . $wc . '" for="' . $this->getFieldId() . '" >' . $this->getElement(2) . '</label>
-                ' . $out_row_add . '
-                </p>
-                ' . $out . '
-            </div>';
-
+        $this->params['form_output'][$this->getId()] = $this->parse('value.be_table.tpl.php', compact('columns', 'data'));
 
         $this->params['value_pool']['email'][$this->getName()] = stripslashes($this->getValue());
         if ($this->getElement(5) != 'no_db') {

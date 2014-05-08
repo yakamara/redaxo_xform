@@ -460,7 +460,7 @@ class rex_xform
 
     function parse($template, array $params = array())
     {
-        global $REX;
+        global $REX, $I18N;
 
         extract($params);
 

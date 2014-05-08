@@ -30,6 +30,7 @@ xform_table_overview = table overview
 xform_manager_edit_table = edit table
 xform_manager_add_table = add table
 
+add_row = add row
 
 # tables.inc.php
 importcsv = import csv file

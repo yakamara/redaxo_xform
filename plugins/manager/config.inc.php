@@ -10,6 +10,8 @@ $REX['ADDON']['xform']['classpaths']['action'][] = $REX['INCLUDE_PATH'] . '/addo
 // $REX['ADDON']['xform']['classpaths']['validate'][] = $REX["INCLUDE_PATH"]."/addons/xform/plugins/manager/classes/validate/";
 $REX['ADDON']['xform']['classpaths']['value'][] = $REX['INCLUDE_PATH'] . '/addons/xform/plugins/manager/classes/value/';
 
+$REX['ADDON']['xform']['templatepaths'][] = $REX['INCLUDE_PATH'] . '/addons/xform/plugins/manager/templates/';
+
 include $REX['INCLUDE_PATH'] . '/addons/xform/plugins/manager/classes/basic/class.rex_xform_manager.inc.php';
 include $REX['INCLUDE_PATH'] . '/addons/xform/plugins/manager/classes/basic/class.rex_xform_manager_table.inc.php';
 
