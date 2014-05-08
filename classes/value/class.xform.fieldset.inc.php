@@ -11,21 +11,7 @@ class rex_xform_fieldset extends rex_xform_abstract
 
     function enterObject()
     {
-
         $output = '';
-
-        $classes = $this->getHTMLClass();
-        if (trim($this->getElement(3)) != '') {
-            $classes .= ' ' . trim($this->getElement(3));
-        }
-
-        $classes = (trim($classes) != '') ? ' class="' . trim($classes) . '"' : '';
-
-
-        $legend = '';
-        if ($this->getElement(2) != '') {
-            $legend = '<legend id="' . $this->getFieldId() . '">' . $this->getLabel() . '</legend>';
-        }
 
         $option = $this->getElement(4);
         $options = array('onlyclose', 'onlycloseall', 'onlyopen', 'closeandopen');
@@ -37,13 +23,13 @@ class rex_xform_fieldset extends rex_xform_abstract
             case 'closeandopen':
             case 'onlyclose':
                 if ($this->params['fieldsets_opened'] > 0) {
-                    $output .= '</fieldset>';
+                    $output .= $this->parse('value.fieldset.tpl.php', array('option' => 'close'));
                     $this->params['fieldsets_opened']--;
                 }
                 break;
             case 'onlycloseall':
                 for ($i = 0; $i < $this->params['fieldsets_opened']; $i++) {
-                    $output .= '</fieldset>';
+                    $output .= $this->parse('value.fieldset.tpl.php', array('option' => 'close'));
                 }
                 $this->params['fieldsets_opened'] = 0;
                 break;
@@ -55,7 +41,7 @@ class rex_xform_fieldset extends rex_xform_abstract
             case 'closeandopen':
             case 'onlyopen':
                 $this->params['fieldsets_opened']++;
-                $output .= '<fieldset' . $classes . ' id="' . $this->getHTMLId() . '">' . $legend;
+                $output .= $this->parse('value.fieldset.tpl.php', array('option' => 'open'));
                 break;
         }
 

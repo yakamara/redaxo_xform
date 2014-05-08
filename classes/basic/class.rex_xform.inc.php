@@ -46,9 +46,11 @@ class rex_xform
         $this->objparams['form_name'] = 'formular';
         $this->objparams['form_id'] = 'form_formular';
         $this->objparams['form_class'] = 'rex-xform';
-        $this->objparams['form_wrap'] = array('<div id="rex-xform" class="xform">', '</div>'); // or: <div id="rex-xform" class="xform">#</div>
+        $this->objparams['form_wrap_id'] = 'rex-xform';
 
         $this->objparams['form_label_type'] = 'html'; // plain
+
+        $this->objparams['form_skin'] = 'default';
 
         $this->objparams['actions_executed'] = false;
         $this->objparams['postactions_executed'] = false;
@@ -184,8 +186,6 @@ class rex_xform
     {
 
         global $REX;
-
-        $preg_user_vorhanden = "~\*|:|\(.*\)~Usim"; // Preg der Bestimmte Zeichen/Zeichenketten aus der Bezeichnung entfernt
 
         $this->objparams['values'] = array();
         $this->objparams['validates'] = array();
@@ -386,59 +386,8 @@ class rex_xform
                 $this->objparams['form_action'] .= '#' . $this->objparams['form_anchor'];
             }
 
-            // -------------------- warnings output
-            $warningOut = '';
-            $hasWarningMessages = count($this->objparams['warning_messages']) != 0;
-            if ($this->objparams['unique_error'] != '' || $hasWarnings || $hasWarningMessages) {
-                $warningListOut = '';
-                if ($hasWarningMessages) {
-                    foreach ($this->objparams['warning_messages'] as $k => $v) {
-                        $warningListOut .= '<li class="el_' . $k . '">' . rex_translate($v, null, false) . '</li>';
-                    }
-                }
-                if ($this->objparams['unique_error'] != '') {
-                    $warningListOut .= '<li>' . rex_translate( preg_replace($preg_user_vorhanden, '', $this->objparams['unique_error']) ) . '</li>';
-                }
-
-                if ($warningListOut != '') {
-                    if ($this->objparams['Error-occured'] != '') {
-                        $warningOut .= '<dl class="' . $this->objparams['error_class'] . '">';
-                        $warningOut .= '<dt>' . $this->objparams['Error-occured'] . '</dt>';
-                        $warningOut .= '<dd><ul>' . $warningListOut . '</ul></dd>';
-                        $warningOut .= '</dl>';
-                    } else {
-                        $warningOut .= '<ul class="' . $this->objparams['error_class'] . '">' . $warningListOut . '</ul>';
-                    }
-                }
-            }
-
-            // -------------------- formFieldsOut output
-            $formFieldsOut = '';
-            foreach ($this->objparams['form_output'] as $v) {
-                $formFieldsOut .= $v;
-            }
-
-            // -------------------- hidden fields
-            $hiddenOut = '';
-            foreach ($this->objparams['form_hiddenfields'] as $k => $v) {
-                $hiddenOut .= '<input type="hidden" name="' . $k . '" value="' . htmlspecialchars($v) . '" />';
-            }
-
             // -------------------- formOut
-            $formOut = $warningOut;
-            $formOut .= '<form action="' . $this->objparams['form_action'] . '" method="' . $this->objparams['form_method'] . '" id="' . $this->objparams['form_id'] . '" class="' . $this->objparams['form_class'] . '" enctype="multipart/form-data">';
-            $formOut .= $formFieldsOut;
-            $formOut .= $hiddenOut;
-            for ($i = 0; $i < $this->objparams['fieldsets_opened']; $i++) {
-                $formOut .= '</fieldset>';
-            }
-            $formOut .= '</form>';
-
-            if (!is_array($this->objparams['form_wrap'])) {
-                    $this->objparams['form_wrap'] = explode('#', $this->objparams['form_wrap']);
-            }
-
-            $this->objparams['output'] .= $this->objparams['form_wrap'][0] . $formOut . $this->objparams['form_wrap'][1];
+            $this->objparams['output'] .= $this->parse('form.tpl.php');
 
         }
 
@@ -487,6 +436,37 @@ class rex_xform
         }
         return false;
 
+    }
+
+    function getTemplatePath($template)
+    {
+        global $REX;
+
+        $templates = (array) $template;
+        $skins[$this->objparams['form_skin']] = true;
+        $skins['default'] = true;
+        foreach ($templates as $template) {
+            foreach ($skins as $skin => $_) {
+                foreach (array_reverse($REX['ADDON']['xform']['templatepaths']) as $path) {
+                    if (file_exists($path . $skin . '/' . $template)) {
+                        return $path . $skin . '/' . $template;
+                    }
+                }
+            }
+        }
+
+        trigger_error(sprintf('XForm template %s not found', $template), E_USER_WARNING);
+    }
+
+    function parse($template, array $params = array())
+    {
+        global $REX;
+
+        extract($params);
+
+        ob_start();
+        include $this->getTemplatePath($template);
+        return ob_get_clean();
     }
 
     function getTypes()

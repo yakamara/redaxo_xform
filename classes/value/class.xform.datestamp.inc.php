@@ -32,10 +32,7 @@ class rex_xform_datestamp extends rex_xform_abstract
             $this->setValue(date($format));
         }
 
-        $this->params['form_output'][$this->getId()] = '
-                <p class="formhidden ' . $this->getHTMLClass() . '" style="display:none;" id="' . $this->getHTMLId() . '">
-                    <input type="hidden" name="' . $this->getFieldName() . '" id="' . $this->getFieldId() . '" value="' . htmlspecialchars(stripslashes($this->getValue())) . '" />
-                </p>';
+        $this->params['form_output'][$this->getId()] = $this->parse('value.hidden.tpl.php');
 
         $this->params['value_pool']['email'][$this->getName()] = $this->getValue();
         if (!($this->getElement(3) == 'no_db')) {

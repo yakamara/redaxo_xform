@@ -23,7 +23,7 @@ class rex_xform_hidden extends rex_xform_abstract
 
     public function enterObject()
     {
-        $this->params['form_output'][$this->getId()] = "\n" . '<input type="hidden" name="' . $this->getName() . '" id="' . $this->getHTMLId() . '" value="' . htmlspecialchars($this->getValue()) . '" />';
+        $this->params['form_output'][$this->getId()] = $this->parse('value.hidden.tpl.php');
 
         $this->params['value_pool']['email'][$this->getName()] = $this->getValue();
         if ($this->getElement(4) != 'no_db') {

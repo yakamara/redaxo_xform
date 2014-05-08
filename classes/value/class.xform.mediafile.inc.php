@@ -100,45 +100,13 @@ class rex_xform_mediafile extends rex_xform_abstract
             $error[] = $err_msgs['empty_err'];
         }
 
-        $tmp = '';
-        $check_delete = '';
-
-        if ($this->getValue() != '') {
-            $this->setElement(2, $this->getElement(2) . '<br />Dateiname: <a href="files/' . $this->getValue() . '">' . $this->getValue() . '</a><br />');
-
-            $fileendung = substr(strtolower($this->getValue()), -4);
-            if ($fileendung == '.jpg' || $fileendung == '.png' || $fileendung == '.gif') {
-                $this->setElement(2, $this->getElement(2) . '<br /><img src="?rex_img_type=profileimage&amp;rex_img_file=' . $this->getValue() . '" />');
-            }
-            $check_delete = '
-                <span class="formmcheckbox" style="width:300px;clear:none;">
-                    <input id="' . $this->getFieldId('delete') . '" type="checkbox" name="' . $rdelete . '" value="1" />
-                    <label for="' . $this->getFieldId('delete') . '">Datei löschen</label>
-                </span>
-                ';
-                // $this->getElement(2) = "";
-        }
-
         ## setting up error Message
         if ($this->params['send'] && count($error) > 0) {
             $this->params['warning'][$this->getId()] = $this->params['error_class'];
             $this->params['warning_messages'][$this->getId()] = implode(', ', $error);
         }
 
-        $wc = '';
-        if (isset($this->params['warning'][$this->getId()])) {
-            $wc = $this->params['warning'][$this->getId()];
-        }
-
-        $out = '
-            <input type="hidden" name="' . $this->getFieldName() . '" value="' . $this->getValue() . '" />
-            <p class="' . $this->getHTMLClass() . ' formlabel-' . $this->getName() . '" id="' . $this->getHTMLId() . '">
-                <label class="text ' . $wc . '" for="' . $this->getFieldId() . '" >' . $this->getLabel() . '</label>
-                ' . $check_delete . '
-                <input class="uploadbox clickmedia ' . $wc . '" id="' . $this->getFieldId() . '" name="' . $rfile . '" type="file" />
-            </p>';
-
-        $this->params['form_output'][$this->getId()] = $out;
+        $this->params['form_output'][$this->getId()] = $this->parse('value.mediafile.tpl.php');
 
     }
 

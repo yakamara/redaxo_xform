@@ -13,11 +13,7 @@ class rex_xform_select_sql extends rex_xform_abstract
 
     function enterObject()
     {
-
-        $multiple = (int) $this->getElement(8);
-        if ($multiple != 1) {
-            $multiple = 0;
-        }
+        $multiple = $this->getElement(8) == 1;
 
         // ----- query
         $sql = $this->getElement(3);
@@ -33,83 +29,34 @@ class rex_xform_select_sql extends rex_xform_abstract
             $k = $t['id'];
             $options[$k] = $v;
             $option_names[$k] = $t['name'];
-
         }
 
         // ----- default value
         if ($this->getValue() == '' && $this->getElement(4) != '') {
             $this->setValue($this->getElement(4));
-
         }
 
-        // ----- build select
-        $select = new rex_select();
-        $select->setId($this->getHTMLId() . '-s');
-
         if ($multiple) {
-
             $size = (int) $this->getElement(9);
-            if ($size < 1 || $multiple == 0) {
-                $size = 1;
+            if ($size < 2) {
+                $size = count($options);
             }
-
-            $select->setName($this->getFieldName() . '[]');
-            $select->setMultiple();
-            $select->setSize($size);
-
-            foreach ($options as $k => $v) {
-                $select->addOption($v, $k);
-
-            }
-
-            $form_class = 'formselect formselect-multiple-' . $size;
-
-            if (!is_array($this->getValue())) {
-                $this->setValue(explode(',', stripslashes($this->getValue())));
-
-            }
-
-            foreach ($this->getValue() as $v) {
-                $select->setSelected($v);
-
-            }
-
-            $this->setValue(implode(',', $this->getValue()));
-
-
         } else {
-
-            $select->setName($this->getFieldName());
-            $select->setSize(1);
+            $size = 1;
 
             // mit --- keine auswahl ---
             if ($this->getElement(6) == 1) {
-                $select->addOption($this->getElement(7), '0');
-
+                $options = array_merge(array('0' => $this->getElement(7)), $options);
             }
-
-            foreach ($options as $k => $v) {
-                $select->addOption($v, $k);
-
-            }
-
-            $select->setSelected( stripslashes($this->getValue()));
-
-            $form_class = 'formselect';
         }
 
-
-        $wc = '';
-        if (isset($this->params['warning'][$this->getId()])) {
-            $wc = $this->params['warning'][$this->getId()];
+        if (!is_array($this->getValue())) {
+            $this->setValue(explode(',', stripslashes($this->getValue())));
         }
-        $select->setStyle(' class="select ' . $wc . '"');
 
-        $this->params['form_output'][$this->getId()] = '
-            <p class="formselect' . $form_class . '"  id="' . $this->getHTMLId() . '">
-                <label class="select ' . $wc . '" for="' . $this->getHTMLId() . '-s" >' . rex_translate($this->getElement(2)) . '</label>
-                ' . $select->get() . '
-            </p>';
+        $this->params['form_output'][$this->getId()] = $this->parse('value.select.tpl.php', compact('options', 'multiple', 'size'));
+
+        $this->setValue(implode(',', $this->getValue()));
 
         $this->params['value_pool']['email'][$this->getElement(1)] = stripslashes($this->getValue());
         if ($this->getElement(5) != 'no_db') {
@@ -122,7 +69,7 @@ class rex_xform_select_sql extends rex_xform_abstract
 
     function getDescription()
     {
-        return 'select_sql -> Beispiel: select_sql|label|Bezeichnung:|select id,name from table order by name|[defaultvalue]|[no_db]|1/0 Leeroption|Leeroptionstext|1/0 Multiple Feld';
+        return 'select_sql -> Beispiel: select_sql|label|Bezeichnung:|select id,name from table order by name|[defaultvalue]|[no_db]|1/0 Leeroption|Leeroptionstext|1/0 Multiple Feld|selectsize';
     }
 
 

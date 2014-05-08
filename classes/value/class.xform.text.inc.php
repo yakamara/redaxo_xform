@@ -18,45 +18,7 @@ class rex_xform_text extends rex_xform_abstract
             $this->setValue($this->getElement(3));
         }
 
-        $classes = ' ' . $this->getElement(5);
-
-        $wc = '';
-        if (isset($this->params['warning'][$this->getId()])) {
-            $wc = ' ' . $this->params['warning'][$this->getId()];
-        }
-
-        $placeholder = $this->getElement('placeholder');
-        if ($placeholder != '') {
-            $placeholder = ' placeholder="' . $placeholder . '"';
-        }
-
-        $required = $this->getElement('required');
-        if ($required != 0) {
-            $required = ' required="required"';
-        } else {
-            $required = '';
-        }
-
-        $pattern = $this->getElement('pattern');
-        if ($pattern != '') {
-            $pattern = ' pattern="' . $pattern . '"';
-        }
-
-        $readonly = $this->getElement('readonly');
-        if ($readonly != '') {
-            $readonly = ' readonly="readonly"';
-        }
-
-        $disabled = $this->getElement('disabled');
-        if ($disabled != '') {
-            $disabled = ' disabled="disabled"';
-        }
-
-        $this->params['form_output'][$this->getId()] = '
-            <p class="formtext formlabel-' . $this->getName() . '" id="' . $this->getHTMLId() . '">
-                <label class="text' . $wc . '" for="' . $this->getFieldId() . '" >' . $this->getLabel() . '</label>
-                <input type="text" class="text' . $classes . $wc . '" name="' . $this->getFieldName() . '" id="' . $this->getFieldId() . '" value="' . htmlspecialchars(stripslashes($this->getValue())) . '" ' . $placeholder . $required . $pattern . $disabled . ' />
-            </p>';
+        $this->params['form_output'][$this->getId()] = $this->parse('value.text.tpl.php');
 
         $this->params['value_pool']['email'][$this->getName()] = stripslashes($this->getValue());
         if ($this->getElement(4) != 'no_db') {

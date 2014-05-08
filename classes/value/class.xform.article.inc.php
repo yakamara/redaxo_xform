@@ -11,9 +11,9 @@ class rex_xform_article extends rex_xform_abstract
 
     function enterObject()
     {
-        $artikel = new rex_article;
-        if ( ($artikel->setArticleId($this->getElement(1)) )) {
-            $this->params['form_output'][$this->getId()] = '<div class="article" id="' . $this->getHTMLId() . '">' . $artikel->getArticle() . '</div>';
+        $article = new rex_article;
+        if ( ($article->setArticleId($this->getElement(1)) )) {
+            $this->params['form_output'][$this->getId()] = $this->parse('value.article.tpl.php', array('article' => $article));
         }
     }
 

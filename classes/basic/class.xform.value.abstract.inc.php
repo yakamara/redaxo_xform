@@ -128,6 +128,34 @@ class rex_xform_abstract
         return $text_decoded;
     }
 
+    function parse($template, $params = array())
+    {
+        global $REX;
+
+        extract($params);
+
+        ob_start();
+        include $this->params['this']->getTemplatePath($template);
+        return ob_get_clean();
+    }
+
+    function getAttributeElement($attribute, $boolean = false)
+    {
+        $element = $this->getElement($attribute);
+        if ($element) {
+            return ' ' . $attribute . '="' . ($boolean ? $attribute : htmlspecialchars($element)) . '"';
+        }
+        return '';
+    }
+
+    function getWarningClass()
+    {
+        if (isset($this->params['warning'][$this->getId()])) {
+            return ' ' . $this->params['warning'][$this->getId()];
+        }
+        return '';
+    }
+
     // ------------
 
     function loadParams(&$params, $elements = array())

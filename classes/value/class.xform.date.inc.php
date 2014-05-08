@@ -68,90 +68,34 @@ class rex_xform_date extends rex_xform_abstract
 
         $isodatum = sprintf('%04d-%02d-%02d', $year, $month, $day);
 
-        $wc = '';
-        if (isset($this->params['warning'][$this->getId()])) {
-            $wc = ' ' . $this->params['warning'][$this->getId()];
-        }
-
         $this->params['value_pool']['email'][$this->getName()] = $isodatum;
         $this->params['value_pool']['sql'][$this->getName()] = $isodatum;
 
 
         // ------------- year
 
-        $year_start = (int) $this->getElement(3);
-        $year_end = (int) $this->getElement(4);
-        if ($year_start == 0) {
-            $year_start = 1980;
+        $yearStart = (int) $this->getElement(3);
+        $yearEnd = (int) $this->getElement(4);
+        if ($yearStart == 0) {
+            $yearStart = 1980;
         }
-        if ($year_end == 0) {
-            $year_end = 2020;
+        if ($yearEnd == 0) {
+            $yearEnd = 2020;
         }
-        if ($year_end < $year_start) {
-            $year_end = $year_start;
+        if ($yearEnd < $yearStart) {
+            $yearEnd = $yearStart;
         }
-
-        $ysel = new rex_select;
-        $ysel->setName($this->getFieldName('year'));
-        $ysel->setStyle('" class="' . $wc);
-        $ysel->setId($this->getFieldId('year'));
-        $ysel->setSize(1);
-        $ysel->addOption('----', '0000');
-        for ($i = $year_start; $i <= $year_end; $i++) {
-            $ysel->addOption($i, $i);
-        }
-        $ysel->setSelected($year);
-        $year_out = $ysel->get();
-
-
-        // ------------- month
-
-        $msel = new rex_select;
-        $msel->setName($this->getFieldName('month'));
-        $msel->setStyle('" class="' . $wc);
-        $msel->setId($this->getFieldId('month'));
-        $msel->setSize(1);
-        $msel->addOption('--', '00');
-        for ($i = 1; $i < 13; $i++) {
-            $msel->addOption($i, $i);
-        }
-        $msel->setSelected($month);
-        $month_out = $msel->get();
-
-
-        // ------------- day
-
-        $dsel = new rex_select;
-        $dsel->setName($this->getFieldName('day'));
-        $dsel->setStyle('" class="' . $wc);
-        $dsel->setId($this->getFieldId('day'));
-        $dsel->setSize(1);
-        $dsel->addOption('--', '00');
-        for ($i = 1; $i < 32; $i++) {
-            $dsel->addOption($i, $i);
-        }
-        $dsel->setSelected($day);
-        $day_out = $dsel->get();
-
-        // -------------
-
-        $out = '
-        <p class="' . $this->getHTMLClass() . '" id="' . $this->getHTMLId() . '">
-                    <label class="select' . $wc . '" for="' . $this->getFieldId() . '" >' . $this->getLabel() . '</label>';
 
         $format = $this->getElement(5);
         if ($format == '') {
             $format = '###Y###-###M###-###D###';
         }
+        $format = preg_split('/(?<=###[YMD]###)(?=.)|(?<=.)(?=###[YMD]###)/', $format);
 
-        $format = str_replace('###Y###', $year_out, $format);
-        $format = str_replace('###M###', $month_out, $format);
-        $format = str_replace('###D###', $day_out, $format);
-
-        $out .= $format;
-        $out .= '</p>';
-
-        $this->params['form_output'][$this->getId()] = $out;
+        $this->params['form_output'][$this->getId()] = $this->parse(
+            array('value.date.tpl.php', 'value.datetime.tpl.php'),
+            compact('format', 'yearStart', 'yearEnd', 'year', 'month', 'day')
+        );
     }
 
 

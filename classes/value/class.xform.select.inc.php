@@ -11,21 +11,14 @@ class rex_xform_select extends rex_xform_abstract
 
     function enterObject()
     {
-
-        $multiple = false;
-        if ($this->getElement(6) == 1) {
-            $multiple = true;
-        }
-
-        $SEL = new rex_select();
-        $SEL->setId($this->getFieldId());
+        $multiple = $this->getElement(6) == 1;
 
         $value_encoded = $this->getElement(3);
         $value_encoded = $this->encodeChars(',', $value_encoded);
 
-        $options = explode(',', $value_encoded);
-
-        foreach ($options as $option_encoded) {
+        $rawOptions = explode(',', $value_encoded);
+        $options = array();
+        foreach ($rawOptions as $option_encoded) {
 
             $option = $this->encodeChars('=', $option_encoded);
 
@@ -45,24 +38,17 @@ class rex_xform_select extends rex_xform_abstract
             $t[0] = $this->decodeChars(',', $t[0]);
             $t[0] = $this->decodeChars('=', $t[0]);
 
-            $SEL->addOption($this->getLabelStyle($v), $k);
-            $sqlnames[$k] = $t[0];
+            $options[$k] = $v;
         }
 
         if ($multiple) {
             $size = (int) $this->getElement(7);
             if ($size < 2) {
-                $size = count($fields);
+                $size = count($rawOptions);
             }
-
-            $SEL->setName($this->getFieldName() . '[]');
-            $SEL->setSize($size);
-            $SEL->setMultiple(1);
         } else {
-            $SEL->setName($this->getFieldName());
-            $SEL->setSize(1);
+            $size = 1;
         }
-
 
         if (!$this->params['send'] && $this->getValue() == '' && $this->getElement(5) != '') {
             $this->setValue($this->getElement(5));
@@ -72,30 +58,14 @@ class rex_xform_select extends rex_xform_abstract
             $this->setValue(explode(',', $this->getValue()));
         }
 
-        foreach ($this->getValue() as $v) {
-            $SEL->setSelected($v);
-        }
+        $this->params['form_output'][$this->getId()] = $this->parse('value.select.tpl.php', compact('options', 'multiple', 'size'));
 
         $this->setValue(implode(',', $this->getValue()));
-
-        $wc = '';
-        if (isset($this->params['warning'][$this->getId()])) {
-            $wc = $this->params['warning'][$this->getId()];
-        }
-
-        $SEL->setStyle(' class="select ' . $wc . '"');
-
-        $this->params['form_output'][$this->getId()] = '
-            <p class="formselect ' . $this->getHTMLClass() . '" id="' . $this->getHTMLId() . '">
-            <label class="select ' . $wc . '" for="' . $this->getFieldId() . '" >' . $this->getLabel() . '</label>' .
-        $SEL->get() .
-            '</p>';
 
         $this->params['value_pool']['email'][$this->getName()] = $this->getValue();
         if ($this->getElement(4) != 'no_db') {
             $this->params['value_pool']['sql'][$this->getName()] = $this->getValue();
         }
-
     }
 
     function getDescription()

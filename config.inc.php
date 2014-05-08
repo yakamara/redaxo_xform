@@ -32,6 +32,9 @@ $REX['ADDON']['xform']['classpaths']['value'][] = $REX['INCLUDE_PATH'] . '/addon
 $REX['ADDON']['xform']['classpaths']['validate'][] = $REX['INCLUDE_PATH'] . '/addons/xform/classes/validate/';
 $REX['ADDON']['xform']['classpaths']['action'][] = $REX['INCLUDE_PATH'] . '/addons/xform/classes/action/';
 
+$REX['ADDON']['xform']['templatepaths'][] = $REX['INCLUDE_PATH'] . '/addons/xform/templates/';
+$REX['ADDON']['xform']['templatepaths'][] = rex_path::addonData('xform', 'templates/');
+
 include $REX['INCLUDE_PATH'] . '/addons/' . $mypage . '/classes/basic/class.rex_radio.inc.php';
 include $REX['INCLUDE_PATH'] . '/addons/' . $mypage . '/classes/basic/class.rex_xform_list.inc.php';
 include $REX['INCLUDE_PATH'] . '/addons/' . $mypage . '/classes/basic/class.rex_xform.inc.php';

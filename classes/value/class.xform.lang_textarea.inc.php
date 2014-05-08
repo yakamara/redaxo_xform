@@ -30,58 +30,13 @@ class rex_xform_lang_textarea extends rex_xform_abstract
 
         }
 
-        $wc = '';
-        if (isset($this->params['warning'][$this->getId()])) {
-            $wc = $this->params['warning'][$this->getId()];
-        }
-
-        $tmp = '
-        <div class="formtextarea formlangtextarea " id="' . $this->getHTMLId() . '">
-            <p><label class="textarea ' . $wc . '" for="' . $this->getFieldId() . '" >' . $this->getLabel() . '</label></p>
-            ';
-
-        $tmp .= '<div class="tabs">';
-        $tmp .= '<ul class="navi-tab">';
         foreach ($REX['CLANG'] as $l => $lang) {
-            $tmp .= '<li><a id="tab_a_' . $l . '" href="#tab_' . $l . '">' . $lang . '</a></li>';
-        }
-        $tmp .= '</ul>';
-
-        foreach ($REX['CLANG'] as $l => $lang) {
-            $t = '';
-            if (isset($text[$l])) {
-                $t = $text[$l];
+            if (!isset($text[$l])) {
+                $text[$l] = '';
             }
-
-            $tmp .= '<p class="tab" id="tab_' . $l . '">
-                <textarea class="textarea ' . $wc . '" name="' . $this->getFieldName($l) . '" id="' . $this->getFieldId($l) . '" cols="80" rows="10">' .
-                htmlspecialchars(stripslashes($t)) .
-                '</textarea>
-                </p>
-                ';
         }
 
-        $tmp .= '</div>';
-        $tmp .= '</div>';
-
-        $script = '
-            <script type="text/javascript">
-            jQuery(function($) {
-                            var tabContainers = $(\'#' . $this->getHTMLId() . ' div.tabs > p.tab\');
-
-                            $(\'#' . $this->getHTMLId() . ' div.tabs .navi-tab a\').click(function () {
-
-                                            tabContainers.hide().filter(this.hash).show();
-                                            $(\'#' . $this->getHTMLId() . ' .tabs .navi-tab a\').removeClass(\'active\');
-                                            $(this).addClass(\'active\');
-                                            return false;
-
-                            }).filter(\'#tab_a_' . $REX['CUR_CLANG'] . '\').click();
-
-            });
-            </script>';
-
-        $this->params['form_output'][$this->getId()] = $tmp . $script;
+        $this->params['form_output'][$this->getId()] = $this->parse('value.lang_textarea.tpl.php');
 
         $this->setValue(implode(self::getLangDivider(), $text));
 

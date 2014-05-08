@@ -16,11 +16,9 @@ class rex_xform_checkbox_sql extends rex_xform_abstract
 
         if (!is_array($this->getValue())) {
             $this->setValue(explode(',', stripslashes($this->getValue())));
-
         }
 
         $values = $this->getValue();
-
 
         // ----- query
         $sql = $this->getElement(3);
@@ -29,7 +27,7 @@ class rex_xform_checkbox_sql extends rex_xform_abstract
         $options_sql->debugsql = $this->params['debug'];
         $options = array();
         foreach ($options_sql->getArray($sql) as $option) {
-                $options[$option['id']] = $option['name'];
+            $options[$option['id']] = $option['name'];
         }
 
 
@@ -42,32 +40,13 @@ class rex_xform_checkbox_sql extends rex_xform_abstract
             }
         }
 
+        $this->params['form_output'][$this->getId()] = $this->parse('value.checkbox_sql.tpl.php', compact('options'));
+
         $this->setValue(implode(',', $proofed_values));
 
-        $wc = '';
-
-        // ----- build checkboxes
-
-        $html_checkboxes = array();
-        foreach ($options as $k => $v) {
-
-            $checked = '';
-            if (in_array($k, $proofed_values)) {
-                $checked = ' checked="checked"';
-            }
-
-            $html_checkboxes[] = '
-            <p class="formcheckbox formlabel-' . $this->getName($k) . '" id="' . $this->getHTMLId($k) . '">
-                <input type="checkbox" class="checkbox ' . $wc . '" name="' . $this->getFieldName() . '[]" id="' . $this->getFieldId($k) . '" value="' . $k . '" ' . $checked . ' />
-                <label class="checkbox ' . $wc . '" for="' . $this->getFieldId($k) . '" >' . $v . '</label>
-            </p>';
-
-        }
-
-        $this->params['form_output'][$this->getId()] = implode("\n", $html_checkboxes);
         $this->params['value_pool']['email'][$this->getName()] = implode(', ', $proofed_name_values);
         if ($this->getElement('no_db') != 1) {
-                $this->params['value_pool']['sql'][$this->getName()] = $this->getValue();
+            $this->params['value_pool']['sql'][$this->getName()] = $this->getValue();
         }
 
         return;
