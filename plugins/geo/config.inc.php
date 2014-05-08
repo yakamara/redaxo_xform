@@ -6,7 +6,7 @@
  * @author <a href="http://www.yakamara.de">www.yakamara.de</a>
  */
 
-$REX['ADDON']['xform']['classpaths']['value'][] = $REX['INCLUDE_PATH'] . '/addons/xform/plugins/geo/xform/value/';
+$REX['ADDON']['xform']['classpaths']['value'][] = $REX['INCLUDE_PATH'] . '/addons/xform/plugins/geo/classes/value/';
 
 if ($REX['REDAXO'] && !$REX['SETUP']) {
 
