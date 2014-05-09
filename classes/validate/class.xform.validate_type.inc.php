@@ -99,11 +99,6 @@ class rex_xform_validate_type extends rex_xform_validate_abstract
         return 'type -> prüft auf typ,beispiel: validate|type|label|int(oder float/numeric/string/email/url/date/datetime)|Fehlermeldung|[1= Feld darf auch leer sein]';
     }
 
-    function getLongDescription()
-    {
-        return 'Hiermit lassen sich verschiedenste Typen prüfen. von int/float/numeric/string/email/url/date. mit dem letzen optionalen Parameter kann man definieren ob ein leerer Wert akzeptiert wird.';
-    }
-
     function getDefinitions()
     {
 

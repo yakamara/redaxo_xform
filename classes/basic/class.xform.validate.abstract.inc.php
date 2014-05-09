@@ -49,11 +49,6 @@ class rex_xform_validate_abstract
         return '';
     }
 
-    function getLongDescription()
-    {
-        return '';
-    }
-
     function getDefinitions()
     {
         return array();

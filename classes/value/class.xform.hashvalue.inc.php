@@ -36,19 +36,6 @@ class rex_xform_hashvalue extends rex_xform_abstract
         return 'hashvalue -> Beispiel: hashvalue|name|[title]|field|(md5/sha1/sha512/...)|[salt]|[no_db]';
     }
 
-    function getLongDescription()
-    {
-        return '
-            Erzeug einen Hash-Wert eines anderen Formularfeldes, wenn dieses nicht leer ist.
-
-            hashvalue|label|[bezeichnung]|field|(md5/sha1/sha512/...)|[salt]|[no_db]
-
-            Kann dazu eingesetzt werden den Wert aus einem no_db Feld zu übernehmen, daraus einen Hash zu erstellen und in die Datenbank zu schreiben. Ein neuer Hash-Wert wird nur erstellt, wenn das Ursprungsfeld nicht leer ist.
-
-            Mit dem salt kann dem Ursprungs-Wert eine Zeichenkette anhängen und gemeinsam gehasht werden.
-            ';
-    }
-
     function getDefinitions()
     {
         return array(

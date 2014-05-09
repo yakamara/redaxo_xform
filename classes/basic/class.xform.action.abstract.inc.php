@@ -36,11 +36,6 @@ class rex_xform_action_abstract
         return 'Es existiert keine Klassenbeschreibung';
     }
 
-    function getLongDescription()
-    {
-        return 'Es existiert keine ausfuehrliche Klassenbeschreibung';
-    }
-
     function getDefinitions()
     {
         return array();

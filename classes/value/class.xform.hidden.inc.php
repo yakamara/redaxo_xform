@@ -38,26 +38,4 @@ class rex_xform_hidden extends rex_xform_abstract
         ';
     }
 
-    public function getLongDescription()
-    {
-        return '
-        Hiermit können Werte fest als Wert zum Formular eingetragen werden z.B.
-
-        hidden|status|abgeschickt
-
-        Dieser Wert kann wie alle anderen Werte bernommen und in der Datenbank gepeichert, oder auch
-        im E-Mail Formular anzeigt werden.
-
-        Weiterhin gibt es mit "REQUEST" auch die Mglichkeit, Werte auf der Url oder einem
-        vorherigen Formular zu bernehmen.
-
-        hidden -> Beispiel: hidden|job_id|default_value|REQUEST|
-
-        Hier wird die job_id bernommen und direkt wieder ber das Formular mitversendet.
-
-        mit "no_db" wird definiert, dass bei einer eventuellen Datenbankspeicherung, dieser
-        Wert nicht bernommen wird.
-        ';
-    }
-
 }
