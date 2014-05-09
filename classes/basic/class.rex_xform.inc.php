@@ -469,7 +469,7 @@ class rex_xform
         return ob_get_clean();
     }
 
-    function getTypes()
+    static function getTypes()
     {
         return array('value', 'validate', 'action');
     }
