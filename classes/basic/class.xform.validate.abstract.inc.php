@@ -6,24 +6,14 @@
  * @author <a href="http://www.yakamara.de">www.yakamara.de</a>
  */
 
-class rex_xform_validate_abstract
+class rex_xform_validate_abstract extends rex_xform_base_abstract
 {
-
-    var $params = array();
-    var $obj;
-    var $elements;
     var $obj_array;
-    var $Objects; // die verschiedenen Value Objekte
-
-    function loadParams(&$params, $elements)
-    {
-        $this->params = &$params;
-        $this->elements = $elements;
-    }
 
     function setObjects(&$Objects)
     {
-        $this->obj = &$Objects;
+        parent::setObjects($Objects);
+
         $tmp_Objects = explode(',', $this->getElement(2));
 
         foreach ($tmp_Objects as $tmp_Object) {
@@ -42,25 +32,6 @@ class rex_xform_validate_abstract
     function enterObject()
     {
         return '';
-    }
-
-    function getDescription()
-    {
-        return '';
-    }
-
-    function getDefinitions()
-    {
-        return array();
-    }
-
-    function getElement($i)
-    {
-        if (!isset($this->elements[$i])) {
-            return '';
-        } else {
-            return $this->elements[$i];
-        }
     }
 
     function postValueAction()

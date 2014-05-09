@@ -6,12 +6,8 @@
  * @author <a href="http://www.yakamara.de">www.yakamara.de</a>
  */
 
-class rex_xform_abstract
+class rex_xform_abstract extends rex_xform_base_abstract
 {
-
-    var $params = array();
-    var $obj;
-    var $elements = array();
     var $element_values = array();
 
     var $id;
@@ -160,8 +156,7 @@ class rex_xform_abstract
 
     function loadParams(&$params, $elements = array())
     {
-        $this->params = &$params;
-        $this->elements = $elements;
+        parent::loadParams($params, $elements);
         $this->setLabel($this->getElement(2));
         $this->setName($this->getElement(1));
         $this->type = $this->getElement(0);
@@ -202,16 +197,6 @@ class rex_xform_abstract
         return '<span style="color:#f90">' . ($label) . '</span>';
     }
 
-    function setValueObjects($ValueObjects)
-    {
-        $this->obj = $ValueObjects;
-    }
-
-    function getValueObjects()
-    {
-        return $this->obj;
-    }
-
     // ------------ Trigger
 
     function enterObject()
@@ -236,34 +221,6 @@ class rex_xform_abstract
 
     function postAction()
     {
-    }
-
-    // ------------
-
-    function getElement($i)
-    {
-        if (!isset($this->elements[$i])) {
-            return '';
-        } else {
-            return $this->elements[$i];
-        }
-    }
-
-    function setElement($i, $value)
-    {
-        $this->elements[$i] = $value;
-    }
-
-    // ------------
-
-    function getDescription()
-    {
-        return 'Es existiert keine Klassenbeschreibung';
-    }
-
-    function getDefinitions()
-    {
-        return array();
     }
 
 }

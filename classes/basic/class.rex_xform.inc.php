@@ -13,6 +13,7 @@ class rex_xform
     {
         global $REX;
 
+        require_once $REX['INCLUDE_PATH'] . '/addons/xform/classes/basic/' . 'class.xform.base.abstract.inc.php';
         require_once $REX['INCLUDE_PATH'] . '/addons/xform/classes/basic/' . 'class.xform.value.abstract.inc.php';
         require_once $REX['INCLUDE_PATH'] . '/addons/xform/classes/basic/' . 'class.xform.action.abstract.inc.php';
         require_once $REX['INCLUDE_PATH'] . '/addons/xform/classes/basic/' . 'class.xform.validate.abstract.inc.php';
@@ -249,7 +250,7 @@ class rex_xform
 
         foreach ($this->objparams['values'] as $ValueObject) {
             $ValueObject->setValue($this->getFieldValue($ValueObject->getId(), '', $ValueObject->getName()));
-            $ValueObject->setValueObjects($this->objparams['values']);
+            $ValueObject->setObjects($this->objparams['values']);
         }
 
         // *************************************************** OBJECT PARAM "send"
@@ -398,6 +399,10 @@ class rex_xform
     static function includeClass($type_id, $class)
     {
         global $REX;
+
+        if (!class_exists('rex_xform_base_abstract')) {
+            require_once $REX['INCLUDE_PATH'] . '/addons/xform/classes/basic/class.xform.base.abstract.inc.php';
+        }
 
         $classname = 'rex_xform_' . $type_id . '_' . $class;
         $filename  = 'class.xform.' . $type_id . '.' . $class . '.inc.php';
@@ -551,6 +556,10 @@ class rex_xform
 
         global $REX;
 
+        if (!class_exists('rex_xform_base_abstract')) {
+            require_once $REX['INCLUDE_PATH'] . '/addons/xform/classes/basic/class.xform.base.abstract.inc.php';
+        }
+
         $html = '
 <ul class="xform root">
     <li class="type value"><strong class="toggler">Value</strong>
@@ -558,7 +567,7 @@ class rex_xform
     ';
 
         if (!class_exists('rex_xform_abstract')) {
-        require_once $REX['INCLUDE_PATH'] . '/addons/xform/classes/basic/class.xform.value.abstract.inc.php';
+            require_once $REX['INCLUDE_PATH'] . '/addons/xform/classes/basic/class.xform.value.abstract.inc.php';
         }
 
         foreach ($REX['ADDON']['xform']['classpaths']['value'] as $pos => $value_path) {
@@ -601,7 +610,7 @@ class rex_xform
     ';
 
         if (!class_exists('rex_xform_validate_abstract')) {
-        require_once $REX['INCLUDE_PATH'] . '/addons/xform/classes/basic/class.xform.validate.abstract.inc.php';
+            require_once $REX['INCLUDE_PATH'] . '/addons/xform/classes/basic/class.xform.validate.abstract.inc.php';
         }
 
         foreach ($REX['ADDON']['xform']['classpaths']['validate'] as $pos => $validate_path) {
@@ -645,7 +654,7 @@ class rex_xform
     ';
 
         if (!class_exists('rex_xform_action_abstract')) {
-        require_once $REX['INCLUDE_PATH'] . '/addons/xform/classes/basic/class.xform.action.abstract.inc.php';
+            require_once $REX['INCLUDE_PATH'] . '/addons/xform/classes/basic/class.xform.action.abstract.inc.php';
         }
 
         foreach ($REX['ADDON']['xform']['classpaths']['action'] as $pos => $action_path) {
@@ -724,10 +733,14 @@ class rex_xform
 
         $return = array();
 
+        if (!class_exists('rex_xform_base_abstract')) {
+            require_once $REX['INCLUDE_PATH'] . '/addons/xform/classes/basic/class.xform.base.abstract.inc.php';
+        }
+
         // Value
 
         if (!class_exists('rex_xform_abstract')) {
-        require_once $REX['INCLUDE_PATH'] . '/addons/xform/classes/basic/class.xform.value.abstract.inc.php';
+            require_once $REX['INCLUDE_PATH'] . '/addons/xform/classes/basic/class.xform.value.abstract.inc.php';
         }
 
         foreach ($REX['ADDON']['xform']['classpaths']['value'] as $pos => $value_path) {
@@ -757,7 +770,7 @@ class rex_xform
         // Validate
 
         if (!class_exists('rex_xform_validate_abstract')) {
-        require_once $REX['INCLUDE_PATH'] . '/addons/xform/classes/basic/class.xform.validate.abstract.inc.php';
+            require_once $REX['INCLUDE_PATH'] . '/addons/xform/classes/basic/class.xform.validate.abstract.inc.php';
         }
 
         foreach ($REX['ADDON']['xform']['classpaths']['validate'] as $pos => $validate_path) {
@@ -787,7 +800,7 @@ class rex_xform
         // Action
 
         if (!class_exists('rex_xform_action_abstract')) {
-        require_once $REX['INCLUDE_PATH'] . '/addons/xform/classes/basic/class.xform.action.abstract.inc.php';
+            require_once $REX['INCLUDE_PATH'] . '/addons/xform/classes/basic/class.xform.action.abstract.inc.php';
         }
 
         foreach ($REX['ADDON']['xform']['classpaths']['action'] as $pos => $action_path) {
