@@ -43,8 +43,8 @@ class rex_xform_validate_compare extends rex_xform_validate_abstract
             'type' => 'validate',
             'name' => 'compare',
             'values' => array(
-                array( 'type' => 'select_name', 'label' => 'Name der 1. Felder' ),
-                array( 'type' => 'select_name', 'label' => 'Name der 1. Felder'),
+                array( 'type' => 'select_name', 'label' => 'Name des 1. Feldes' ),
+                array( 'type' => 'select_name', 'label' => 'Name des 2. Feldes'),
                 array( 'type' => 'text',   'label' => 'Fehlermeldung'),
             ),
             'description' => '2 Felder werden miteinander verglichen',
