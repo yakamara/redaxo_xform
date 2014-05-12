@@ -10,16 +10,16 @@ $sql = rex_sql::factory();
 
 $sql->setQuery('CREATE TABLE IF NOT EXISTS `' . $REX['TABLE_PREFIX'] . 'xform_table` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
-    `status` tinyint(4) NOT NULL,
+    `status` tinyint(1) NOT NULL,
     `table_name` varchar(100) NOT NULL,
     `name` varchar(100) NOT NULL,
     `description` text NOT NULL,
     `list_amount` tinyint(3) unsigned NOT NULL DEFAULT 50,
     `prio` int(11) NOT NULL,
-    `search` tinyint(4) NOT NULL,
-    `hidden` tinyint(4) NOT NULL,
-    `export` tinyint(4) NOT NULL,
-    `import` tinyint(4) NOT NULL,
+    `search` tinyint(1) NOT NULL,
+    `hidden` tinyint(1) NOT NULL,
+    `export` tinyint(1) NOT NULL,
+    `import` tinyint(1) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE(`table_name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
@@ -41,8 +41,8 @@ $sql->setQuery('CREATE TABLE IF NOT EXISTS `' . $REX['TABLE_PREFIX'] . 'xform_fi
     `f7` text NOT NULL,
     `f8` text NOT NULL,
     `f9` text NOT NULL,
-    `list_hidden` tinyint(4) NOT NULL,
-    `search` tinyint(4) NOT NULL,
+    `list_hidden` tinyint(1) NOT NULL,
+    `search` tinyint(1) NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
