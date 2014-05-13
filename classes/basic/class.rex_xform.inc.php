@@ -405,7 +405,7 @@ class rex_xform
         }
 
         $classname = 'rex_xform_' . $type_id . '_' . $class;
-        $filename  = 'class.xform.' . $type_id . '.' . $class . '.inc.php';
+        $filename  = 'class.xform.' . $type_id . '_' . $class . '.inc.php';
         switch ($type_id) {
             case 'value':
                 if (!class_exists('rex_xform_abstract')) {
