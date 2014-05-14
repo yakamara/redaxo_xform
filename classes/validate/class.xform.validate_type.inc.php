@@ -15,13 +15,13 @@ class rex_xform_validate_type extends rex_xform_validate_abstract
             $Object = $this->obj_array[0];
 
             // Wenn Feld leer ist - auch ok
-            if ($this->getElement(5) == 1 && $Object->getValue() == '') {
+            if ($this->getElement('required') == 1 && $Object->getValue() == '') {
                 return;
             }
 
             $w = false;
 
-            switch (trim($this->getElement(3))) {
+            switch (trim($this->getElement('type'))) {
                 case 'int':
                     $xsRegEx_int = "/^[0-9]+$/i";
                     if (preg_match($xsRegEx_int, $Object->getValue()) == 0) {
@@ -86,7 +86,7 @@ class rex_xform_validate_type extends rex_xform_validate_abstract
 
             if ($w) {
                     $this->params['warning'][$Object->getId()] = $this->params['error_class'];
-                    $this->params['warning_messages'][$Object->getId()] = $this->getElement(4);
+                    $this->params['warning_messages'][$Object->getId()] = $this->getElement('message');
 
             }
 
@@ -106,10 +106,10 @@ class rex_xform_validate_type extends rex_xform_validate_abstract
                 'type' => 'validate',
                 'name' => 'type',
                 'values' => array(
-                    array( 'type' => 'select_name', 'label' => 'Name' ),
-                    array( 'type' => 'select',    'label' => 'Prüfung nach:', 'default' => '', 'definition' => 'int,float,numeric,string,email,url,date,datetime' ),
-                    array( 'type' => 'text',    'label' => 'Fehlermeldung'),
-                    array( 'type' => 'boolean',    'label' => 'Feld muss nicht ausgefüllt werden', 'default' => 0 ),
+                    'name'     => array( 'type' => 'select_name', 'label' => 'Name' ),
+                    'type'     => array( 'type' => 'select',    'label' => 'Prüfung nach:', 'default' => '', 'definition' => 'int,float,numeric,string,email,url,date,datetime' ),
+                    'message'  => array( 'type' => 'text',    'label' => 'Fehlermeldung'),
+                    'required' => array( 'type' => 'boolean',    'label' => 'Feld muss nicht ausgefüllt werden', 'default' => 0 ),
                 ),
                 'description' => 'Es kann nach verschiedenen Typen geprüft werden (int/float/numeric/string/email/url/date)',
                 'famous' => true

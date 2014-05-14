@@ -53,10 +53,10 @@ class rex_xform_index extends rex_xform_abstract
             'type' => 'value',
             'name' => 'index',
             'values' => array(
-                array( 'type' => 'name',   'label' => 'Feld' ),
-                array( 'type' => 'names',  'label' => 'Names, kommasepariert'),
-                array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 0),
-                array( 'type' => 'select',  'label' => 'Opt. Codierfunktion', 'default' => '0', 'definition' => 'Keine Funktion=,md5,sha1' ),
+                'name'     => array( 'type' => 'name',   'label' => 'Feld' ),
+                'names'    => array( 'type' => 'names',  'label' => 'Names, kommasepariert'),
+                'no_db'    => array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 0),
+                'function' => array( 'type' => 'select',  'label' => 'Opt. Codierfunktion', 'default' => '0', 'definition' => 'Keine Funktion=,md5,sha1' ),
             ),
             'description' => 'Erstellt einen Index über Felder/Labels, die man selbst festlegen kann.',
             'dbtype' => 'text'

@@ -17,7 +17,7 @@ class rex_xform_validate_email extends rex_xform_validate_abstract
                     if ( !preg_match("#^[\w.+-]{2,}\@[\w.-]{2,}\.[a-z]{2,6}$#", $Object->getValue()) ) {
                         $this->params['warning'][$Object->getId()] = $this->params['error_class'];
         }
-                        $this->params['warning_messages'][$Object->getId()] = $this->getElement(3);
+                        $this->params['warning_messages'][$Object->getId()] = $this->getElement('message');
                     }
                 }
             }
@@ -34,8 +34,8 @@ class rex_xform_validate_email extends rex_xform_validate_abstract
             'type' => 'validate',
             'name' => 'email',
             'values' => array(
-                array( 'type' => 'select_name',     'label' => 'Name' ),
-                array( 'type' => 'text',      'label' => 'Fehlermeldung'),
+                'name'    => array( 'type' => 'select_name', 'label' => 'Name' ),
+                'message' => array( 'type' => 'text',        'label' => 'Fehlermeldung'),
             ),
             'description' => 'Hiermit wird ein Label überprüft ob es eine E-Mail ist',
         );

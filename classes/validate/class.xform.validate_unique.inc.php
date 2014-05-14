@@ -14,11 +14,11 @@ class rex_xform_validate_unique extends rex_xform_validate_abstract
         if ($this->params['send'] == '1') {
 
             $table = $this->params['main_table'];
-            if ($this->getElement(4) != '') {
-                $table = $this->getElement(4);
+            if ($this->getElement('table') != '') {
+                $table = $this->getElement('table');
             }
 
-            $fields = explode(',', $this->getElement(2));
+            $fields = explode(',', $this->getElement('name'));
             $qfields = array();
             foreach ($this->obj as $o) {
                 if (in_array($o->getName(), $fields)) {
@@ -33,8 +33,8 @@ class rex_xform_validate_unique extends rex_xform_validate_abstract
 
             // all fields available ?
             if (count($qfields) != count($fields)) {
-                $this->params['warning'][] = $this->getElement(3);
-                $this->params['warning_messages'][] = $this->getElement(3);
+                $this->params['warning'][] = $this->getElement('message');
+                $this->params['warning_messages'][] = $this->getElement('message');
                 return;
             }
 
@@ -49,7 +49,7 @@ class rex_xform_validate_unique extends rex_xform_validate_abstract
                 foreach ($qfields as $qfield_id => $qfield_name) {
                     $this->params['warning'][$qfield_id] = $this->params['error_class'];
                 }
-                $this->params['warning_messages'][] = $this->getElement(3);
+                $this->params['warning_messages'][] = $this->getElement('message');
             }
 
             return;
@@ -67,9 +67,9 @@ class rex_xform_validate_unique extends rex_xform_validate_abstract
             'type' => 'validate',
             'name' => 'unique',
             'values' => array(
-                array( 'type' => 'select_names', 'label' => 'Name' ),
-                array( 'type' => 'text',      'label' => 'Fehlermeldung'),
-                array( 'type' => 'text',      'label' => 'Tabelle [opt]'),
+                'name'    => array( 'type' => 'select_names', 'label' => 'Name' ),
+                'message' => array( 'type' => 'text',      'label' => 'Fehlermeldung'),
+                'table'   => array( 'type' => 'text',      'label' => 'Tabelle [opt]'),
             ),
             'description' => 'Hiermit geprüft, ob ein Wert bereits vorhanden ist.',
         );

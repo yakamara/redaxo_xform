@@ -52,10 +52,10 @@ class rex_xform_datestamp extends rex_xform_abstract
             'type' => 'value',
             'name' => 'datestamp',
             'values' => array(
-                array( 'type' => 'name',   'label' => 'Name' ),
-                array( 'type' => 'text',    'label' => 'Format [YmdHis/U/dmy/mysql]'),
-                array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 0),
-                array( 'type' => 'select',  'label' => 'Wann soll Wert gesetzt werden', 'default' => '0', 'definition' => 'immer=0,nur wenn leer=1' ),
+                'name'  =>  array( 'type' => 'name',   'label' => 'Name' ),
+                'label' => array( 'type' => 'text',    'label' => 'Format [YmdHis/U/dmy/mysql]'),
+                'no_db' => array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 0),
+                'only_empty' => array( 'type' => 'select',  'label' => 'Wann soll Wert gesetzt werden', 'default' => '0', 'definition' => 'immer=0,nur wenn leer=1' ),
             ),
             'description' => 'Zeitstempel.',
             'dbtype' => 'varchar(255)'

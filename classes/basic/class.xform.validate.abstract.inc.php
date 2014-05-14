@@ -6,7 +6,7 @@
  * @author <a href="http://www.yakamara.de">www.yakamara.de</a>
  */
 
-class rex_xform_validate_abstract extends rex_xform_base_abstract
+abstract class rex_xform_validate_abstract extends rex_xform_base_abstract
 {
     var $obj_array;
 
@@ -27,6 +27,11 @@ class rex_xform_validate_abstract extends rex_xform_base_abstract
             }
         }
 
+    }
+
+    protected function getElementMappingOffset()
+    {
+        return 2;
     }
 
     function enterObject()

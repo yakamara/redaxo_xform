@@ -26,7 +26,7 @@ if (count($fields) > 0) {
             }
             $concat = 'CONCAT(' . implode(' , ",", ', $fs) . ') as address';
 
-            $pos_fields = explode(',', $fields[$field]['f2']);
+            $pos_fields = explode(',', $fields[$field]['label']);
             if (count($pos_fields) == 2) {
                 $pos_lng = $pos_fields[0];
                 $pos_lat = $pos_fields[1];
@@ -46,7 +46,7 @@ if (count($fields) > 0) {
             $data_lng = rex_request('geo_lng', 'string');
             $data_lat = rex_request('geo_lat', 'string');
             $data_id = rex_request('geo_id', 'int', 0);
-            $pos_fields = explode(',', $fields[$field]['f2']);
+            $pos_fields = explode(',', $fields[$field]['label']);
             if (count($pos_fields) == 2) {
                 $pos_lng = $pos_fields[0];
                 $pos_lat = $pos_fields[1];

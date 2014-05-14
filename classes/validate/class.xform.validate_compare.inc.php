@@ -12,8 +12,8 @@ class rex_xform_validate_compare extends rex_xform_validate_abstract
     function enterObject()
     {
         if ($this->params['send'] == '1') {
-            $field_1 = $this->getElement(2);
-            $field_2 = $this->getElement(3);
+            $field_1 = $this->getElement('name');
+            $field_2 = $this->getElement('name2');
             foreach ($this->obj as $o) {
                 if ($o->getName() == $field_1) {
                     $id_1    = !isset($id_1)    ? $o->getId()    : $id_1;
@@ -27,7 +27,7 @@ class rex_xform_validate_compare extends rex_xform_validate_abstract
             if ($value_1 != $value_2) {
                 $this->params['warning'][$id_1] = $this->params['error_class'];
                 $this->params['warning'][$id_2] = $this->params['error_class'];
-                $this->params['warning_messages'][$id_1] = $this->getElement(4);
+                $this->params['warning_messages'][$id_1] = $this->getElement('message');
             }
         }
     }
@@ -43,9 +43,9 @@ class rex_xform_validate_compare extends rex_xform_validate_abstract
             'type' => 'validate',
             'name' => 'compare',
             'values' => array(
-                array( 'type' => 'select_name', 'label' => 'Name des 1. Feldes' ),
-                array( 'type' => 'select_name', 'label' => 'Name des 2. Feldes'),
-                array( 'type' => 'text',   'label' => 'Fehlermeldung'),
+                'name'    => array( 'type' => 'select_name', 'label' => 'Name des 1. Feldes' ),
+                'name2'   => array( 'type' => 'select_name', 'label' => 'Name des 2. Feldes'),
+                'message' => array( 'type' => 'text',        'label' => 'Fehlermeldung'),
             ),
             'description' => '2 Felder werden miteinander verglichen',
         );

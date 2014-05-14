@@ -61,8 +61,8 @@ class rex_xform_fieldset extends rex_xform_abstract
             'type' => 'value',
             'name' => 'fieldset',
             'values' => array(
-                array( 'type' => 'name',  'value' => '' ),
-                array( 'type' => 'text',  'label' => 'Bezeichnung'),
+                'name'  => array( 'type' => 'name',  'value' => '' ),
+                'label' => array( 'type' => 'text',  'label' => 'Bezeichnung'),
             ),
             'description' => 'hiermit kann man Bereiche in der Verwaltung erstellen.',
             'dbtype' => 'text'

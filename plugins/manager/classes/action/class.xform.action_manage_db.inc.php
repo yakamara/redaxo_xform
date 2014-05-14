@@ -46,6 +46,28 @@ class rex_xform_action_manage_db extends rex_xform_action_abstract
             return false;
         }
 
+        $columns = array();
+        foreach (rex_sql::showColumns($main_table) as $column) {
+            $columns[$column['name']] = true;
+        }
+        $alterTable = array();
+        foreach ($this->params['value_pool']['sql'] as $field => $value) {
+            if ($value != '' && !isset($columns[$field])) {
+                $alterTable[] = 'ADD `' . mysql_real_escape_string($field) . '` TEXT NOT NULL';
+                $columns[$field] = true;
+            }
+            /*if (!$value && isset($columns[$field])) {
+                $sql->setQuery('SELECT 1 FROM `' . mysql_real_escape_string($main_table) . '` WHERE `' . mysql_real_escape_string($field) . '` LIMIT 1');
+                if (!$sql->getRows()) {
+                    $alterTable[] = 'DROP `' . mysql_real_escape_string($field) . '`';
+                    unset($columns[$field]);
+                }
+            }*/
+        }
+        if ($alterTable) {
+            $sql->setQuery('ALTER TABLE `' . mysql_real_escape_string($main_table) . '` ' . implode(',', $alterTable));
+        }
+
         $sql->setTable($main_table);
 
         $where = '';
@@ -55,7 +77,9 @@ class rex_xform_action_manage_db extends rex_xform_action_abstract
 
         // SQL Objekt mit Werten f�llen
         foreach ($this->params['value_pool']['sql'] as $key => $value) {
-            $sql->setValue($key, $value);
+            if (isset($columns[$key])) {
+                $sql->setValue($key, $value);
+            }
             if ($where != '') {
                 $where = str_replace('###' . $key . '###', addslashes($value), $where);
             }
@@ -81,11 +105,6 @@ class rex_xform_action_manage_db extends rex_xform_action_abstract
 
         return;
 
-    }
-
-    function getDescription()
-    {
-        return 'action|manage_db|tblname|[where]';
     }
 
 }

@@ -21,13 +21,13 @@ class rex_xform_validate_size_range extends rex_xform_validate_abstract
             $w = false;
 
             $minsize = -1;
-            if ($this->getElement(3) != '') {
-                $minsize = (int) $this->getElement(3);
+            if ($this->getElement('min') != '') {
+                $minsize = (int) $this->getElement('min');
             }
 
             $maxsize = -1;
-            if ($this->getElement(4) != '') {
-                $maxsize = (int) $this->getElement(4);
+            if ($this->getElement('max') != '') {
+                $maxsize = (int) $this->getElement('max');
             }
 
             $size = strlen($this->obj_array[0]->getValue());
@@ -43,7 +43,7 @@ class rex_xform_validate_size_range extends rex_xform_validate_abstract
             if ($w) {
                 $id = $this->obj_array[0]->getId();
                 $this->params['warning'][$id] = $this->params['error_class'];
-                $this->params['warning_messages'][$id] = $this->getElement(5);
+                $this->params['warning_messages'][$id] = $this->getElement('message');
             }
         }
     }
@@ -59,10 +59,10 @@ class rex_xform_validate_size_range extends rex_xform_validate_abstract
             'type' => 'validate',
             'name' => 'size_range',
             'values' => array(
-                array( 'type' => 'select_name', 'label' => 'Name' ),
-                array( 'type' => 'text', 'label' => 'Minimale Anzahl der Zeichen (opt)'),
-                array( 'type' => 'text', 'label' => 'Maximale Anzahl der Zeichen (opt)'),
-                array( 'type' => 'text', 'label' => 'Fehlermeldung'),
+                'name'    => array( 'type' => 'select_name', 'label' => 'Name' ),
+                'min'     => array( 'type' => 'text', 'label' => 'Minimale Anzahl der Zeichen (opt)'),
+                'max'     => array( 'type' => 'text', 'label' => 'Maximale Anzahl der Zeichen (opt)'),
+                'message' => array( 'type' => 'text', 'label' => 'Fehlermeldung'),
             ),
             'description' => 'Hiermit wird ein Name überprüft ob er eine bestimmte Anzahl von Zeichen hat',
         );

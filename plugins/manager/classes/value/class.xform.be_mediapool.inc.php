@@ -37,9 +37,9 @@ class rex_xform_be_mediapool extends rex_xform_abstract
             'type' => 'value',
             'name' => 'be_mediapool',
             'values' => array(
-                array( 'type' => 'name',   'label' => 'Name' ),
-                array( 'type' => 'text',    'label' => 'Bezeichnung'),
-                array( 'type' => 'text',     'label' => 'Defaultwert'),
+                'name' => array( 'type' => 'name',   'label' => 'Name' ),
+                'label' => array( 'type' => 'text',    'label' => 'Bezeichnung'),
+                'default' => array( 'type' => 'text',     'label' => 'Defaultwert'),
             ),
             'description' => 'Mediafeld, welches eine Datei aus dem Medienpool holt',
             'dbtype' => 'text'

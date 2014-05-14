@@ -174,7 +174,7 @@ class rex_xform_manager_table
 
         $c = array();
         foreach ($ga as $v) {
-            $c[$v['f1']] = $v;
+            $c[$v['name']] = $v;
         }
         return $c;
 

@@ -17,9 +17,9 @@ class rex_xform_validate_size extends rex_xform_validate_abstract
                 return;
             }
 
-            if (strlen($this->obj_array[0]->getValue()) != $this->getElement(3)) {
+            if (strlen($this->obj_array[0]->getValue()) != $this->getElement('size')) {
                 $this->params['warning'][$this->obj_array[0]->getId()] = $this->params['error_class'];
-                $this->params['warning_messages'][$this->obj_array[0]->getId()] = $this->getElement(4);
+                $this->params['warning_messages'][$this->obj_array[0]->getId()] = $this->getElement('message');
             }
         }
     }
@@ -35,9 +35,9 @@ class rex_xform_validate_size extends rex_xform_validate_abstract
             'type' => 'validate',
             'name' => 'size',
             'values' => array(
-                array( 'type' => 'select_name', 'label' => 'Name' ),
-                array( 'type' => 'text', 'label' => 'Anzahl der Zeichen'),
-                array( 'type' => 'text', 'label' => 'Fehlermeldung'),
+                'name'    => array( 'type' => 'select_name', 'label' => 'Name' ),
+                'size'    => array( 'type' => 'text', 'label' => 'Anzahl der Zeichen'),
+                'message' => array( 'type' => 'text', 'label' => 'Fehlermeldung'),
             ),
             'description' => 'Hiermit wird ein Label überprüft ob es eine bestimmte Anzahl von Zeichen hat',
         );

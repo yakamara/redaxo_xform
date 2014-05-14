@@ -117,10 +117,10 @@ class rex_xform_be_table extends rex_xform_abstract
             'type' => 'value',
             'name' => 'be_table',
             'values' => array(
-                array( 'type' => 'name',   'label' => 'Name' ),
-                array( 'type' => 'text',    'label' => 'Bezeichnung'),
-                array( 'type' => 'text',    'label' => 'Anzahl Spalten'),
-                array( 'type' => 'text',    'label' => 'Bezeichnung der Spalten (Menge,Preis,Irgendwas)'),
+                'name'    => array( 'type' => 'name',   'label' => 'Name' ),
+                'label'   => array( 'type' => 'text',    'label' => 'Bezeichnung'),
+                'size'    => array( 'type' => 'text',    'label' => 'Anzahl Spalten'),
+                'columns' => array( 'type' => 'text',    'label' => 'Bezeichnung der Spalten (Menge,Preis,Irgendwas)'),
             ),
             'description' => 'Eine Tabelle mit Infos',
             'dbtype' => 'text'

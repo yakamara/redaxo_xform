@@ -51,11 +51,11 @@ class rex_xform_be_medialist extends rex_xform_abstract
             'type' => 'value',
             'name' => 'be_medialist',
             'values' => array(
-                array( 'type' => 'name',   'label' => 'Name' ),
-                array( 'type' => 'text',   'label' => 'Bezeichnung'),
-                array( 'type' => 'text',   'label' => 'Preview (0/1) (opt)'),
-                array( 'type' => 'text',   'label' => 'Medienpool Kategorie (opt)'),
-                array( 'type' => 'text',   'label' => 'Types (opt)')
+                'name'     => array( 'type' => 'name',   'label' => 'Name' ),
+                'label'    => array( 'type' => 'text',   'label' => 'Bezeichnung'),
+                'preview'  => array( 'type' => 'text',   'label' => 'Preview (0/1) (opt)'),
+                'category' => array( 'type' => 'text',   'label' => 'Medienpool Kategorie (opt)'),
+                'types'    => array( 'type' => 'text',   'label' => 'Types (opt)')
             ),
             'description' => 'Medialiste, welches Dateien aus dem Medienpool holt',
             'dbtype' => 'text'

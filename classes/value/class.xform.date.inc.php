@@ -110,12 +110,12 @@ class rex_xform_date extends rex_xform_abstract
             'type' => 'value',
             'name' => 'date',
             'values' => array(
-                array( 'type' => 'name', 'label' => 'Feld' ),
-                array( 'type' => 'text', 'label' => 'Bezeichnung'),
-                array( 'type' => 'text', 'label' => '[Startjahr]'),
-                array( 'type' => 'text', 'label' => '[Endjahr]'),
-                array( 'type' => 'text', 'label' => '[Anzeigeformat###Y###-###M###-###D###]]'),
-                array( 'type' => 'boolean', 'label' => 'Aktuelles Datum voreingestellt'),
+                'name'         => array( 'type' => 'name', 'label' => 'Feld' ),
+                'label'        => array( 'type' => 'text', 'label' => 'Bezeichnung'),
+                'year_start'   => array( 'type' => 'text', 'label' => '[Startjahr]'),
+                'year_end'     => array( 'type' => 'text', 'label' => '[Endjahr]'),
+                'format'       => array( 'type' => 'text', 'label' => '[Anzeigeformat###Y###-###M###-###D###]]'),
+                'current_date' => array( 'type' => 'boolean', 'label' => 'Aktuelles Datum voreingestellt'),
             ),
             'description' => 'Datums Eingabe',
             'dbtype' => 'date'

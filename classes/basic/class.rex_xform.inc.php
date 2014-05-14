@@ -74,6 +74,7 @@ class rex_xform
         $this->objparams['main_where'] = ''; // z.B. id=12
         $this->objparams['main_id'] = -1; // unique ID
         $this->objparams['main_table'] = ''; // for db and unique
+        $this->objparams['sql_object'] = null;
 
         $this->objparams['form_hiddenfields'] = array();
 
@@ -261,9 +262,11 @@ class rex_xform
         // *************************************************** PRE VALUES
         // Felder aus Datenbank auslesen - Sofern Aktualisierung
         if ($this->objparams['getdata']) {
-            $this->objparams['sql_object'] = rex_sql::factory();
-            $this->objparams['sql_object']->debugsql = $this->objparams['debug'];
-            $this->objparams['sql_object']->setQuery('SELECT * from ' . $this->objparams['main_table'] . ' WHERE ' . $this->objparams['main_where']);
+            if (!$this->objparams['sql_object'] instanceof rex_sql) {
+                $this->objparams['sql_object'] = rex_sql::factory();
+                $this->objparams['sql_object']->debugsql = $this->objparams['debug'];
+                $this->objparams['sql_object']->setQuery('SELECT * from ' . $this->objparams['main_table'] . ' WHERE ' . $this->objparams['main_where']);
+            }
             if ($this->objparams['sql_object']->getRows() > 1 || $this->objparams['sql_object']->getRows() == 0) {
                 $this->objparams['warning'][] = $this->objparams['Error-Code-EntryNotFound'];
                 $this->objparams['warning_messages'][] = $this->objparams['Error-Code-EntryNotFound'];
@@ -277,17 +280,13 @@ class rex_xform
         // Die Value Objekte werden mit den Werten befuellt die
         // aus dem Formular nach dem Abschicken kommen
         if (!($this->objparams['send'] == 1) && $this->objparams['main_where'] != '') {
-            //  && $this->objparams['form_type'] != "3"
-            for ($i = 0; $i < count($this->objparams['form_elements']); $i++) {
-                $element = $this->objparams['form_elements'][$i];
-                if (($element[0] != 'validate' && $element[0] != 'action') and $element[1] != '') {
+            foreach ($this->objparams['values'] as $i => $valueObject) {
+                if ($valueObject->getName()) {
                     if (isset($this->objparams['sql_object'])) {
-                        $this->setFieldValue($i, @addslashes($this->objparams['sql_object']->getValue($element[1])), '', $element[1]);
+                        $this->setFieldValue($i, @addslashes($this->objparams['sql_object']->getValue($valueObject->getName())), '', $valueObject->getName());
                     }
                 }
-                if ($element[0] != 'validate' && $element[0] != 'action') {
-                    $this->objparams['values'][$i]->setValue($this->getFieldValue($i, '', $this->objparams['values'][$i]->getName()));
-                }
+                $valueObject->setValue($this->getFieldValue($i, '', $valueObject->getName()));
             }
         }
 

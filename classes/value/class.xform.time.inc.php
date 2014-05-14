@@ -108,11 +108,11 @@ class rex_xform_time extends rex_xform_abstract
             'type' => 'value',
             'name' => 'time',
             'values' => array(
-                array( 'type' => 'name',   'label' => 'Feld' ),
-                array( 'type' => 'text',   'label' => 'Bezeichnung'),
-                array( 'type' => 'text',   'label' => '[Stundenraster]'),
-                array( 'type' => 'text',   'label' => '[Minutenraster]'),
-                array( 'type' => 'text',   'label' => '[Anzeigeformat ###H###h ###M###m]'),
+                'name'    => array( 'type' => 'name',   'label' => 'Feld' ),
+                'label'   => array( 'type' => 'text',   'label' => 'Bezeichnung'),
+                'hours'   => array( 'type' => 'text',   'label' => '[Stundenraster]'),
+                'minutes' => array( 'type' => 'text',   'label' => '[Minutenraster]'),
+                'format'  => array( 'type' => 'text',   'label' => '[Anzeigeformat ###H###h ###M###m]'),
             ),
             'description' => 'Uhrzeitfeld Eingabe',
             'dbtype' => 'time'

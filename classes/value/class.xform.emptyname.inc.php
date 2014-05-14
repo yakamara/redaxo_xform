@@ -25,7 +25,7 @@ class rex_xform_emptyname extends rex_xform_abstract
             'type' => 'value',
             'name' => 'emptyname',
             'values' => array(
-                array( 'type' => 'name',   'label' => 'Feld' ),
+                'name' => array( 'type' => 'name',   'label' => 'Feld' ),
             ),
             'description' => 'Ein leeres Feld - unsichtbar im Formular',
             'dbtype' => 'text'

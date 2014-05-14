@@ -26,8 +26,8 @@ class rex_xform_html extends rex_xform_abstract
             'type' => 'value',
             'name' => 'html',
             'values' => array(
-                array( 'type' => 'name',   'label' => 'Feld' ),
-                array( 'type' => 'textarea',    'label' => 'HTML'),
+                'name' => array( 'type' => 'name',   'label' => 'Feld' ),
+                'html' => array( 'type' => 'textarea',    'label' => 'HTML'),
             ),
             'description' => 'Nur für die Ausgabe gedacht',
             'dbtype' => 'text'

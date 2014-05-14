@@ -305,14 +305,14 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
             'type' => 'value',
             'name' => 'be_manager_relation',
             'values' => array(
-                array( 'type' => 'name',    'label' => 'Name' ),
-                array( 'type' => 'text',    'label' => 'Bezeichnung'),
-                array( 'type' => 'table',    'label' => 'Ziel Tabelle'),
-                array( 'type' => 'text',  'label' => 'Ziel Tabellenfeld zur Anzeige oder Zielfeld'),
-                array( 'type' => 'select',      'label' => 'Mehrfachauswahl', 'default' => '', 'definition' => 'select (single)=0,select (multiple)=1,popup (single)=2,popup (multiple)=3' ), // ,popup (multiple / relation)=4
-                array( 'type' => 'boolean',    'label' => 'Mit "Leer-Option"' ),
-                array( 'type' => 'text',    'label' => 'Fehlermeldung wenn "Leer-Option" nicht aktiviert ist.'),
-                array( 'type' => 'text', 'name' => 'boxheight',    'label' => 'Höhe der Auswahlbox'),
+                'name'         => array( 'type' => 'name',    'label' => 'Name' ),
+                'label'        => array( 'type' => 'text',    'label' => 'Bezeichnung'),
+                'table'        => array( 'type' => 'table',   'label' => 'Ziel Tabelle'),
+                'field'        => array( 'type' => 'text',    'label' => 'Ziel Tabellenfeld zur Anzeige oder Zielfeld'),
+                'type'         => array( 'type' => 'select',  'label' => 'Mehrfachauswahl', 'default' => '', 'definition' => 'select (single)=0,select (multiple)=1,popup (single)=2,popup (multiple)=3' ), // ,popup (multiple / relation)=4
+                'empty_option' => array( 'type' => 'boolean', 'label' => 'Mit "Leer-Option"' ),
+                'empty_value'  => array( 'type' => 'text',    'label' => 'Fehlermeldung wenn "Leer-Option" nicht aktiviert ist.'),
+                'size'         => array( 'type' => 'text', 'name' => 'boxheight',    'label' => 'Höhe der Auswahlbox'),
             ),
             'description' => 'Hiermit kann man Verkn&uuml;pfungen zu anderen Tabellen setzen',
             'dbtype' => 'text'
@@ -322,19 +322,19 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
     static function getListValue($params)
     {
 
-        if (!isset(self::$xform_list_values[$params['params']['field']['f3']]) || count(self::$xform_list_values[$params['params']['field']['f3']]) == 0) {
-            self::$xform_list_values[$params['params']['field']['f3']] = array();
+        if (!isset(self::$xform_list_values[$params['params']['field']['table']]) || count(self::$xform_list_values[$params['params']['field']['table']]) == 0) {
+            self::$xform_list_values[$params['params']['field']['table']] = array();
             $db = rex_sql::factory();
-            $db_array = $db->getDBArray('select id, `' . $params['params']['field']['f4'] . '` as name from ' . $params['params']['field']['f3'] . '');
+            $db_array = $db->getDBArray('select id, `' . $params['params']['field']['field'] . '` as name from ' . $params['params']['field']['table'] . '');
             foreach ($db_array as $entry) {
-                self::$xform_list_values[$params['params']['field']['f3']][$entry['id']] = $entry['name'];
+                self::$xform_list_values[$params['params']['field']['table']][$entry['id']] = $entry['name'];
             }
         }
 
         $return = array();
         foreach (explode(',', $params['value']) as $value) {
-            if (isset(self::$xform_list_values[$params['params']['field']['f3']][$value])) {
-                $return[] = self::$xform_list_values[$params['params']['field']['f3']][$value];
+            if (isset(self::$xform_list_values[$params['params']['field']['table']][$value])) {
+                $return[] = self::$xform_list_values[$params['params']['field']['table']][$value];
             }
         }
 

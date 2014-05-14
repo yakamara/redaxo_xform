@@ -6,7 +6,7 @@
  * @author <a href="http://www.yakamara.de">www.yakamara.de</a>
  */
 
-class rex_xform_abstract extends rex_xform_base_abstract
+abstract class rex_xform_abstract extends rex_xform_base_abstract
 {
     var $element_values = array();
 
@@ -160,6 +160,11 @@ class rex_xform_abstract extends rex_xform_base_abstract
         $this->setLabel($this->getElement(2));
         $this->setName($this->getElement(1));
         $this->type = $this->getElement(0);
+    }
+
+    protected function getElementMappingOffset()
+    {
+        return 1;
     }
 
     function setName($name)

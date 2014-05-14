@@ -44,8 +44,8 @@ class rex_xform_be_link extends rex_xform_abstract
             'type' => 'value',
             'name' => 'be_link',
             'values' => array(
-                array( 'type' => 'name',   'label' => 'Name' ),
-                array( 'type' => 'text',   'label' => 'Bezeichnung'),
+                'name' => array( 'type' => 'name',   'label' => 'Name' ),
+                'label' => array( 'type' => 'text',   'label' => 'Bezeichnung'),
             ),
             'description' => 'Hiermit kann man einen Link zu einem REDAXO Artikel setzen.',
             'dbtype' => 'text'

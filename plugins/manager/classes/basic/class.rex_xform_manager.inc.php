@@ -22,6 +22,8 @@ class rex_xform_manager
     var $dataPageFunctions = array();
     var $DataPageFilterFields = array();
 
+    static protected $reservedFieldColumns = array('id', 'table_name', 'prio', 'type_id', 'type_name', 'list_hidden', 'search');
+
     function rex_xform_manager()
     {
         global $REX;
@@ -149,7 +151,7 @@ class rex_xform_manager
          $field_names = array();
          foreach ($fields as $field) {
              if ($field['type_id'] == 'value') {
-                 $field_names[] = $field['f1'];
+                 $field_names[] = $field['name'];
              }
          }
 
@@ -378,10 +380,24 @@ class rex_xform_manager
 
              foreach ($fields as $field) {
 
+                 $classname = rex_xform::includeClass($field['type_id'], $field['type_name']);
+                 $cl = new $classname;
+                 $definitions = $cl->getDefinitions();
+
                  $values = array();
-                 for ($i = 1; $i < 10; $i++) {
-                     $values[$i] = $field['f' . $i];
+                 $i = 1;
+                 foreach ($definitions['values'] as $key => $_) {
+                     $key = $this->getFieldName($key, $field['type_id']);
+                     if (isset($field[$key]) && $field[$key]) {
+                         $values[] = $field[$key];
+                     } elseif (isset($field['f' . $i])) {
+                         $values[] = $field['f' . $i];
+                     } else {
+                         $values[] = '';
+                     }
+                     $i++;
                  }
+
                  if ($field['type_id'] == 'value') {
                      if (in_array($values[1], $this->getFilterFields())) {
                          // Feld vorhanden -> ignorieren -> hidden feld machen
@@ -405,9 +421,24 @@ class rex_xform_manager
                  //  rex_xform_show_formularblock=1
                  $text_block = '';
                  foreach ($fields as $field) {
-                     $values = array(); for ($i = 1; $i < 10; $i++) {
-                         $values[] = $field['f' . $i];
+                     $classname = rex_xform::includeClass($field['type_id'], $field['type_name']);
+                     $cl = new $classname;
+                     $definitions = $cl->getDefinitions();
+
+                     $values = array();
+                     $i = 1;
+                     foreach ($definitions['values'] as $key => $_) {
+                         $key = $this->getFieldName($key, $field['type_id']);
+                         if (isset($field[$key])) {
+                             $values[] = $field[$key];
+                         } elseif (isset($field['f' . $i])) {
+                             $values[] = $field['f' . $i];
+                         } else {
+                             $values[] = '';
+                         }
+                         $i++;
                      }
+
                      if ($field['type_id'] == 'value') {
                          $text_block .= "\n" . '$xform->setValueField("' . $field['type_name'] . '",array("' . implode('","', $values) . '"));';
                      } elseif ($field['type_id'] == 'validate') {
@@ -514,11 +545,11 @@ class rex_xform_manager
                  $addsql = '';
 
                  $checkboxes = '';
-                 $fields = array_merge(array(array('f1' => 'id', 'f2' => 'ID', 'type_id' => 'value', 'search' => 1, 'list_hidden' => 0)), $fields); // manually inject "id" into avail fields..
+                 $fields = array_merge(array(array('name' => 'id', 'label' => 'ID', 'type_id' => 'value', 'search' => 1, 'list_hidden' => 0)), $fields); // manually inject "id" into avail fields..
                  foreach ($fields as $field) {
                      if ($field['type_id'] == 'value' && $field['search'] == 1) {
-                         $checked = in_array($field['f1'], $rex_xform_searchfields) ? 'checked="checked"' : '';
-                         $checkboxes .= '<span class="xform-manager-searchfield"><input type="checkbox" name="rex_xform_searchfields[]" value="' . $field['f1'] . '" class="" id="' . $field['f1'] . '" ' . $checked . ' />&nbsp;<label for="' . $field['f1'] . '">' . rex_translate($field['f2']) . '</label></span>';
+                         $checked = in_array($field['name'], $rex_xform_searchfields) ? 'checked="checked"' : '';
+                         $checkboxes .= '<span class="xform-manager-searchfield"><input type="checkbox" name="rex_xform_searchfields[]" value="' . $field['name'] . '" class="" id="' . $field['name'] . '" ' . $checked . ' />&nbsp;<label for="' . $field['name'] . '">' . rex_translate($field['label']) . '</label></span>';
                      }
                  }
                  $suchform = '';
@@ -643,7 +674,7 @@ class rex_xform_manager
                      }
                      if (method_exists('rex_xform_' . $field['type_name'], 'getListValue')) {
                          $list->setColumnFormat(
-                             $field['f1'],
+                             $field['name'],
                              'custom',
                              array('rex_xform_' . $field['type_name'], 'getListValue'),
                              array('field' => $field, 'fields' => $fields));
@@ -652,10 +683,10 @@ class rex_xform_manager
 
                  if ($field['type_id'] == 'value') {
                      if ($field['list_hidden'] == 1) {
-                         $list->removeColumn($field['f1']);
+                         $list->removeColumn($field['name']);
                      } else {
-                         $list->setColumnSortable($field['f1']);
-                         $list->setColumnLabel($field['f1'], $field['f2']);
+                         $list->setColumnSortable($field['name']);
+                         $list->setColumnLabel($field['name'], $field['label']);
                      }
                  }
              }
@@ -693,9 +724,9 @@ class rex_xform_manager
              $gr->setQuery('select * from ' . $REX['TABLE_PREFIX'] . 'xform_field where type_name="be_manager_relation" and f3="' . $table['table_name'] . '"');
              $relation_fields = $gr->getArray();
              foreach ($relation_fields as $t) {
-                 $rel_id = 'rel-' . $t['table_name'] . '-' . $t['f1'];
+                 $rel_id = 'rel-' . $t['table_name'] . '-' . $t['name'];
 
-                 $relation_field_name = $t['table_name'] . '.' . $t['f1']; // '# <span title="['.$t["table_name"].'.'.$t["f1"].']">#</span>';
+                 $relation_field_name = $t['table_name'] . '.' . $t['name']; // '# <span title="['.$t["table_name"].'.'.$t["name"].']">#</span>';
                  if (strlen($relation_field_name) > 5) {
                      $relation_field_name = '<span title="' . $relation_field_name . '">..' . substr($relation_field_name, -5) . '</span>';
                  } else {
@@ -703,7 +734,7 @@ class rex_xform_manager
                  }
 
                  $list->addColumn($rel_id, '');
-                 $list->setColumnFormat($rel_id, 'custom', 'xform_data_list_callback', array('table' => $t['table_name'], 'field' => $t['f1']));
+                 $list->setColumnFormat($rel_id, 'custom', 'xform_data_list_callback', array('table' => $t['table_name'], 'field' => $t['name']));
                  $list->setColumnLabel($rel_id, $relation_field_name);
              }
 
@@ -844,7 +875,7 @@ class rex_xform_manager
         $max = $sql_felder->getRows();
         if ($max > 0) {
             for ($i = 0; $i < $sql_felder->getRows(); $i++) {
-                $felder .= '`' . $sql_felder->getValue('f1') . '`';
+                $felder .= '`' . $sql_felder->getValue('name') . '`';
                 if ($i < $max - 1) {
                     $felder .= ',';
                 }
@@ -1153,8 +1184,11 @@ class rex_xform_manager
 
          $xform->setValueField('text', array('prio', 'Prioritaet', (rex_xform_manager_table::getMaximumPrio($table['table_name']) + 10)));
 
-         $i = 0;
-         foreach ($types[$type_id][$type_name]['values'] as $v) {
+         $selectFields = array();
+         $i = 1;
+         foreach ($types[$type_id][$type_name]['values'] as $k => $v) {
+             $field = $this->getFieldName($k, $type_id);
+             $selectFields['f' . $i] = $field;
              $i++;
 
              switch ($v['type']) {
@@ -1162,7 +1196,7 @@ class rex_xform_manager
                  case 'name':
 
                      if ($func == 'edit' ) {
-                         $xform->setValueField('showvalue', array('f' . $i, 'Name'));
+                         $xform->setValueField('showvalue', array($field, 'Name'));
                      } else {
                          if (!isset($v['value']) && $type_real_field != '') {
                              $v['value'] = $type_real_field;
@@ -1170,10 +1204,10 @@ class rex_xform_manager
                              $v['value'] = '';
                          }
 
-                         $xform->setValueField('text', array('f' . $i, 'Name', $v['value']));
-                         $xform->setValidateField('notEmpty', array('f' . $i, $I18N->msg('validatenamenotempty')));
-                         $xform->setValidateField('preg_match', array('f' . $i, "/(([a-zA-Z])+([a-zA-Z0-9\_])*)/", $I18N->msg('validatenamepregmatch')));
-                         $xform->setValidateField('customfunction', array('f' . $i, 'rex_xform_manager_checkField', array('table_name' => $table['table_name']), $I18N->msg('validatenamecheck')));
+                         $xform->setValueField('text', array($field, 'Name', $v['value']));
+                         $xform->setValidateField('notEmpty', array($field, $I18N->msg('validatenamenotempty')));
+                         $xform->setValidateField('preg_match', array($field, "/(([a-zA-Z])+([a-zA-Z0-9\_])*)/", $I18N->msg('validatenamepregmatch')));
+                         $xform->setValidateField('customfunction', array($field, 'rex_xform_manager_checkField', array('table_name' => $table['table_name']), $I18N->msg('validatenamecheck')));
                      }
                      break;
 
@@ -1181,7 +1215,7 @@ class rex_xform_manager
                      // ToDo: Default Wert beachten
 
 
-                     $xform->setValueField('checkbox', array('f' . $i, $I18N->msg('donotsaveindb'), 'no_db', $v['default']));
+                     $xform->setValueField('checkbox', array($field, $I18N->msg('donotsaveindb'), 'no_db', $v['default']));
                      break;
 
                  case 'boolean':
@@ -1189,19 +1223,19 @@ class rex_xform_manager
                      if (!isset($v['default'])) {
                          $v['default'] = '';
                      }
-                     $xform->setValueField('checkbox', array('f' . $i, $v['label'], '', $v['default']));
+                     $xform->setValueField('checkbox', array($field, $v['label'], '', $v['default']));
                      break;
 
                  case 'select':
                      // select|gender|Geschlecht *|Frau=w;Herr=m|[no_db]|defaultwert|multiple=1
-                     $xform->setValueField('select', array('f' . $i, $v['label'], $v['definition'], '', $v['default'], 0));
+                     $xform->setValueField('select', array($field, $v['label'], $v['definition'], '', $v['default'], 0));
                      break;
 
                  case 'table':
                      // ist fest eingetragen, damit keine Dinge durcheinandergehen
 
                      if ($func == 'edit' ) {
-                         $xform->setValueField('showvalue', array('f' . $i, $v['label']));
+                         $xform->setValueField('showvalue', array($field, $v['label']));
                      } else {
                          $_tables = rex_xform_manager_table::getTables();
                          $_options = array();
@@ -1212,13 +1246,13 @@ class rex_xform_manager
                          if (!isset($v['default'])) {
                              $v['default'] = '';
                          }
-                         $xform->setValueField('select', array('f' . $i, $v['label'], implode(',', $_options), '', $v['default'], 0));
+                         $xform->setValueField('select', array($field, $v['label'], implode(',', $_options), '', $v['default'], 0));
 
                      }
                      break;
 
                  case 'textarea':
-                     $xform->setValueField('textarea', array('f' . $i, $v['label']));
+                     $xform->setValueField('textarea', array($field, $v['label']));
                      break;
 
                  case 'table.field':
@@ -1229,7 +1263,7 @@ class rex_xform_manager
                      foreach (rex_xform_manager_table::getXFormFieldsByType($table['table_name']) as $_k => $_v) {
                          $_fields[] = $_k;
                      }
-                     $xform->setValueField('select', array('f' . $i, $v['label'], implode(',', $_fields), '', '', 0));
+                     $xform->setValueField('select', array($field, $v['label'], implode(',', $_fields), '', '', 0));
                      break;
 
                  case 'select_names':
@@ -1238,17 +1272,17 @@ class rex_xform_manager
                      foreach (rex_xform_manager_table::getXFormFieldsByType($table['table_name']) as $_k => $_v) {
                          $_fields[] = $_k;
                      }
-                     $xform->setValueField('select', array('f' . $i, $v['label'], implode(',', $_fields), '', '', 1, 5));
+                     $xform->setValueField('select', array($field, $v['label'], implode(',', $_fields), '', '', 1, 5));
                      break;
 
                  default:
                      // nur beim "Bezeichnungsfeld"
-                     if ($i == 2 && $type_real_field != '' && !isset($v['value'])) {
+                     if ($field == 'label' && $type_real_field != '' && !isset($v['value'])) {
                          $v['value'] = $type_real_field;
                      } elseif (!isset($v['value'])) {
                          $v['value'] = '';
                      }
-                     $xform->setValueField('text', array('f' . $i, $v['label'], $v['value']));
+                     $xform->setValueField('text', array($field, $v['label'], $v['value']));
              }
 
          }
@@ -1262,6 +1296,17 @@ class rex_xform_manager
              $xform->setActionField('manage_db', array($REX['TABLE_PREFIX'] . 'xform_field', "id=$field_id"));
              $xform->setObjectparams('main_id', $field_id);
              $xform->setObjectparams('main_where', "id=$field_id");
+             $sql = rex_sql::factory();
+             $sql->setQuery("SELECT * FROM " . $REX['TABLE_PREFIX'] . "xform_field WHERE id=$field_id");
+             foreach ($selectFields as $alias => $field) {
+                 if ($alias != $field) {
+                     if ((!$sql->hasValue($field) || !$sql->getValue($field)) && $sql->hasValue($alias)) {
+                         $sql->setValue($field, $sql->getValue($alias));
+                     }
+                     $xform->setValueField('hidden', array($alias, ''));
+                 }
+             }
+             $xform->setObjectparams('sql_object', $sql);
              $xform->setObjectparams('getdata', true);
 
          } elseif ($func == 'add') {
@@ -1424,7 +1469,7 @@ class rex_xform_manager
                      ';
              echo rex_content_block($table_echo);
 
-             $sql = 'select * from ' . $REX['TABLE_PREFIX'] . 'xform_field where table_name="' . $table['table_name'] . '" order by prio';
+             $sql = 'select id, prio, type_id, type_name, name from ' . $REX['TABLE_PREFIX'] . 'xform_field where table_name="' . $table['table_name'] . '" order by prio';
              $list = rex_list::factory($sql, 30);
              // $list->debug = 1;
              $list->setColumnFormat('id', 'Id');
@@ -1435,10 +1480,7 @@ class rex_xform_manager
 
              $list->addParam('table_name', $table['table_name']);
 
-             $list->removeColumn('table_name');
              $list->removeColumn('id');
-             $list->removeColumn('list_hidden');
-             $list->removeColumn('search');
 
              $list->setColumnLayout('prio', array('<th>###VALUE###</th>', '###VALUE###'));
              $list->setColumnFormat('prio', 'custom', 'rex_xform_list_format' );
@@ -1446,12 +1488,8 @@ class rex_xform_manager
              $list->setColumnFormat('type_id', 'custom', 'rex_xform_list_format' );
              $list->setColumnLayout('type_name', array('<th>###VALUE###</th>', '###VALUE###'));
              $list->setColumnFormat('type_name', 'custom', 'rex_xform_list_format' );
-             $list->setColumnLayout('f1', array('<th>label</th>', '###VALUE###')); // ###VALUE###
-             $list->setColumnFormat('f1', 'custom', 'rex_xform_list_format' );
-
-             for ($i = 2; $i < 10; $i++) {
-                 $list->removeColumn('f' . $i);
-             }
+             $list->setColumnLayout('name', array('<th>###VALUE###</th>', '###VALUE###')); // ###VALUE###
+             $list->setColumnFormat('name', 'custom', 'rex_xform_list_format' );
 
              $list->addColumn($I18N->msg('edit'), $I18N->msg('edit'));
              $list->setColumnParams($I18N->msg('edit'), array('field_id' => '###id###', 'func' => 'edit', 'type_name' => '###type_name###', 'type_id' => '###type_id###', ));
@@ -1462,7 +1500,7 @@ class rex_xform_manager
              $list->setColumnParams($I18N->msg('delete'), array('field_id' => '###id###', 'func' => 'delete'));
              $list->setColumnLayout($I18N->msg('delete'), array('<th>###VALUE###</th>', '###VALUE###'));
              $list->setColumnFormat($I18N->msg('delete'), 'custom', 'rex_xform_list_delete_format' );
-             $list->addLinkAttribute($I18N->msg('delete'), 'onclick', 'return confirm(\' [###type_id###, ###type_name###, ###f1###] ' . $I18N->msg('delete') . ' ?\')');
+             $list->addLinkAttribute($I18N->msg('delete'), 'onclick', 'return confirm(\' [###type_id###, ###type_name###, ###name###] ' . $I18N->msg('delete') . ' ?\')');
 
              echo $list->get();
 
@@ -1471,6 +1509,25 @@ class rex_xform_manager
         }
 
 
+    }
+
+    private function getFieldName($key, $type)
+    {
+        if (is_int($key)) {
+            $key++;
+            if (1 === $key) {
+                return 'name';
+            }
+            if (2 === $key && 'value' === $type) {
+                return 'label';
+            }
+            return 'f' . $key;
+        }
+
+        if (in_array($key, self::$reservedFieldColumns)) {
+            $key = 'field_' . $key;
+        }
+        return $key;
     }
 
 
@@ -1576,7 +1633,7 @@ class rex_xform_manager
             $table_name = $field['table_name']; // 'user';
             $type_id = $field['type_id']; // 'value';
             $type_name = $field['type_name']; // 'select';
-            $f1 = $field['f1']; // 'status';
+            $name = $field['name']; // 'status';
 
             if (!in_array($type_id, rex_xform::getTypes())) {
             return false;
@@ -1584,7 +1641,7 @@ class rex_xform_manager
 
             $gs = rex_sql::factory();
             $gs->debugsql = $debug;
-            $gs->setQuery('delete from ' . $REX['TABLE_PREFIX'] . 'xform_field where table_name="' . $table_name . '" and type_id="' . $type_id . '" and type_name="' . $type_name . '" and f1="' . $f1 . '"');
+            $gs->setQuery('delete from ' . $REX['TABLE_PREFIX'] . 'xform_field where table_name="' . $table_name . '" and type_id="' . $type_id . '" and type_name="' . $type_name . '" and name="' . $name . '"');
 
             // fielddaten - datensatz anlegen
             $af = rex_sql::factory();
@@ -1598,7 +1655,7 @@ class rex_xform_manager
             }
 
             // datentabelle - spalte hinzufügen
-            if ($type_id == 'value' && $type_name != '' && $f1 != '') {
+            if ($type_id == 'value' && $type_name != '' && $name != '') {
                 if ($classname = rex_xform::includeClass('value', $type_name)) {
                     } else {
                         return false;
@@ -1609,7 +1666,7 @@ class rex_xform_manager
                     // Structur in spalte anpassen
                     $af = rex_sql::factory();
                     $af->debugsql = $debug;
-                    $af->setQuery('ALTER TABLE `' . $data_table . '` ADD `' . $f1 . '` ' . $definitions['dbtype'] . ' NOT NULL ;');
+                    $af->setQuery('ALTER TABLE `' . $data_table . '` ADD `' . $name . '` ' . $definitions['dbtype'] . ' NOT NULL ;');
                 }
             }
 
@@ -1641,7 +1698,7 @@ class rex_xform_manager
                 $type_id = $field['type_id'];
 
                 if ($type_id == 'value') {
-                    $type_label = $field['f1'];
+                    $type_label = $field['name'];
                     $dbtype = $types[$type_id][$type_name]['dbtype'];
 
                     if ($dbtype != 'none' && $dbtype != '') {
@@ -1696,7 +1753,7 @@ class rex_xform_manager
         $warning = $params['subject'];
 
         $sql = rex_sql::factory();
-        $sql->setQuery('SELECT `table_name`, `type_name`, `f1` FROM `' . $REX['TABLE_PREFIX'] . 'xform_field` WHERE `type_id`="value" AND `type_name` IN("be_medialist","be_mediapool")');
+        $sql->setQuery('SELECT `table_name`, `type_name`, `name` FROM `' . $REX['TABLE_PREFIX'] . 'xform_field` WHERE `type_id`="value" AND `type_name` IN("be_medialist","be_mediapool")');
 
         $rows = $sql->getRows();
 
@@ -1710,10 +1767,10 @@ class rex_xform_manager
             $table = $sql->getValue('table_name');
             switch ($sql->getValue('type_name')) {
                 case 'be_mediapool':
-                    $where[$table][] = $sql->getValue('f1') . '="' . $filename . '"';
+                    $where[$table][] = $sql->getValue('name') . '="' . $filename . '"';
                     break;
                 case 'be_medialist':
-                    $where[$table][] = 'FIND_IN_SET("' . $filename . '", ' . $sql->getValue('f1') . ')';
+                    $where[$table][] = 'FIND_IN_SET("' . $filename . '", ' . $sql->getValue('name') . ')';
                     break;
                 default :
                     trigger_error('Unexpected fieldtype "' . $sql->getValue('type_name') . '"!', E_USER_ERROR);

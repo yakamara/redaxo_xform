@@ -32,21 +32,17 @@ $sql->setQuery('CREATE TABLE IF NOT EXISTS `' . $REX['TABLE_PREFIX'] . 'xform_fi
     `prio` int(11) NOT NULL,
     `type_id` varchar(100) NOT NULL,
     `type_name` varchar(100) NOT NULL,
-    `f1` text NOT NULL,
-    `f2` text NOT NULL,
-    `f3` text NOT NULL,
-    `f4` text NOT NULL,
-    `f5` text NOT NULL,
-    `f6` text NOT NULL,
-    `f7` text NOT NULL,
-    `f8` text NOT NULL,
-    `f9` text NOT NULL,
     `list_hidden` tinyint(1) NOT NULL,
     `search` tinyint(1) NOT NULL,
+    `name` text NOT NULL,
+    `label` text NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
 $sql->setQuery('ALTER TABLE `' . $REX['TABLE_PREFIX'] . 'xform_field` CHANGE `prio` `prio` INT NOT NULL');
+$sql->setQuery('ALTER TABLE `' . $REX['TABLE_PREFIX'] . 'xform_field` CHANGE `name` TEXT NOT NULL');
+$sql->setQuery('ALTER TABLE `' . $REX['TABLE_PREFIX'] . 'xform_field` ADD `label` TEXT NOT NULL');
+$sql->setQuery('UPDATE `' . $REX['TABLE_PREFIX'] . 'xform_field` SET label = f2, f2 = "" WHERE type_id = "value" AND label = ""');
 
 $sql->setQuery('CREATE TABLE IF NOT EXISTS `' . $REX['TABLE_PREFIX'] . 'xform_relation` (
     `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,

@@ -66,9 +66,9 @@ class rex_xform_checkbox_sql extends rex_xform_abstract
             'type' => 'value',
             'name' => 'checkbox_sql',
             'values' => array(
-                array( 'type' => 'name',    'label' => 'Name' ),
-                array( 'type' => 'text',    'label' => 'Bezeichnung'),
-                array( 'type' => 'text',    'label' => 'Query mit "select id, name from .."')
+                'name'  => array( 'type' => 'name',    'label' => 'Name' ),
+                'label' => array( 'type' => 'text',    'label' => 'Bezeichnung'),
+                'query' => array( 'type' => 'text',    'label' => 'Query mit "select id, name from .."')
             ),
             'description' => 'Hiermit kann man SQL Abfragen als Checkboxliste nutzen',
             'dbtype' => 'text'

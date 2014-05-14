@@ -123,12 +123,12 @@ class rex_xform_datetime extends rex_xform_abstract
             'type' => 'value',
             'name' => 'datetime',
             'values' => array(
-                array( 'type' => 'name', 'label' => 'Feld' ),
-                array( 'type' => 'text', 'label' => 'Bezeichnung'),
-                array( 'type' => 'text', 'label' => 'Startjahr'),
-                array( 'type' => 'text', 'label' => 'Endjahr'),
-                array( 'type' => 'text', 'label' => '[Minutenformate]'),
-                array( 'type' => 'text', 'label' => '[Anzeigeformat###Y###-###M###-###D### ###H###h ###I###m]'),
+                'name'       => array( 'type' => 'name', 'label' => 'Feld' ),
+                'label'      => array( 'type' => 'text', 'label' => 'Bezeichnung'),
+                'year_start' => array( 'type' => 'text', 'label' => 'Startjahr'),
+                'year_end'   => array( 'type' => 'text', 'label' => 'Endjahr'),
+                'minutes'    => array( 'type' => 'text', 'label' => '[Minutenformate]'),
+                'format'     => array( 'type' => 'text', 'label' => '[Anzeigeformat###Y###-###M###-###D### ###H###h ###I###m]'),
             ),
             'description' => 'Datum & Uhrzeit Eingabe',
             'dbtype' => 'datetime'
