@@ -40,7 +40,7 @@ $sql->setQuery('CREATE TABLE IF NOT EXISTS `' . $REX['TABLE_PREFIX'] . 'xform_fi
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
 $sql->setQuery('ALTER TABLE `' . $REX['TABLE_PREFIX'] . 'xform_field` CHANGE `prio` `prio` INT NOT NULL');
-$sql->setQuery('ALTER TABLE `' . $REX['TABLE_PREFIX'] . 'xform_field` CHANGE `name` TEXT NOT NULL');
+$sql->setQuery('ALTER TABLE `' . $REX['TABLE_PREFIX'] . 'xform_field` CHANGE `f1` `name` TEXT NOT NULL');
 $sql->setQuery('ALTER TABLE `' . $REX['TABLE_PREFIX'] . 'xform_field` ADD `label` TEXT NOT NULL');
 $sql->setQuery('UPDATE `' . $REX['TABLE_PREFIX'] . 'xform_field` SET label = f2, f2 = "" WHERE type_id = "value" AND label = ""');
 
