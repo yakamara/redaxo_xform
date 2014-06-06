@@ -66,9 +66,11 @@ abstract class rex_xform_abstract extends rex_xform_base_abstract
     {
         if ($suffix != '') {
             return 'xform-' . $this->params['form_name'] . '-' . $this->getName() . '-' . $suffix;
-        } else {
+        } elseif ($this->getName() != '') {
             return 'xform-' . $this->params['form_name'] . '-' . $this->getName();
         }
+
+        return '';
     }
 
     function getHTMLClass()
