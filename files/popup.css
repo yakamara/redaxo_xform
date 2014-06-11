@@ -4,14 +4,19 @@
 #rex-title,
 #rex-navi-main,
 #rex-extra {
-display:none;
+  display:none;
 }
 
 body#rex-page-xform {
-    background: #f9f9f9;
+  background: #f9f9f9;
 }
 
 body #rex-website {
-width:775px;
-background: none repeat scroll 0 0 transparent;
+  width:100%;
+  background: none repeat scroll 0 0 transparent;
+}
+
+body#rex-page-xform div#rex-wrapper {
+  margin-left: 10px;
+  margin-right: 10px;
 }
