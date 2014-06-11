@@ -98,7 +98,7 @@ class rex_xform_select extends rex_xform_abstract
         $return = array();
 
         $values = array();
-        foreach (explode(',', $params['params']['field']['f3']) as $v) {
+        foreach (explode(',', $params['params']['field']['options']) as $v) {
             $entry = explode('=', $v);
             if (isset($entry[1])) {
                 $values[$entry[1]] = rex_translate($entry[0]);
