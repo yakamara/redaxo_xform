@@ -1,3 +1,4 @@
+
 <?php if ($this->relation['relation_type'] < 2): ?>
 
     <p class="<?php echo $this->getHTMLClass() ?> formlabel-<?php echo $this->getName() ?>" id="<?php echo $this->getHTMLId() ?>">
@@ -14,8 +15,28 @@
     <div class="xform-element <?php echo $this->getHTMLClass() ?> formlabel-<?php echo $this->getName() ?>" id="<?php echo $this->getHTMLId() ?>">
         <label class="select <?php echo $this->getWarningClass() ?>" for="<?php echo $this->getFieldId() ?>" ><?php echo $this->getLabelStyle($this->relation['label']) ?></label>
         <div class="rex-widget">
+        
+            <?php if ($this->relation['relation_type'] == 4) { ?>
 
-            <?php if ($this->relation['relation_type'] == 2): ?>
+                <div class="rex-widget-data">
+                    <p class="rex-widget-field">
+                        <input type="hidden" name="<?php echo $this->getFieldName() ?>" id="XFORM_MANAGER_DATA_<?php echo $this->getId() ?>" value="<?php echo implode(',', $this->getValue()) ?>" />
+                        <?php 
+                        
+                        if ($this->params["main_id"] > 0) {
+                            ?><a href="javascript:void(0);" onclick="newLinkMapWindow('<?php echo $link ?>');return false;"><?php echo $I18N->msg('xform_relation_edit_relations'); ?></a>
+                            <?php
+                        } else {
+                            echo $I18N->msg('xform_relation_first_create_data');
+                        
+                        }
+                        
+                        ?>
+                        
+                    </p>
+                </div>
+
+            <?php } else if ($this->relation['relation_type'] == 2) { ?>
 
                 <div class="rex-widget-data">
 
@@ -25,13 +46,13 @@
                     </p>
                     <p class="rex-widget-icons rex-widget-1col">
                     <span class="rex-widget-column rex-widget-column-first">
-                        <a href="#" class="rex-icon-file-open" onclick="xform_manager_openDatalist(<?php echo $this->getId() ?>, '<?php echo $this->relation['target_field'] ?>', '<?php echo $link ?>','0');return false;" title="<?php echo $I18N->msg('xform_relation_choose_entry') ?>"></a>
-                        <a href="#" class="rex-icon-file-delete" onclick="xform_manager_deleteDatalist(<?php echo $this->getId() ?>,'0');return false;" title="<?php echo $I18N->msg('xform_relation_delete_entry') ?>"></a>
+                        <a href="javascript:void(0);" class="rex-icon-file-open" onclick="xform_manager_openDatalist(<?php echo $this->getId() ?>, '<?php echo $this->relation['target_field'] ?>', '<?php echo $link ?>','0');return false;" title="<?php echo $I18N->msg('xform_relation_choose_entry') ?>"></a>
+                        <a href="javascript:void(0);" class="rex-icon-file-delete" onclick="xform_manager_deleteDatalist(<?php echo $this->getId() ?>,'0');return false;" title="<?php echo $I18N->msg('xform_relation_delete_entry') ?>"></a>
                     </span>
                     </p>
                 </div>
 
-            <?php else: ?>
+            <?php } else { ?>
 
                 <div class="rex-widget-xform-manager-datalist">
                     <input type="hidden" name="<?php echo $this->getFieldName() ?>" id="XFORM_MANAGER_DATALIST_<?php echo $this->getId() ?>" value="<?php echo implode(',', $this->getValue()) ?>" />
@@ -44,19 +65,19 @@
                     </p>
                     <p class="rex-widget-icons rex-widget-2col">
                         <span class="rex-widget-column rex-widget-column-first">
-                            <a href="#" class="rex-icon-file-top" onclick="xform_manager_moveDatalist(<?php echo $this->getId() ?>,'top');return false;" title="<?php echo $I18N->msg('xform_relation_move_first_data') ?>"></a>
-                            <a href="#" class="rex-icon-file-up" onclick="xform_manager_moveDatalist(<?php echo $this->getId() ?>,'up');return false;" title="<?php echo $I18N->msg('xform_relation_move_up_data') ?>"></a>
-                            <a href="#" class="rex-icon-file-down" onclick="xform_manager_moveDatalist(<?php echo $this->getId() ?>,'down');return false;" title="<?php echo $I18N->msg('xform_relation_down_first_data') ?>"></a>
-                            <a href="#" class="rex-icon-file-bottom" onclick="xform_manager_moveDatalist(<?php echo $this->getId() ?>,'bottom');return false;" title="<?php echo $I18N->msg('xform_relation_move_last_data') ?>"></a>
+                            <a href="javascript:void(0);" class="rex-icon-file-top" onclick="xform_manager_moveDatalist(<?php echo $this->getId() ?>,'top');return false;" title="<?php echo $I18N->msg('xform_relation_move_first_data') ?>"></a>
+                            <a href="javascript:void(0);" class="rex-icon-file-up" onclick="xform_manager_moveDatalist(<?php echo $this->getId() ?>,'up');return false;" title="<?php echo $I18N->msg('xform_relation_move_up_data') ?>"></a>
+                            <a href="javascript:void(0);" class="rex-icon-file-down" onclick="xform_manager_moveDatalist(<?php echo $this->getId() ?>,'down');return false;" title="<?php echo $I18N->msg('xform_relation_down_first_data') ?>"></a>
+                            <a href="javascript:void(0);" class="rex-icon-file-bottom" onclick="xform_manager_moveDatalist(<?php echo $this->getId() ?>,'bottom');return false;" title="<?php echo $I18N->msg('xform_relation_move_last_data') ?>"></a>
                         </span>
                         <span class="rex-widget-column">
-                            <a href="#" class="rex-icon-file-open" onclick="xform_manager_openDatalist(<?php echo $this->getId() ?>, '<?php echo $this->relation['target_field'] ?>', '<?php echo $link ?>','1');return false;" title="<?php echo $I18N->msg('xform_relation_choose_entry') ?>"></a>
-                            <a href="#" class="rex-icon-file-delete" onclick="xform_manager_deleteDatalist(<?php echo $this->getId() ?>,'1');return false;" title="<?php echo $I18N->msg('xform_relation_delete_entry') ?>"></a>
+                            <a href="javascript:void(0);" class="rex-icon-file-open" onclick="xform_manager_openDatalist(<?php echo $this->getId() ?>, '<?php echo $this->relation['target_field'] ?>', '<?php echo $link ?>','1');return false;" title="<?php echo $I18N->msg('xform_relation_choose_entry') ?>"></a>
+                            <a href="javascript:void(0);" class="rex-icon-file-delete" onclick="xform_manager_deleteDatalist(<?php echo $this->getId() ?>,'1');return false;" title="<?php echo $I18N->msg('xform_relation_delete_entry') ?>"></a>
                         </span>
                     </p>
                 </div>
 
-            <?php endif ?>
+            <?php } ?>
 
         </div>
         <div class="rex-clearer"></div>

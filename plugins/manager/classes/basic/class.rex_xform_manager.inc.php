@@ -87,10 +87,17 @@ class rex_xform_manager
         $popup = false;
         $rex_xform_manager_opener = rex_request('rex_xform_manager_opener', 'array');
         if (count($rex_xform_manager_opener) > 0) {
-            if (isset($rex_xform_manager_opener['id'])) {
+            if (isset($rex_xform_manager_opener['id']) && $rex_xform_manager_opener['id'] != "") {
              $popup = true; // id, field, multiple
 
             }
+
+        }
+
+        // -------------- filter - popup for selection
+
+        if (count($rex_xform_filter) > 0) {
+            $popup = true; 
 
         }
 
@@ -197,7 +204,7 @@ class rex_xform_manager
             if (count($rex_xform_filter) > 0) {
                 foreach ($rex_xform_filter as $k => $v) {
                     if (in_array($k, $field_names)) {
-                        $em_url_filter .= '&amp;rex_xform_filter[' . $k . ']=' . urlencode($v);
+                        $em_url_filter .= '&rex_xform_filter[' . $k . ']=' . urlencode($v);
                     } else {
                         unset($rex_xform_filter[$k]);
                     }
@@ -207,7 +214,7 @@ class rex_xform_manager
             if (count($rex_xform_set) > 0) {
                 foreach ($rex_xform_set as $k => $v) {
                     if (in_array($k, $field_names)) {
-                        $em_url_set .= '&amp;rex_xform_set[' . $k . ']=' . urlencode($v);
+                        $em_url_set .= '&rex_xform_set[' . $k . ']=' . urlencode($v);
                     } else {
                         unset($rex_xform_set[$k]);
                     }
@@ -371,6 +378,7 @@ class rex_xform_manager
                 };
                 $xform->setHiddenField('rex_xform_search', $rex_xform_search);
                 $xform->setHiddenField('rex_xform_searchtext', $rex_xform_searchtext);
+
 
                 // for rexlist
                 $xform->setHiddenField('list', rex_request('list', 'string'));
@@ -748,7 +756,7 @@ class rex_xform_manager
 
                 // ADD LINK
                 if ($this->hasDataPageFunction('add')) {
-                    echo '<a href="index.php?' . htmlspecialchars($link_vars) . '&amp;func=add&amp;' . htmlspecialchars($em_url . $em_rex_list) . '">' . $I18N->msg('add') . '</a> | ';
+                    echo '<a href="index.php?' . $link_vars . '&func=add&' . $em_url . $em_rex_list . '">' . $I18N->msg('add') . '</a> | ';
                 }
 
                 // SEARCH LINK
@@ -763,11 +771,11 @@ class rex_xform_manager
 
                     $dlink = array();
                     if ($table['export'] == 1 && $this->hasDataPageFunction('export')) {
-                        $dlink[] = '<a href="index.php?' . htmlspecialchars($link_vars) . '&amp;func=dataset_delete&amp;' . htmlspecialchars($em_url . $em_rex_list) . '" id="dataset-delete" onclick="return confirm(\'' . $I18N->msg('dataset_delete_confirm') . '\');">' . $I18N->msg('delete') . '</a>';
+                        $dlink[] = '<a href="index.php?' . $link_vars . '&func=dataset_delete&' . $em_url . $em_rex_list . '" id="dataset-delete" onclick="return confirm(\'' . $I18N->msg('dataset_delete_confirm') . '\');">' . $I18N->msg('delete') . '</a>';
                     }
 
                     if ($this->hasDataPageFunction('truncate_table')) {
-                        $dlink[] = '<a href="index.php?' . htmlspecialchars($link_vars) . '&amp;func=dataset_export&amp;' . htmlspecialchars($em_url . $em_rex_list) . '">' . $I18N->msg('export') . '</a>';
+                        $dlink[] = '<a href="index.php?' . $link_vars . '&func=dataset_export&' . $em_url . $em_rex_list . '">' . $I18N->msg('export') . '</a>';
                     }
 
                     echo ' | ' . $I18N->msg('xform_dataset') . ': ' . implode(' / ', $dlink) . '';
@@ -779,7 +787,7 @@ class rex_xform_manager
                 }
 
                 if ($this->hasDataPageFunction('truncate_table')) {
-                    echo ' | <a href="index.php?' . htmlspecialchars($link_vars) . '&amp;func=truncate_table&amp;' . htmlspecialchars($em_url . $em_rex_list) . '" id="truncate-table" onclick="return confirm(\'' . $I18N->msg('truncate_table_confirm') . '\');">' . $I18N->msg('truncate_table') . '</a>';
+                    echo ' | <a href="index.php?' . $link_vars . '&func=truncate_table&' . $em_url . $em_rex_list . '" id="truncate-table" onclick="return confirm(\'' . $I18N->msg('truncate_table_confirm') . '\');">' . $I18N->msg('truncate_table') . '</a>';
                 }
 
                 echo '</span><br style="clear:both;" /></div></div>';
@@ -825,7 +833,7 @@ class rex_xform_manager
 
     public function getDataListQueryWhere($rex_xform_filter = array(), $rex_xform_searchfields = array(), $rex_xform_searchtext = '')
     {
-        $sql = '';
+        $sql = array();
         if (count($rex_xform_filter) > 0) {
             $sql_filter = '';
             foreach ($rex_xform_filter as $k => $v) {
@@ -834,7 +842,7 @@ class rex_xform_manager
                 }
                 $sql_filter .= '`' . $k . '`="' . $v . '"';
             }
-            $sql .= $sql_filter;
+            $sql[] = $sql_filter;
         }
 
         if (is_array($rex_xform_searchfields) && count($rex_xform_searchfields) > 0 && $rex_xform_searchtext != '') {
@@ -849,13 +857,16 @@ class rex_xform_manager
                 }
             }
             if (count($sf) > 0) {
-                $sql .= '( ' . implode(' OR ', $sf) . ' )';
+                $sql[] = '( ' . implode(' OR ', $sf) . ' )';
             }
         }
 
-        if ($sql != '') {
-            $sql = ' where ' . $sql;
+        if (count($sql) >0) {
+            $sql = ' where ' . implode(" and ", $sql);
+        } else {
+            $sql = '';
         }
+        
         return $sql;
     }
 

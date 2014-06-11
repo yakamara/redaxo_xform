@@ -20,6 +20,8 @@ xform_relation_move_down_data = put selected data set to bottom
 xform_relation_move_last_data = put selected data set at the end
 xform_relation_choose_entry = select data set
 xform_relation_delete_entry = delete selected data set
+xform_relation_first_create_data = please create this data first
+xform_relation_edit_relations = edit relations
 
 truncate_table = delete data
 table_truncated = data completely deleted

@@ -20,6 +20,8 @@ xform_relation_move_down_data = Ausgewählten Datensatz nach unten verschieben
 xform_relation_move_last_data = Ausgewählten Datensatz an das Ende verschieben
 xform_relation_choose_entry = Datensatz auswählen
 xform_relation_delete_entry = Ausgewählten Datensatz löschen
+xform_relation_first_create_data = Bitte zunächst diesen Datensatz erstellen
+xform_relation_edit_relations = Verknüpfungen verwalten
 
 truncate_table = Tabelle leeren
 table_truncated = Tabelle wurde geleert
@@ -31,7 +33,6 @@ xform_manager_edit_table = Tabelle editieren
 xform_manager_add_table = Tabelle hinzufügen
 
 add_row = Reihe hinzufügen
-
 
 # tables.inc.php
 importcsv = CSV Importieren

@@ -22,8 +22,8 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
         $this->relation['source_table'] = $this->params['main_table']; // "rex_em_data_" wegcutten
         $this->relation['label'] = $this->getElement(2);  // HTML Bezeichnung
 
-        $this->relation['target_table'] = $this->getElement(3); // Zieltabelle
-        $this->relation['target_field'] = $this->getElement(4); // Zielfield welches angezeigt wird.
+        $this->relation['target_table'] = $this->getElement('table'); // Zieltabelle
+        $this->relation['target_field'] = $this->getElement('field'); // Zielfield welches angezeigt wird.
 
         $this->relation['relation_type'] = (int) $this->getElement(5); // select single = 0 / select multiple = 1 / popup single = 2 / popup multiple = 3
         if ($this->relation['relation_type'] > 4) {
@@ -170,8 +170,8 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
         if ($this->relation['relation_type'] == 2 || $this->relation['relation_type'] == 3) {
 
             $link = 'index.php?page=xform&subpage=manager&tripage=data_edit&table_name=' . $this->relation['target_table'];
-
             $this->params['form_output'][$this->getId()] = $this->parse('value.be_manager_relation.tpl.php', compact('valueName', 'options', 'link'));
+
         }
 
 
@@ -179,44 +179,10 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
 
         if ($this->relation['relation_type'] == 4) {
 
-            $text = 'not yet implemented';
+            $link = 'index.php?page=xform&subpage=manager&tripage=data_edit&table_name=' . $this->relation['target_table'] . '&rex_xform_filter[' . $this->relation['target_field'] . ']='.$this->params["main_id"] . '&rex_xform_set[' . $this->relation['target_field'] . ']='.$this->params["main_id"];
+            $this->params['form_output'][$this->getId()] = $this->parse('value.be_manager_relation.tpl.php', compact('valueName', 'options', 'link'));
 
-            // TODO
-
-            /*
-             if($this->params["main_id"] < 1)
-             {
-             $text = 'Diesen Bereich k&ouml;nnen Sie erst bearbeiten, wenn der Datensatz angelegt wurde.';
-             }else
-             {
-
-             $link = 'javascript:rex_xform_openRelation('.$this->getId().',\''.$this->be_em["target_table"].'\',\'id'.
-             '&rex_em_filter['.$this->be_em["target_field"].']='.$this->params["main_id"].
-             '&rex_em_set['.$this->be_em["target_field"].']='.$this->params["main_id"].
-             '&page='.$this->be_em["page"].
-             '&subpage='.$this->be_em["subpage"].
-             '\');';
-
-             $text = '<a href="'.$link.'">'.
-             'Link'.
-             '</a>';
-             }
-             */
-
-            /*
-            $this->params["form_output"][$this->getId()] = '
-            <p class="formhtml '.$this->getHTMLClass().'" id="'.$this->getHTMLId().'">
-            <label class="select " for="' . $this->getFieldId() . '" >' . rex_translate($this->be_em["label"]) . '</label>
-            <input type="hidden" name="'.$this->getFieldName().'[]" id="REX_RELATION_'.$this->getId().'" />
-            <span>'.$text.'</span>
-            </p>';
-            */
-
-            return;
         }
-
-
-
 
 
         // --------------------------------------- save
@@ -309,7 +275,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
                 'label'        => array( 'type' => 'text',    'label' => 'Bezeichnung'),
                 'table'        => array( 'type' => 'table',   'label' => 'Ziel Tabelle'),
                 'field'        => array( 'type' => 'text',    'label' => 'Ziel Tabellenfeld zur Anzeige oder Zielfeld'),
-                'type'         => array( 'type' => 'select',  'label' => 'Mehrfachauswahl', 'default' => '', 'definition' => 'select (single)=0,select (multiple)=1,popup (single)=2,popup (multiple)=3' ), // ,popup (multiple / relation)=4
+                'type'         => array( 'type' => 'select',  'label' => 'Mehrfachauswahl', 'default' => '', 'definition' => array('0' => 'select (single)', "1" => 'select (multiple)', '2' => 'popup (single)', '3' => 'popup (multiple)' , '4' => 'popup (multiple 1-n)') ), // ,popup (multiple / relation)=4
                 'empty_option' => array( 'type' => 'boolean', 'label' => 'Mit "Leer-Option"' ),
                 'empty_value'  => array( 'type' => 'text',    'label' => 'Fehlermeldung wenn "Leer-Option" nicht aktiviert ist.'),
                 'size'         => array( 'type' => 'text', 'name' => 'boxheight',    'label' => 'Höhe der Auswahlbox'),
