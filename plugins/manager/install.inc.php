@@ -1,5 +1,7 @@
 <?php
 
+global $REX;
+
 /**
  * XForm
  * @author jan.kristinus[at]redaxo[dot]org Jan Kristinus
