@@ -16,6 +16,13 @@ Installation
 Last Changes
 -------
 
+Version 4.6.2
+
+Bugs
+
+* db2email action ging nicht.
+
+
 Version 4.6.1
 
 New
