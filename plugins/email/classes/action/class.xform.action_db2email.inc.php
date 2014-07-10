@@ -26,9 +26,9 @@ class rex_xform_action_db2email extends rex_xform_action_abstract
                 foreach ($this->params['value_pool']['email'] as $key => $value) {
                     if ($this->getElement(3) == $key) {
                         $mail_to = $value;
-                }
                         break;
                     }
+                }
             }
 
             // ---- fix mailto from definition
