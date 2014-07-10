@@ -22,4 +22,18 @@ class rex_xform_php extends rex_xform_abstract
     {
         return htmlspecialchars(stripslashes('php -> Beispiel: php|name|<?php echo date("mdY"); ?>'));
     }
+    function getDefinitions()
+    {
+        return array(
+            'type' => 'value',
+            'name' => 'php',
+            'values' => array(
+                'name'      => array( 'type' => 'name',    'label' => 'Feld' ),
+                'label'     => array( 'type' => 'textarea',    'label' => 'PHP Code'),
+            ),
+            'description' => 'Ein PHP Code',
+            'dbtype' => 'text',
+            'famous' => false
+        );
+    }
 }
