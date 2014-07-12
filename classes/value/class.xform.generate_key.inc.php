@@ -14,7 +14,7 @@ class rex_xform_generate_key extends rex_xform_abstract
         $this->setValue(md5($this->params['form_name'] . substr(md5(microtime()), 0, 6)));
         $this->params['form_output'][$this->getId()] = '';
         $this->params['value_pool']['email'][$this->getName()] = stripslashes($this->getValue());
-        if (!isset($element[2]) || $element[2] != 'no_db') {
+        if ($this->getElement(2) != 'no_db') {
             $this->params['value_pool']['sql'][$this->getName()] = $this->getValue();
         }
     }
