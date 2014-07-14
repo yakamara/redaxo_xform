@@ -90,7 +90,7 @@
 <div class="xform-element form_google_geocode <?php echo $this->getHTMLClass() ?>" id="<?php echo $this->getHTMLId() ?>">
     <label class="text <?php echo $this->getWarningClass() ?>" for="<?php echo $this->getFieldId() ?>"><?php echo $this->getElement(4) ?></label>
     <p class="form_google_geocode">
-        <a href="javascript:void(0);" onclick="rex_geo_getPosition('<?php echo $this->getElement(3) ?>')">Geodaten holen</a> |
+        <a href="javascript:void(0);" onclick="rex_geo_getPosition('<?php echo $address; ?>')">Geodaten holen</a> |
         <a href="javascript:void(0);" onclick="rex_geo_resetPosition()">Geodaten nullen</a>
     </p>
     <div class="form_google_geocode_map" id="map_canvas<?php echo $this->getId() ?>" style="width:<?php echo $mapWidth ?>px; height:<?php echo $mapHeight ?>px">Google Map</div>

@@ -11,9 +11,9 @@ class rex_xform_google_geocode extends rex_xform_abstract
 
     function enterObject()
     {
-        $labels = explode(',', $this->getElement(2)); // Fields of Position
-        $labelLng = $labels[0];
-        $labelLat = $labels[1];
+        $labels = explode(',', $this->getElement(3)); // Fields of Position
+        $labelLat = $labels[0];
+        $labelLng = $labels[1];
 
         $valueLng = '0';
         $valueLat = '0';
@@ -36,9 +36,7 @@ class rex_xform_google_geocode extends rex_xform_abstract
             }
         }
 
-        if ($this->getValue() == '' && !$this->params['send']) {
-            $this->setValue($this->getElement(4));
-        }
+//        if ($this->getValue() == '' && !$this->params['send']) {             $this->setValue($this->getElement(4));         }
 
         // Script nur beim ersten mal ausgeben
         $includeGoogleMaps = false;
@@ -47,15 +45,17 @@ class rex_xform_google_geocode extends rex_xform_abstract
             $includeGoogleMaps = true;
         }
 
+        $address = $this->getElement('address');
+
         $this->params['form_output'][$this->getId()] = $this->parse(
             'value.google_geocode.tpl.php',
-            compact('includeGoogleMaps', 'labelLng', 'labelLat', 'valueLng', 'valueLat', 'mapWidth', 'mapHeight')
+            compact('includeGoogleMaps', 'labelLng', 'labelLat', 'valueLng', 'valueLat', 'mapWidth', 'mapHeight', 'address')
         );
     }
 
     function getDescription()
     {
-        return 'google_geocode -> Beispiel: google_geocode|gcode|Bezeichnung|pos_lng,pos_lat|strasse,plz,ort|width|height|';
+        return 'google_geocode -> Beispiel: google_geocode|gcode|Bezeichnung|pos_lat,pos_lng|strasse,plz,ort|width|height|';
     }
 
     function getDefinitions()
@@ -66,7 +66,7 @@ class rex_xform_google_geocode extends rex_xform_abstract
             'values' => array(
                 'name'     => array( 'type' => 'name',     'label' => 'Name' ),
                 'label'    => array( 'type' => 'text',     'label' => 'Bezeichnung'),
-                'position' => array( 'type' => 'getNames', 'label' => '"lng"-name,"lat"-name'),
+                'position' => array( 'type' => 'getNames', 'label' => '"lat"-name,"lng"-name'),
                 'address'  => array( 'type' => 'getNames', 'label' => 'Names Positionsfindung'),
                 'width'    => array( 'type' => 'text',     'label' => 'Map-Breite'),
                 'height'   => array( 'type' => 'text',     'label' => 'Map-H&ouml;he'),

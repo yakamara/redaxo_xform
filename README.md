@@ -16,6 +16,15 @@ Installation
 Last Changes
 -------
 
+
+Version 4.6...
+
+Bugs
+
+* E-Mail Validierung geht wieder
+* GeoPlugin funktionierte nicht richtig. Achtung lat/lng Reihenfolge ist nun umgedreht.
+
+
 Version 4.6.2
 
 Bugs
