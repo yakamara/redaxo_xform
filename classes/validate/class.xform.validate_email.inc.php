@@ -16,11 +16,11 @@ class rex_xform_validate_email extends rex_xform_validate_abstract
                 if ($Object->getValue()) {
                     if ( !preg_match("#^[\w.+-]{2,}\@[\w.-]{2,}\.[a-z]{2,6}$#", $Object->getValue()) ) {
                         $this->params['warning'][$Object->getId()] = $this->params['error_class'];
-        }
                         $this->params['warning_messages'][$Object->getId()] = $this->getElement('message');
                     }
                 }
             }
+        }
     }
 
     function getDescription()
