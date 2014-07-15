@@ -1,5 +1,5 @@
 <p class="<?php echo $this->getHTMLClass() ?>" id="<?php echo $this->getHTMLId() ?>">
-    <label class="select<?php echo $this->getWarningClass() ?>" for="<?php echo $this->getFieldId() ?>" ><?php echo $this->getLabel() ?></label>
+    <label class="select <?php echo $this->getWarningClass() ?>" for="<?php echo $this->getFieldId() ?>" ><?php echo $this->getLabel() ?></label>
 
     <?php
         foreach ($format as $component):

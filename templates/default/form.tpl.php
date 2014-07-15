@@ -1,4 +1,4 @@
-<div id="<?php echo  $this->objparams['form_wrap_id'] ?>" class="xform">
+<div id="<?php echo $this->objparams['form_wrap_id'] ?>" class="xform">
     <?php if ($this->objparams['warning_messages'] || $this->objparams['unique_error']):
         echo $this->parse('errors.tpl.php');
     endif ?>

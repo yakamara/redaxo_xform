@@ -1,6 +1,6 @@
 <p class="formradio formlabel-<?php echo $this->getName() ?>" id="<?php echo $this->getHTMLId() ?>">
-    <label class="radio<?php echo $this->getWarningClass() ?>" for="<?php echo $this->getFieldId() ?>"><?php echo $this->getLabel() ?></label>
-    <div class="radios<?php echo $this->getWarningClass() ?>" id="<?php echo $this->getFieldId() ?>">
+    <label class="radio <?php echo $this->getWarningClass() ?>" for="<?php echo $this->getFieldId() ?>"><?php echo $this->getLabel() ?></label>
+    <div class="radios <?php echo $this->getWarningClass() ?>" id="<?php echo $this->getFieldId() ?>">
         <?php $counter = 0 ?>
         <?php foreach ($options as $key => $value): ?>
             <?php $id = $this->getFieldId() . '-' . $counter++ ?>

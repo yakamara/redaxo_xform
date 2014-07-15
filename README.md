@@ -19,8 +19,14 @@ Last Changes
 
 Version 4.6...
 
+Änderungen
+
+* Default Klassenbeschreibung in base abstract entfernt.
+
 Bugs
 
+* einige individuelle css klassen wurden nicht getrennt gesetzt
+* Ausgabe der Klassenbeschreibungen werden nun nur mit richtig definierte Dateiname (class.*.inc.php) angezeigt
 * E-Mail Validierung geht wieder
 * GeoPlugin funktionierte nicht richtig. Achtung lat/lng Reihenfolge ist nun umgedreht.
 
