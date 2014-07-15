@@ -77,7 +77,7 @@ abstract class rex_xform_base_abstract
 
     function getDescription()
     {
-        return 'Es existiert keine Klassenbeschreibung';
+        return '';
     }
 
     function getDefinitions()
