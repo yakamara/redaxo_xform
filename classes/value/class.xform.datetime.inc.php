@@ -61,8 +61,10 @@ class rex_xform_datetime extends rex_xform_abstract
         $isodatum = sprintf('%04d-%02d-%02d %02d:%02d:%02d', $year, $month, $day, $hour, $minute, 0);
 
         $this->params['value_pool']['email'][$this->getName()] = $isodatum;
-        $this->params['value_pool']['sql'][$this->getName()] = $isodatum;
 
+        if ($this->getElement('no_db') != 'no_db') {
+            $this->params['value_pool']['sql'][$this->getName()] = $isodatum;
+        }
 
         // ------------- year
 
@@ -113,7 +115,7 @@ class rex_xform_datetime extends rex_xform_abstract
 
     function getDescription()
     {
-        return 'datetime -> Beispiel: datetime|name|label|jahrstart|jahrsende|minutenformate 00,15,30,45|[Anzeigeformat###Y###-###M###-###D### ###H###h ###I###m]';
+        return 'datetime -> Beispiel: datetime|name|label|jahrstart|jahrsende|minutenformate 00,15,30,45|[Anzeigeformat###Y###-###M###-###D### ###H###h ###I###m]|[no_db]';
     }
 
 
@@ -129,6 +131,7 @@ class rex_xform_datetime extends rex_xform_abstract
                 'year_end'   => array( 'type' => 'text', 'label' => 'Endjahr'),
                 'minutes'    => array( 'type' => 'text', 'label' => '[Minutenformate]'),
                 'format'     => array( 'type' => 'text', 'label' => '[Anzeigeformat###Y###-###M###-###D### ###H###h ###I###m]'),
+                'no_db'      => array( 'type' => 'no_db', 'label' => 'Datenbank',  'default' => 0),
             ),
             'description' => 'Datum & Uhrzeit Eingabe',
             'dbtype' => 'datetime'

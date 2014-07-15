@@ -69,8 +69,10 @@ class rex_xform_date extends rex_xform_abstract
         $isodatum = sprintf('%04d-%02d-%02d', $year, $month, $day);
 
         $this->params['value_pool']['email'][$this->getName()] = $isodatum;
-        $this->params['value_pool']['sql'][$this->getName()] = $isodatum;
 
+        if ($this->getElement('no_db') != 'no_db') {
+            $this->params['value_pool']['sql'][$this->getName()] = $isodatum;
+        }
 
         // ------------- year
 
@@ -101,7 +103,7 @@ class rex_xform_date extends rex_xform_abstract
 
     function getDescription()
     {
-        return 'date -> Beispiel: date|name|label|jahrstart|jahrsende|[Anzeigeformat###Y###-###M###-###D###]|[1/Aktuelles Datum voreingestellt]';
+        return 'date -> Beispiel: date|name|label|jahrstart|jahrsende|[Anzeigeformat###Y###-###M###-###D###]|[1/Aktuelles Datum voreingestellt]|[no_db]';
     }
 
     function getDefinitions()
@@ -116,6 +118,7 @@ class rex_xform_date extends rex_xform_abstract
                 'year_end'     => array( 'type' => 'text', 'label' => '[Endjahr]'),
                 'format'       => array( 'type' => 'text', 'label' => '[Anzeigeformat###Y###-###M###-###D###]]'),
                 'current_date' => array( 'type' => 'boolean', 'label' => 'Aktuelles Datum voreingestellt'),
+                'no_db'        => array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 0),
             ),
             'description' => 'Datums Eingabe',
             'dbtype' => 'date'

@@ -19,6 +19,10 @@ Last Changes
 
 Version 4.6...
 
+Neu
+
+* date, datetime und time haben nun auch die no_db option
+
 Änderungen
 
 * Default Klassenbeschreibung in base abstract entfernt.

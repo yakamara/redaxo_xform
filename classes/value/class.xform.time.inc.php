@@ -59,7 +59,10 @@ class rex_xform_time extends rex_xform_abstract
         $isotime = $hour . ':' . $minute . ':00';
 
         $this->params['value_pool']['email'][$this->getName()] = $isotime;
-        $this->params['value_pool']['sql'][$this->getName()] = $isotime;
+
+        if ($this->getElement('no_db') != 'no_db') {
+            $this->params['value_pool']['sql'][$this->getName()] = $isotime;
+        }
 
         // ------------- hour
 
@@ -98,7 +101,7 @@ class rex_xform_time extends rex_xform_abstract
 
     function getDescription()
     {
-        return 'time -> Beispiel: time|name|label|[stundenraster 0,1,2,3,4,5]|[minutenraster 00,15,30,45]|[Anzeigeformat ###H###h ###I###m]';
+        return 'time -> Beispiel: time|name|label|[stundenraster 0,1,2,3,4,5]|[minutenraster 00,15,30,45]|[Anzeigeformat ###H###h ###I###m]|[no_db]';
     }
 
 
@@ -113,6 +116,7 @@ class rex_xform_time extends rex_xform_abstract
                 'hours'   => array( 'type' => 'text',   'label' => '[Stundenraster]'),
                 'minutes' => array( 'type' => 'text',   'label' => '[Minutenraster]'),
                 'format'  => array( 'type' => 'text',   'label' => '[Anzeigeformat ###H###h ###M###m]'),
+                'no_db'   => array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 0),
             ),
             'description' => 'Uhrzeitfeld Eingabe',
             'dbtype' => 'time'

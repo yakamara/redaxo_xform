@@ -21,9 +21,10 @@ class rex_xform_textarea extends rex_xform_abstract
         $this->params['form_output'][$this->getId()] = $this->parse('value.textarea.tpl.php');
 
         $this->params['value_pool']['email'][$this->getName()] = stripslashes($this->getValue());
-        if ($this->getElement(4) != 'no_db') {
+        if ($this->getElement('no_db') != 'no_db') {
             $this->params['value_pool']['sql'][$this->getName()] = $this->getValue();
         }
+
     }
 
     function getDescription()
