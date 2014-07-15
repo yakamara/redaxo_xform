@@ -25,6 +25,7 @@ Version 4.6...
 
 Bugs
 
+* Export der Daten nicht erlauben - wird nun richtig ausgewertet
 * einige individuelle css klassen wurden nicht getrennt gesetzt
 * Ausgabe der Klassenbeschreibungen werden nun nur mit richtig definierte Dateiname (class.*.inc.php) angezeigt
 * E-Mail Validierung geht wieder

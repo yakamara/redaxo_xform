@@ -767,20 +767,17 @@ class rex_xform_manager
                 // INFO LINK
                 echo '<span style="float:right;">Tabelle: <a href="#" id="infotoggler">' . $I18N->msg('xform_table_info') . '</a>';
 
-                if (($table['export'] == 1 && $this->hasDataPageFunction('export')) or $this->hasDataPageFunction('truncate_table')) {
+                $dlink = array();
 
-                    $dlink = array();
-                    if ($table['export'] == 1 && $this->hasDataPageFunction('export')) {
-                        $dlink[] = '<a href="index.php?' . $link_vars . '&func=dataset_delete&' . $em_url . $em_rex_list . '" id="dataset-delete" onclick="return confirm(\'' . $I18N->msg('dataset_delete_confirm') . '\');">' . $I18N->msg('delete') . '</a>';
-                    }
+                // Dataset delete
+                $dlink[] = '<a href="index.php?' . $link_vars . '&func=dataset_delete&' . $em_url . $em_rex_list . '" id="dataset-delete" onclick="return confirm(\'' . $I18N->msg('dataset_delete_confirm') . '\');">' . $I18N->msg('delete') . '</a>';
 
-                    if ($this->hasDataPageFunction('truncate_table')) {
-                        $dlink[] = '<a href="index.php?' . $link_vars . '&func=dataset_export&' . $em_url . $em_rex_list . '">' . $I18N->msg('export') . '</a>';
-                    }
-
-                    echo ' | ' . $I18N->msg('xform_dataset') . ': ' . implode(' / ', $dlink) . '';
-
+                // Export
+                if (($table['export'] == 1 && $this->hasDataPageFunction('export'))) {
+                      $dlink[] = '<a href="index.php?' . $link_vars . '&func=dataset_export&' . $em_url . $em_rex_list . '">' . $I18N->msg('export') . '</a>';
                 }
+
+                echo ' | ' . $I18N->msg('xform_dataset') . ': ' . implode(' / ', $dlink) . '';
 
                 if (!$popup && $table['import'] == 1 && $this->hasDataPageFunction('import')) {
                     echo ' | <a href="index.php?' . htmlspecialchars($link_vars) . '&amp;func=import">' . $I18N->msg('import') . '</a>';
