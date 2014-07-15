@@ -447,7 +447,10 @@ class rex_xform
         global $REX;
 
         $templates = (array) $template;
-        $skins[$this->objparams['form_skin']] = true;
+        foreach (explode(',', $this->objparams['form_skin']) as $form_skin) {
+            $skins[$form_skin] = true;
+        }
+
         $skins['default'] = true;
         foreach ($templates as $template) {
             foreach ($skins as $skin => $_) {
