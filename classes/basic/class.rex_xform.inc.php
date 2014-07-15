@@ -576,15 +576,16 @@ class rex_xform
             if ($pos == 1) {
                 $html .= '<li class="value extras"><strong class="toggler opened">Value Extras</strong><ul class="xform type value extras">';
             }
-            if ($Verzeichniszeiger = opendir($value_path)) {
+            if ($dir = opendir($value_path)) {
                 $list = array();
-                while ($Datei = readdir($Verzeichniszeiger)) {
-                    if (preg_match('/^(class.xform)/', $Datei) && !preg_match('/^(class.xform.validate|class.xform.abstract)/', $Datei)) {
-                        if (!is_dir($Datei)) {
-                            $classname = (explode('.', substr($Datei, 12)));
+                while ($file = readdir($dir)) {
+                    if (preg_match('/^(class.xform)(.)*(.inc.php)/', $file) && !preg_match('/^(class.xform.validate|class.xform.abstract)/', $file)) {
+                        if (!is_dir($file)) {
+                            $classname = (explode('.', substr($file, 12)));
                             $classname = 'rex_xform_' . $classname[0];
-                            if (file_exists($value_path . $Datei)) {
-                                include_once $value_path . $Datei;
+
+                            if (file_exists($value_path . $file)) {
+                                include_once $value_path . $file;
                                 $class = new $classname;
                                 $desc = $class->getDescription();
                                 if ($desc != '') {
@@ -599,7 +600,7 @@ class rex_xform
                 foreach ($list as $l) {
                     $html .= $l;
                 }
-                closedir($Verzeichniszeiger);
+                closedir($dir);
             }
         }
         if ($pos > 0) {
@@ -619,15 +620,15 @@ class rex_xform
             if ($pos == 1) {
                 $html .= '<li class="validate extras"><strong class="toggler opened">Validate Extras</strong><ul class="xform type validate extras">';
             }
-            if ($Verzeichniszeiger = opendir($validate_path)) {
+            if ($dir = opendir($validate_path)) {
                 $list = array();
-                while ($Datei = readdir($Verzeichniszeiger)) {
-                    if (preg_match('/^(class.xform.validate)/', $Datei) && !preg_match('/^(class.xform.validate.abstract)/', $Datei)) {
-                        if (!is_dir($Datei)) {
-                            $classname = (explode('.', substr($Datei, 12)));
+                while ($file = readdir($dir)) {
+                    if (preg_match('/^(class.xform.validate)(.)*(.inc.php)/', $file) && !preg_match('/^(class.xform.validate.abstract)/', $file)) {
+                        if (!is_dir($file)) {
+                            $classname = (explode('.', substr($file, 12)));
                             $classname = 'rex_xform_' . $classname[0];
-                            if (file_exists($validate_path . $Datei)) {
-                                include_once $validate_path . $Datei;
+                            if (file_exists($validate_path . $file)) {
+                                include_once $validate_path . $file;
                                 $class = new $classname;
                                 $desc = $class->getDescription();
                                 if ($desc != '') {
@@ -641,7 +642,7 @@ class rex_xform
                 foreach ($list as $l) {
                     $html .= $l;
                 }
-                closedir($Verzeichniszeiger);
+                closedir($dir);
             }
         }
         if ($pos > 0) {
@@ -663,19 +664,19 @@ class rex_xform
             if ($pos == 1) {
                 $html .= '<li class="action extras"><strong class="toggler opened">Action Extras</strong><ul class="xform type action extras">';
             }
-            if ($Verzeichniszeiger = opendir($action_path)) {
+            if ($dir = opendir($action_path)) {
                 $list = array();
-                while ($Datei = readdir($Verzeichniszeiger)) {
-                    if (preg_match('/^(class.xform.action)/', $Datei) && !preg_match('/^(class.xform.action.abstract)/', $Datei)) {
-                        if (!is_dir($Datei)) {
-                            $classname = (explode('.', substr($Datei, 12)));
+                while ($file = readdir($dir)) {
+                    if (preg_match('/^(class.xform.action)(.)*(.inc.php)/', $file) && !preg_match('/^(class.xform.action.abstract)/', $file)) {
+                        if (!is_dir($file)) {
+                            $classname = (explode('.', substr($file, 12)));
                             $classname = 'rex_xform_' . $classname[0];
-                            if (file_exists($action_path . $Datei)) {
-                                include_once $action_path . $Datei;
+                            if (file_exists($action_path . $file)) {
+                                include_once $action_path . $file;
                                 $class = new $classname;
                                 $desc = $class->getDescription();
                                 if ($desc != '') {
-                                 $list[$classname] = '<li>' . $desc . '</li>';
+                                 $list[$classname] = '<li>' . $classname.$desc . '</li>';
                                 }
                             }
                         }
@@ -685,7 +686,7 @@ class rex_xform
                 foreach ($list as $l) {
                     $html .= $l;
                 }
-                closedir($Verzeichniszeiger);
+                closedir($dir);
             }
         }
         if ($pos > 0) {
