@@ -49,7 +49,9 @@ xform_manager_table_enter_specialchars = Please fill in only letters and numbers
 xform_manager_table_exists = This table name already exists
 
 xform_manager_table_prio = priority
+xform_manager_table_prio_short = prio
 xform_manager_table_name = name
+xform_manager_table_status = status
 xform_manager_name = description
 xform_manager_table_description = description
 xform_manager_entries_per_page = dataset per page
@@ -66,6 +68,8 @@ xform_manager_table_add = create table
 xform_manager_table_update = update table and fields
 xform_manager_table_import = import table
 
+xform_manager_type_id = type
+xform_manager_type_name = typename
 
 # edit.inc.php
 thankyouforupdate = Thank you for the update.

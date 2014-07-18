@@ -128,47 +128,33 @@ if ($show_list && $REX['USER']->isAdmin()) {
         return $list->getValue('status') == 1 ? '<span style="color:green;">' . $I18N->msg('xform_tbl_active') . '</span>' : '<span style="color:red;">' . $I18N->msg('xform_tbl_inactive') . '</span>';
     }
 
-//<!-- |  <a href=index.php?page=".$page."&subpage=".$subpage."&func=table_import><b>".$I18N->msg("xform_manager_table_import")."</b></a> -->
     $table_echo = '<a href=index.php?page=' . $page . '&subpage=' . $subpage . '&func=add><b>+ ' . $I18N->msg('xform_manager_table_add') . '</b></a>';
     echo rex_content_block($table_echo);
 
-    $sql = "select * from $table order by prio,table_name";
+    $sql = "select id, prio, name, table_name, status from $table order by prio,table_name";
 
     $list = rex_list::factory($sql, 30);
 
-    // $list->setColumnParams("id", array("table_id"=>"###id###","func"=>"edit"));
     $list->removeColumn('id');
-    $list->removeColumn('list_amount');
-    $list->removeColumn('search');
-    $list->removeColumn('hidden');
-    $list->removeColumn('export');
-    $list->removeColumn('import');
-    // $list->removeColumn("label");
-    // $list->removeColumn("prio");
-    $list->removeColumn('description');
 
-    function rex_xform_tableedit_translate($params)
-    {
-    return rex_translate($params['subject']);
-    }
-
-    // name - rex_xform_manager::translate($msg)
-    $list->setColumnFormat(
-                        'name',
-                        'custom',
-                        'rex_xform_tableedit_translate'
-                        );
-
+    $list->setColumnLabel('prio', $I18N->msg('xform_manager_table_prio_short'));
+    $list->setColumnLabel('name', $I18N->msg('xform_manager_name'));
+    $list->setColumnLabel('table_name', $I18N->msg('xform_manager_table_name'));
+    $list->setColumnLabel('status', $I18N->msg('xform_manager_table_status'));
 
     $list->setColumnFormat('status', 'custom', 'rex_xform_status_col');
     $list->setColumnParams('table_name', array('table_id' => '###id###', 'func' => 'edit'));
 
-    $list->addColumn($I18N->msg('edit'), $I18N->msg('editfields'));
-    $list->setColumnParams($I18N->msg('edit'), array('subpage' => 'manager', 'tripage' => 'table_field', 'table_name' => '###table_name###'));
+    $list->addColumn($I18N->msg('edit'), $I18N->msg('edit'));
+    $list->setColumnParams($I18N->msg('edit'), array('table_id' => '###id###', 'func' => 'edit'));
 
     $list->addColumn($I18N->msg('delete'), $I18N->msg('delete'));
     $list->setColumnParams($I18N->msg('delete'), array('table_id' => '###id###', 'func' => 'delete'));
     $list->addLinkAttribute($I18N->msg('delete'), 'onclick', 'return confirm(\' [###table_name###] ' . $I18N->msg('delete') . ' ?\')');
+
+    $list->addColumn($I18N->msg('editfields'), $I18N->msg('editfields'));
+    $list->setColumnParams($I18N->msg('editfields'), array('subpage' => 'manager', 'tripage' => 'table_field', 'table_name' => '###table_name###'));
+
 
     echo $list->get();
 }

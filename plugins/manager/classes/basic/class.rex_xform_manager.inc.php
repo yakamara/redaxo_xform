@@ -672,6 +672,8 @@ class rex_xform_manager
 
                 $list->setColumnParams('id', array('data_id' => '###id###', 'func' => 'edit' ));
                 $list->setColumnSortable('id');
+                $list->setColumnLabel('id', 'ID');
+
 
                 foreach ($fields as $field) {
 
@@ -711,11 +713,6 @@ class rex_xform_manager
                         $list->addLinkAttribute($I18N->msg('delete'), 'onclick', 'return confirm(\' id=###id### ' . $I18N->msg('delete') . ' ?\')');
                     }
                 }
-
-                // hat diese Tabelle relationen ?
-                // 55   rex_lit_titel   40     value     be_manager_relation   area_id   Region   rex_lit_area   name   1   0
-                // id   table_name       prio   type_id   type_name             f1         f2       f3             f4     f5
-
 
                 // *********************************************
 
@@ -993,8 +990,6 @@ class rex_xform_manager
         }
 
         $table_echo = '';
-        //echo '<table cellpadding="5" class="rex-table" id="xform-alltables">';
-        //echo '<tr><td>';
         foreach ($tables as $t) {
             if ($t['table_name'] == $table['table_name']) {
                 $table_echo .= '<b>' . rex_translate($t['name']) . ' [' . $t['table_name'] . ']</b> ';
@@ -1002,14 +997,9 @@ class rex_xform_manager
                 $table_echo .= ' <a href="index.php?' . $link_vars . '&table_name=' . $t['table_name'] . '">' . rex_translate($t['name']) . ' [' . $t['table_name'] . ']</a> ';
             }
         }
-        //echo '</td></tr>';
-        //echo '';
         if ($table['description'] != '') {
-            //echo "<tr><td>".$table["description"].'</td></tr>';
             $table_echo .= '<p>' . $table['description'] . '</p>';
         }
-        // if($rex_em_opener_info != "") { echo ' - '.$I18N->msg("openerinfo").': '.$rex_em_opener_info; }
-        //echo '</table><br />';
 
         echo rex_content_block($table_echo);
 
@@ -1431,9 +1421,7 @@ class rex_xform_manager
 
             if ($show_list) {
 
-
-                function rex_xform_list_format($p, $value = '')
-                {
+                function rex_xform_list_format($p, $value = '') {
                     if ($value != '') {
                         $p['value'] = $value;
                     }
@@ -1451,14 +1439,12 @@ class rex_xform_manager
                     return '<td style="' . $style . '">' . $p['value'] . '</td>';
                 }
 
-                function rex_xform_list_edit_format($p)
-                {
+                function rex_xform_list_edit_format($p) {
                     global $REX, $I18N;
                     return rex_xform_list_format($p, $p['list']->getColumnLink($I18N->msg('edit'), $I18N->msg('edit')));
                 }
 
-                function rex_xform_list_delete_format($p)
-                {
+                function rex_xform_list_delete_format($p) {
                     global $REX, $I18N;
                     return rex_xform_list_format($p, $p['list']->getColumnLink($I18N->msg('delete'), $I18N->msg('delete')));
                 }
@@ -1489,6 +1475,11 @@ class rex_xform_manager
                 $list->addParam('table_name', $table['table_name']);
 
                 $list->removeColumn('id');
+
+                $list->setColumnLabel('prio', $I18N->msg('xform_manager_table_prio_short'));
+                $list->setColumnLabel('type_id', $I18N->msg('xform_manager_type_id'));
+                $list->setColumnLabel('type_name', $I18N->msg('xform_manager_type_name'));
+                $list->setColumnLabel('name', $I18N->msg('xform_manager_name'));
 
                 $list->setColumnLayout('prio', array('<th>###VALUE###</th>', '###VALUE###'));
                 $list->setColumnFormat('prio', 'custom', 'rex_xform_list_format' );

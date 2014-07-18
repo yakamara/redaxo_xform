@@ -49,7 +49,9 @@ xform_manager_table_enter_specialchars = Bitte tragen Sie beim Tabellenname nur 
 xform_manager_table_exists = Dieser Tabellenname ist bereits vorhanden
 
 xform_manager_table_prio = Priorität
+xform_manager_table_prio_short = Prio
 xform_manager_table_name = Name
+xform_manager_table_status = Status
 xform_manager_name = Bezeichnung
 xform_manager_table_description = Beschreibung
 xform_manager_entries_per_page = Datensätze pro Seite
@@ -66,6 +68,8 @@ xform_manager_table_add = Tabelle anlegen
 xform_manager_table_update = Tabellen und Felder updaten
 xform_manager_table_import = Tabelle importieren
 
+xform_manager_type_id = Typ
+xform_manager_type_name = Typname
 
 # edit.inc.php
 thankyouforupdate = Vielen Dank für die Aktualisierung.
