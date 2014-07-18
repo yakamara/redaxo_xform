@@ -42,6 +42,7 @@ if (isset($_REQUEST['install']) && $_REQUEST['install'] == 1) {
         $mi->setValue('name', $xform_module_name);
         $mi->insert();
         $module_id = (int) $mi->getLastId();
+        $module_name = $xform_module_name;
         echo rex_info('XForm Modul wurde angelegt unter "' . $xform_module_name . '"');
 
     }
@@ -54,14 +55,13 @@ echo '
     <h2 class="rex-hl2">' . $I18N->msg('xform_setup_install_modul') . '</h2>
     <div class="rex-addon-content">
     <p>' . $I18N->msg('xform_setup_install_modul_description') . '</p>
-    <ul>
-        <li><a href="index.php?page=xform&amp;subpage=setup&amp;install=1">' . $I18N->msg('xform_setup_install_xform_modul') . '</a></li>';
+
+    <p class="rex-button"><a href="index.php?page=xform&amp;subpage=setup&amp;install=1" class="rex-button">' . $I18N->msg('xform_setup_install_xform_modul') . '</a></p>';
 
         if ($module_id > 0) {
-            echo '<li><a href="index.php?page=xform&amp;subpage=setup&amp;install=1&amp;module_id=' . $module_id . '">' . $I18N->msg('xform_setup_update_following_modul', htmlspecialchars($module_name)) . '</a></li>';
+            echo '<p class="rex-button"><a href="index.php?page=xform&amp;subpage=setup&amp;install=1&amp;module_id=' . $module_id . '" class="rex-button">' . $I18N->msg('xform_setup_update_following_modul', htmlspecialchars($module_name)) . '</a></p>';
         }
 
 echo '
-    </ul>
     </div>
 </div>';
