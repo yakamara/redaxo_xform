@@ -762,7 +762,7 @@ class rex_xform_manager
                 echo '</span>';
 
                 // INFO LINK
-                echo '<span style="float:right;">Tabelle: <a href="#" id="infotoggler">' . $I18N->msg('xform_table_info') . '</a>';
+                echo '<span style="float:right;">'.$I18N->msg('table').': <a href="#" id="infotoggler">' . $I18N->msg('xform_table_info') . '</a>';
 
                 $dlink = array();
 
@@ -792,7 +792,7 @@ class rex_xform_manager
 
                 // INFOBLOCK
 
-                echo '<div id="infoblock" style="display:none;/*padding:10px;*/"  class="rex-addon-output">
+                echo '<div id="infoblock" style="display:none;"  class="rex-addon-output">
                 <div class="rex-hl2" style="font-size:12px;font-weight:bold;">' . $I18N->msg('pool_file_details') . '</div>
                 <ul>';
                 echo '<li><b>' . $I18N->msg('xform_table_name') . '</b>: ' . $table['table_name'] . '</li>';
@@ -802,7 +802,13 @@ class rex_xform_manager
                 if (isset($rex_xform_manager_opener['info'])) {
                     echo '<li><b>' . $I18N->msg('openerinfo') . '</b>: ' . htmlspecialchars($rex_xform_manager_opener['info']) . '</li>';
                 }
-                echo '</ul></div><br style="clear:both;" />';
+                if ($REX["USER"]->isAdmin()) {
+                    echo '<li><a href="index.php?page=xform&subpage=manager&tripage=table_field&table_name='.$table['table_name'].'">'.$I18N->msg('editfields').'</a></li>';
+                    echo '<li><a href="index.php?page=xform&subpage=manager&table_id='.$table['id'].'&func=edit">'.$I18N->msg('xform_manager_edit_table').'</a></li>';
+                }
+                echo '</ul>';
+
+                echo '</div><br style="clear:both;" />';
 
 
 
