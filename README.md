@@ -17,17 +17,17 @@ Last Changes
 -------
 
 
-Version 4.6...
+### Version 4.6...
 
-Neu
+#### Neu
 
 * date, datetime und time haben nun auch die no_db option
 
-Änderungen
+#### Änderungen
 
 * Default Klassenbeschreibung in base abstract entfernt.
 
-Bugs
+#### Bugs
 
 * Export der Daten nicht erlauben - wird nun richtig ausgewertet
 * einige individuelle css klassen wurden nicht getrennt gesetzt
@@ -36,16 +36,16 @@ Bugs
 * GeoPlugin funktionierte nicht richtig. Achtung lat/lng Reihenfolge ist nun umgedreht.
 
 
-Version 4.6.2
+### Version 4.6.2
 
-Bugs
+#### Bugs
 
 * db2email action ging nicht.
 
 
-Version 4.6.1
+### Version 4.6.1
 
-New
+#### New
 
 * Manager: 1-n Verknüpfungen ergänzt, inkl Darstellung in der Popupansicht.
 * Elemente kann man und sollte man nun mit Namen verwenden (nicht mehr ids/Zahlen). Vorhandene Klassen wurden bereits angepasst
@@ -56,6 +56,6 @@ New
 * Deleted: jquery.value class weil zu kompliziert und kaum verwendet
 
 
-Bugs
+#### Bugs
 
 * Objectparams in runtime mode are available now
