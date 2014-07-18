@@ -794,21 +794,34 @@ class rex_xform_manager
 
                 echo '<div id="infoblock" style="display:none;"  class="rex-addon-output">
                 <div class="rex-hl2" style="font-size:12px;font-weight:bold;">' . $I18N->msg('pool_file_details') . '</div>
-                <ul>';
-                echo '<li><b>' . $I18N->msg('xform_table_name') . '</b>: ' . $table['table_name'] . '</li>';
-                if ($table['description'] != '') {
-                    echo '<li><b>' . $I18N->msg('xform_description') . '</b>:' . nl2br($table['description']) . '</li>';
-                }
+                <div class="rex-addon-content">
+                <div class="rex-area-col-2">
+                    <div class="rex-area-col-a">';
+                
+                echo '<h4 class="rex-hl3">' . $I18N->msg('xform_table_name') . '</h4><p class="rex-tx1">' . $table['table_name'] . '</p>';
+                
                 if (isset($rex_xform_manager_opener['info'])) {
-                    echo '<li><b>' . $I18N->msg('openerinfo') . '</b>: ' . htmlspecialchars($rex_xform_manager_opener['info']) . '</li>';
+                    echo '<h4 class="rex-hl3">' . $I18N->msg('openerinfo') . '</h4><p class="rex-tx1">' . htmlspecialchars($rex_xform_manager_opener['info']) . '</p>';
                 }
-                if ($REX["USER"]->isAdmin()) {
-                    echo '<li><a href="index.php?page=xform&subpage=manager&tripage=table_field&table_name='.$table['table_name'].'">'.$I18N->msg('editfields').'</a></li>';
-                    echo '<li><a href="index.php?page=xform&subpage=manager&table_id='.$table['id'].'&func=edit">'.$I18N->msg('xform_manager_edit_table').'</a></li>';
-                }
-                echo '</ul>';
 
-                echo '</div><br style="clear:both;" />';
+                if ($REX["USER"]->isAdmin()) {
+                    
+                    echo '<h4 class="rex-hl3">' . $I18N->msg('xform_table_manager') . '</h4>';
+                    echo '
+                        <p class="rex-button">
+                            <a class="rex-button" href="index.php?page=xform&subpage=manager&table_id='.$table['id'].'&func=edit">'.$I18N->msg('xform_manager_edit_table').'</a>
+                            <a class="rex-button" href="index.php?page=xform&subpage=manager&tripage=table_field&table_name='.$table['table_name'].'">'.$I18N->msg('editfields').'</a>
+                        </p>';
+                }
+
+                echo '</div><div class="rex-area-col-b">';
+
+                
+                if ($table['description'] != '') {
+                    echo '<h4 class="rex-hl3">' . $I18N->msg('xform_description') . '</h4><p class="rex-tx1">' . nl2br($table['description']) . '</p>';
+                }
+
+                echo '</div></div></div></div><br style="clear:both;" />';
 
 
 
