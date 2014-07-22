@@ -17,22 +17,26 @@ Last Changes
 -------
 
 
-### Version 4.6...
+### Version 4.6.3 // 22. Juli 2014
 
 #### Neu
 
 * date, datetime und time haben nun auch die no_db option
+* aus tabelle heraus als admin direkt zum Felder bearbeiten springen
+* Felder und Tabellenlisten im Manager sind umstrukturiert (Feldnamen sortiert und übersetzt)
+
 
 #### Änderungen
 
 * Default Klassenbeschreibung in base abstract entfernt.
+* Benennungen geändert
 
 #### Bugs
 
 * Export der Daten nicht erlauben - wird nun richtig ausgewertet
 * einige individuelle css klassen wurden nicht getrennt gesetzt
 * Ausgabe der Klassenbeschreibungen werden nun nur mit richtig definierte Dateiname (class.*.inc.php) angezeigt
-* E-Mail Validierung geht wieder
+* E-Mail Validierung geht wieder und wird auch nach ".." kontrolliert.
 * GeoPlugin funktionierte nicht richtig. Achtung lat/lng Reihenfolge ist nun umgedreht.
 
 
