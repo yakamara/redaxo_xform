@@ -153,6 +153,8 @@ class rex_xform_manager_table_api
 
     $currentFields = rex_xform_manager_table_api::getTableFields($table_name, $fieldIdentifier);
 
+    rex_xform_manager_table_api::createMissingFieldColumns($table_field);
+
     if (count($currentFields) > 1) {
       throw new Exception('more than one field found for table: '.$table_name.' with Fieldidentifier: '.implode(", ",$fieldIdentifier).'');
 
@@ -160,6 +162,7 @@ class rex_xform_manager_table_api
 
       // Insert
       $field_insert = new rex_sql;
+      $field_insert->debugsql = self::$debug;
       $field_insert->setTable(self::rex_xform_field);
       $field_insert->setValue('table_name', $table_name);
 
@@ -177,6 +180,7 @@ class rex_xform_manager_table_api
       }
 
       $field_update = new rex_sql;
+      $field_update->debugsql = self::$debug;
       $field_update->setTable(self::rex_xform_field);
 
       $add_where = array();
@@ -247,16 +251,174 @@ class rex_xform_manager_table_api
 
   static public function migrateTable($table_name = "")
   {
-    // TODO:
-    throw new Exception('TODO: migrateTable: '.$table_name);
+    global $REX;
+    $columns = rex_sql::showColumns($table_name);
+
+    if (count($columns) == 0) {
+      throw new Exception( $table_name . ' does not exists or no fields available');
+
+    }
+
+    $table = array(
+      'table_name' => $table_name,
+      'status' => 1
+    );
+
+    self::setTable($table);
+
+    foreach($columns as $column) {
+      if ($column["name"] != "id") {
+        rex_xform_manager_table_api::migrateField($table_name, $column);
+
+      }
+
+    }
+
   }
 
-  /* public function createPHPSet(){
+  static function migrateField($table_name, $column)
+  {
+    if ($column["name"] == "id") {
+      return array();
+    }
 
-    // TODO:
+    $fields = array();
 
-  }; */
+    // http://www.tutorialspoint.com/mysql/mysql-data-types.htm
+    /*
+     * TODO: missing types
+    COLUMN_NAME z.B. "name"
+    DATA_TYPE z.B. "int"
+    COLUMN_TYPE z.B. "int(11)"
+    COLUMN_DEFAULT z.B. "5"
+    */
 
+    preg_match('@^(.*)(\(.*\)*)@i', $column["type"], $r);
+
+    if (isset($r[1])) {
+      $column["clean_type"] = $r[1];
+    } else {
+      $column["clean_type"] = $column["type"];
+    }
+
+    switch($column["clean_type"]) {
+
+      case("varchar"):
+        $fields[] = array(
+          'type_id' => 'value',
+          'type_name' => 'text',
+          'name' => $column["name"],
+          'label' => $column["name"],
+          'default' => (string) $column["default"],
+          'no_db' => 0
+        );
+
+        preg_match('@^varchar\((.*)\)@i', $column["type"], $r);
+
+        $size = $r[1];
+
+        /*
+        $fields[] = array(
+          'type_id' => 'validate',
+          'type_name' => 'size',
+          'name' => $column["name"],
+          'size' => $size,
+          'message' => 'error: size max in '.$column["name"].' is '.$size
+        );
+        */
+
+        break;
+
+      case("char"):
+        $fields[] = array(
+          'type_id' => 'value',
+          'type_name' => 'text',
+          'name' => $column["name"],
+          'label' => $column["name"],
+          'default' => (string) $column["default"],
+          'no_db' => 0
+        );
+
+        preg_match('@^char\((.)*\)@i', $column["type"], $r);
+        $size = $r[1];
+
+        /*
+        $fields[] = array(
+          'type_id' => 'validate',
+          'type_name' => 'size',
+          'name' => $column["name"],
+          'size' => $size,
+          'message' => 'error: size max in '.$column["name"].' is '.$size
+        );
+        */
+
+        break;
+
+
+      case("int"):
+        $fields[] = array(
+          'type_id' => 'value',
+          'type_name' => 'text',
+          'name' => $column["name"],
+          'label' => $column["name"],
+          'default' => (string) $column["default"],
+          'no_db' => 0
+        );
+
+        break;
+
+      case("blob"):
+      case("tinyblob"):
+      case("mediumblob"):
+      case("longblob"):
+        // do nothing.
+        break;
+
+      case("text"):
+      case("tinytext"):
+      case("mediumtext"):
+      case("longtext"):
+      default:
+        $fields[] = array(
+          'type_id' => 'value',
+          'type_name' => 'textarea',
+          'name' => $column["name"],
+          'label' => $column["name"],
+          'default' => (string) $column["default"],
+          'no_db' => 0
+        );
+        break;
+
+    }
+
+    foreach($fields as $field) {
+      rex_xform_manager_table_api::setTableField($table_name, $field);
+    }
+
+  }
+
+  static function createMissingFieldColumns($field = array())
+  {
+    $columns = array();
+    foreach (rex_sql::showColumns(rex_xform_manager_table_api::rex_xform_field) as $column) {
+      $columns[$column['name']] = true;
+    }
+
+    $alterTable = array();
+    foreach($field as $column => $value) {
+      if (!isset($columns[$column])) {
+        $alterTable[] = 'ADD `' . mysql_real_escape_string($column) . '` TEXT NOT NULL';
+      }
+      $columns[$column] = true;
+    }
+
+    if (count($alterTable)) {
+      $alter = rex_sql::factory();
+      $alter->debugsql = self::$debug;
+      $alter->setQuery('ALTER TABLE `' .  rex_xform_manager_table_api::rex_xform_field . '` ' . implode(',', $alterTable));
+    }
+
+  }
 
   static function generateTablesAndFields($delete_old = false)
   {

@@ -1306,7 +1306,7 @@ class rex_xform_manager
             }
 
             $xform->setActionField('showtext', array('', '<p>' . $I18N->msg('thankyouforentry') . '</p>'));
-            $xform->setObjectparams('main_table', $REX['TABLE_PREFIX'] . 'xform_field'); // f�r db speicherungen und unique abfragen
+            $xform->setObjectparams('main_table', $REX['TABLE_PREFIX'] . 'xform_field');
 
             if ($func == 'edit') {
                 $xform->setObjectparams('submit_btn_label', $I18N->msg('save'));
