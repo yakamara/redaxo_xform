@@ -706,11 +706,11 @@ class rex_xform_manager
 
                 } else {
                     $list->addColumn($I18N->msg('edit'), $I18N->msg('edit'));
-                    $list->setColumnParams($I18N->msg('edit'), array('data_id' => '###id###', 'func' => 'edit', 'start' => rex_request('start', 'string')));
+                    $list->setColumnParams($I18N->msg('edit'), array('data_id' => '###id###', 'func' => 'edit', 'start' => rex_request('start', 'string'), 'sort' => rex_request('sort', 'string'), 'sorttype' => rex_request('sorttype', 'string'), 'list' => rex_request('list', 'string')));
 
                     if ($this->hasDataPageFunction('delete')) {
                         $list->addColumn($I18N->msg('delete'), $I18N->msg('delete'));
-                        $list->setColumnParams($I18N->msg('delete'), array('data_id' => '###id###', 'func' => 'delete'));
+                        $list->setColumnParams($I18N->msg('delete'), array('data_id' => '###id###', 'func' => 'delete', 'start' => rex_request('start', 'string'), 'sort' => rex_request('sort', 'string'), 'sorttype' => rex_request('sorttype', 'string'), 'list' => rex_request('list', 'string')));
                         $list->addLinkAttribute($I18N->msg('delete'), 'onclick', 'return confirm(\' id=###id### ' . $I18N->msg('delete') . ' ?\')');
                     }
                 }
