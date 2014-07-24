@@ -14,6 +14,7 @@ $REX['ADDON']['xform']['templatepaths'][] = $REX['INCLUDE_PATH'] . '/addons/xfor
 
 include $REX['INCLUDE_PATH'] . '/addons/xform/plugins/manager/classes/basic/class.rex_xform_manager.inc.php';
 include $REX['INCLUDE_PATH'] . '/addons/xform/plugins/manager/classes/basic/class.rex_xform_manager_table.inc.php';
+include $REX['INCLUDE_PATH'] . '/addons/xform/plugins/manager/classes/basic/class.rex_xform_manager_table_api.inc.php';
 
 $mypage = 'manager';
 
