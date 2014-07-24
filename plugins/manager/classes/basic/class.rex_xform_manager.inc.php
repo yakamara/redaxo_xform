@@ -42,7 +42,6 @@ class rex_xform_manager
     {
         return in_array($f, $this->dataPageFunctions) ? true : false;
     }
-    // -----
 
 
     // ----- Seitenausgabe
@@ -567,6 +566,7 @@ class rex_xform_manager
                         $suchform .= '<input type="hidden" name="' . $k . '" value="' . addslashes($v) . '" />';
                     }
 
+
                     if (count($rex_xform_filter) > 0) {
                         foreach ($rex_xform_filter as $k => $v) {
                             $suchform .= '<input type="hidden" name="rex_xform_filter[' . $k . ']" value="' . htmlspecialchars(stripslashes($v)) . '" />';
@@ -703,6 +703,7 @@ class rex_xform_manager
 
                 if (isset($rex_xform_manager_opener['id'])) {
                     $list->addColumn('&uuml;bernehmen', '<a href="javascript:xform_manager_setData(' . $rex_xform_manager_opener['id'] . ',###id###,\'###' . $rex_xform_manager_opener['field'] . '### [id=###id###]\',' . $rex_xform_manager_opener['multiple'] . ')">&uuml;bernehmen</a>', -1, 'a');
+
                 } else {
                     $list->addColumn($I18N->msg('edit'), $I18N->msg('edit'));
                     $list->setColumnParams($I18N->msg('edit'), array('data_id' => '###id###', 'func' => 'edit', 'start' => rex_request('start', 'string')));
@@ -1254,11 +1255,11 @@ class rex_xform_manager
                         if ($func == 'edit' ) {
                             $xform->setValueField('showvalue', array($field, $v['label']));
                         } else {
-                            $_tables = rex_xform_manager_table::getTables();
+                            $_tables = rex_xform_manager_table_api::getTables();
                             $_options = array();
                             foreach ($_tables as $_table) {
-                                $_options[$_table->getTableName()] = str_replace('=', '-', $_table->getName() . ' [' . $_table->getTableName() . ']') . '=' . $_table->getTableName();
-                                $_options[$_table->getTableName()] = str_replace(',', '.', $_options[$_table->getTableName()]);
+                                $_options[$_table["table_name"]] = str_replace('=', '-', $_table["name"] . ' [' . $_table["table_name"] . ']') . '=' . $_table["table_name"];
+                                $_options[$_table["table_name"]] = str_replace(',', '.', $_options[$_table["table_name"]]);
                             }
                             if (!isset($v['default'])) {
                                 $v['default'] = '';

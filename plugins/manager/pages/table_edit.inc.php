@@ -167,8 +167,8 @@ if (!$REX['USER']->isAdmin()) {
     echo '<h2 class="rex-hl2">' . $I18N->msg('xform_table_overview') . '</h2>';
     echo '<div class="rex-addon-content"><ul>';
 
-    $t = new rex_xform_manager();
-    $tables = $t->getTables();
+    $tables = rex_xform_manager_table_api::getTables();
+
     if (is_array($tables)) {
         foreach ($tables as $table) {
             $table_perm = 'xform[table:' . $table['table_name'] . ']';

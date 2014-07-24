@@ -20,30 +20,6 @@ class rex_xform_manager_table
         return true;
     }
 
-    function getTableName()
-    {
-        return $this->values['table_name'];
-    }
-
-    function getName()
-    {
-        return $this->values['name'];
-    }
-
-    function isValid()
-    {
-        if (count($this->values) > 5) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    static function factory($values)
-    {
-        $a = new self($values);
-        return $a;
-    }
 
     // -------------------------------------------------------------------------
 
@@ -76,57 +52,6 @@ class rex_xform_manager_table
         }
         return false;
     }
-
-    // -------------------------------------------------------------------------
-
-    static function getTables($f = array())
-    {
-        global $REX;
-        $where = array();
-        if (count($f) > 0) {
-            foreach ($f as $t) {
-                if ($where != '') {
-                    $where .= ' OR ';
-                }
-                $where[] = '(table_name = "' . $t . '")';
-            }
-        }
-
-        if (count($where) > 0) {
-            $where = ' where ' . implode(' OR ', $where);
-        } else {
-            $where = '';
-        }
-
-        $tb = rex_sql::factory();
-        // $tb->debugsql = 1;
-        $tb->setQuery('select * from ' . $REX['TABLE_PREFIX'] . 'xform_table ' . $where . ' order by prio,name');
-
-        $return = array();
-        foreach ($tb->getArray() as $t) {
-            $return[$t['table_name']] = self::factory($t);
-            if (!$return[$t['table_name']]->isValid()) {
-                unset($return[$t['table_name']]);
-            }
-        }
-
-        return $return;
-
-    }
-
-    static function getTablesAsArray($f = array())
-    {
-        $tables = self::getTables($f);
-        $return = array();
-        if (count($tables) > 0) {
-            foreach ($tables as $t) {
-                $return[] = $t->getTableName();
-            }
-        }
-        return $return;
-
-    }
-
 
 
     // -------------------------------------------------------------------------

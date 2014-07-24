@@ -123,7 +123,6 @@ class rex_xform_manager_table_api
     $t->debugsql = self::$debug;
     $t->setQuery('delete from ' . self::rex_xform_table . ' where table_name="' . mysql_real_escape_string($table_name) . '"');
 
-    // TODO: remove Fields
     $remove_fields = rex_xform_manager_table_api::getTableFields($table_name, array());
     foreach($remove_fields as $remove_field) {
       rex_xform_manager_table_api::removeTablefield($table_name, $remove_field);
@@ -224,21 +223,39 @@ class rex_xform_manager_table_api
 
   static public function removeTablefield($table_name = "", array $fieldIdentifier = array())
   {
-    throw new Exception('TODO: removeTablefield: '.$table_name);
+
+    $add_where = array();
+    foreach($fieldIdentifier as $field => $value) {
+      $add_where[] = '`'.mysql_real_escape_string($field).'`="'.mysql_real_escape_string($value).'"';
+    }
+
+    $where = ' where table_name="' . mysql_real_escape_string($table_name) . '"';
+    if (count($add_where)>0) {
+      $where .= ' and ('.implode(' and ', $add_where).') ';
+
+    }
+
+    $f = rex_sql::factory();
+    $f->debugsql = self::$debug;
+    return $f->getArray('delete from ' . self::rex_xform_field . $where);
+
   }
 
 
 
   // ---------- MIGRATION und Erstellung
 
-  /*
   static public function migrateTable($table_name = "")
   {
+    // TODO:
     throw new Exception('TODO: migrateTable: '.$table_name);
   }
-  */
 
-  /* public function createPHPSet(){}; */
+  /* public function createPHPSet(){
+
+    // TODO:
+
+  }; */
 
 
   static function generateTablesAndFields($delete_old = false)
