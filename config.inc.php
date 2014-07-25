@@ -6,14 +6,11 @@
  * @author <a href="http://www.yakamara.de">www.yakamara.de</a>
  */
 
-// error_reporting(E_ALL);
-// ini_set('display_errors', 1);
-
 $mypage = 'xform';
 
 $REX['ADDON']['name'][$mypage] = 'XForm';
 $REX['ADDON']['perm'][$mypage] = 'xform[]';
-$REX['ADDON']['version'][$mypage] = '4.6.3';
+$REX['ADDON']['version'][$mypage] = '4.7';
 $REX['ADDON']['author'][$mypage] = 'Jan Kristinus';
 $REX['ADDON']['supportpage'][$mypage] = 'www.yakamara.de/tag/xform/';
 $REX['PERM'][] = 'xform[]';

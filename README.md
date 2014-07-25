@@ -16,6 +16,17 @@ Installation
 Last Changes
 -------
 
+### Version 4.7 // 25. Juli 2014
+
+#### Neu
+
+* Migrationsmanager (Basis) / rex_xform_manager_table_api::migrateTable($tablename);
+* Manager Api, damit andere AddOns XForm Felder automatisiert anlegen können /rex_xform_manager_table_api::setTable($tablearray, $fieldsarray)
+
+#### Bugs
+
+* Manager: Beim Löschen von Datensätzen bleibt man nun auf der entsprechenden Seite
+
 
 ### Version 4.6.3 // 22. Juli 2014
 
