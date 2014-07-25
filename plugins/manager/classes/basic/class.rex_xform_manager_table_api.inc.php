@@ -317,15 +317,13 @@ class rex_xform_manager_table_api
 
         $size = $r[1];
 
-        /*
         $fields[] = array(
           'type_id' => 'validate',
-          'type_name' => 'size',
+          'type_name' => 'size_range',
           'name' => $column["name"],
-          'size' => $size,
+          'max' => $size,
           'message' => 'error: size max in '.$column["name"].' is '.$size
         );
-        */
 
         break;
 
