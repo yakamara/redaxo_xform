@@ -16,6 +16,17 @@ Installation
 Last Changes
 -------
 
+### Version 4.7.1 // xxx
+
+#### Neu
+
+* Manager: Migrationsmanager ist über das Backend verfügbar und einsetzbar.
+
+#### Bugs
+
+* Manager: Tabellen laufen nun über die Translatefunktion und können mehrsprachig sein.
+
+
 ### Version 4.7 // 25. Juli 2014
 
 #### Neu

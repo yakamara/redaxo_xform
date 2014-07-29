@@ -254,13 +254,13 @@ class rex_xform_manager_table_api
 
   // ---------- MIGRATION und Erstellung
 
-  static public function migrateTable($table_name)
+  static public function migrateTable($table_name, $convert_id = false)
   {
     global $REX;
     $columns = rex_sql::showColumns($table_name);
 
     if (count($columns) == 0) {
-      throw new Exception( $table_name . ' does not exists or no fields available');
+      throw new Exception( '`' . $table_name . '` does not exists or no fields available');
 
     }
 
@@ -268,6 +268,25 @@ class rex_xform_manager_table_api
       'table_name' => $table_name,
       'status' => 1
     );
+
+    $autoincrement = array();
+    foreach($columns as $column) {
+      if ($column["extra"] == "auto_increment") {
+        $autoincrement = $column;
+      }
+    }
+
+    if (count($autoincrement) > 0 && $autoincrement["name"] == "id") {
+      // everything is ok
+
+    } else if ($convert_id && count($autoincrement) > 1) {
+      rex_sql::factory()->setQuery('ALTER TABLE `'.mysql_real_escape_string($table_name).'` CHANGE `'.mysql_real_escape_string($autoincrement["name"]).'` `id` INT( 11 ) NOT NULL AUTO_INCREMENT ');
+      $columns = rex_sql::showColumns($table_name);
+
+    } else {
+        throw new Exception( '`id`-field with auto_increment is missing.');
+
+    }
 
     self::setTable($table);
 

@@ -19,8 +19,68 @@ $table_name = rex_request('table_name', 'string');
 
 $show_list = true;
 
-// ********************************************* FORMULAR
-if ( ($func == 'add' || $func == 'edit') && $REX['USER']->isAdmin() ) {
+
+
+if ( $func == "migrate" && $REX['USER']->isAdmin() ) {
+
+  $available_tables = rex_sql::showTables();
+  $xform_tables = array();
+  $missing_tables = array();
+
+  foreach(rex_xform_manager_table_api::getTables() as $g_table) {
+    $xform_tables[] = $g_table["table_name"];
+  }
+
+  foreach($available_tables as $a_table) {
+    if ( !in_array($a_table, $xform_tables)) {
+      $missing_tables[$a_table] = $a_table;
+    }
+
+  }
+
+  $xform = new rex_xform;
+  $xform->setDebug(TRUE);
+  $xform->setHiddenField('page', $page);
+  $xform->setHiddenField('subpage', $subpage);
+  $xform->setHiddenField('func', $func);
+
+  $xform->setValueField('select', array('table_name', $I18N->msg('table'), $missing_tables));
+
+  $xform->setValueField('checkbox', array('convert_id', $I18N->msg('xform_manager_migrate_table_id_convert')));
+
+  $form = $xform->getForm();
+
+
+  if ($xform->objparams['form_show']) {
+
+    echo '<div class="rex-addon-output"><h3 class="rex-hl2">' . $I18N->msg('xform_manager_table_migrate') . '</h3>
+    <div class="rex-addon-content">
+    <p>'.$I18N->msg('xform_manager_table_migrate_info').'</p>';
+
+    echo $form;
+    echo '</div></div>';
+
+    echo rex_content_block('<a href="index.php?page=' . $page . '&amp;subpage=' . $subpage . '"><b>&laquo; ' . $I18N->msg('xform_back_to_overview') . '</b></a>');
+
+    $show_list = false;
+
+  } else {
+
+    $table_name = $xform->objparams['value_pool']['sql']['table_name'];
+    $convert_id = $xform->objparams['value_pool']['sql']['convert_id'];
+
+    try {
+      rex_xform_manager_table_api::migrateTable($table_name, $convert_id); // with convert id / auto_increment finder
+      echo rex_info($I18N->msg('xform_manager_table_migrated_success'));
+
+    } catch (Exception $e) {
+      echo rex_warning($I18N->msg('xform_manager_table_migrated_failed', $table_name, $e->getMessage()));
+
+    }
+
+  }
+
+} else if ( ($func == 'add' || $func == 'edit') && $REX['USER']->isAdmin() ) {
 
     $xform = new rex_xform;
     // $xform->setDebug(TRUE);
@@ -127,7 +187,8 @@ if ($show_list && $REX['USER']->isAdmin()) {
       return rex_translate($params['subject']);
     }
 
-    $table_echo = '<a href=index.php?page=' . $page . '&subpage=' . $subpage . '&func=add><b>+ ' . $I18N->msg('xform_manager_table_add') . '</b></a>';
+  $table_echo = '<a href=index.php?page=' . $page . '&subpage=' . $subpage . '&func=add><b>+ ' . $I18N->msg('xform_manager_table_add') . '</b></a>';
+  $table_echo .= ' / <a href=index.php?page=' . $page . '&subpage=' . $subpage . '&func=migrate><b>+ ' . $I18N->msg('xform_manager_table_migrate') . '</b></a>';
     echo rex_content_block($table_echo);
 
     $sql = "select id, prio, name, table_name, status from $table order by prio,table_name";
