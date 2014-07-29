@@ -15,6 +15,7 @@ $func = rex_request('func', 'string', '');
 $page = rex_request('page', 'string', '');
 $subpage = rex_request('subpage', 'string', '');
 $table_id = rex_request('table_id', 'int');
+$table_name = rex_request('table_name', 'string');
 
 $show_list = true;
 
@@ -99,15 +100,7 @@ if ( ($func == 'add' || $func == 'edit') && $REX['USER']->isAdmin() ) {
 // ********************************************* LOESCHEN
 if ($func == 'delete' && $REX['USER']->isAdmin()) {
 
-    // TODO:
-    // querloeschen - bei be_xform_relation, muss die zieltabelle auch bearbeitet werden + die relationentabelle auch geloescht werden
-
-    $query = "delete from $table where id='" . $table_id . "' ";
-    $delsql = new rex_sql;
-    // $delsql->debugsql=1;
-    $delsql->setQuery($query);
-    $query = "delete from $table_field where table_id='" . $table_id . "' ";
-    $delsql->setQuery($query);
+    echo rex_xform_manager_table_api::removeTable($table_name);
 
     $func = '';
     echo rex_info($I18N->msg('xform_manager_table_deleted'));
@@ -128,6 +121,12 @@ if ($show_list && $REX['USER']->isAdmin()) {
         return $list->getValue('status') == 1 ? '<span style="color:green;">' . $I18N->msg('xform_tbl_active') . '</span>' : '<span style="color:red;">' . $I18N->msg('xform_tbl_inactive') . '</span>';
     }
 
+    function rex_xform_list_translate($params)
+    {
+      global $I18N;
+      return rex_translate($params['subject']);
+    }
+
     $table_echo = '<a href=index.php?page=' . $page . '&subpage=' . $subpage . '&func=add><b>+ ' . $I18N->msg('xform_manager_table_add') . '</b></a>';
     echo rex_content_block($table_echo);
 
@@ -139,6 +138,9 @@ if ($show_list && $REX['USER']->isAdmin()) {
 
     $list->setColumnLabel('prio', $I18N->msg('xform_manager_table_prio_short'));
     $list->setColumnLabel('name', $I18N->msg('xform_manager_name'));
+    $list->setColumnFormat('name', 'custom', 'rex_xform_list_translate');
+
+
     $list->setColumnLabel('table_name', $I18N->msg('xform_manager_table_name'));
     $list->setColumnLabel('status', $I18N->msg('xform_manager_table_status'));
 
@@ -149,7 +151,7 @@ if ($show_list && $REX['USER']->isAdmin()) {
     $list->setColumnParams($I18N->msg('edit'), array('table_id' => '###id###', 'func' => 'edit'));
 
     $list->addColumn($I18N->msg('delete'), $I18N->msg('delete'));
-    $list->setColumnParams($I18N->msg('delete'), array('table_id' => '###id###', 'func' => 'delete'));
+    $list->setColumnParams($I18N->msg('delete'), array('table_name' => '###table_name###', 'func' => 'delete'));
     $list->addLinkAttribute($I18N->msg('delete'), 'onclick', 'return confirm(\' [###table_name###] ' . $I18N->msg('delete') . ' ?\')');
 
     $list->addColumn($I18N->msg('editfields'), $I18N->msg('editfields'));
