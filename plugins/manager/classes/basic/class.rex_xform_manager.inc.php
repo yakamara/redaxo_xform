@@ -1230,8 +1230,9 @@ class rex_xform_manager
                         break;
 
                     case 'no_db':
-                        // ToDo: Default Wert beachten
-
+                        if (!isset($v['default']) || $v['default'] != 1) {
+                          $v['default'] = 0;
+                        }
 
                         $xform->setValueField('checkbox', array($field, $I18N->msg('donotsaveindb'), 'no_db', $v['default']));
                         break;
