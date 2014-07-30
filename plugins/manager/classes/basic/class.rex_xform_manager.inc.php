@@ -1418,6 +1418,73 @@ class rex_xform_manager
 
 
 
+        if ($func == 'show_form_notation') {
+            
+            $formbuilder_fields = $this->getTableFields($table['table_name']);
+            
+            $notation_php   = '';
+            $notation_pipe  = '';
+            $notation_email = '';
+            foreach ($formbuilder_fields as $field) {
+                $classname = rex_xform::includeClass($field['type_id'], $field['type_name']);
+                $cl = new $classname;
+                $definitions = $cl->getDefinitions();
+
+                $values = array();
+                $i = 1;
+                foreach ($definitions['values'] as $key => $_) {
+                    $key = $this->getFieldName($key, $field['type_id']);
+                    if (isset($field[$key])) {
+                        $values[] = $field[$key];
+                    } elseif (isset($field['f' . $i])) {
+                        $values[] = $field['f' . $i];
+                    } else {
+                        $values[] = '';
+                    }
+                    $i++;
+                }
+
+                if ($field['type_id'] == 'value') {
+
+                    $notation_php .= "\n" . '$xform->setValueField(\'' . $field['type_name'] . '\', array("' . rtrim(implode('","', $values), '","') . '"));';
+                    $notation_pipe .= "\n" . $field['type_name'] . '|' . rtrim(implode('|', $values), '|') . '|';
+                    $notation_email .= "\n" . $field['label'] . ': ###' . $field['name'] . '###';
+
+                } elseif ($field['type_id'] == 'validate') {
+
+                    $notation_php .= "\n" . '$xform->setValidateField(\'' . $field['type_name'] . '\', array("' . rtrim(implode('","', $values), '","') . '"));';
+                    $notation_pipe .= "\n" . $field['type_id'] . '|' . $field['type_name'] . '|' . rtrim(implode('|', $values), '|') . '|';
+
+                } elseif ($field['type_id'] == 'action') {
+
+                    $notation_php .= "\n" . '$xform->setActionField(\'' . $field['type_name'] . '\', array("' . rtrim(implode('","', $values), '","') . '"));';
+                    $notation_pipe .= "\n" . $field['type_id'] . '|' . $field['type_name'] . '|' . rtrim(implode('|', $values), '|') . '|';
+                }
+            }
+            
+            echo '<div class="rex-addon-output">';
+            echo '<h2 class="rex-hl2">PHP</h2>';
+            echo '<div class="rex-addon-content">';
+            echo '<pre class="rex-code"><code>' . $notation_php . '</code></pre>';
+            echo '</div></div>';
+
+            echo '<div class="rex-addon-output">';
+            echo '<h2 class="rex-hl2">Pipe</h2>';
+            echo '<div class="rex-addon-content">';
+            echo '<pre class="rex-code"><code>' . $notation_pipe . '</code></pre>';
+            echo '</div></div>';
+
+            echo '<div class="rex-addon-output">';
+            echo '<h2 class="rex-hl2">E-Mail</h2>';
+            echo '<div class="rex-addon-content">';
+            echo '<pre class="rex-code"><code>' . $notation_email . '</code></pre>';
+            echo '</div></div>';
+
+
+
+            $func = 'list';
+        }
+
 
 
 
@@ -1475,7 +1542,8 @@ class rex_xform_manager
                                      <a href="index.php?' . $link_vars . '&table_name=' . $table['table_name'] . '&func=choosenadd"><b>+ ' . $I18N->msg('addtablefield') . '</b></a>
                              </div>
                              <div class="rex-area-col-b rex-algn-rght">
-                                 <a href="index.php?' . $link_vars . '&table_name=' . $table['table_name'] . '&func=updatetable"><b>o ' . $I18N->msg('updatetable') . '</b></a>
+                                 <a href="index.php?' . $link_vars . '&table_name=' . $table['table_name'] . '&func=show_form_notation"><b>o ' . $I18N->msg('xform_manager_show_form_notation') . '</b></a>
+                                <a href="index.php?' . $link_vars . '&table_name=' . $table['table_name'] . '&func=updatetable"><b>o ' . $I18N->msg('updatetable') . '</b></a>
                                  <a href="index.php?' . $link_vars . '&table_name=' . $table['table_name'] . '&func=updatetablewithdelete" onclick="return confirm(\'' . $I18N->msg('updatetable_with_delete_confirm') . '\')"><b>o ' . $I18N->msg('updatetable_with_delete') . '</b></a>
                              </div>
                      </div>
