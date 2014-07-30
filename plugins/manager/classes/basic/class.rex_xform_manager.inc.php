@@ -1426,6 +1426,27 @@ class rex_xform_manager
             $notation_php   = '';
             $notation_pipe  = '';
             $notation_email = '';
+
+
+            $notation_php_pre = array(
+                '$xform = new rex_xform();', 
+                '$xform->setObjectparams(\'form_skin\', \'default\');', 
+                '$xform->setObjectparams(\'form_showformafterupdate\', 0);', 
+                '$xform->setObjectparams(\'real_field_names\', true);', 
+            );
+
+            $notation_php .= implode("\n", $notation_php_pre) . "\n";
+
+
+            $notation_pipe_pre = array(
+                'objparams|form_skin|default', 
+                'objparams|form_showformafterupdate|0', 
+                'objparams|real_field_names|true', 
+            );
+
+            $notation_pipe .= implode("\n", $notation_pipe_pre) . "\n";
+
+
             foreach ($formbuilder_fields as $field) {
                 $classname = rex_xform::includeClass($field['type_id'], $field['type_name']);
                 $cl = new $classname;
@@ -1462,6 +1483,9 @@ class rex_xform_manager
                     $notation_pipe .= "\n" . $field['type_id'] . '|' . $field['type_name'] . '|' . rtrim(implode('|', $values), '|') . '|';
                 }
             }
+
+            $notation_php  .= "\n\n"  . '$xform->setActionField(\'db2email\', array(\'emailtemplate\', \'emaillabel\', \'email@domain.de\'));';
+            $notation_pipe .= "\n\n"  . 'action|db2email|emailtemplate|emaillabel|email@domain.de';
             
             echo '<div class="rex-addon-output">';
             echo '<h2 class="rex-hl2">PHP</h2>';
@@ -1543,9 +1567,9 @@ class rex_xform_manager
                                      <a href="index.php?' . $link_vars . '&table_name=' . $table['table_name'] . '&func=choosenadd"><b>+ ' . $I18N->msg('addtablefield') . '</b></a>
                              </div>
                              <div class="rex-area-col-b rex-algn-rght">
-                                 <a href="index.php?' . $link_vars . '&table_name=' . $table['table_name'] . '&func=show_form_notation"><b>o ' . $I18N->msg('xform_manager_show_form_notation') . '</b></a>
-                                <a href="index.php?' . $link_vars . '&table_name=' . $table['table_name'] . '&func=updatetable"><b>o ' . $I18N->msg('updatetable') . '</b></a>
-                                 <a href="index.php?' . $link_vars . '&table_name=' . $table['table_name'] . '&func=updatetablewithdelete" onclick="return confirm(\'' . $I18N->msg('updatetable_with_delete_confirm') . '\')"><b>o ' . $I18N->msg('updatetable_with_delete') . '</b></a>
+                                <ul class="rex-navi-piped">
+                                    <li><a href="index.php?' . $link_vars . '&table_name=' . $table['table_name'] . '&func=show_form_notation">' . $I18N->msg('xform_manager_show_form_notation') . '</a></li><li><a href="index.php?' . $link_vars . '&table_name=' . $table['table_name'] . '&func=updatetable">' . $I18N->msg('updatetable') . '</a></li><li><a href="index.php?' . $link_vars . '&table_name=' . $table['table_name'] . '&func=updatetablewithdelete" onclick="return confirm(\'' . $I18N->msg('updatetable_with_delete_confirm') . '\')">' . $I18N->msg('updatetable_with_delete') . '</a></li>
+                                </ul>
                              </div>
                      </div>
                      <div class="rex-clearer"></div>

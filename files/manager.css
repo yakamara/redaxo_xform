@@ -46,3 +46,26 @@ body#rex-page-xform .xform-manager-searchfield{
 .xform-table_field p.rex-button span {
         display: block;
 }
+
+
+
+
+/*    Piped ***********************************************************************
+*******************************************************************************/
+.rex-navi-piped {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+}
+.rex-navi-piped > * {
+    display: inline;
+    padding: 0 5px 0 6px;
+    font-weight: bold;
+}
+.rex-navi-piped > * {
+    background-image: url(../../../redaxo/media/pipe_c2.gif);
+    background-position: 0px 2px;
+}
+.rex-navi-piped > *:first-child {
+    background: none;
+}
