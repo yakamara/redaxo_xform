@@ -14,7 +14,7 @@ class rex_xform_validate_email extends rex_xform_validate_abstract
         if ($this->params['send'] == '1') {
             foreach ($this->obj_array as $Object) {
                 if ($Object->getValue()) {
-                    if ( !preg_match("#^[\w.+-]{2,}\@\w[\w.-]*\.\w+$#", $Object->getValue()) ) {
+                    if(!filter_var($Object->getValue(), FILTER_VALIDATE_EMAIL)) {
                         $this->params['warning'][$Object->getId()] = $this->params['error_class'];
                         $this->params['warning_messages'][$Object->getId()] = $this->getElement('message');
                     }
