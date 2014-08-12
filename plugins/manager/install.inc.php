@@ -55,4 +55,10 @@ $sql->setQuery('CREATE TABLE IF NOT EXISTS `' . $REX['TABLE_PREFIX'] . 'xform_re
     `target_id` INT NOT NULL
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
+$sql->setQuery('SELECT id FROM `' . $REX['TABLE_PREFIX'] . 'xform_field` WHERE type_id = "validate" AND type_name = "type" AND required != "" LIMIT 1');
+if ($sql->getRows()) {
+    $sql->setQuery('ALTER TABLE `' . $REX['TABLE_PREFIX'] . 'xform_field` ADD `not_required` TEXT NOT NULL');
+    $sql->setQuery('UPDATE `' . $REX['TABLE_PREFIX'] . 'xform_field` SET `not_required` = `required`, `required` = "" WHERE type_id = "validate" AND type_name = "type"');
+}
+
 $REX['ADDON']['install']['manager'] = 1;

@@ -15,7 +15,7 @@ class rex_xform_validate_type extends rex_xform_validate_abstract
             $Object = $this->obj_array[0];
 
             // Wenn Feld leer ist - auch ok
-            if ($this->getElement('required') == 1 && $Object->getValue() == '') {
+            if ($this->getElement('not_required') == 1 && $Object->getValue() == '') {
                 return;
             }
 
@@ -110,7 +110,7 @@ class rex_xform_validate_type extends rex_xform_validate_abstract
                     'name'     => array( 'type' => 'select_name', 'label' => 'Name' ),
                     'type'     => array( 'type' => 'select',    'label' => 'Prüfung nach:', 'default' => '', 'definition' => 'int,float,numeric,string,email,url,date,datetime' ),
                     'message'  => array( 'type' => 'text',    'label' => 'Fehlermeldung'),
-                    'required' => array( 'type' => 'boolean',    'label' => 'Feld muss nicht ausgefüllt werden', 'default' => 0 ),
+                    'not_required' => array( 'type' => 'boolean',    'label' => 'Feld muss nicht ausgefüllt werden', 'default' => 0 ),
                 ),
                 'description' => 'Es kann nach verschiedenen Typen geprüft werden (int/float/numeric/string/email/url/date)',
                 'famous' => true
