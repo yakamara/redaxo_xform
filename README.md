@@ -25,6 +25,7 @@ Last Changes
 #### Bugs
 
 * Manager: Tabellen laufen nun über die Translatefunktion und können mehrsprachig sein.
+* E-Mail-Validierung: Adressen mit UTF8-Zeichen werden akzeptiert.
 
 
 ### Version 4.7 // 25. Juli 2014

@@ -42,7 +42,7 @@ class rex_xform_validate_type extends rex_xform_validate_abstract
                 case 'string':
                         break;
                 case 'email':
-                    $xsRegEx_email = "#^[\w.+-]{2,}\@\w[\w.-]*\.\w+$#";
+                    $xsRegEx_email = "#^[\w.+-]{2,}\@\w[\w.-]*\.\w+$#u";
 
                     if (preg_match($xsRegEx_email, $Object->getValue()) == 0) {
                         $w = true;
