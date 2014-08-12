@@ -316,12 +316,14 @@ class rex_xform_manager_table_api
         COLUMN_DEFAULT z.B. "5"
         */
 
-        preg_match('@^(.*)(\(.*\)*)@i', $column['type'], $r);
+        preg_match('@^(.*)\((.*)\)@i', $column['type'], $r);
 
         if (isset($r[1])) {
             $column['clean_type'] = $r[1];
+            $column['length'] = $r[2];
         } else {
             $column['clean_type'] = $column['type'];
+            $column['length'] = null;
         }
 
         switch ($column['clean_type']) {
@@ -336,17 +338,24 @@ class rex_xform_manager_table_api
                     'no_db' => 0
                 );
 
-                preg_match('@^varchar\((.*)\)@i', $column['type'], $r);
-
-                $size = $r[1];
-
                 $fields[] = array(
                     'type_id' => 'validate',
                     'type_name' => 'size_range',
                     'name' => $column['name'],
-                    'max' => $size,
-                    'message' => 'error: size max in ' . $column['name'] . ' is ' . $size
+                    'max' => $column['length'],
+                    'message' => 'error: size max in ' . $column['name'] . ' is ' . $column['length']
                 );
+
+                if (preg_match('/(?:^|_)e?mail(?:address|adresse)?(?:_|$)/', $column['name'])) {
+                    $fields[] = array(
+                        'type_id' => 'validate',
+                        'type_name' => 'type',
+                        'name' => $column['name'],
+                        'type' => 'email',
+                        'not_required' => 'YES' === $column['null'],
+                        'message' => $column['name'] . ' must be a valid email address',
+                    );
+                }
 
                 break;
 
@@ -360,23 +369,76 @@ class rex_xform_manager_table_api
                     'no_db' => 0
                 );
 
-                preg_match('@^char\((.)*\)@i', $column['type'], $r);
-                $size = $r[1];
-
                 /*
                 $fields[] = array(
                   'type_id' => 'validate',
                   'type_name' => 'size',
                   'name' => $column["name"],
-                  'size' => $size,
-                  'message' => 'error: size max in '.$column["name"].' is '.$size
+                  'size' => $column['length'],
+                  'message' => 'error: size max in '.$column["name"].' is '.$column['length']
                 );
                 */
 
                 break;
 
+            case 'enum':
+                $options = array_map(function ($option) {
+                    $option = trim($option, '\'" ');
+                    return $option . '=' . $option;
+                }, explode(',', $column['length']));
 
+                $fields[] = array(
+                    'type_id' => 'value',
+                    'type_name' => 'select',
+                    'name' => $column['name'],
+                    'label' => $column['name'],
+                    'options' => implode(',', $options),
+                    'default' => (string) $column['default'],
+                    'no_db' => 0
+                );
+
+                break;
+
+            case 'set':
+                $options = array_map(function ($option) {
+                    $option = trim($option, '\'" ');
+                    return $option . '=' . $option;
+                }, explode(',', $column['length']));
+
+                $fields[] = array(
+                    'type_id' => 'value',
+                    'type_name' => 'select',
+                    'name' => $column['name'],
+                    'label' => $column['name'],
+                    'options' => implode(',', $options),
+                    'default' => (string) $column['default'],
+                    'multiple' => 1,
+                    'no_db' => 0
+                );
+
+                break;
+
+            case 'tinyint':
+                if (1 == $column['length']) {
+                    $sql = rex_sql::factory();
+                    $sql->setQuery('SELECT * FROM `' . $sql->escape($table_name) . '` WHERE `' . $sql->escape($column['name']) . '` NOT IN (0, 1) LIMIT 1');
+                    if (!$sql->getRows()) {
+                        $fields[] = array(
+                            'type_id' => 'value',
+                            'type_name' => 'checkbox',
+                            'name' => $column['name'],
+                            'label' => $column['name'],
+                            'default' => $column['default'],
+                            'no_db' => 0
+                        );
+                        break;
+                    }
+                }
+                // no break
+            case 'smallint':
+            case 'mediumint':
             case 'int':
+            case 'bigint':
                 $fields[] = array(
                     'type_id' => 'value',
                     'type_name' => 'text',
@@ -386,12 +448,80 @@ class rex_xform_manager_table_api
                     'no_db' => 0
                 );
 
+                $fields[] = array(
+                    'type_id' => 'validate',
+                    'type_name' => 'type',
+                    'name' => $column['name'],
+                    'type' => 'int',
+                    'not_required' => 'YES' === $column['null'],
+                    'message' => $column['name'] . ' must be an integer',
+                );
+
+                break;
+
+            case 'float':
+            case 'double':
+            case 'decimal':
+                $fields[] = array(
+                    'type_id' => 'value',
+                    'type_name' => 'text',
+                    'name' => $column['name'],
+                    'label' => $column['name'],
+                    'default' => (string) $column['default'],
+                    'no_db' => 0
+                );
+
+                $fields[] = array(
+                    'type_id' => 'validate',
+                    'type_name' => 'type',
+                    'name' => $column['name'],
+                    'type' => 'float',
+                    'not_required' => 'YES' === $column['null'],
+                    'message' => $column['name'] . ' must be a float',
+                );
+                break;
+
+            case 'date':
+                $fields[] = array(
+                    'type_id' => 'value',
+                    'type_name' => 'date',
+                    'name' => $column['name'],
+                    'label' => $column['name'],
+                    'default' => (string) $column['default'],
+                    'no_db' => 0
+                );
+                break;
+
+            case 'time':
+                $fields[] = array(
+                    'type_id' => 'value',
+                    'type_name' => 'time',
+                    'name' => $column['name'],
+                    'label' => $column['name'],
+                    'default' => (string) $column['default'],
+                    'no_db' => 0
+                );
+                break;
+
+            case 'datetime':
+            case 'timestamp':
+                $fields[] = array(
+                    'type_id' => 'value',
+                    'type_name' => 'datetime',
+                    'name' => $column['name'],
+                    'label' => $column['name'],
+                    'default' => (string) $column['default'],
+                    'no_db' => 0
+                );
                 break;
 
             case 'blob':
             case 'tinyblob':
             case 'mediumblob':
             case 'longblob':
+            case 'year':
+            case 'binary':
+            case 'varbinary':
                 // do nothing.
                 break;
 

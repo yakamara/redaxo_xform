@@ -21,6 +21,7 @@ Last Changes
 #### Neu
 
 * Manager: Migrationsmanager ist über das Backend verfügbar und einsetzbar.
+* Manager: Migrationsmanager unterstützt weitere Feldtypen
 
 #### Bugs
 
