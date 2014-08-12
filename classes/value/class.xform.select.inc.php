@@ -16,32 +16,32 @@ class rex_xform_select extends rex_xform_abstract
         $options = $this->getElement('options');
 
         if (!is_array($options)) {
-        
+
             $value_encoded = $this->getElement(3);
             $value_encoded = $this->encodeChars(',', $value_encoded);
-    
+
             $rawOptions = explode(',', $value_encoded);
             $options = array();
             foreach ($rawOptions as $option_encoded) {
-    
+
                 $option = $this->encodeChars('=', $option_encoded);
-    
+
                 $t = explode('=', $option);
                 $v = $t[0];
-    
+
                 if (isset($t[1])) {
                     $k = $t[1];
                 } else {
                     $k = $t[0];
                 }
-    
+
                 $v = $this->decodeChars(',', $v);
                 $v = $this->decodeChars('=', $v);
                 $k = $this->decodeChars(',', $k);
                 $k = $this->decodeChars('=', $k);
                 $t[0] = $this->decodeChars(',', $t[0]);
                 $t[0] = $this->decodeChars('=', $t[0]);
-    
+
                 $options[$k] = $v;
             }
 
@@ -89,7 +89,7 @@ class rex_xform_select extends rex_xform_abstract
             'values' => array(
                 'name'     => array( 'type' => 'name',   'label' => 'Feld' ),
                 'label'    => array( 'type' => 'text',    'label' => 'Bezeichnung'),
-                'options'  => array( 'type' => 'text',    'label' => 'Selectdefinition, kommasepariert',   'example' => 'w=Frau,m=Herr'),
+                'options'  => array( 'type' => 'text',    'label' => 'Selectdefinition, kommasepariert'),
                 'no_db'    => array( 'type' => 'no_db',   'label' => 'Datenbank',          'default' => 0),
                 'default'  => array( 'type' => 'text',    'label' => 'Defaultwert'),
                 'multiple' => array( 'type' => 'boolean', 'label' => 'Mehrere Felder möglich'),
