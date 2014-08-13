@@ -113,7 +113,7 @@ class rex_xform_manager_table_api
 
         $t = rex_sql::factory();
         $t->debugsql = self::$debug;
-        return $t->getArray('select * from ' . self::$rex_xform_table );
+        return $t->getArray('select * from ' . self::$rex_xform_table . ' order by prio');
 
     }
 
