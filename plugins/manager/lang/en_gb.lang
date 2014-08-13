@@ -25,6 +25,7 @@ xform_relation_edit_relations = edit relations
 
 xform_prio_top = At top
 xform_prio_after = After "{0}"
+xform_prio_bottom = At bottom
 
 truncate_table = delete data
 table_truncated = data completely deleted

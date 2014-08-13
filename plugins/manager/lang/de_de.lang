@@ -25,6 +25,7 @@ xform_relation_edit_relations = Verknüpfungen verwalten
 
 xform_prio_top = Am Anfang
 xform_prio_after = Nach "{0}"
+xform_prio_bottom = Am Ende
 
 truncate_table = Tabelle leeren
 table_truncated = Tabelle wurde geleert
