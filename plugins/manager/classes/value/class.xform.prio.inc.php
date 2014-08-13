@@ -40,7 +40,7 @@ class rex_xform_prio extends rex_xform_abstract
                 $prio = $sql->getValue('prio') + 1;
                 $label = array();
                 foreach ($fields as $field) {
-                    $label[] = $sql->getValue($field);
+                    $label[] = rex_translate($sql->getValue($field), $I18N, false);
                 }
                 $options[$prio] = $I18N->msg('xform_prio_after', implode(' | ', $label));
             }
