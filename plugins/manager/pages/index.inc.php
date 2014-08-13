@@ -17,13 +17,6 @@ switch ($tripage) {
         require $REX['INCLUDE_PATH'] . '/addons/xform/plugins/manager/pages/table_field.inc.php';
         break;
 
-    case 'table_import':
-        // TODO:
-        rex_title('XForm', $REX['ADDON']['xform']['SUBPAGES']);
-        echo 'TODO:';
-        require $REX['INCLUDE_PATH'] . '/addons/xform/plugins/manager/pages/table_import.inc.php';
-        break;
-
     case 'data_edit':
         require $REX['INCLUDE_PATH'] . '/addons/xform/plugins/manager/pages/data_edit.inc.php';
         break;
