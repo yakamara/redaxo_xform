@@ -90,7 +90,7 @@ if ( $func == "migrate" && $REX['USER']->isAdmin() ) {
     $xform->setActionField('showtext', array('', $I18N->msg('xform_manager_table_entry_saved')));
     $xform->setObjectparams('main_table', $table);
 
-    $xform->setValueField('text', array('prio', $I18N->msg('xform_manager_table_prio')));
+    $xform->setValueField('prio', array('prio', $I18N->msg('xform_manager_table_prio'), 'name'));
 
     if ($func == 'edit') {
         $xform->setObjectparams('submit_btn_label', $I18N->msg('save'));

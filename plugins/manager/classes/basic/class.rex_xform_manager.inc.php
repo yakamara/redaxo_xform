@@ -96,7 +96,7 @@ class rex_xform_manager
         // -------------- filter - popup for selection
 
         if (count($rex_xform_filter) > 0) {
-            $popup = true; 
+            $popup = true;
 
         }
 
@@ -798,15 +798,15 @@ class rex_xform_manager
                 <div class="rex-addon-content">
                 <div class="rex-area-col-2">
                     <div class="rex-area-col-a">';
-                
+
                 echo '<h4 class="rex-hl3">' . $I18N->msg('xform_table_name') . '</h4><p class="rex-tx1">' . $table['table_name'] . '</p>';
-                
+
                 if (isset($rex_xform_manager_opener['info'])) {
                     echo '<h4 class="rex-hl3">' . $I18N->msg('openerinfo') . '</h4><p class="rex-tx1">' . htmlspecialchars($rex_xform_manager_opener['info']) . '</p>';
                 }
 
                 if ($REX["USER"]->isAdmin()) {
-                    
+
                     echo '<h4 class="rex-hl3">' . $I18N->msg('xform_table_manager') . '</h4>';
                     echo '
                         <p class="rex-button">
@@ -817,7 +817,7 @@ class rex_xform_manager
 
                 echo '</div><div class="rex-area-col-b">';
 
-                
+
                 if ($table['description'] != '') {
                     echo '<h4 class="rex-hl3">' . $I18N->msg('xform_description') . '</h4><p class="rex-tx1">' . nl2br($table['description']) . '</p>';
                 }
@@ -880,7 +880,7 @@ class rex_xform_manager
         } else {
             $sql = '';
         }
-        
+
         return $sql;
     }
 
@@ -1200,7 +1200,7 @@ class rex_xform_manager
             $xform->setValueField('hidden', array('type_name', $type_name, 'REQUEST'));
             $xform->setValueField('hidden', array('type_id', $type_id, 'REQUEST'));
 
-            $xform->setValueField('text', array('prio', 'Prioritaet', (rex_xform_manager_table::getMaximumPrio($table['table_name']) + 10)));
+            $xform->setValueField('prio', array('prio', 'Prioritaet', array('name', 'type_id', 'type_name'), array('table_name')));
 
             $selectFields = array();
             $i = 1;
@@ -1420,28 +1420,28 @@ class rex_xform_manager
 
 
         if ($func == 'show_form_notation') {
-            
+
             $formbuilder_fields = $this->getTableFields($table['table_name']);
-            
+
             $notation_php   = '';
             $notation_pipe  = '';
             $notation_email = '';
 
 
             $notation_php_pre = array(
-                '$xform = new rex_xform();', 
-                '$xform->setObjectparams(\'form_skin\', \'default\');', 
-                '$xform->setObjectparams(\'form_showformafterupdate\', 0);', 
-                '$xform->setObjectparams(\'real_field_names\', true);', 
+                '$xform = new rex_xform();',
+                '$xform->setObjectparams(\'form_skin\', \'default\');',
+                '$xform->setObjectparams(\'form_showformafterupdate\', 0);',
+                '$xform->setObjectparams(\'real_field_names\', true);',
             );
 
             $notation_php .= implode("\n", $notation_php_pre) . "\n";
 
 
             $notation_pipe_pre = array(
-                'objparams|form_skin|default', 
-                'objparams|form_showformafterupdate|0', 
-                'objparams|real_field_names|true', 
+                'objparams|form_skin|default',
+                'objparams|form_showformafterupdate|0',
+                'objparams|real_field_names|true',
             );
 
             $notation_pipe .= implode("\n", $notation_pipe_pre) . "\n";
@@ -1486,7 +1486,7 @@ class rex_xform_manager
 
             $notation_php  .= "\n\n"  . '$xform->setActionField(\'db2email\', array(\'emailtemplate\', \'emaillabel\', \'email@domain.de\'));';
             $notation_pipe .= "\n\n"  . 'action|db2email|emailtemplate|emaillabel|email@domain.de';
-            
+
             echo '<div class="rex-addon-output">';
             echo '<h2 class="rex-hl2">PHP</h2>';
             echo '<div class="rex-addon-content">';

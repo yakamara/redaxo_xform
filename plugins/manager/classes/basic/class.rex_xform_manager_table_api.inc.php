@@ -37,6 +37,9 @@ class rex_xform_manager_table_api
                     $table_insert->setValue($field, $table[$field]);
                 }
             }
+            if (!isset($table['prio'])) {
+                $table_insert->setValue('prio', rex_xform_manager_table::getMaximumTablePrio() + 1);
+            }
             $table_insert->insert();
 
         } else {
@@ -172,6 +175,9 @@ class rex_xform_manager_table_api
 
             foreach ($table_field as $field_name => $field_value) {
                 $field_insert->setValue($field_name, $field_value);
+            }
+            if (!isset($table['prio'])) {
+                $field_insert->setValue('prio', rex_xform_manager_table::getMaximumPrio($table_name) + 1);
             }
             $field_insert->insert();
 

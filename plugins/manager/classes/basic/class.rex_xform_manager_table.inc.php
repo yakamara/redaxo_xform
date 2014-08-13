@@ -56,10 +56,20 @@ class rex_xform_manager_table
 
     // -------------------------------------------------------------------------
 
+    static function getMaximumTablePrio()
+    {
+        global $REX;
+        $sql = 'select max(prio) as prio from ' . $REX['TABLE_PREFIX'] . 'xform_table';
+        $gf = rex_sql::factory();
+        // $gf->debugsql = 1;
+        $gf->setQuery($sql);
+        return $gf->getValue('prio');
+    }
+
     static function getMaximumPrio($table_name)
     {
         global $REX;
-        $sql = 'select max(prio) as prio from ' . $REX['TABLE_PREFIX'] . 'xform_field where table_name="' . $table_name . '" order by prio';
+        $sql = 'select max(prio) as prio from ' . $REX['TABLE_PREFIX'] . 'xform_field where table_name="' . $table_name . '"';
         $gf = rex_sql::factory();
         // $gf->debugsql = 1;
         $gf->setQuery($sql);

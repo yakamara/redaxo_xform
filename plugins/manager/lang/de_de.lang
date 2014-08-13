@@ -23,6 +23,9 @@ xform_relation_delete_entry = Ausgewählten Datensatz löschen
 xform_relation_first_create_data = Bitte zunächst diesen Datensatz erstellen
 xform_relation_edit_relations = Verknüpfungen verwalten
 
+xform_prio_top = Am Anfang
+xform_prio_after = Nach "{0}"
+
 truncate_table = Tabelle leeren
 table_truncated = Tabelle wurde geleert
 table_not_found = Die Tabelle wurde nicht gefunden
