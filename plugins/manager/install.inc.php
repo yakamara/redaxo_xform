@@ -27,6 +27,11 @@ $sql->setQuery('CREATE TABLE IF NOT EXISTS `' . $REX['TABLE_PREFIX'] . 'xform_ta
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
 
 $sql->setQuery('ALTER TABLE `' . $REX['TABLE_PREFIX'] . 'xform_table` CHANGE `prio` `prio` INT NOT NULL');
+$sql->setQuery('
+    ALTER TABLE `' . $REX['TABLE_PREFIX'] . 'xform_table`
+    ADD `list_sortfield` VARCHAR(255) NOT NULL DEFAULT "id" AFTER `list_amount`,
+    ADD `list_sortorder` ENUM("ASC","DESC") NOT NULL DEFAULT "ASC" AFTER `list_sortfield`
+');
 
 $sql->setQuery('CREATE TABLE IF NOT EXISTS `' . $REX['TABLE_PREFIX'] . 'xform_field` (
     `id` int(11) NOT NULL AUTO_INCREMENT,

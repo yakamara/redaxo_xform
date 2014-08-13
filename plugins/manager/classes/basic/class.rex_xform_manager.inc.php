@@ -22,7 +22,7 @@ class rex_xform_manager
     var $dataPageFunctions = array();
     var $DataPageFilterFields = array();
 
-    static protected $reservedFieldColumns = array('id', 'table_name', 'prio', 'type_id', 'type_name', 'list_hidden', 'search');
+    protected static $reservedFieldColumns = array('id', 'table_name', 'prio', 'type_id', 'type_name', 'list_hidden', 'search');
 
     function rex_xform_manager()
     {
@@ -86,7 +86,7 @@ class rex_xform_manager
         $popup = false;
         $rex_xform_manager_opener = rex_request('rex_xform_manager_opener', 'array');
         if (count($rex_xform_manager_opener) > 0) {
-            if (isset($rex_xform_manager_opener['id']) && $rex_xform_manager_opener['id'] != "") {
+            if (isset($rex_xform_manager_opener['id']) && $rex_xform_manager_opener['id'] != '') {
              $popup = true; // id, field, multiple
 
             }
@@ -763,7 +763,7 @@ class rex_xform_manager
                 echo '</span>';
 
                 // INFO LINK
-                echo '<span style="float:right;">'.$I18N->msg('table').': <a href="#" id="infotoggler">' . $I18N->msg('xform_table_info') . '</a>';
+                echo '<span style="float:right;">' . $I18N->msg('table') . ': <a href="#" id="infotoggler">' . $I18N->msg('xform_table_info') . '</a>';
 
                 $dlink = array();
 
@@ -805,13 +805,13 @@ class rex_xform_manager
                     echo '<h4 class="rex-hl3">' . $I18N->msg('openerinfo') . '</h4><p class="rex-tx1">' . htmlspecialchars($rex_xform_manager_opener['info']) . '</p>';
                 }
 
-                if ($REX["USER"]->isAdmin()) {
+                if ($REX['USER']->isAdmin()) {
 
                     echo '<h4 class="rex-hl3">' . $I18N->msg('xform_table_manager') . '</h4>';
                     echo '
                         <p class="rex-button">
-                            <a class="rex-button" href="index.php?page=xform&subpage=manager&table_id='.$table['id'].'&func=edit">'.$I18N->msg('xform_manager_edit_table').'</a>
-                            <a class="rex-button" href="index.php?page=xform&subpage=manager&tripage=table_field&table_name='.$table['table_name'].'">'.$I18N->msg('editfields').'</a>
+                            <a class="rex-button" href="index.php?page=xform&subpage=manager&table_id=' . $table['id'] . '&func=edit">' . $I18N->msg('xform_manager_edit_table') . '</a>
+                            <a class="rex-button" href="index.php?page=xform&subpage=manager&tripage=table_field&table_name=' . $table['table_name'] . '">' . $I18N->msg('editfields') . '</a>
                         </p>';
                 }
 
@@ -875,8 +875,8 @@ class rex_xform_manager
             }
         }
 
-        if (count($sql) >0) {
-            $sql = ' where ' . implode(" and ", $sql);
+        if (count($sql) > 0) {
+            $sql = ' where ' . implode(' and ', $sql);
         } else {
             $sql = '';
         }
@@ -910,6 +910,9 @@ class rex_xform_manager
         }
 
         $sql .= $this->getDataListQueryWhere($rex_xform_filter, $rex_xform_searchfields, $rex_xform_searchtext);
+        if ($table['list_sortfield']) {
+            $sql .= ' ORDER BY ' . $table['list_sortfield'] . ' ' . $table['list_sortorder'];
+        }
         $sql = rex_register_extension_point('XFORM_DATA_LIST_SQL', $sql, array('table' => $table));
 
         return $sql;
@@ -1259,8 +1262,8 @@ class rex_xform_manager
                             $_tables = rex_xform_manager_table_api::getTables();
                             $_options = array();
                             foreach ($_tables as $_table) {
-                                $_options[$_table["table_name"]] = str_replace('=', '-', $_table["name"] . ' [' . $_table["table_name"] . ']') . '=' . $_table["table_name"];
-                                $_options[$_table["table_name"]] = str_replace(',', '.', $_options[$_table["table_name"]]);
+                                $_options[$_table['table_name']] = str_replace('=', '-', $_table['name'] . ' [' . $_table['table_name'] . ']') . '=' . $_table['table_name'];
+                                $_options[$_table['table_name']] = str_replace(',', '.', $_options[$_table['table_name']]);
                             }
                             if (!isset($v['default'])) {
                                 $v['default'] = '';
@@ -1316,7 +1319,7 @@ class rex_xform_manager
                 $xform->setObjectparams('main_id', $field_id);
                 $xform->setObjectparams('main_where', "id=$field_id");
                 $sql = rex_sql::factory();
-                $sql->setQuery("SELECT * FROM " . $REX['TABLE_PREFIX'] . "xform_field WHERE id=$field_id");
+                $sql->setQuery('SELECT * FROM ' . $REX['TABLE_PREFIX'] . "xform_field WHERE id=$field_id");
                 foreach ($selectFields as $alias => $field) {
                     if ($alias != $field) {
                         if ((!$sql->hasValue($field) || !$sql->getValue($field)) && $sql->hasValue($alias)) {
@@ -1533,7 +1536,8 @@ class rex_xform_manager
 
             if ($show_list) {
 
-                function rex_xform_list_format($p, $value = '') {
+                function rex_xform_list_format($p, $value = '')
+                {
                     if ($value != '') {
                         $p['value'] = $value;
                     }
@@ -1551,12 +1555,14 @@ class rex_xform_manager
                     return '<td style="' . $style . '">' . $p['value'] . '</td>';
                 }
 
-                function rex_xform_list_edit_format($p) {
+                function rex_xform_list_edit_format($p)
+                {
                     global $REX, $I18N;
                     return rex_xform_list_format($p, $p['list']->getColumnLink($I18N->msg('edit'), $I18N->msg('edit')));
                 }
 
-                function rex_xform_list_delete_format($p) {
+                function rex_xform_list_delete_format($p)
+                {
                     global $REX, $I18N;
                     return rex_xform_list_format($p, $p['list']->getColumnLink($I18N->msg('delete'), $I18N->msg('delete')));
                 }

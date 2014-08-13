@@ -21,17 +21,17 @@ $show_list = true;
 
 
 
-if ( $func == "migrate" && $REX['USER']->isAdmin() ) {
+if ( $func == 'migrate' && $REX['USER']->isAdmin() ) {
 
   $available_tables = rex_sql::showTables();
   $xform_tables = array();
   $missing_tables = array();
 
-  foreach(rex_xform_manager_table_api::getTables() as $g_table) {
-    $xform_tables[] = $g_table["table_name"];
+  foreach (rex_xform_manager_table_api::getTables() as $g_table) {
+    $xform_tables[] = $g_table['table_name'];
   }
 
-  foreach($available_tables as $a_table) {
+  foreach ($available_tables as $a_table) {
     if ( !in_array($a_table, $xform_tables)) {
       $missing_tables[$a_table] = $a_table;
     }
@@ -39,7 +39,7 @@ if ( $func == "migrate" && $REX['USER']->isAdmin() ) {
   }
 
   $xform = new rex_xform;
-  $xform->setDebug(TRUE);
+  $xform->setDebug(true);
   $xform->setHiddenField('page', $page);
   $xform->setHiddenField('subpage', $subpage);
   $xform->setHiddenField('func', $func);
@@ -55,7 +55,7 @@ if ( $func == "migrate" && $REX['USER']->isAdmin() ) {
 
     echo '<div class="rex-addon-output"><h3 class="rex-hl2">' . $I18N->msg('xform_manager_table_migrate') . '</h3>
     <div class="rex-addon-content">
-    <p>'.$I18N->msg('xform_manager_table_migrate_info').'</p>';
+    <p>' . $I18N->msg('xform_manager_table_migrate_info') . '</p>';
 
     echo $form;
     echo '</div></div>';
@@ -80,7 +80,7 @@ if ( $func == "migrate" && $REX['USER']->isAdmin() ) {
 
   }
 
-} else if ( ($func == 'add' || $func == 'edit') && $REX['USER']->isAdmin() ) {
+} elseif ( ($func == 'add' || $func == 'edit') && $REX['USER']->isAdmin() ) {
 
     $xform = new rex_xform;
     // $xform->setDebug(TRUE);
@@ -119,8 +119,24 @@ if ( $func == "migrate" && $REX['USER']->isAdmin() ) {
     $xform->setValueField('checkbox', array('status', $I18N->msg('tbl_active')));
     // $xform->setValueField("fieldset",array("fs-list","Liste"));
     $xform->setValueField('text', array('list_amount', $I18N->msg('xform_manager_entries_per_page'), '50'));
-    $xform->setValueField('checkbox', array('search', $I18N->msg('xform_manager_search_active')));
     $xform->setValidateField('type', array('list_amount', 'int', $I18N->msg('xform_manager_enter_number')));
+
+    $sortFields = array('id');
+    if ($func === 'edit') {
+        $sortFieldsSql = rex_sql::factory();
+        $sortFieldsSql->setQuery('SELECT f.name FROM `' . $REX['TABLE_PREFIX'] . 'xform_field` f LEFT JOIN `' . $REX['TABLE_PREFIX'] . 'xform_table` t ON f.table_name = t.table_name WHERE t.id = ' . (int) $table_id . ' ORDER BY f.prio');
+        while ($sortFieldsSql->hasNext()) {
+            $sortFields[] = $sortFieldsSql->getValue('name');
+            $sortFieldsSql->next();
+        }
+    }
+    $xform->setValueField('select' , array('list_sortfield', $I18N->msg('xform_manager_sortfield'), implode(',', $sortFields)));
+    $xform->setValueField('select', array('list_sortorder', $I18N->msg('xform_manager_sortorder'), array(
+        'ASC' => $I18N->msg('xform_manager_sortorder_asc'),
+        'DESC' => $I18N->msg('xform_manager_sortorder_desc'),
+    )));
+
+    $xform->setValueField('checkbox', array('search', $I18N->msg('xform_manager_search_active')));
 
     $xform->setValueField('checkbox', array('hidden', $I18N->msg('xform_manager_table_hide')));
     $xform->setValueField('checkbox', array('export', $I18N->msg('xform_manager_table_allow_export')));
