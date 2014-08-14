@@ -3,7 +3,7 @@
 class rex_xform_manager_table_api
 {
 
-    static $table_fields = array('status', 'name', 'description', 'list_amount', 'prio', 'search', 'hidden', 'export', 'import');
+    static $table_fields = array('status', 'name', 'description', 'list_amount', 'list_sortfield', 'list_sortorder', 'prio', 'search', 'hidden', 'export', 'import');
     static $debug = false;
     static $rex_xform_table = 'rex_xform_table';
     static $rex_xform_field = 'rex_xform_field';
