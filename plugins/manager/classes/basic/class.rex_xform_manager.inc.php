@@ -896,23 +896,20 @@ class rex_xform_manager
         $sql_felder = new rex_sql;
         $sql_felder->setQuery('SELECT * FROM ' . $REX['TABLE_PREFIX'] . 'xform_field WHERE table_name="' . $table['table_name'] . '" AND type_id="value" ORDER BY prio');
 
-        $felder = '';
         $max = $sql_felder->getRows();
         if ($max > 0) {
-            $existingField = array_map(function ($column) {
+            $existingFields = array_map(function ($column) {
                 return $column['name'];
             }, rex_sql::showColumns($table['table_name']));
-            
+
+            $fields = array();
             for ($i = 0; $i < $sql_felder->getRows(); $i++) {
-                if (in_array($sql_felder->getValue('name'), $existingField)) {
-                    $felder .= '`' . $sql_felder->getValue('name') . '`';
-                    if ($i < $max - 1) {
-                        $felder .= ',';
-                    }
+                if (in_array($sql_felder->getValue('name'), $existingFields)) {
+                    $fields[] = '`' . $sql_felder->getValue('name') . '`';
                 }
                 $sql_felder->next();
             }
-            $sql = 'select `id`,' . $felder . ' from `' . $table['table_name'] . '`';
+            $sql = 'select `id`,' . implode(',', $fields) . ' from `' . $table['table_name'] . '`';
         }
 
         $sql .= $this->getDataListQueryWhere($rex_xform_filter, $rex_xform_searchfields, $rex_xform_searchtext);
