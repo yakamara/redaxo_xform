@@ -95,6 +95,7 @@ class rex_xform_action_manage_db extends rex_xform_action_abstract
             $id = $sql->getLastId();
 
             $this->params['value_pool']['email']['ID'] = $id;
+            $this->params['main_id'] = $id;
             // $this->params["value_pool"]["sql"]["ID"] = $id;
             if ($id == 0) {
                 $this->params['form_show'] = true;
