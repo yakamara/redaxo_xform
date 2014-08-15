@@ -156,5 +156,50 @@ class rex_xform_manager_table
 
     }
 
+    public static function removeRelationTableRelicts($table)
+    {
+        global $REX;
+
+        $sql = rex_sql::factory();
+        $sql->setQuery('
+            SELECT `table`, relation_table
+            FROM ' . $REX['TABLE_PREFIX'] . 'xform_field
+            WHERE table_name="' . $sql->escape($table) . '" AND type_id="value" AND type_name="be_manager_relation" AND relation_table != ""
+        ');
+        $deleteSql = rex_sql::factory();
+        while ($sql->hasNext()) {
+            $relationTableFields = self::getRelationTableFields($sql->getValue('relation_table'), $table, $sql->getValue('table'));
+            if ($relationTableFields['source'] && $relationTableFields['target']) {
+                $relationTable = $deleteSql->escape($sql->getValue('relation_table'));
+                $deleteSql->setQuery('
+                    DELETE FROM `' . $relationTable . '`
+                    WHERE NOT EXISTS (SELECT * FROM `' . $table . '` WHERE id = ' . $relationTable . '.`' . $deleteSql->escape($relationTableFields['source']) . '`)
+                ');
+            }
+            $sql->next();
+        }
+    }
+
+    public static function getRelationTableFields($relationTable, $sourceTable, $targetTable)
+    {
+        global $REX;
+        $sql = rex_sql::factory();
+        $query = '
+            SELECT name
+            FROM `' . $REX['TABLE_PREFIX'] . 'xform_field`
+            WHERE type_id="value" AND type_name="be_manager_relation" AND table_name="' . $sql->escape($relationTable) . '" AND `table`="%s"
+        ';
+        $sql->setQuery(sprintf($query, $sql->escape($targetTable)));
+        if (1 == $sql->getRows()) {
+            $targetField = $sql->getValue('name');
+            $sql->setQuery(sprintf($query, $sql->escape($sourceTable)));
+            if (1 == $sql->getRows()) {
+                $sourceField = $sql->getValue('name');
+                return array('source' => $sourceField, 'target' => $targetField);
+            }
+        }
+        return array('source' => null, 'target' => null);
+    }
+
 
 }

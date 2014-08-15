@@ -12,6 +12,8 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
 
     protected $relation;
 
+    protected $relationTableFields;
+
     function enterObject()
     {
         global $REX, $I18N;
@@ -47,7 +49,8 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
             $values = array();
             if (trim($this->getValue()) != '') {
                 $values = explode(',', $this->getValue());
-
+            } elseif ($this->getElement('relation_table')) {
+                $values = $this->getRelationTableValues();
             } else {
                 $vs = rex_sql::factory();
                 $vs->debugsql = $this->params['debug'];
@@ -64,7 +67,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
                 if (count($v) > 0) {
                     foreach ($v as $w) {
                         $values[$w['id']] = $w['id'];
-                    };
+                    }
                 }
             }
             $this->setValue($values);
@@ -179,7 +182,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
 
         if ($this->relation['relation_type'] == 4) {
 
-            $link = 'index.php?page=xform&subpage=manager&tripage=data_edit&table_name=' . $this->relation['target_table'] . '&rex_xform_filter[' . $this->relation['target_field'] . ']='.$this->params["main_id"] . '&rex_xform_set[' . $this->relation['target_field'] . ']='.$this->params["main_id"];
+            $link = 'index.php?page=xform&subpage=manager&tripage=data_edit&table_name=' . $this->relation['target_table'] . '&rex_xform_filter[' . $this->relation['target_field'] . ']=' . $this->params['main_id'] . '&rex_xform_set[' . $this->relation['target_field'] . ']=' . $this->params['main_id'];
             $this->params['form_output'][$this->getId()] = $this->parse('value.be_manager_relation.tpl.php', compact('valueName', 'options', 'link'));
 
         }
@@ -188,8 +191,9 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
         // --------------------------------------- save
 
         $this->params['value_pool']['email'][$this->getName()] = stripslashes(implode(',', $this->getValue()));
-        $this->params['value_pool']['sql'][$this->getName()] = implode(',', $this->getValue());
-
+        if (!$this->getElement('relation_table')) {
+            $this->params['value_pool']['sql'][$this->getName()] = implode(',', $this->getValue());
+        }
     }
 
 
@@ -205,7 +209,9 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
     {
         global $REX;
 
-        return;
+        if (!$relationTable = $this->getElement('relation_table')) {
+            return;
+        }
 
         // $this->params["debug"] = TRUE;
 
@@ -221,6 +227,11 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
             return false;
         }
 
+        $relationTableField = $this->getRelationTableFields();
+        if (!$relationTableField['source'] || !$relationTableField['target']) {
+            return;
+        }
+
         // ----- Value angleichen -> immer Array mit IDs daraus machen
         $values = array();
         if (!is_array($this->getValue())) {
@@ -230,8 +241,26 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
         } else {
             $values = $this->getValue();
         }
+        $values = array_map('intval', $values);
 
-        $d = rex_sql::factory();
+        $sql = rex_sql::factory();
+        $sql->debugsql = $this->params['debug'];
+        $relationTablePreEditValues = $this->getRelationTableValues();
+        foreach ($values as $value) {
+            if (!isset($relationTablePreEditValues[$value])) {
+                $sql->setTable($relationTable);
+                $sql->setValue($relationTableField['source'], $source_id);
+                $sql->setValue($relationTableField['target'], $value);
+                $sql->insert();
+            }
+        }
+        $sql->flushValues();
+        $sql->setTable($relationTable);
+        $sql->setWhere('`' . $sql->escape($relationTableField['source']) . '`=' . $source_id . ' AND `' . $sql->escape($relationTableField['target']) . '` NOT IN (' . implode(',', $values) . ')');
+        $sql->delete();
+
+
+        /*$d = rex_sql::factory();
         $d->debugsql = $this->params['debug'];
         $d->setQuery('delete from ' . $REX['TABLE_PREFIX'] . 'xform_relation where source_table="' . $this->be_em['source_table'] . '" and source_name="' . $this->getName() . '" and source_id="' . $source_id . '"');
 
@@ -248,7 +277,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
                 $i->insert();
             }
 
-        }
+        }*/
 
     }
 
@@ -275,19 +304,25 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
                 'label'        => array( 'type' => 'text',    'label' => 'Bezeichnung'),
                 'table'        => array( 'type' => 'table',   'label' => 'Ziel Tabelle'),
                 'field'        => array( 'type' => 'text',    'label' => 'Ziel Tabellenfeld zur Anzeige oder Zielfeld'),
-                'type'         => array( 'type' => 'select',  'label' => 'Mehrfachauswahl', 'default' => '', 'definition' => array('0' => 'select (single)', "1" => 'select (multiple)', '2' => 'popup (single)', '3' => 'popup (multiple)' , '4' => 'popup (multiple 1-n)') ), // ,popup (multiple / relation)=4
+                'type'         => array( 'type' => 'select',  'label' => 'Mehrfachauswahl', 'default' => '', 'definition' => array('0' => 'select (single)', '1' => 'select (multiple)', '2' => 'popup (single)', '3' => 'popup (multiple)' , '4' => 'popup (multiple 1-n)') ), // ,popup (multiple / relation)=4
                 'empty_option' => array( 'type' => 'boolean', 'label' => 'Mit "Leer-Option"' ),
                 'empty_value'  => array( 'type' => 'text',    'label' => 'Fehlermeldung wenn "Leer-Option" nicht aktiviert ist.'),
                 'size'         => array( 'type' => 'text', 'name' => 'boxheight',    'label' => 'Höhe der Auswahlbox'),
+                'relation_table' => array( 'type' => 'table', 'label' => 'Relationstabelle', 'empty_option' => 1),
             ),
             'description' => 'Hiermit kann man Verkn&uuml;pfungen zu anderen Tabellen setzen',
-            'dbtype' => 'text'
+            'dbtype' => 'text',
+            'hooks' => array(
+                'preCreate' => function ($field) {
+                    return empty($field['relation_table']);
+                }
+            ),
         );
     }
 
     static function getListValue($params)
     {
-
+        // TODO Relation table berücksichtigen
         if (!isset(self::$xform_list_values[$params['params']['field']['table']]) || count(self::$xform_list_values[$params['params']['field']['table']]) == 0) {
             self::$xform_list_values[$params['params']['field']['table']] = array();
             $db = rex_sql::factory();
@@ -305,6 +340,42 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
         }
 
         return implode('<br />', $return);
+    }
+
+    protected function getRelationTableFields()
+    {
+        global $REX;
+
+        if (!is_null($this->relationTableFields)) {
+            return $this->relationTableFields;
+        }
+
+        return $this->relationTableFields = rex_xform_manager_table::getRelationTableFields(
+            $this->getElement('relation_table'),
+            $this->params['main_table'],
+            $this->getElement('table')
+        );
+    }
+
+    protected function getRelationTableValues()
+    {
+        $values = array();
+        $relationTableFields = $this->getRelationTableFields();
+        if ($relationTableFields['source'] && $relationTableFields['target']) {
+            $sql = rex_sql::factory();
+            $sql->debugsql = $this->params['debug'];
+            $sql->setQuery('
+                SELECT `' . $sql->escape($relationTableFields['target']) . '` as id
+                FROM `' . $sql->escape($this->getElement('relation_table')) . '`
+                WHERE `' . $sql->escape($relationTableFields['source']) . '` = ' . (int) $this->params['main_id']
+            );
+            while ($sql->hasNext()) {
+                $id = $sql->getValue('id');
+                $values[$id] = $id;
+                $sql->next();
+            }
+        }
+        return $values;
     }
 
 }

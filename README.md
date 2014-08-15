@@ -24,6 +24,7 @@ Last Changes
 * Manager: Migrationsmanager unterstützt weitere Feldtypen
 * Prio-Value-Klasse für Bestimmung der Reihenfolge von Datensätzen (wird auch in der Tabellen- und Felder-Verwaltung des Managers verwendet)
 * Manager: Standardsortierung kann festgelegt werden
+* Manager: Echte Relationstabellen können verwendet werden
 
 #### Bugs
 
