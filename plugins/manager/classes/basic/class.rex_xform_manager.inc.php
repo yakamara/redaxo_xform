@@ -1754,126 +1754,21 @@ class rex_xform_manager
 
     }
 
+    /**
+     * @deprecated
+     */
     function addDataFields($data_table, $fields, $debug = false)
     {
-
-        // definition fields table
-        foreach ($fields as $field) {
-
-            $table_name = $field['table_name']; // 'user';
-            $type_id = $field['type_id']; // 'value';
-            $type_name = $field['type_name']; // 'select';
-            $name = $field['name']; // 'status';
-
-            if (!in_array($type_id, rex_xform::getTypes())) {
-            return false;
-            }
-
-            $gs = rex_sql::factory();
-            $gs->debugsql = $debug;
-            $gs->setQuery('delete from ' . $REX['TABLE_PREFIX'] . 'xform_field where table_name="' . $table_name . '" and type_id="' . $type_id . '" and type_name="' . $type_name . '" and name="' . $name . '"');
-
-            // fielddaten - datensatz anlegen
-            $af = rex_sql::factory();
-            $af->debugsql = $debug;
-            $af->setTable($REX['TABLE_PREFIX'] . 'xform_field');
-            foreach ($field as $k => $v) {
-                $af->setValue($k, $v);
-            }
-            if (!$af->insert()) {
-            return false;
-            }
-
-            // datentabelle - spalte hinzufügen
-            if ($type_id == 'value' && $type_name != '' && $name != '') {
-                if ($classname = rex_xform::includeClass('value', $type_name)) {
-                } else {
-                    return false;
-                }
-                $cl = new $classname;
-                $definitions = $cl->getDefinitions();
-                if (isset($definitions['dbtype']) && $definitions['dbtype'] != '') {
-                    // Structur in spalte anpassen
-                    $af = rex_sql::factory();
-                    $af->debugsql = $debug;
-                    $af->setQuery('ALTER TABLE `' . $data_table . '` ADD `' . $name . '` ' . $definitions['dbtype'] . ' NOT NULL ;');
-                }
-            }
-
-        }
-
-        return true;
+        rex_xform_manager_table_api::generateTablesAndFields();
     }
 
 
-
+    /**
+     * @deprecated
+     */
     function generateAll($f = array())
     {
-        global $REX;
-
-        $types = rex_xform::getTypeArray();
-        foreach ($this->getTables() as $table) {
-
-            // ********** Table schon vorhanden ?, wenn nein, dann anlegen
-            $c = rex_sql::factory();
-            // $c->debugsql = 1;
-            $c->setQuery('CREATE TABLE IF NOT EXISTS `' . $table['table_name'] . '` ( `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY )');
-
-            // Felder merken, erstellen und eventuell loeschen
-            $c->setQuery('SHOW COLUMNS FROM `' . $table['table_name'] . '`');
-            $saved_columns = $c->getArray();
-
-            foreach ($this->getTableFields($table['table_name']) as $field) {
-                $type_name = $field['type_name'];
-                $type_id = $field['type_id'];
-
-                if ($type_id == 'value') {
-                    $type_label = $field['name'];
-                    $dbtype = $types[$type_id][$type_name]['dbtype'];
-
-                    if ($dbtype != 'none' && $dbtype != '') {
-                        // Column schon vorhanden ?
-                        $add_column = true;
-                        foreach ($saved_columns as $uu => $vv) {
-                            if ($vv['Field'] == $type_label) {
-                                $add_column = false;
-                                unset($saved_columns[$uu]);
-                                break;
-                            }
-                        }
-
-                        // Column erstellen
-                        if ($add_column) {
-                            $c->setQuery('ALTER TABLE `' . $table['table_name'] . '` ADD `' . $type_label . '` ' . $dbtype . ' NOT NULL');
-                        }
-                    }
-
-                }
-
-            }
-
-            if (isset($f['delete_fields']) && $f['delete_fields'] === true) {
-                foreach ($saved_columns as $uu => $vv) {
-                    if ($vv['Field'] != 'id') {
-                        $c->setQuery('ALTER TABLE `' . $table['table_name'] . '` DROP `' . $vv['Field'] . '` ');
-                    }
-                }
-            }
-
-        }
-    }
-
-
-    function repairAll()
-    {
-        // Alle Tabellen durchgehen und anpassen
-        // - relation
-        // - field
-        // - data
-        // - update tabletype
-        // - NOT NULL
-        // - Default value
-
+        rex_xform_manager_table_api::generateTablesAndFields(isset($f['delete_fields']) ? $f['delete_fields'] : false);
     }
 
     static function checkMediaInUse($params)
