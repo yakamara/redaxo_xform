@@ -30,6 +30,7 @@ Last Changes
 * Manager: Tabellen laufen nun über die Translatefunktion und können mehrsprachig sein.
 * E-Mail-Validierung: Adressen mit UTF8-Zeichen werden akzeptiert.
 * Typ-Validierung: Missverständlicher Key "required" in "not_required" umbenannt
+* XForm-Felder für vorhandene Spalten konnten nicht angelegt werden, falls bereits eine Validierung für das Feld vorhanden war
 
 
 ### Version 4.7 // 25. Juli 2014

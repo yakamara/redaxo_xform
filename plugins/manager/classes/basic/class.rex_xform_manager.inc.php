@@ -1668,7 +1668,7 @@ class rex_xform_manager
     static function checkField($l, $v, $p)
     {
         global $REX;
-        $q = 'select * from ' . $REX['TABLE_PREFIX'] . 'xform_field where table_name="' . $p['table_name'] . '" and ' . $l . '="' . $v . '" LIMIT 1';
+        $q = 'select * from ' . $REX['TABLE_PREFIX'] . 'xform_field where table_name="' . $p['table_name'] . '" and type_id="value" and ' . $l . '="' . $v . '" LIMIT 1';
         $c = rex_sql::factory();
         // $c->debugsql = 1;
         $c->setQuery($q);

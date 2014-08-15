@@ -143,7 +143,7 @@ class rex_xform_manager_table
 
     static function getMissingFields($table_name)
     {
-        $xfields = self::getXFormFields($table_name);
+        $xfields = self::getXFormFieldsByType($table_name);
         $rfields = self::getFields($table_name);
 
         $c = array();
