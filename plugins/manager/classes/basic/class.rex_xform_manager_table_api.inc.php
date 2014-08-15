@@ -434,7 +434,7 @@ class rex_xform_manager_table_api
                             'type_name' => 'checkbox',
                             'name' => $column['name'],
                             'label' => $column['name'],
-                            'default' => $column['default'],
+                            'default' => (string) $column['default'],
                             'no_db' => 0
                         );
                         break;
