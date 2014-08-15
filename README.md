@@ -32,6 +32,7 @@ Last Changes
 * Typ-Validierung: Missverständlicher Key "required" in "not_required" umbenannt
 * XForm-Felder für vorhandene Spalten konnten nicht angelegt werden, falls bereits eine Validierung für das Feld vorhanden war
 * Manager: Beim Editieren und Löschen von Tabellen und Feldern bleibt man auf der entsprechenden Seite
+* Manager: Für Fieldsets keine Spalten in Datentabelle anlegen
 
 
 ### Version 4.7 // 25. Juli 2014

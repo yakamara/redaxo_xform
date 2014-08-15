@@ -65,7 +65,7 @@ class rex_xform_fieldset extends rex_xform_abstract
                 'label' => array( 'type' => 'text',  'label' => 'Bezeichnung'),
             ),
             'description' => 'hiermit kann man Bereiche in der Verwaltung erstellen.',
-            'dbtype' => 'text'
+            'dbtype' => 'none'
         );
     }
 
