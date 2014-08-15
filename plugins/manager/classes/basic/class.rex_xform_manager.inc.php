@@ -1199,6 +1199,11 @@ class rex_xform_manager
             $xform->setHiddenField('table_name', $table['table_name']);
             $xform->setHiddenField('type_real_field', $type_real_field);
 
+            $xform->setHiddenField('list', rex_request('list', 'string'));
+            $xform->setHiddenField('sort', rex_request('sort', 'string'));
+            $xform->setHiddenField('sorttype', rex_request('sorttype', 'string'));
+            $xform->setHiddenField('start', rex_request('start', 'string'));
+
             $xform->setValueField('hidden', array('table_name', $table['table_name']));
             $xform->setValueField('hidden', array('type_name', $type_name, 'REQUEST'));
             $xform->setValueField('hidden', array('type_id', $type_id, 'REQUEST'));
@@ -1590,6 +1595,7 @@ class rex_xform_manager
                 foreach ($this->getLinkVars() as $k => $v) {
                     $list->addParam($k, $v);
                 }
+                $list->addParam('start', rex_request('start', 'int'));
 
                 $list->addParam('table_name', $table['table_name']);
 

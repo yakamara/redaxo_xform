@@ -87,6 +87,12 @@ if ( $func == 'migrate' && $REX['USER']->isAdmin() ) {
     $xform->setHiddenField('page', $page);
     $xform->setHiddenField('subpage', $subpage);
     $xform->setHiddenField('func', $func);
+
+    $xform->setHiddenField('list', rex_request('list', 'string'));
+    $xform->setHiddenField('sort', rex_request('sort', 'string'));
+    $xform->setHiddenField('sorttype', rex_request('sorttype', 'string'));
+    $xform->setHiddenField('start', rex_request('start', 'string'));
+
     $xform->setActionField('showtext', array('', $I18N->msg('xform_manager_table_entry_saved')));
     $xform->setObjectparams('main_table', $table);
 
@@ -203,13 +209,14 @@ if ($show_list && $REX['USER']->isAdmin()) {
       return rex_translate($params['subject']);
     }
 
-  $table_echo = '<a href=index.php?page=' . $page . '&subpage=' . $subpage . '&func=add><b>+ ' . $I18N->msg('xform_manager_table_add') . '</b></a>';
-  $table_echo .= ' / <a href=index.php?page=' . $page . '&subpage=' . $subpage . '&func=migrate><b>+ ' . $I18N->msg('xform_manager_table_migrate') . '</b></a>';
+    $table_echo = '<a href=index.php?page=' . $page . '&subpage=' . $subpage . '&func=add><b>+ ' . $I18N->msg('xform_manager_table_add') . '</b></a>';
+    $table_echo .= ' / <a href=index.php?page=' . $page . '&subpage=' . $subpage . '&func=migrate><b>+ ' . $I18N->msg('xform_manager_table_migrate') . '</b></a>';
     echo rex_content_block($table_echo);
 
     $sql = "select id, prio, name, table_name, status from $table order by prio,table_name";
 
     $list = rex_list::factory($sql, 30);
+    $list->addParam('start', rex_request('start', 'int'));
 
     $list->removeColumn('id');
 
