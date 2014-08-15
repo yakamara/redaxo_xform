@@ -899,12 +899,18 @@ class rex_xform_manager
         $felder = '';
         $max = $sql_felder->getRows();
         if ($max > 0) {
+            $existingField = array_map(function ($column) {
+                return $column['name'];
+            }, rex_sql::showColumns($table['table_name']));
+            
             for ($i = 0; $i < $sql_felder->getRows(); $i++) {
-                $felder .= '`' . $sql_felder->getValue('name') . '`';
-                if ($i < $max - 1) {
-                    $felder .= ',';
+                if (in_array($sql_felder->getValue('name'), $existingField)) {
+                    $felder .= '`' . $sql_felder->getValue('name') . '`';
+                    if ($i < $max - 1) {
+                        $felder .= ',';
+                    }
                 }
-                $sql_felder->counter++;
+                $sql_felder->next();
             }
             $sql = 'select `id`,' . $felder . ' from `' . $table['table_name'] . '`';
         }
