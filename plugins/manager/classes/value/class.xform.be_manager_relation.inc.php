@@ -314,7 +314,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
             'dbtype' => 'text',
             'hooks' => array(
                 'preCreate' => function ($field) {
-                    return empty($field['relation_table']);
+                    return empty($field['relation_table']) && '4' != $field['type'];
                 }
             ),
         );
