@@ -46,7 +46,7 @@ class rex_xform_select_sql extends rex_xform_abstract
 
             // mit --- keine auswahl ---
             if ($this->getElement(6) == 1) {
-                $options = array_merge(array('0' => $this->getElement(7)), $options);
+                $options = array('0' => $this->getElement(7)) + $options;
             }
         }
 
