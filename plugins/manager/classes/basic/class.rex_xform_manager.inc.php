@@ -1276,7 +1276,7 @@ class rex_xform_manager
                             $_tables = rex_xform_manager_table_api::getTables();
                             $_options = array();
                             if (isset($v['empty_option']) && $v['empty_option']) {
-                                $_options[0] = '–';
+                                $_options[0] = '–=';
                             }
                             foreach ($_tables as $_table) {
                                 $_options[$_table['table_name']] = str_replace('=', '-', $_table['name'] . ' [' . $_table['table_name'] . ']') . '=' . $_table['table_name'];
