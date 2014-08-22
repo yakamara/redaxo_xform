@@ -182,23 +182,44 @@ class rex_xform_manager_table
 
     public static function getRelationTableFields($relationTable, $sourceTable, $targetTable)
     {
-        global $REX;
-        $sql = rex_sql::factory();
-        $query = '
-            SELECT name
-            FROM `' . $REX['TABLE_PREFIX'] . 'xform_field`
-            WHERE type_id="value" AND type_name="be_manager_relation" AND table_name="' . $sql->escape($relationTable) . '" AND `table`="%s"
-        ';
-        $sql->setQuery(sprintf($query, $sql->escape($targetTable)));
-        if (1 == $sql->getRows()) {
-            $targetField = $sql->getValue('name');
-            $sql->setQuery(sprintf($query, $sql->escape($sourceTable)));
-            if (1 == $sql->getRows()) {
-                $sourceField = $sql->getValue('name');
-                return array('source' => $sourceField, 'target' => $targetField);
+        $source = null;
+        $target = null;
+        foreach (self::getRelations($relationTable) as $relation) {
+            if (!$source && $relation['table'] === $sourceTable) {
+                $source = $relation['name'];
+            }
+            if (!$target && $relation['table'] === $targetTable) {
+                $target = $relation['name'];
+            }
+            if ($source && $target) {
+                return array('source' => $source, 'target' => $target);
             }
         }
         return array('source' => null, 'target' => null);
+    }
+
+    public static function getRelations($table)
+    {
+        global $REX;
+        static $relations;
+
+        if (!isset($relations)) {
+            $relations = array();
+            $sql = rex_sql::factory();
+            $data = $sql->getArray('SELECT * FROM `' . $REX['TABLE_PREFIX'] . 'xform_field` WHERE type_id="value" AND type_name="be_manager_relation"');
+            foreach ($data as $row) {
+                $relations[$row['table_name']][$row['name']] = $row;
+            }
+        }
+
+        return isset($relations[$table]) ? $relations[$table] : array();
+    }
+
+    public static function getRelation($table, $column)
+    {
+        $relations = self::getRelations($table);
+
+        return isset($relations[$column]) ? $relations[$column] : null;
     }
 
 

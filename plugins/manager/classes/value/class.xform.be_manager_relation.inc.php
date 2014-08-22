@@ -12,8 +12,6 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
 
     protected $relation;
 
-    protected $relationTableFields;
-
     function enterObject()
     {
         global $REX, $I18N;
@@ -146,21 +144,15 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
         if ($this->relation['relation_type'] < 2) {
 
             // ----- SELECT BOX
-            $sss = rex_sql::factory();
-            $sss->debugsql = $this->params['debug'];
-            $sss->setQuery('select * from `' . mysql_real_escape_string($this->relation['target_table']) . '` order by `' . mysql_real_escape_string($this->relation['target_field']) . '`');
-
             $options = array();
             if ($this->relation['relation_type'] == 0 && $this->relation['eoption'] == 1) {
                 $options[''] = '-';
             }
-            foreach ($sss->getArray() as $v) {
-                $s = $v[$this->relation['target_field']];
-                if (strlen($s) > 50) {
-                    $s = substr($s, 0, 45) . ' ... ';
+            foreach (self::getListValues($this->relation['target_table'], $this->relation['target_field']) as $id => $name) {
+                if (strlen($name) > 50) {
+                    $name = substr($name, 0, 45) . ' ... ';
                 }
-                $s = $s . ' [id=' . $v['id'] . ']';
-                $options[$v['id']] = $s;
+                $options[$id] = $name . ' [id=' . $id . ']';
             }
 
             $this->params['form_output'][$this->getId()] = $this->parse('value.be_manager_relation.tpl.php', compact('options'));
@@ -323,34 +315,41 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
     static function getListValue($params)
     {
         // TODO Relation table berücksichtigen
-        if (!isset(self::$xform_list_values[$params['params']['field']['table']]) || count(self::$xform_list_values[$params['params']['field']['table']]) == 0) {
-            self::$xform_list_values[$params['params']['field']['table']] = array();
-            $db = rex_sql::factory();
-            $db_array = $db->getDBArray('select id, `' . $params['params']['field']['field'] . '` as name from ' . $params['params']['field']['table'] . '');
-            foreach ($db_array as $entry) {
-                self::$xform_list_values[$params['params']['field']['table']][$entry['id']] = $entry['name'];
-            }
-        }
 
+        $listValues = self::getListValues($params['params']['field']['table'], $params['params']['field']['field']);
         $return = array();
         foreach (explode(',', $params['value']) as $value) {
-            if (isset(self::$xform_list_values[$params['params']['field']['table']][$value])) {
-                $return[] = self::$xform_list_values[$params['params']['field']['table']][$value];
+            if (isset($listValues[$value])) {
+                $return[] = $listValues[$value];
             }
         }
 
         return implode('<br />', $return);
     }
 
+    private static function getListValues($table, $field)
+    {
+        if (!isset(self::$xform_list_values[$table][$field])) {
+            self::$xform_list_values[$table][$field] = array();
+            if ($relation = rex_xform_manager_table::getRelation($table, $field)) {
+                $relationListValues = self::getListValues($relation['table'], $relation['field']);
+            }
+            $db = rex_sql::factory();
+            $db_array = $db->getArray('select id, `' . $db->escape($field) . '` as name from `' . $db->escape($table) . '` ORDER BY `' . $db->escape($field) . '`');
+            foreach ($db_array as $entry) {
+                if ($relation && isset($relationListValues[$entry['name']])) {
+                    self::$xform_list_values[$table][$field][$entry['id']] = $relationListValues[$entry['name']];
+                } else {
+                    self::$xform_list_values[$table][$field][$entry['id']] = $entry['name'];
+                }
+            }
+        }
+        return self::$xform_list_values[$table][$field];
+    }
+
     protected function getRelationTableFields()
     {
-        global $REX;
-
-        if (!is_null($this->relationTableFields)) {
-            return $this->relationTableFields;
-        }
-
-        return $this->relationTableFields = rex_xform_manager_table::getRelationTableFields(
+        return rex_xform_manager_table::getRelationTableFields(
             $this->getElement('relation_table'),
             $this->params['main_table'],
             $this->getElement('table')

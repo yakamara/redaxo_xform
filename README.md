@@ -25,6 +25,7 @@ Last Changes
 * Prio-Value-Klasse für Bestimmung der Reihenfolge von Datensätzen (wird auch in der Tabellen- und Felder-Verwaltung des Managers verwendet)
 * Manager: Standardsortierung kann festgelegt werden
 * Manager: Echte Relationstabellen können verwendet werden
+* Manager: Anzeigefelder bei Relationen werden rekursiv aufgelöst (falls Anzeigefeld selbst eine Relation ist, wird dessen Anzeigefeld verwendet etc.)
 
 #### Bugs
 
