@@ -15,24 +15,24 @@
     <div class="xform-element <?php echo $this->getHTMLClass() ?> formlabel-<?php echo $this->getName() ?>" id="<?php echo $this->getHTMLId() ?>">
         <label class="select <?php echo $this->getWarningClass() ?>" for="<?php echo $this->getFieldId() ?>" ><?php echo $this->getLabelStyle($this->relation['label']) ?></label>
         <div class="rex-widget">
-        
+
             <?php if ($this->relation['relation_type'] == 4) { ?>
 
                 <div class="rex-widget-data">
                     <p class="rex-widget-field">
                         <input type="hidden" name="<?php echo $this->getFieldName() ?>" id="XFORM_MANAGER_DATA_<?php echo $this->getId() ?>" value="<?php echo implode(',', $this->getValue()) ?>" />
-                        <?php 
-                        
+                        <?php
+
                         if ($this->params["main_id"] > 0) {
-                            ?><a href="javascript:void(0);" onclick="newLinkMapWindow('<?php echo $link ?>');return false;"><?php echo $I18N->msg('xform_relation_edit_relations'); ?></a>
+                            ?><a href="javascript:void(0);" onclick="newPoolWindow('<?php echo $link ?>');return false;"><?php echo $I18N->msg('xform_relation_edit_relations'); ?></a>
                             <?php
                         } else {
                             echo $I18N->msg('xform_relation_first_create_data');
-                        
+
                         }
-                        
+
                         ?>
-                        
+
                     </p>
                 </div>
 
