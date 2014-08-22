@@ -100,7 +100,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
 
 
         // ---------- check values
-        $sql = 'select id,' . mysql_real_escape_string($this->relation['target_field']) . ' from ' . $this->relation['target_table'];
+        $sql = 'select id,' . $this->relation['target_field'] . ' label from ' . $this->relation['target_table'];
         $options = array();
         $valueName = '';
         $values = array();
@@ -117,8 +117,8 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
             $vs->debugsql = $this->params['debug'];
             $vs->setQuery($sql);
             foreach ($vs->getArray() as $v) {
-                $options[$v['id']] = $v[$this->relation['target_field']] . ' [id=' . $v['id'] . ']';
-                $valueName = $v[$this->relation['target_field']];
+                $options[$v['id']] = $v['label'] . ' [id=' . $v['id'] . ']';
+                $valueName = $v['label'];
             }
             foreach ($this->getValue() as $v) {
                 if (isset($options[$v])) {
@@ -148,14 +148,14 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
             // ----- SELECT BOX
             $sss = rex_sql::factory();
             $sss->debugsql = $this->params['debug'];
-            $sss->setQuery('select * from `' . mysql_real_escape_string($this->relation['target_table']) . '` order by `' . mysql_real_escape_string($this->relation['target_field']) . '`');
+            $sss->setQuery('select *, ' . $this->relation['target_field'] . ' target_field_label from `' . mysql_real_escape_string($this->relation['target_table']) . '` order by target_field_label');
 
             $options = array();
             if ($this->relation['relation_type'] == 0 && $this->relation['eoption'] == 1) {
                 $options[''] = '-';
             }
             foreach ($sss->getArray() as $v) {
-                $s = $v[$this->relation['target_field']];
+                $s = $v['target_field_label'];
                 if (strlen($s) > 50) {
                     $s = substr($s, 0, 45) . ' ... ';
                 }
@@ -326,7 +326,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
         if (!isset(self::$xform_list_values[$params['params']['field']['table']]) || count(self::$xform_list_values[$params['params']['field']['table']]) == 0) {
             self::$xform_list_values[$params['params']['field']['table']] = array();
             $db = rex_sql::factory();
-            $db_array = $db->getDBArray('select id, `' . $params['params']['field']['field'] . '` as name from ' . $params['params']['field']['table'] . '');
+            $db_array = $db->getDBArray('select id, ' . $params['params']['field']['field'] . ' as name from ' . $params['params']['field']['table'] . '');
             foreach ($db_array as $entry) {
                 self::$xform_list_values[$params['params']['field']['table']][$entry['id']] = $entry['name'];
             }
