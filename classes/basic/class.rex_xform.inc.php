@@ -676,7 +676,7 @@ class rex_xform
                                 $class = new $classname;
                                 $desc = $class->getDescription();
                                 if ($desc != '') {
-                                 $list[$classname] = '<li>' . $classname.$desc . '</li>';
+                                   $list[$classname] = '<li>' . $desc . '</li>';
                                 }
                             }
                         }
