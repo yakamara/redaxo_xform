@@ -36,7 +36,7 @@ class rex_xform_captcha extends rex_xform_abstract
         }
 
         if ($this->getElement(3) != '') {
-            $link = $this->getElement(3) . '?captcha=show&' . time() . microtime();
+            $link = $this->getElement(3) . '?captcha=show&' . time();
         } else {
             $link = rex_getUrl($this->params['article_id'], $this->params['clang'], array('captcha' => 'show'), '&') . '&' . time() . microtime();
         }
