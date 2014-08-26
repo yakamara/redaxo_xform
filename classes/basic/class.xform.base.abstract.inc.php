@@ -20,7 +20,7 @@ abstract class rex_xform_base_abstract
         foreach ($elements as $key => $value) {
             if($value[0] == '#')
             {
-                list($key, $value) = explode(':', substr($value, 1), 2);
+                list($key, $value) = array_merge(explode(':', substr($value, 1), 2), array(''));
                 $offset++;
             }
 
