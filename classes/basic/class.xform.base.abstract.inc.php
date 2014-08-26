@@ -16,8 +16,18 @@ abstract class rex_xform_base_abstract
     function loadParams(&$params, $elements)
     {
         $this->params = &$params;
+        $offset = 0;
         foreach ($elements as $key => $value) {
-            $this->setElement($key, $value);
+            if($value[0] == '#')
+            {
+                $a = explode(':', substr($value, 1));
+                $key = $a[0];
+                unset($a[0]);
+                $value = implode(':', $a);
+                $offset++;
+            }
+
+            $this->setElement(is_numeric($key) ? $key - $offset : $key, $value);
         }
     }
 
