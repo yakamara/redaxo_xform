@@ -20,10 +20,7 @@ abstract class rex_xform_base_abstract
         foreach ($elements as $key => $value) {
             if($value[0] == '#')
             {
-                $a = explode(':', substr($value, 1));
-                $key = $a[0];
-                unset($a[0]);
-                $value = implode(':', $a);
+                list($key, $value) = explode(':', substr($value, 1), 2);
                 $offset++;
             }
 
