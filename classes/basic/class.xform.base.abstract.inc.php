@@ -18,7 +18,7 @@ abstract class rex_xform_base_abstract
         $this->params = &$params;
         $offset = 0;
         foreach ($elements as $key => $value) {
-            if($value != "" && $value[0] == '#' AND strpos($value, ':')) {
+            if (is_string($value) && !empty($value) && $value[0] == '#' && false !== strpos($value, ':')) {
                 list($key, $value) = explode(':', substr($value, 1), 2);
                 $offset++;
             }
