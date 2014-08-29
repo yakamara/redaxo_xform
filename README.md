@@ -27,6 +27,7 @@ Last Changes
 * Manager: Standardsortierung kann festgelegt werden
 * Manager: Echte Relationstabellen können verwendet werden
 * Manager: Anzeigefelder bei Relationen werden rekursiv aufgelöst (falls Anzeigefeld selbst eine Relation ist, wird dessen Anzeigefeld verwendet etc.)
+* Manager: Für Relationsfelder können mehrere Anzeigefelder und Konstanten angegeben werden, die verknüpft werden (z. B. `lastname, ", ", firstname`)
 * Manager: Für Relationsfelder können Filter gesetzt werden
 
 #### Bugs

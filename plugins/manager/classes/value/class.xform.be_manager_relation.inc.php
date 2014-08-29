@@ -78,49 +78,6 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
         // ---------- (array) $this->getValue()
         // echo '<hr /><pre>'; var_dump($this->getValue()); echo '</pre>';
 
-
-        // ---------- check values
-        $sql = 'select id,' . mysql_real_escape_string($this->relation['target_field']) . ' from ' . $this->relation['target_table'];
-        $options = array();
-        $valueName = '';
-        $values = array();
-        if (count($this->getValue()) > 0) {
-            $add_sql = array();
-            foreach ($this->getValue() as $v) {
-                $add_sql[] = ' id=' . intval($v) . '';
-            }
-            if (count($add_sql) > 0) {
-                $sql .= ' where ' . implode(' OR ', $add_sql);
-            }
-
-            $vs = rex_sql::factory();
-            $vs->debugsql = $this->params['debug'];
-            $vs->setQuery($sql);
-            foreach ($vs->getArray() as $v) {
-                $options[$v['id']] = $v[$this->relation['target_field']] . ' [id=' . $v['id'] . ']';
-                $valueName = $v[$this->relation['target_field']];
-            }
-            foreach ($this->getValue() as $v) {
-                if (isset($options[$v])) {
-                    $values[] = $v;
-                }
-            }
-
-            $this->setValue($values);
-        }
-
-        // ---------- (array) $this->getValue()
-        // echo '<pre>'; var_dump($this->getValue()); echo '</pre>';
-
-
-        // ---------- empty option ?
-
-        if ($this->params['send'] == 1 && $this->relation['eoption'] == 0 && count($this->getValue()) == 0) {
-            // Error. Fehlermeldung ausgeben
-            $this->params['warning'][] = $this->params['error_class'];
-            $this->params['warning_messages'][] = $this->getElement(7);
-        }
-
         // ---------- Filter
 
         $filter = array();
@@ -169,6 +126,35 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
         }
         if (isset($this->params['rex_xform_set'][$this->getName()]) && is_array($this->params['rex_xform_set'][$this->getName()])) {
             $filter = array_merge($filter, $this->params['rex_xform_set'][$this->getName()]);
+        }
+
+        // ---------- check values
+        $options = array();
+        $valueName = '';
+        $values = array();
+        if (count($this->getValue()) > 0) {
+            $listValues = self::getListValues($this->relation['target_table'], $this->relation['target_field'], $filter);
+            foreach ($this->getValue() as $v) {
+                if (isset($listValues[$v])) {
+                    $values[] = $v;
+                    $options[$v] = $listValues[$v] . ' [id=' . $v . ']';
+                    $valueName = $options[$v];
+                }
+            }
+
+            $this->setValue($values);
+        }
+
+        // ---------- (array) $this->getValue()
+        // echo '<pre>'; var_dump($this->getValue()); echo '</pre>';
+
+
+        // ---------- empty option ?
+
+        if ($this->params['send'] == 1 && $this->relation['eoption'] == 0 && count($this->getValue()) == 0) {
+            // Error. Fehlermeldung ausgeben
+            $this->params['warning'][] = $this->params['error_class'];
+            $this->params['warning_messages'][] = $this->getElement(7);
         }
 
         // --------------------------------------- Selectbox, single 0 or multiple 1
@@ -323,7 +309,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
                 'name'         => array( 'type' => 'name',    'label' => 'Name' ),
                 'label'        => array( 'type' => 'text',    'label' => 'Bezeichnung'),
                 'table'        => array( 'type' => 'table',   'label' => 'Ziel Tabelle'),
-                'field'        => array( 'type' => 'text',    'label' => 'Ziel Tabellenfeld zur Anzeige oder Zielfeld'),
+                'field'        => array( 'type' => 'text',    'label' => 'Ziel Tabellenfeld(er) zur Anzeige oder Zielfeld'),
                 'type'         => array( 'type' => 'select',  'label' => 'Mehrfachauswahl', 'default' => '', 'definition' => array('0' => 'select (single)', '1' => 'select (multiple)', '2' => 'popup (single)', '3' => 'popup (multiple)' , '4' => 'popup (multiple 1-n)') ), // ,popup (multiple / relation)=4
                 'empty_option' => array( 'type' => 'boolean', 'label' => 'Mit "Leer-Option"' ),
                 'empty_value'  => array( 'type' => 'text',    'label' => 'Fehlermeldung wenn "Leer-Option" nicht aktiviert ist.'),
@@ -361,9 +347,6 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
         $filterHash = sha1(json_encode($filter));
         if (!isset(self::$xform_list_values[$table][$field][$filterHash])) {
             self::$xform_list_values[$table][$field][$filterHash] = array();
-            if ($relation = rex_xform_manager_table::getRelation($table, $field)) {
-                $relationListValues = self::getListValues($relation['table'], $relation['field']);
-            }
             $db = rex_sql::factory();
             //$db->debugsql = true;
             $where = '';
@@ -384,18 +367,62 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
                 }
                 $where = ' WHERE ' . implode(' AND ', $where);
             }
+            $concat = self::getNameConcatFields($field);
+            $fields = array();
+            foreach ($concat as $c) {
+                if ($c['field']) {
+                    $fields[] = 't0.`' . mysql_real_escape_string($c['name']) . '`';
+                }
+            }
             $tableDefinition = rex_xform_manager_table_api::getTable($table);
             $order = 't0.`' . $db->escape($tableDefinition['list_sortfield'] ?: 'id') . '` ' . ($tableDefinition['list_sortorder'] ?: 'ASC');
-            $db_array = $db->getArray('select t0.id, t0.`' . $db->escape($field) . '` as name from `' . $db->escape($table) . '` t0' . $join . $where . ' ORDER BY ' . $order);
+            $db_array = $db->getArray('select t0.id, ' . implode(', ', $fields) . ' from `' . $db->escape($table) . '` t0' . $join . $where . ' ORDER BY ' . $order);
             foreach ($db_array as $entry) {
-                if ($relation && isset($relationListValues[$entry['name']])) {
-                    self::$xform_list_values[$table][$field][$filterHash][$entry['id']] = $relationListValues[$entry['name']];
-                } else {
-                    self::$xform_list_values[$table][$field][$filterHash][$entry['id']] = $entry['name'];
+                $value = '';
+                foreach ($concat as $c) {
+                    if ($c['field']) {
+                        $v = $entry[$c['name']];
+                        if ($relation = rex_xform_manager_table::getRelation($table, $c['name'])) {
+                            $relationListValues = self::getListValues($relation['table'], $relation['field']);
+                            if (isset($relationListValues[$v])) {
+                                $v = $relationListValues[$v];
+                            }
+                        }
+                        $value .= $v;
+                    } else {
+                        $value .= $c['name'];
+                    }
                 }
+                self::$xform_list_values[$table][$field][$filterHash][$entry['id']] = $value;
             }
         }
         return self::$xform_list_values[$table][$field][$filterHash];
+    }
+
+    private static function getNameConcatFields($field)
+    {
+        preg_match_all('/(?:^|(?<=,))\s*((\'|")(.*?)\2|[^\'"\s].*?)\s*(?:(?=,)|$)/', $field, $matches, PREG_SET_ORDER);
+        $concat = array();
+        foreach ($matches as $match) {
+            if (isset($match[2])) {
+                $concat[] = array(
+                    'field' => false,
+                    'name' => $match[3],
+                );
+            } else {
+                $concat[] = array(
+                    'field' => true,
+                    'name' => $match[1],
+                );
+            }
+        }
+        if (empty($concat)) {
+            return array(array(
+                'field' => true,
+                'name' => 'id',
+            ));
+        }
+        return $concat;
     }
 
     protected function getRelationTableFields()
