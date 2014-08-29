@@ -51,15 +51,6 @@ $sql->setQuery('ALTER TABLE `' . $REX['TABLE_PREFIX'] . 'xform_field` CHANGE `f1
 $sql->setQuery('ALTER TABLE `' . $REX['TABLE_PREFIX'] . 'xform_field` ADD `label` TEXT NOT NULL');
 $sql->setQuery('UPDATE `' . $REX['TABLE_PREFIX'] . 'xform_field` SET label = f2, f2 = "" WHERE type_id = "value" AND label = ""');
 
-$sql->setQuery('CREATE TABLE IF NOT EXISTS `' . $REX['TABLE_PREFIX'] . 'xform_relation` (
-    `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-    `source_table` VARCHAR( 100 ) NOT NULL ,
-    `source_name` VARCHAR( 100 ) NOT NULL ,
-    `source_id` INT NOT NULL ,
-    `target_table` VARCHAR( 100 ) NOT NULL ,
-    `target_id` INT NOT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;');
-
 $sql->setQuery('SELECT id FROM `' . $REX['TABLE_PREFIX'] . 'xform_field` WHERE type_id = "validate" AND type_name = "type" AND required != "" LIMIT 1');
 if ($sql->getRows()) {
     $sql->setQuery('ALTER TABLE `' . $REX['TABLE_PREFIX'] . 'xform_field` ADD `not_required` TEXT NOT NULL');

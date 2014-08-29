@@ -49,24 +49,6 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
                 $values = explode(',', $this->getValue());
             } elseif ($this->getElement('relation_table')) {
                 $values = $this->getRelationTableValues();
-            } else {
-                $vs = rex_sql::factory();
-                $vs->debugsql = $this->params['debug'];
-                $vs->setQuery('
-                    select
-                        target_id as id
-                    from
-                        ' . $REX['TABLE_PREFIX'] . 'xform_relation
-                    where
-                        source_table="' . $this->relation['source_table'] . '" and
-                        source_name="' . $this->getName() . '" and
-                        source_id="' . $this->params['main_id'] . '"');
-                $v = $vs->getArray();
-                if (count($v) > 0) {
-                    foreach ($v as $w) {
-                        $values[$w['id']] = $w['id'];
-                    }
-                }
             }
             $this->setValue($values);
             // echo '<pre>++ ';var_dump($this->getValue());echo '</pre>';
@@ -316,26 +298,6 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
         $sql->setTable($relationTable);
         $sql->setWhere('`' . $sql->escape($relationTableField['source']) . '`=' . $source_id . ' AND `' . $sql->escape($relationTableField['target']) . '` NOT IN (' . implode(',', $values) . ')');
         $sql->delete();
-
-
-        /*$d = rex_sql::factory();
-        $d->debugsql = $this->params['debug'];
-        $d->setQuery('delete from ' . $REX['TABLE_PREFIX'] . 'xform_relation where source_table="' . $this->be_em['source_table'] . '" and source_name="' . $this->getName() . '" and source_id="' . $source_id . '"');
-
-        if (count($values) > 0) {
-            $i = rex_sql::factory();
-            $i->debugsql = $this->params['debug'];
-            foreach ($values as $v) {
-                $i->setTable($REX['TABLE_PREFIX'] . 'xform_relation');
-                $i->setValue('source_table', $this->relation['source_table']);
-                $i->setValue('source_name', $this->getName());
-                $i->setValue('source_id', $source_id);
-                $i->setValue('target_table', $this->relation['target_table']);
-                $i->setValue('target_id', $v);
-                $i->insert();
-            }
-
-        }*/
 
     }
 
