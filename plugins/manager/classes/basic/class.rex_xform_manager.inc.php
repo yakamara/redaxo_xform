@@ -202,22 +202,20 @@ class rex_xform_manager
             $em_url_filter = '';
             if (count($rex_xform_filter) > 0) {
                 foreach ($rex_xform_filter as $k => $v) {
-                    if (in_array($k, $field_names)) {
-                        $em_url_filter .= '&rex_xform_filter[' . $k . ']=' . urlencode($v);
-                    } else {
+                    if (!in_array($k, $field_names)) {
                         unset($rex_xform_filter[$k]);
                     }
                 }
+                $em_url_filter .= '&' . http_build_query(compact('rex_xform_filter'));
             };
             $em_url_set = '';
             if (count($rex_xform_set) > 0) {
                 foreach ($rex_xform_set as $k => $v) {
-                    if (in_array($k, $field_names)) {
-                        $em_url_set .= '&rex_xform_set[' . $k . ']=' . urlencode($v);
-                    } else {
+                    if (!in_array($k, $field_names)) {
                         unset($rex_xform_set[$k]);
                     }
                 }
+                $em_url_filter .= '&' . http_build_query(compact('rex_xform_set'));
             };
             $em_url = $em_url_filter . $em_url_set;
             $em_rex_list = '';
@@ -267,7 +265,7 @@ class rex_xform_manager
 
                 $delete = true;
                 if (rex_register_extension_point('XFORM_DATA_DATASET_DELETE', $delete, array('table' => $table))) {
-                    $query = 'delete from ' . $table['table_name'] . $this->getDataListQueryWhere($rex_xform_filter, $rex_xform_searchfields , $rex_xform_searchtext );
+                    $query = 'delete from ' . $table['table_name'] . ' t0' . $this->getDataListQueryWhere($table['table_name'], $rex_xform_filter, $rex_xform_searchfields , $rex_xform_searchtext );
                     $delsql = new rex_sql;
                     $delsql->setQuery($query);
                     echo rex_info($I18N->msg('dataset_deleted'));
@@ -368,12 +366,24 @@ class rex_xform_manager
                 // TODO
                 if (count($rex_xform_filter) > 0) {
                     foreach ($rex_xform_filter as $k => $v) {
-                        $xform->setHiddenField('rex_xform_filter[' . $k . ']', $v);
+                        if (is_array($v)) {
+                            foreach ($v as $k2 => $v2) {
+                                $xform->setHiddenField('rex_xform_filter[' . $k . '][' . $k2 . ']', $v2);
+                            }
+                        } else {
+                            $xform->setHiddenField('rex_xform_filter[' . $k . ']', $v);
+                        }
                     }
                 };
                 if (count($rex_xform_set) > 0) {
                     foreach ($rex_xform_set as $k => $v) {
-                        $xform->setHiddenField('rex_xform_set[' . $k . ']', $v);
+                        if (is_array($v)) {
+                            foreach ($v as $k2 => $v2) {
+                                $xform->setHiddenField('rex_xform_set[' . $k . '][' . $k2 . ']', $v2);
+                            }
+                        } else {
+                            $xform->setHiddenField('rex_xform_set[' . $k . ']', $v);
+                        }
                     }
                 };
                 if (count($rex_xform_searchfields) > 0) {
@@ -575,12 +585,24 @@ class rex_xform_manager
 
                     if (count($rex_xform_filter) > 0) {
                         foreach ($rex_xform_filter as $k => $v) {
-                            $suchform .= '<input type="hidden" name="rex_xform_filter[' . $k . ']" value="' . htmlspecialchars(stripslashes($v)) . '" />';
+                            if (is_array($v)) {
+                                foreach ($v as $k2 => $v2) {
+                                    $suchform .= '<input type="hidden" name="rex_xform_filter[' . $k . '][' . $k2 . ']" value="' . htmlspecialchars(stripslashes($v2)) . '" />';
+                                }
+                            } else {
+                                $suchform .= '<input type="hidden" name="rex_xform_filter[' . $k . ']" value="' . htmlspecialchars(stripslashes($v)) . '" />';
+                            }
                         }
                     }
                     if (count($rex_xform_set) > 0) {
                         foreach ($rex_xform_set as $k => $v) {
-                            $suchform .= '<input type="hidden" name="rex_xform_set[' . $k . ']" value="' . htmlspecialchars(stripslashes($v)) . '" />';
+                            if (is_array($v)) {
+                                foreach ($v as $k2 => $v2) {
+                                    $suchform .= '<input type="hidden" name="rex_xform_set[' . $k . '][' . $k2 . ']" value="' . htmlspecialchars(stripslashes($v2)) . '" />';
+                                }
+                            } else {
+                                $suchform .= '<input type="hidden" name="rex_xform_set[' . $k . ']" value="' . htmlspecialchars(stripslashes($v)) . '" />';
+                            }
                         }
                     }
                     if (count($rex_xform_manager_opener) > 0) {
@@ -650,12 +672,24 @@ class rex_xform_manager
 
                 if (count($rex_xform_filter) > 0) {
                     foreach ($rex_xform_filter as $k => $v) {
-                        $list->addParam('rex_xform_filter[' . $k . ']', $v);
+                        if (is_array($v)) {
+                            foreach ($v as $k2 => $v2) {
+                                $list->addParam('rex_xform_filter[' . $k . '][' . $k2 . ']', $v2);
+                            }
+                        } else {
+                            $list->addParam('rex_xform_filter[' . $k . ']', $v);
+                        }
                     }
                 }
                 if (count($rex_xform_set) > 0) {
                     foreach ($rex_xform_set as $k => $v) {
-                        $list->addParam('rex_xform_set[' . $k . ']', $v);
+                        if (is_array($v)) {
+                            foreach ($v as $k2 => $v2) {
+                                $list->addParam('rex_xform_set[' . $k . '][' . $k2 . ']', $v2);
+                            }
+                        } else {
+                            $list->addParam('rex_xform_set[' . $k . ']', $v);
+                        }
                     }
                 }
                 if (count($rex_xform_manager_opener) > 0) {
@@ -851,7 +885,7 @@ class rex_xform_manager
 
     }
 
-    public function getDataListQueryWhere($rex_xform_filter = array(), $rex_xform_searchfields = array(), $rex_xform_searchtext = '')
+    public function getDataListQueryWhere($table, $rex_xform_filter = array(), $rex_xform_searchfields = array(), $rex_xform_searchtext = '')
     {
         $sql = array();
         if (count($rex_xform_filter) > 0) {
@@ -860,7 +894,13 @@ class rex_xform_manager
                 if ($sql_filter != '') {
                     $sql_filter .= ' AND ';
                 }
-                $sql_filter .= '`' . $k . '`="' . $v . '"';
+                if (!is_array($v)) {
+                    $sql_filter .= '`' . $k . '`="' . $v . '"';
+                } elseif ($relation = rex_xform_manager_table::getRelation($table, $k)) {
+                    foreach ($v as $k2 => $v2) {
+                        $sql_filter .= '(SELECT `' . mysql_real_escape_string($k2) . '` FROM `' . mysql_real_escape_string($relation['table']) . '` WHERE id = t0.`' . mysql_real_escape_string($k) . '`) = "' . mysql_real_escape_string($v2) . '"';
+                    }
+                }
             }
             $sql[] = $sql_filter;
         }
@@ -897,7 +937,7 @@ class rex_xform_manager
         global $REX;
         $where = false;
 
-        $sql = 'select * from ' . $table['table_name'];
+        $sql = 'select * from ' . $table['table_name'] . ' t0';
 
         $sql_felder = new rex_sql;
         $sql_felder->setQuery('SELECT * FROM ' . $REX['TABLE_PREFIX'] . 'xform_field WHERE table_name="' . $table['table_name'] . '" AND type_id="value" ORDER BY prio');
@@ -915,10 +955,10 @@ class rex_xform_manager
                 }
                 $sql_felder->next();
             }
-            $sql = 'select `id`,' . implode(',', $fields) . ' from `' . $table['table_name'] . '`';
+            $sql = 'select `id`,' . implode(',', $fields) . ' from `' . $table['table_name'] . '` t0';
         }
 
-        $sql .= $this->getDataListQueryWhere($rex_xform_filter, $rex_xform_searchfields, $rex_xform_searchtext);
+        $sql .= $this->getDataListQueryWhere($table['table_name'], $rex_xform_filter, $rex_xform_searchfields, $rex_xform_searchtext);
         if ($table['list_sortfield']) {
             $sql .= ' ORDER BY ' . $table['list_sortfield'] . ' ' . $table['list_sortorder'];
         }

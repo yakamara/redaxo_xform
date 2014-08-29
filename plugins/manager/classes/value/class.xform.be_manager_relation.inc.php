@@ -74,7 +74,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
 
 
         // ---------- connected, fix values
-        if (isset($this->params['rex_xform_set'][$this->getName()])) {
+        if (isset($this->params['rex_xform_set'][$this->getName()]) && !is_array($this->params['rex_xform_set'][$this->getName()])) {
 
             $values = $this->getValue();
             $values[] = $this->params['rex_xform_set'][$this->getName()];
@@ -139,6 +139,56 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
             $this->params['warning_messages'][] = $this->getElement(7);
         }
 
+        // ---------- Filter
+
+        $filter = array();
+        if ($rawFilter = $this->getElement('filter')) {
+            $rawFilter = preg_split('/\v+/', $rawFilter);
+            $setValue = function ($key, $value) use (&$filter) {
+                if (false !== strpos($key, '.')) {
+                    list($key1, $key2) = explode('.', $key, 2);
+                    $filter[$key1][$key2] = $value;
+                } else {
+                    $filter[$key] = $value;
+                }
+            };
+            foreach ($rawFilter as $f) {
+                $f = explode('=', $f, 2);
+                if (2 === count($f)) {
+                    $key = trim($f[0]);
+                    $value = trim($f[1]);
+                    if (preg_match('/^###(.+)###$/', $value, $matches)) {
+                        $value = $matches[1];
+                        if (false !== strpos($value, '.')) {
+                            $value = explode('.', $value);
+                            $relation = rex_xform_manager_table::getRelation($this->params['main_table'], $value[0]);
+                            $value[0] = $this->getValueForKey($value[0]);
+                            if ($value[0] && $relation) {
+                                $relationSql = rex_sql::factory();
+                                //$relationSql->debugsql = true;
+                                $tables = '`' . $relationSql->escape($relation['table']) . '` t0';
+                                for ($i = 1; $i < count($value) - 1; ++$i) {
+                                    $relation = rex_xform_manager_table::getRelation($relation['table'], $value[$i]);
+                                    $tables .= ' LEFT JOIN `' . $relationSql->escape($relation['table']) . '` t' . $i . ' ON t' . $i . '.id = t' . ($i - 1) . '.`' . $relationSql->escape($value[$i]) . '`';
+                                }
+                                $relationSql->setQuery('SELECT t' . ($i-1) . '.`' . $relationSql->escape($value[$i]) . '` FROM ' . $tables . ' WHERE t0.id = ' . (int) $value[0]);
+                                if ($relationSql->getRows()) {
+                                    $setValue($key, $relationSql->getValue($value[$i]));
+                                }
+                            }
+                        } elseif ($value = $this->getValueForKey($value)) {
+                            $setValue($key, $value);
+                        }
+                    } else {
+                        $setValue($key, $value);
+                    }
+                }
+            }
+        }
+        if (isset($this->params['rex_xform_set'][$this->getName()]) && is_array($this->params['rex_xform_set'][$this->getName()])) {
+            $filter = array_merge($filter, $this->params['rex_xform_set'][$this->getName()]);
+        }
+
         // --------------------------------------- Selectbox, single 0 or multiple 1
 
         if ($this->relation['relation_type'] < 2) {
@@ -148,7 +198,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
             if ($this->relation['relation_type'] == 0 && $this->relation['eoption'] == 1) {
                 $options[''] = '-';
             }
-            foreach (self::getListValues($this->relation['target_table'], $this->relation['target_field']) as $id => $name) {
+            foreach (self::getListValues($this->relation['target_table'], $this->relation['target_field'], $filter) as $id => $name) {
                 if (strlen($name) > 50) {
                     $name = substr($name, 0, 45) . ' ... ';
                 }
@@ -165,6 +215,9 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
         if ($this->relation['relation_type'] == 2 || $this->relation['relation_type'] == 3) {
 
             $link = 'index.php?page=xform&subpage=manager&tripage=data_edit&table_name=' . $this->relation['target_table'];
+            foreach ($filter as $key => $value) {
+                $link .= '&rex_xform_filter[' . $key . ']=' . $value . '&rex_xform_set[' . $key . ']=' . $value;
+            }
             $this->params['form_output'][$this->getId()] = $this->parse('value.be_manager_relation.tpl.php', compact('valueName', 'options', 'link'));
 
         }
@@ -172,9 +225,22 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
 
         // --------------------------------------- POPUP, 1-n
 
-        if ($this->relation['relation_type'] == 4) {
+        $addFilterParams = function (&$link, array $filter) use (&$addFilterParams) {
+            foreach ($filter as $key => $value) {
+                if (is_array($value)) {
+                    foreach ($value as $k => $v) {
+                        $addFilterParams($link, array($key . '][' . $k => $v));
+                    }
+                } else {
+                    $link .= '&rex_xform_filter[' . $key . ']=' . $value . '&rex_xform_set[' . $key . ']=' . $value;
+                }
+            }
+        };
 
-            $link = 'index.php?page=xform&subpage=manager&tripage=data_edit&table_name=' . $this->relation['target_table'] . '&rex_xform_filter[' . $this->relation['target_field'] . ']=' . $this->params['main_id'] . '&rex_xform_set[' . $this->relation['target_field'] . ']=' . $this->params['main_id'];
+        if ($this->relation['relation_type'] == 4) {
+            $filter[$this->relation['target_field']] = $this->params['main_id'];
+            $link = 'index.php?page=xform&subpage=manager&tripage=data_edit&table_name=' . $this->relation['target_table'];
+            $addFilterParams($link, $filter);
             $this->params['form_output'][$this->getId()] = $this->parse('value.be_manager_relation.tpl.php', compact('valueName', 'options', 'link'));
 
         }
@@ -184,7 +250,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
 
         $this->params['value_pool']['email'][$this->getName()] = stripslashes(implode(',', $this->getValue()));
         if (!$this->getElement('relation_table')) {
-            $this->params['value_pool']['sql'][$this->getName()] = implode(',', $this->getValue());
+            $this->params['value_pool']['sql'][$this->getName()] = implode(',', array_unique($this->getValue()));
         }
     }
 
@@ -300,6 +366,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
                 'empty_option' => array( 'type' => 'boolean', 'label' => 'Mit "Leer-Option"' ),
                 'empty_value'  => array( 'type' => 'text',    'label' => 'Fehlermeldung wenn "Leer-Option" nicht aktiviert ist.'),
                 'size'         => array( 'type' => 'text', 'name' => 'boxheight',    'label' => 'Höhe der Auswahlbox'),
+                'filter'       => array( 'type' => 'textarea', 'label' => 'Filter'),
                 'relation_table' => array( 'type' => 'table', 'label' => 'Relationstabelle', 'empty_option' => 1),
             ),
             'description' => 'Hiermit kann man Verkn&uuml;pfungen zu anderen Tabellen setzen',
@@ -327,24 +394,46 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
         return implode('<br />', $return);
     }
 
-    private static function getListValues($table, $field)
+    private static function getListValues($table, $field, array $filter = array())
     {
-        if (!isset(self::$xform_list_values[$table][$field])) {
-            self::$xform_list_values[$table][$field] = array();
+        $filterHash = sha1(json_encode($filter));
+        if (!isset(self::$xform_list_values[$table][$field][$filterHash])) {
+            self::$xform_list_values[$table][$field][$filterHash] = array();
             if ($relation = rex_xform_manager_table::getRelation($table, $field)) {
                 $relationListValues = self::getListValues($relation['table'], $relation['field']);
             }
             $db = rex_sql::factory();
-            $db_array = $db->getArray('select id, `' . $db->escape($field) . '` as name from `' . $db->escape($table) . '` ORDER BY `' . $db->escape($field) . '`');
+            //$db->debugsql = true;
+            $where = '';
+            $join = '';
+            $joinIndex = 1;
+            if ($filter) {
+                $where = array();
+                foreach ($filter as $key => $value) {
+                    if (!is_array($value)) {
+                        $where[] = 't0.`' . $db->escape($key) . '` = "' . $db->escape($value) . '"';
+                    } elseif ($relation = rex_xform_manager_table::getRelation($table, $key)) {
+                        $join .= ' LEFT JOIN `' . $db->escape($relation['table']) . '` t' . $joinIndex . ' ON t0.`' . $db->escape($key) . '` = t' . $joinIndex . '.id';
+                        foreach ($value as $k => $v) {
+                            $where[] = 't' . $joinIndex . '.`' . $db->escape($k) . '` = "' . $db->escape($v) . '"';
+                        }
+                        $joinIndex++;
+                    }
+                }
+                $where = ' WHERE ' . implode(' AND ', $where);
+            }
+            $tableDefinition = rex_xform_manager_table_api::getTable($table);
+            $order = 't0.`' . $db->escape($tableDefinition['list_sortfield'] ?: 'id') . '` ' . ($tableDefinition['list_sortorder'] ?: 'ASC');
+            $db_array = $db->getArray('select t0.id, t0.`' . $db->escape($field) . '` as name from `' . $db->escape($table) . '` t0' . $join . $where . ' ORDER BY ' . $order);
             foreach ($db_array as $entry) {
                 if ($relation && isset($relationListValues[$entry['name']])) {
-                    self::$xform_list_values[$table][$field][$entry['id']] = $relationListValues[$entry['name']];
+                    self::$xform_list_values[$table][$field][$filterHash][$entry['id']] = $relationListValues[$entry['name']];
                 } else {
-                    self::$xform_list_values[$table][$field][$entry['id']] = $entry['name'];
+                    self::$xform_list_values[$table][$field][$filterHash][$entry['id']] = $entry['name'];
                 }
             }
         }
-        return self::$xform_list_values[$table][$field];
+        return self::$xform_list_values[$table][$field][$filterHash];
     }
 
     protected function getRelationTableFields()

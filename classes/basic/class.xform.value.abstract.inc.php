@@ -204,6 +204,18 @@ abstract class rex_xform_abstract extends rex_xform_base_abstract
         return '<span style="color:#f90">' . ($label) . '</span>';
     }
 
+    protected function getValueForKey($key)
+    {
+        if (isset($this->params['value_pool']['sql'][$key])) {
+            return $this->params['value_pool']['sql'][$key];
+        } elseif (isset($this->params['sql_object']) && $this->params['sql_object']->hasValue($key)) {
+            return $this->params['sql_object']->getValue($key);
+        } elseif (isset($this->params['rex_xform_set'][$key])) {
+            return $this->params['rex_xform_set'][$key];
+        }
+        return null;
+    }
+
     // ------------ Trigger
 
     function enterObject()

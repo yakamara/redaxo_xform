@@ -20,13 +20,14 @@ Last Changes
 
 #### Neu
 
+* Prio-Value-Klasse für Bestimmung der Reihenfolge von Datensätzen (wird auch in der Tabellen- und Felder-Verwaltung des Managers verwendet)
+* In Pipenotation kann der Schlüssel eines Elements explizit angegeben werden (z. B. "text|titel|#placeholder:Titel")
 * Manager: Migrationsmanager ist über das Backend verfügbar und einsetzbar.
 * Manager: Migrationsmanager unterstützt weitere Feldtypen
-* Prio-Value-Klasse für Bestimmung der Reihenfolge von Datensätzen (wird auch in der Tabellen- und Felder-Verwaltung des Managers verwendet)
 * Manager: Standardsortierung kann festgelegt werden
 * Manager: Echte Relationstabellen können verwendet werden
 * Manager: Anzeigefelder bei Relationen werden rekursiv aufgelöst (falls Anzeigefeld selbst eine Relation ist, wird dessen Anzeigefeld verwendet etc.)
-* In Pipenotation kann der Schlüssel eines Elements explizit angegeben werden (z. B. "text|titel|#placeholder:Titel")
+* Manager: Für Relationsfelder können Filter gesetzt werden
 
 #### Bugs
 
