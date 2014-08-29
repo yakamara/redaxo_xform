@@ -57,4 +57,6 @@ if ($sql->getRows()) {
     $sql->setQuery('UPDATE `' . $REX['TABLE_PREFIX'] . 'xform_field` SET `not_required` = `required`, `required` = "" WHERE type_id = "validate" AND type_name = "type"');
 }
 
+$sql->setQuery('DROP TABLE IF EXISTS `' . $REX['TABLE_PREFIX'] . 'xform_relation`');
+
 $REX['ADDON']['install']['manager'] = 1;
