@@ -26,6 +26,7 @@ Last Changes
 * Manager: Standardsortierung kann festgelegt werden
 * Manager: Echte Relationstabellen können verwendet werden
 * Manager: Anzeigefelder bei Relationen werden rekursiv aufgelöst (falls Anzeigefeld selbst eine Relation ist, wird dessen Anzeigefeld verwendet etc.)
+* In Pipenotation kann der Schlüssel eines Elements explizit angegeben werden (z. B. "text|titel|#placeholder:Titel")
 
 #### Bugs
 
