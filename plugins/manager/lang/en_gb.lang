@@ -27,7 +27,7 @@ xform_prio_top = At top
 xform_prio_after = After "{0}"
 xform_prio_bottom = At bottom
 
-truncate_table = delete data
+truncate_table = truncate
 table_truncated = data completely deleted
 table_not_found = table not found
 truncate_table_confirm = Really delete ALL data sets of the table?
@@ -98,7 +98,7 @@ save = save
 delete = delete
 search = search
 export = export
-import = data import
+import = import
 datadeleted = data set deleted
 openerinfo = opener info
 
@@ -132,6 +132,7 @@ choosenadd_description = Please select the field which you want to use for your 
 addfield = add field
 editfields = edit fields
 
+data = Data
 
 xform_id_is_missing = ID missing
 xform_id_missing_info = [en] Die Tabelle hat leider kein ID Feld mit autoincrement. Somit kann XFORM nicht damit arbeiten. Bitte aktualisieren Sie die Tabelle und legen notfalls die ID manuell an.

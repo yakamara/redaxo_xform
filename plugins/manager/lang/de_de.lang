@@ -27,7 +27,7 @@ xform_prio_top = Am Anfang
 xform_prio_after = Nach "{0}"
 xform_prio_bottom = Am Ende
 
-truncate_table = Tabelle leeren
+truncate_table = leeren
 table_truncated = Tabelle wurde geleert
 table_not_found = Die Tabelle wurde nicht gefunden
 truncate_table_confirm = Wirklich die komplette Tabelle leeren?
@@ -98,7 +98,7 @@ save = speichern
 delete = löschen
 search = suchen
 export = exportieren
-import = Import
+import = importieren
 datadeleted = Datensatz wurde gelöscht
 openerinfo = Opener-Info
 
@@ -109,6 +109,7 @@ dataset_delete = Datenergebnis löschen
 dataset_deleted = Datenergebnis wurde geleert
 dataset_delete_confirm = Wirklich das Datenergebnis leeren?
 
+data = Datensatz
 
 # field.inc.php
 tablenotexists = Diese Tabelle existiert nicht!

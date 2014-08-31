@@ -787,43 +787,43 @@ class rex_xform_manager
                 // *********************************************
 
                 $list = rex_register_extension_point('XFORM_DATA_LIST', $list, array('table' => $table));
+
+                $data_links = array();
+                if ($this->hasDataPageFunction('add')) {
+                  $data_links['add'] = '<a href="index.php?' . $link_vars . '&func=add&' . $em_url . $em_rex_list . '">' . $I18N->msg('add') . '</a>';
+                }
+
+                if ($table['search'] == 1  && $this->hasDataPageFunction('search')) {
+                  $data_links['search'] = '<a href="#" id="searchtoggler">' . $I18N->msg('search') . '</a>';
+                }
+
                 echo '
                  <div class="rex-addon-output">
-                     <div class="rex-hl2" style="font-size:12px;font-weight:bold;">
-                         <span style="float:left;">Datensatz: ';
+                     <div class="rex-hl2" style="font-size:12px;font-weight:bold;">';
 
-                // ADD LINK
-                if ($this->hasDataPageFunction('add')) {
-                    echo '<a href="index.php?' . $link_vars . '&func=add&' . $em_url . $em_rex_list . '">' . $I18N->msg('add') . '</a> | ';
+                if (count($data_links)>0) {
+                    echo '<span style="float:left;">' . $I18N->msg('data') .': '.implode(" | ", $data_links).'</span>';
                 }
-
-                // SEARCH LINK
-                echo '<a href="#" id="searchtoggler">' . $I18N->msg('search') . '</a>';
-
-                echo '</span>';
 
                 // INFO LINK
-                echo '<span style="float:right;">' . $I18N->msg('table') . ': <a href="#" id="infotoggler">' . $I18N->msg('xform_table_info') . '</a>';
+                echo '<span style="float:right;">';
 
-                $dlink = array();
-
-                // Dataset delete
-                $dlink[] = '<a href="index.php?' . $link_vars . '&func=dataset_delete&' . $em_url . $em_rex_list . '" id="dataset-delete" onclick="return confirm(\'' . $I18N->msg('dataset_delete_confirm') . '\');">' . $I18N->msg('delete') . '</a>';
-
-                // Export
+                $dataset_links = array();
+                $dataset_links[] = '<a href="index.php?' . $link_vars . '&func=dataset_delete&' . $em_url . $em_rex_list . '" id="dataset-delete" onclick="return confirm(\'' . $I18N->msg('dataset_delete_confirm') . '\');">' . $I18N->msg('delete') . '</a>';
                 if (($table['export'] == 1 && $this->hasDataPageFunction('export'))) {
-                      $dlink[] = '<a href="index.php?' . $link_vars . '&func=dataset_export&' . $em_url . $em_rex_list . '">' . $I18N->msg('export') . '</a>';
+                  $dataset_links[] = '<a href="index.php?' . $link_vars . '&func=dataset_export&' . $em_url . $em_rex_list . '">' . $I18N->msg('export') . '</a>';
                 }
+                echo " " . $I18N->msg('xform_dataset') . ': ' . implode(' / ', $dataset_links) . '';
 
-                echo ' | ' . $I18N->msg('xform_dataset') . ': ' . implode(' / ', $dlink) . '';
-
+                $table_links = array();
+                $table_links[] = $I18N->msg('table') . ': <a href="#" id="infotoggler">' . $I18N->msg('xform_table_info') . '</a>';
                 if (!$popup && $table['import'] == 1 && $this->hasDataPageFunction('import')) {
-                    echo ' | <a href="index.php?' . htmlspecialchars($link_vars) . '&amp;func=import">' . $I18N->msg('import') . '</a>';
+                  $table_links[] = '<a href="index.php?' . htmlspecialchars($link_vars) . '&amp;func=import">' . $I18N->msg('import') . '</a>';
                 }
-
                 if ($this->hasDataPageFunction('truncate_table')) {
-                    echo ' | <a href="index.php?' . $link_vars . '&func=truncate_table&' . $em_url . $em_rex_list . '" id="truncate-table" onclick="return confirm(\'' . $I18N->msg('truncate_table_confirm') . '\');">' . $I18N->msg('truncate_table') . '</a>';
+                  $table_links[] = '<a href="index.php?' . $link_vars . '&func=truncate_table&' . $em_url . $em_rex_list . '" id="truncate-table" onclick="return confirm(\'' . $I18N->msg('truncate_table_confirm') . '\');">' . $I18N->msg('truncate_table') . '</a>';
                 }
+                echo " " . implode(' | ', $table_links);
 
                 echo '</span><br style="clear:both;" /></div></div>';
 
@@ -832,7 +832,6 @@ class rex_xform_manager
                 echo '<div id="searchblock" style="display:' . $display . ';">' . $suchform . '</div>';
 
                 // INFOBLOCK
-
                 echo '<div id="infoblock" style="display:none;"  class="rex-addon-output">
                 <div class="rex-hl2" style="font-size:12px;font-weight:bold;">' . $I18N->msg('pool_file_details') . '</div>
                 <div class="rex-addon-content">
