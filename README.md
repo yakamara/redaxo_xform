@@ -16,7 +16,7 @@ Installation
 Last Changes
 -------
 
-### Version 4.7.1 // xxx
+### Version 4.8 // 1. September 2014
 
 #### Neu
 
