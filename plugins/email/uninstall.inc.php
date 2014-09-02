@@ -7,3 +7,5 @@
  */
 
 $REX['ADDON']['install']['email'] = 0;
+$sql = rex_sql::factory();
+$sql->setQuery('DROP TABLE IF EXISTS `' . $REX['TABLE_PREFIX'] . 'xform_email_template`');
