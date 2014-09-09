@@ -762,7 +762,7 @@ class rex_xform_manager
                     $id = $params['list']->getValue('id');
                     $c = rex_sql::factory();
                     // $c->debugsql = 1;
-                    $c->setQuery('select count(id) as counter from ' . $params['params']['table'] . ' where FIND_IN_SET(' . $id . ', ' . $params['params']['field'] . ');');
+                    $c->setQuery('select count(id) as counter from ' . $params['params']['table'] . ' where FIND_IN_SET(' . $id . ', `' . $params['params']['field'] . '`);');
                     return $c->getValue('counter');
                 }
                 $gr = rex_sql::factory();
