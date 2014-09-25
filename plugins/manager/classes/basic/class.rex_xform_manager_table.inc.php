@@ -80,17 +80,16 @@ class rex_xform_manager_table
     static function hasId($table_name)
     {
         global $REX;
-        // $sql = 'show columns from '.$table_name;
-        $sql = 'SELECT COLUMN_NAME, EXTRA, COLUMN_KEY, DATA_TYPE, COLUMN_TYPE, IS_NULLABLE, COLUMN_DEFAULT FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = "' . $table_name . '" and COLUMN_NAME="id" and EXTRA = "auto_increment" and COLUMN_KEY="PRI" and TABLE_SCHEMA="' . mysql_real_escape_string($REX['DB']['1']['NAME']) . '"';
+        $sql = 'show fields from '.$table_name.' from '.mysql_real_escape_string($REX['DB']['1']['NAME']);
         $gf = rex_sql::factory();
         // $gf->debugsql = 1;
-        $gf->setQuery($sql);
-
-        if ($gf->getRows() == 1) {
-            return true;
-        } else {
-            return false;
+        $fields = $gf->getArray($sql);
+        foreach($fields as $field) {
+            if ($field["Field"] == "id" && $field["Extra"] == "auto_increment") {
+                return true;
+            }
         }
+        return false;
     }
 
     static function getXFormFields($table_name, $filter = array())
