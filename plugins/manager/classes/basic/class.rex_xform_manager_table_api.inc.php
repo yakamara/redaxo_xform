@@ -1,5 +1,8 @@
 <?php
 
+rex_xform_manager_table_api::$rex_xform_table = $REX['TABLE_PREFIX'].'xform_table';
+rex_xform_manager_table_api::$rex_xform_field = $REX['TABLE_PREFIX'].'xform_field';
+
 class rex_xform_manager_table_api
 {
 
