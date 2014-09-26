@@ -43,7 +43,7 @@ class rex_xform_manager_table
     static function xform_existTableName($l = '', $v = '', $params = '')
     {
         global $REX;
-        $q = 'select * from ' . $REX['TABLE_PREFIX'] . 'xform_table where table_name="' . $v . '" LIMIT 1';
+        $q = 'select * from ' . rex_xform_manager_table_api::$rex_xform_table . ' where table_name="' . $v . '" LIMIT 1';
         $c = rex_sql::factory();
         // $c->debugsql = 1;
         $c->setQuery($q);
@@ -59,7 +59,7 @@ class rex_xform_manager_table
     static function getMaximumTablePrio()
     {
         global $REX;
-        $sql = 'select max(prio) as prio from ' . $REX['TABLE_PREFIX'] . 'xform_table';
+        $sql = 'select max(prio) as prio from ' . rex_xform_manager_table_api::$rex_xform_table . '';
         $gf = rex_sql::factory();
         // $gf->debugsql = 1;
         $gf->setQuery($sql);
@@ -69,7 +69,7 @@ class rex_xform_manager_table
     static function getMaximumPrio($table_name)
     {
         global $REX;
-        $sql = 'select max(prio) as prio from ' . $REX['TABLE_PREFIX'] . 'xform_field where table_name="' . $table_name . '"';
+        $sql = 'select max(prio) as prio from ' . rex_xform_manager_table_api::$rex_xform_field . ' where table_name="' . $table_name . '"';
         $gf = rex_sql::factory();
         // $gf->debugsql = 1;
         $gf->setQuery($sql);
@@ -100,7 +100,7 @@ class rex_xform_manager_table
             $add_sql = 'AND `' . mysql_real_escape_string($k) . '`="' . mysql_real_escape_string($v) . '"';
         }
 
-        $sql = 'select * from ' . $REX['TABLE_PREFIX'] . 'xform_field where table_name="' . $table_name . '" ' . $add_sql . ' order by prio';
+        $sql = 'select * from ' . rex_xform_manager_table_api::$rex_xform_field . ' where table_name="' . $table_name . '" ' . $add_sql . ' order by prio';
         $gf = rex_sql::factory();
         // $gf->debugsql = 1;
         $gf->setQuery($sql);
@@ -162,7 +162,7 @@ class rex_xform_manager_table
         $sql = rex_sql::factory();
         $sql->setQuery('
             SELECT `table`, relation_table
-            FROM ' . $REX['TABLE_PREFIX'] . 'xform_field
+            FROM ' . rex_xform_manager_table_api::$rex_xform_field . '
             WHERE table_name="' . $sql->escape($table) . '" AND type_id="value" AND type_name="be_manager_relation" AND relation_table != ""
         ');
         $deleteSql = rex_sql::factory();
@@ -205,7 +205,7 @@ class rex_xform_manager_table
         if (!isset($relations)) {
             $relations = array();
             $sql = rex_sql::factory();
-            $data = $sql->getArray('SELECT * FROM `' . $REX['TABLE_PREFIX'] . 'xform_field` WHERE type_id="value" AND type_name="be_manager_relation"');
+            $data = $sql->getArray('SELECT * FROM `' . rex_xform_manager_table_api::$rex_xform_field . '` WHERE type_id="value" AND type_name="be_manager_relation"');
             foreach ($data as $row) {
                 $relations[$row['table_name']][$row['name']] = $row;
             }
