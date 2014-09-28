@@ -52,7 +52,7 @@ class rex_xform_select extends rex_xform_abstract
         if ($multiple) {
             $size = (int) $this->getElement(7);
             if ($size < 2) {
-                $size = count($rawOptions);
+                $size = count($options);
             }
         } else {
             $size = 1;
