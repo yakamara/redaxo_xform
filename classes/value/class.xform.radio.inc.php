@@ -14,7 +14,7 @@ class rex_xform_radio extends rex_xform_abstract
         $value_encoded = $this->getElement(3);
         $value_encoded = $this->encodeChars(',', $value_encoded);
 
-        $rawOptions = explode(',', $value_encoded);
+        $rawOptions = explode(',', $value_encoded, 2);
         $options = array();
         foreach ($rawOptions as $option_encoded) {
 
@@ -39,14 +39,18 @@ class rex_xform_radio extends rex_xform_abstract
             $options[$k] = $v;
         }
 
-        if ($this->getValue() == '' && $this->getElement(4) != '') {
-            $this->setValue($this->getElement(4));
+        if (!array_key_exists($this->getValue(), $options)) {
+            $this->setValue($this->getElement(5));
+        }
+
+        if (!array_key_exists($this->getValue(), $options)) {
+            $this->setValue(key($options));
         }
 
         $this->params['form_output'][$this->getId()] = $this->parse('value.radio.tpl.php', compact('options'));
 
         $this->params['value_pool']['email'][$this->getName()] = stripslashes($this->getValue());
-        if ($this->getElement(5) != 'no_db') {
+        if ($this->getElement(4) != 'no_db') {
             $this->params['value_pool']['sql'][$this->getName()] = $this->getValue();
         }
 
