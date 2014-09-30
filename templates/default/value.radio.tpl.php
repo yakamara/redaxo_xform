@@ -5,7 +5,7 @@
         <?php foreach ($options as $key => $value): ?>
             <?php $id = $this->getFieldId() . '-' . $counter++ ?>
             <p class="radio">
-                <input type="radio" class="radio" id="<?php echo $id ?>" name="<?php echo $this->getFieldName() ?>" value="<?php echo htmlspecialchars($key) ?>"<?php echo $key == $this->getValue() ? ' checked="checked"' : '' ?> />
+                <input type="radio" class="radio" id="<?php echo $id ?>" name="<?php echo $this->getFieldName() ?>" value="<?php echo htmlspecialchars($key) ?>"<?php echo $key == $this->getValue() || $key == $this->getElement(5) ? ' checked="checked"' : '' ?> />
                 <label for="<?php echo $id ?>"><?php echo $this->getLabelStyle($value) ?></label>
             </p>
         <?php endforeach ?>
