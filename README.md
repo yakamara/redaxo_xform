@@ -16,6 +16,20 @@ Installation
 Last Changes
 -------
 
+### Version 4.8.1 // XX. XX 2014
+
+#### Neu
+
+
+#### Bugs
+
+* Radio Klasse funktionierte nicht richtig. Beschreibung war != zur Funktion.
+* Select Klasse hatte die Anzahl der Einträge falsch gezählt
+* Manager: Reservierte Feldnamen führte zu Problemen.
+* Uninstall: email template tabelle wird nun entfernt
+* Update über Installer beachtet die PlugIns nicht richtig. Workaround gebaut
+
+
 ### Version 4.8 // 1. September 2014
 
 #### Neu
