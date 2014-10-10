@@ -1318,7 +1318,7 @@ class rex_xform_manager
                                 $_options[0] = '–=';
                             }
                             foreach ($_tables as $_table) {
-                                $_options[$_table['table_name']] = str_replace('=', '-', $_table['name'] . ' [' . $_table['table_name'] . ']') . '=' . $_table['table_name'];
+                                $_options[$_table['table_name']] = str_replace('=', '-', rex_translate($_table['name']) . ' [' . $_table['table_name'] . ']' ) . '=' . $_table['table_name'];
                                 $_options[$_table['table_name']] = str_replace(',', '.', $_options[$_table['table_name']]);
                             }
                             if (!isset($v['default'])) {
