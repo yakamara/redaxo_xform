@@ -959,7 +959,7 @@ class rex_xform_manager
 
         $sql .= $this->getDataListQueryWhere($table['table_name'], $rex_xform_filter, $rex_xform_searchfields, $rex_xform_searchtext);
         if ($table['list_sortfield']) {
-            $sql .= ' ORDER BY ' . $table['list_sortfield'] . ' ' . $table['list_sortorder'];
+            $sql .= ' ORDER BY `' . $table['list_sortfield'] . '` ' . $table['list_sortorder'];
         }
         $sql = rex_register_extension_point('XFORM_DATA_LIST_SQL', $sql, array('table' => $table));
 
