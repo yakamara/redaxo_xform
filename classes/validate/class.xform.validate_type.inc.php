@@ -77,6 +77,11 @@ class rex_xform_validate_type extends rex_xform_validate_abstract
                         }
                     }
                     break;
+                case "hex":
+                    $xsRegEx_hex = "/^[0-9a-fA-F]+$/i";
+                    if(preg_match($xsRegEx_hex, $Object->getValue())==0)
+                    $w = TRUE;
+                break;
                 case '':
                     break;
                 default:
@@ -112,7 +117,7 @@ class rex_xform_validate_type extends rex_xform_validate_abstract
                     'message'  => array( 'type' => 'text',    'label' => 'Fehlermeldung'),
                     'not_required' => array( 'type' => 'boolean',    'label' => 'Feld muss nicht ausgefüllt werden', 'default' => 0 ),
                 ),
-                'description' => 'Es kann nach verschiedenen Typen geprüft werden (int/float/numeric/string/email/url/date)',
+                'description' => 'Es kann nach verschiedenen Typen geprüft werden (int/float/numeric/string/email/url/date/hex)',
                 'famous' => true
             );
 
