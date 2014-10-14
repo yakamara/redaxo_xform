@@ -119,6 +119,10 @@ class rex_xform_manager
         if (!isset($table)) {
             if (count($tables) > 0) {
                 $table = current($tables);
+                $table = rex_register_extension_point(
+                             'XFORM_DATA_TABLE',
+                             $table
+                         );
 
             } else {
                 echo rex_warning($I18N->msg('table_not_found'));
@@ -160,7 +164,13 @@ class rex_xform_manager
                     $field_names[] = $field['name'];
                 }
             }
-
+            $fields = rex_register_extension_point(
+                'XFORM_DATA_FIELDS',
+                $fields,
+                array(
+                    'table' => $table
+                )
+            );
 
 
             // -------------- DB DATA HOLEN
@@ -176,6 +186,13 @@ class rex_xform_manager
                     $data_id = '';
                 }
             }
+            $data = rex_register_extension_point(
+                        'XFORM_DATA_DATA',
+                        $data,
+                        array(
+                            'table' => $table
+                             )
+                        );
 
 
 
