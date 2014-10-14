@@ -79,11 +79,31 @@ xform_manager_table_import = import table
 xform_manager_type_id = type
 xform_manager_type_name = typename
 
+xform_manager_tableset = tableset
+xform_manager_table = table
+xform_manager_tables = tables
+
+xform_manager_import = import
+xform_manager_export = export
+xform_manager_create = create
+xform_manager_migrate = migrate
+
 xform_manager_table_migrate = migrate table
 xform_manager_table_migrated_failed = Migration for table `{0}` failed. Message: {1}
 xform_manager_table_migrate_info = Der Migrationsmanager erstellt aus einer vorhandenen Tabelle, eine, die über den Tablemanager verwaltet werden kann. Dazu ist in der Tabelle ein Autoinkrement-Feld mit dem Namen `id` nötig. Ohne dieses Feld funktioniert der Tablemanager nicht.<br /><br />Optional ist die Entscheidung ein vorhandenes Autoinkrementfeld umzuwandeln. Z.B. "event_id" zu "id".
 xform_manager_migrate_table_id_convert = convert `id`-field if it does noch exist
 xform_manager_table_migrated_success = The table is migrated.
+
+xform_manager_tableset_import = import tableset
+xform_manager_table_import_jsonimportfile = import JSON file
+xform_manager_tableset_import_info =
+xform_manager_table_import_warning_selectfile = Please choose a file
+xform_manager_table_import_warning_type = Please select a json import tableset file
+
+xform_manager_tableset_export = export tableset
+xform_manager_tableset_export_info =
+xform_manager_export_error_empty = Please select at least one table
+
 
 # edit.inc.php
 thankyouforupdate = Thank you for the update.

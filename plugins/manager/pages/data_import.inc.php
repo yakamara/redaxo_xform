@@ -11,7 +11,7 @@ ini_set('auto_detect_line_endings', true);
 $show_importform = true;
 $show_list = false;
 
-$rfields = rex_xform_manager_table::getFields($table['table_name']);
+$rfields = $this->table->getColumns();
 
 $replacefield = rex_request('replacefield', 'string');
 $divider = rex_request('divider', 'string', ';');
@@ -64,7 +64,7 @@ if (rex_request('send', 'int', 0) == 1) {
             $import_start,
             array(
                 'divider' => $div,
-                'table' => $table,
+                'table' => $this->table,
                 'filename' => $filename,
                 'replacefield' => $replacefield,
                 'missing_columns' => $missing_columns,
@@ -104,7 +104,7 @@ if (rex_request('send', 'int', 0) == 1) {
                         } elseif ($missing_columns == 2) {
                             $error = false;
                             foreach ($mc as $mcc) {
-                                $sql = 'ALTER TABLE `' . $table['table_name'] . '` ADD `' . mysql_real_escape_string($mcc) . '` TEXT NOT NULL;';
+                                $sql = 'ALTER TABLE `' . $this->table->getTablename() . '` ADD `' . mysql_real_escape_string($mcc) . '` TEXT NOT NULL;';
                                 $upd = rex_sql::factory();
                                 $upd->setQuery($sql);
 
@@ -124,7 +124,7 @@ if (rex_request('send', 'int', 0) == 1) {
                                 break;
                             }
 
-                            $rfields = rex_xform_manager_table::getFields($table['table_name']);
+                            $rfields = $this->table->getColumns();
 
                         }
 
@@ -137,7 +137,7 @@ if (rex_request('send', 'int', 0) == 1) {
 
                     } else {
                         $counter++;
-                        $i->setTable($table['table_name']);
+                        $i->setTable($this->table->getTablename());
                         $replacevalue = '';
                         foreach ($line_array as $k => $v) {
                             if ($fieldarray[$k] != '' && (array_key_exists($fieldarray[$k], $rfields) || $fieldarray[$k] == 'id')) {
@@ -151,7 +151,7 @@ if (rex_request('send', 'int', 0) == 1) {
 
                         // noch abfrage ob $replacefield
                         $cf = rex_sql::factory();
-                        $cf->setQuery('select * from ' . $table['table_name'] . ' where ' . $replacefield . '="' . mysql_real_escape_string($replacevalue) . '"');
+                        $cf->setQuery('select * from ' . $this->table->getTablename() . ' where ' . $replacefield . '="' . mysql_real_escape_string($replacevalue) . '"');
 
                         if ($cf->getRows() > 0) {
                             $i->setWhere($replacefield . '="' . mysql_real_escape_string($replacevalue) . '"');
@@ -161,7 +161,7 @@ if (rex_request('send', 'int', 0) == 1) {
                                 $import_start,
                                 array(
                                     'divider' => $div,
-                                    'table' => $table,
+                                    'table' => $this->table,
                                     'filename' => $filename,
                                     'replacefield' => $replacefield,
                                     'missing_columns' => $missing_columns,
@@ -186,7 +186,7 @@ if (rex_request('send', 'int', 0) == 1) {
                                 $import_start,
                                 array(
                                     'divider' => $div,
-                                    'table' => $table,
+                                    'table' => $this->table,
                                     'filename' => $filename,
                                     'replacefield' => $replacefield,
                                     'missing_columns' => $missing_columns,
@@ -217,7 +217,7 @@ if (rex_request('send', 'int', 0) == 1) {
                 '',
                 array(
                     'divider' => $div,
-                    'table' => $table,
+                    'table' => $this->table,
                     'filename' => $filename,
                     'replacefield' => $replacefield,
                     'missing_columns' => $missing_columns,

@@ -1,15 +1,10 @@
 <?php
 
-rex_xform_manager_table_api::$rex_xform_table = $REX['TABLE_PREFIX'].'xform_table';
-rex_xform_manager_table_api::$rex_xform_field = $REX['TABLE_PREFIX'].'xform_field';
-
 class rex_xform_manager_table_api
 {
 
     static $table_fields = array('status', 'name', 'description', 'list_amount', 'list_sortfield', 'list_sortorder', 'prio', 'search', 'hidden', 'export', 'import');
     static $debug = false;
-    static $rex_xform_table = 'rex_xform_table';
-    static $rex_xform_field = 'rex_xform_field';
 
     // ---------- TABLES
 
@@ -28,7 +23,7 @@ class rex_xform_manager_table_api
             // Insert
             $table_insert = new rex_sql;
             $table_insert->debugsql = self::$debug;
-            $table_insert->setTable(self::$rex_xform_table);
+            $table_insert->setTable(rex_xform_manager_table::$db_table_table);
             $table_insert->setValue('table_name', $table_name);
 
             if (!isset($table['name']) || $table['name'] == '') {
@@ -60,7 +55,7 @@ class rex_xform_manager_table_api
 
             $table_update = new rex_sql;
             $table_update->debugsql = self::$debug;
-            $table_update->setTable(self::$rex_xform_table);
+            $table_update->setTable(rex_xform_manager_table::$db_table_table);
             $table_update->setWhere('table_name = "' . mysql_real_escape_string($table_name) . '"');
 
             foreach (self::$table_fields as $field) {
@@ -96,7 +91,7 @@ class rex_xform_manager_table_api
 
         $t = rex_sql::factory();
         $t->debugsql = self::$debug;
-        $tables = $t->getArray('select * from ' . self::$rex_xform_table . ' where table_name="' . mysql_real_escape_string($table_name) . '"');
+        $tables = $t->getArray('select * from ' . rex_xform_manager_table::$db_table_table . ' where table_name="' . mysql_real_escape_string($table_name) . '"');
 
         if (count($tables) > 1) {
             throw new Exception('only one tabledefinition is allowed. ' . count($tables) . ' are found [' . $table_name . '');
@@ -111,12 +106,62 @@ class rex_xform_manager_table_api
 
     }
 
+    public static function exportTableset( $table_name )
+    {
+        $export = array();
+        $export_table = rex_xform_manager_table_api::getTable( $table_name );
+        $export_fields = rex_xform_manager_table_api::getTableFields( $table_name );
+
+        $export[$export_table['table_name']] = array(
+            'table' => $export_table,
+            'fields' => $export_fields,
+        );
+
+        return json_encode($export);
+
+    }
+
+    public static function importTablesets( $tableset_content )
+    {
+        $tableset_content = json_decode($tableset_content);
+        foreach($tableset_content as $table) {
+          $table = $table["table"];
+          $fields = $table["fields"];
+          rex_xform_manager_table_api::setTable($table, $fields);
+        }
+        rex_xform_manager_table_api::generateTablesAndFields();
+
+        return true;
+    }
+
+
+
+
+    public static function exportTablesets( $table_names )
+    {
+        $export = array();
+        foreach($table_names as $table_name) {
+            $export_table = rex_xform_manager_table_api::getTable( $table_name );
+            $export_fields = rex_xform_manager_table_api::getTableFields( $table_name );
+            $export[$export_table['table_name']] = array(
+            'table' => $export_table,
+            'fields' => $export_fields,
+            );
+        }
+
+        return json_encode($export);
+
+    }
+
+
+
+
     public static function getTables()
     {
 
         $t = rex_sql::factory();
         $t->debugsql = self::$debug;
-        return $t->getArray('select * from ' . self::$rex_xform_table . ' order by prio');
+        return $t->getArray('select * from ' . rex_xform_manager_table::$db_table_table . ' order by prio');
 
     }
 
@@ -125,7 +170,7 @@ class rex_xform_manager_table_api
     {
         $t = rex_sql::factory();
         $t->debugsql = self::$debug;
-        $t->setQuery('delete from ' . self::$rex_xform_table . ' where table_name="' . mysql_real_escape_string($table_name) . '"');
+        $t->setQuery('delete from ' . rex_xform_manager_table::$db_table_table . ' where table_name="' . mysql_real_escape_string($table_name) . '"');
 
         $remove_fields = self::getTableFields($table_name, array());
         foreach ($remove_fields as $remove_field) {
@@ -173,7 +218,7 @@ class rex_xform_manager_table_api
             // Insert
             $field_insert = new rex_sql;
             $field_insert->debugsql = self::$debug;
-            $field_insert->setTable(self::$rex_xform_field);
+            $field_insert->setTable(rex_xform_manager_table::$db_field_table);
             $field_insert->setValue('table_name', $table_name);
 
             foreach ($table_field as $field_name => $field_value) {
@@ -194,7 +239,7 @@ class rex_xform_manager_table_api
 
             $field_update = new rex_sql;
             $field_update->debugsql = self::$debug;
-            $field_update->setTable(self::$rex_xform_field);
+            $field_update->setTable(rex_xform_manager_table::$db_field_table);
 
             $add_where = array();
             foreach ($fieldIdentifier as $field => $value) {
@@ -234,7 +279,7 @@ class rex_xform_manager_table_api
 
         $f = rex_sql::factory();
         $f->debugsql = self::$debug;
-        return $f->getArray('select * from ' . self::$rex_xform_field . $where . ' order by prio');
+        return $f->getArray('select * from ' . rex_xform_manager_table::$db_field_table . $where . ' order by prio');
 
     }
 
@@ -254,7 +299,7 @@ class rex_xform_manager_table_api
 
         $f = rex_sql::factory();
         $f->debugsql = self::$debug;
-        return $f->getArray('delete from ' . self::$rex_xform_field . $where);
+        return $f->getArray('delete from ' . rex_xform_manager_table::$db_field_table . $where);
 
     }
 
@@ -315,15 +360,6 @@ class rex_xform_manager_table_api
         }
 
         $fields = array();
-
-        // http://www.tutorialspoint.com/mysql/mysql-data-types.htm
-        /*
-         * TODO: missing types
-        COLUMN_NAME z.B. "name"
-        DATA_TYPE z.B. "int"
-        COLUMN_TYPE z.B. "int(11)"
-        COLUMN_DEFAULT z.B. "5"
-        */
 
         preg_match('@^(.*)\((.*)\)@i', $column['type'], $r);
 
@@ -560,7 +596,7 @@ class rex_xform_manager_table_api
     static function createMissingFieldColumns($field)
     {
         $columns = array();
-        foreach (rex_sql::showColumns(self::$rex_xform_field) as $column) {
+        foreach (rex_sql::showColumns(rex_xform_manager_table::$db_field_table) as $column) {
             $columns[$column['name']] = true;
         }
 
@@ -575,7 +611,7 @@ class rex_xform_manager_table_api
         if (count($alterTable)) {
             $alter = rex_sql::factory();
             $alter->debugsql = self::$debug;
-            $alter->setQuery('ALTER TABLE `' .  self::$rex_xform_field . '` ' . implode(',', $alterTable));
+            $alter->setQuery('ALTER TABLE `' .  rex_xform_manager_table::$db_field_table . '` ' . implode(',', $alterTable));
         }
 
     }

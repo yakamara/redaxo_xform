@@ -6,19 +6,217 @@
  * @author <a href="http://www.yakamara.de">www.yakamara.de</a>
  */
 
+global $REX;
+rex_xform_manager_table::$db_table_table = $REX['TABLE_PREFIX'].'xform_table';
+rex_xform_manager_table::$db_field_table = $REX['TABLE_PREFIX'].'xform_field';
+
 class rex_xform_manager_table
 {
 
     var $values = array();
+    var $table_fields = array();
+
+    static $debug = false;
+    static $db_table_table = 'rex_xform_table';
+    static $db_field_table = 'rex_xform_field';
 
     function __construct($values = array())
     {
+        global $REX, $I18N;
         if (!is_array($values) || count($values) == 0) {
-            return false;
+            throw new Exception($I18N->msg('table_not_found'));
         }
         $this->values = $values;
+
+        $tb = rex_sql::factory();
+        $tb->setQuery('select * from ' . $REX['TABLE_PREFIX'] . 'xform_field where table_name="' . $this->getTablename() . '" order by prio');
+
+        $this->table_fields = array();
+        foreach($tb->getArray() as $field) {
+            $this->table_fields[] = new rex_xform_manager_field($field);
+        }
+
         return true;
     }
+
+    static public function getByTablename($table_name = "")
+    {
+      global $REX, $I18N;
+
+      $tb = rex_sql::factory();
+      $tb->debugsql = self::$debug;
+      $tables = $tb->getArray('select * from ' . $REX['TABLE_PREFIX'] . 'xform_table where table_name = "' . mysql_real_escape_string($table_name) . '"');
+      if (count($tables) != 1) {
+        throw new Exception($I18N->msg('table_not_found'));
+      }
+
+      return new rex_xform_manager_table($tables[0]);
+
+    }
+
+    // -------------------------------------------------------------------------
+
+    public function getTableName()
+    {
+        return $this->values["table_name"];
+    }
+
+    public function getName()
+    {
+        return $this->values["name"];
+    }
+
+    public function getId()
+    {
+        return $this->values["id"];
+    }
+
+    public function hasId()
+    {
+      $columns = rex_sql::showColumns($this->getTableName());
+      foreach($columns as $column) {
+        if ($column["name"] == "id" && $column["extra"] == "auto_increment") {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    public function isActive()
+    {
+        if ($this->values["status"] == 1) {
+            return true;
+        }
+        return false;
+    }
+
+    public function isHidden()
+    {
+        if ($this->values["hidden"] == 1) {
+            return true;
+        }
+        return false;
+    }
+
+    public function isSearchable()
+    {
+        if ($this->values["search"] == 1) {
+            return true;
+        }
+        return false;
+    }
+
+    public function isImportable()
+    {
+      if ($this->values["import"] == 1) {
+        return true;
+      }
+      return false;
+    }
+
+    public function isExportable()
+    {
+      if ($this->values["export"] == 1) {
+        return true;
+      }
+      return false;
+    }
+
+    public function getSortFieldName()
+    {
+        return $this->values['list_sortfield'];
+    }
+
+    public function getSortOrderName()
+    {
+        return $this->values['list_sortorder'];
+    }
+
+    public function getListAmount()
+    {
+        if (!isset($this->values['list_amount']) || $this->values['list_amount'] < 1) {
+            $this->values['list_amount'] = 30;
+        }
+        return $this->values['list_amount'];
+    }
+
+
+    public function getDescription()
+    {
+        return $this->values['description'];
+    }
+
+    // Fields of XForm Definitions
+    public function getTableFields()
+    {
+        return $this->table_fields;
+    }
+
+    // Database Fielddefinition
+    public function getColumns()
+    {
+        $columns = rex_sql::showColumns($this->getTableName());
+        $c = array();
+        foreach ($columns as $column) {
+          $c[$column['name']] = $column;
+        }
+        unset($c['id']);
+        return $c;
+    }
+
+    public function getMissingFields()
+    {
+        $xfields = self::getXFormFieldsByType($this->getTableName());
+        $rfields = self::getColumns();
+
+        $c = array();
+        foreach ($rfields as $k => $v) {
+            if (!array_key_exists($k, $xfields)) {
+                $c[$k] = $k;
+            }
+        }
+        return $c;
+    }
+
+
+    public function getPermKey()
+    {
+        return 'xform[table:' . $this->getTableName() . ']';
+    }
+
+    public function getArray()
+    {
+        return $this->values;
+
+    }
+
+
+    // -------------------------------------------------------------------------
+
+    static function getTables() {
+
+      $table_array = rex_sql::factory();
+      $table_array->debugsql = self::$debug;
+      $table_array = $table_array->getArray('select * from ' . self::$db_table_table . ' order by prio');
+
+      $tables = array();
+      foreach($table_array as $t) {
+          $tables[] = new rex_xform_manager_table($t);
+      }
+      return $tables;
+
+    }
+
+
+    // TODO:
+    // api constanten für tabellen in den manager öegen
+    // getTableFields
+    // removeRelationTableRelicts
+
+
+
+
+
 
 
     // -------------------------------------------------------------------------
@@ -43,7 +241,7 @@ class rex_xform_manager_table
     static function xform_existTableName($l = '', $v = '', $params = '')
     {
         global $REX;
-        $q = 'select * from ' . rex_xform_manager_table_api::$rex_xform_table . ' where table_name="' . $v . '" LIMIT 1';
+        $q = 'select * from ' . self::$db_table_table . ' where table_name="' . $v . '" LIMIT 1';
         $c = rex_sql::factory();
         // $c->debugsql = 1;
         $c->setQuery($q);
@@ -59,7 +257,7 @@ class rex_xform_manager_table
     static function getMaximumTablePrio()
     {
         global $REX;
-        $sql = 'select max(prio) as prio from ' . rex_xform_manager_table_api::$rex_xform_table . '';
+        $sql = 'select max(prio) as prio from ' . self::$db_table_table . '';
         $gf = rex_sql::factory();
         // $gf->debugsql = 1;
         $gf->setQuery($sql);
@@ -69,27 +267,12 @@ class rex_xform_manager_table
     static function getMaximumPrio($table_name)
     {
         global $REX;
-        $sql = 'select max(prio) as prio from ' . rex_xform_manager_table_api::$rex_xform_field . ' where table_name="' . $table_name . '"';
+        $sql = 'select max(prio) as prio from ' . self::$db_field_table . ' where table_name="' . $table_name . '"';
         $gf = rex_sql::factory();
         // $gf->debugsql = 1;
         $gf->setQuery($sql);
         return $gf->getValue('prio');
 
-    }
-
-    static function hasId($table_name)
-    {
-        global $REX;
-        $sql = 'show fields from '.$table_name.' from '.mysql_real_escape_string($REX['DB']['1']['NAME']);
-        $gf = rex_sql::factory();
-        // $gf->debugsql = 1;
-        $fields = $gf->getArray($sql);
-        foreach($fields as $field) {
-            if ($field["Field"] == "id" && $field["Extra"] == "auto_increment") {
-                return true;
-            }
-        }
-        return false;
     }
 
     static function getXFormFields($table_name, $filter = array())
@@ -100,7 +283,7 @@ class rex_xform_manager_table
             $add_sql = 'AND `' . mysql_real_escape_string($k) . '`="' . mysql_real_escape_string($v) . '"';
         }
 
-        $sql = 'select * from ' . rex_xform_manager_table_api::$rex_xform_field . ' where table_name="' . $table_name . '" ' . $add_sql . ' order by prio';
+        $sql = 'select * from ' . rex_xform_manager_table::$db_field_table . ' where table_name="' . $table_name . '" ' . $add_sql . ' order by prio';
         $gf = rex_sql::factory();
         // $gf->debugsql = 1;
         $gf->setQuery($sql);
@@ -122,37 +305,13 @@ class rex_xform_manager_table
 
     static function getFields($table_name)
     {
-        global $REX;
-        $sql = 'show columns from ' . $table_name;
-        $sql = 'SELECT COLUMN_NAME, EXTRA, COLUMN_KEY, DATA_TYPE, COLUMN_TYPE, IS_NULLABLE, COLUMN_DEFAULT FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = "' . $table_name . '" and TABLE_SCHEMA="' . mysql_real_escape_string($REX['DB']['1']['NAME']) . '"';
-
-        $gf = rex_sql::factory();
-        // $gf->debugsql = 1;
-        $gf->setQuery($sql);
-        $ga = $gf->getArray();
-
+        $columns = rex_sql::showColumns($table_name);
         $c = array();
-        foreach ($ga as $v) {
-            $c[$v['COLUMN_NAME']] = $v;
+        foreach ($columns as $column) {
+            $c[$column['name']] = $column;
         }
         unset($c['id']);
         return $c;
-
-    }
-
-    static function getMissingFields($table_name)
-    {
-        $xfields = self::getXFormFieldsByType($table_name);
-        $rfields = self::getFields($table_name);
-
-        $c = array();
-        foreach ($rfields as $k => $v) {
-            if (!array_key_exists($k, $xfields)) {
-                $c[$k] = $k;
-            }
-        }
-        return $c;
-
     }
 
     public static function removeRelationTableRelicts($table)
@@ -162,7 +321,7 @@ class rex_xform_manager_table
         $sql = rex_sql::factory();
         $sql->setQuery('
             SELECT `table`, relation_table
-            FROM ' . rex_xform_manager_table_api::$rex_xform_field . '
+            FROM ' . rex_xform_manager_table::$db_field_table . '
             WHERE table_name="' . $sql->escape($table) . '" AND type_id="value" AND type_name="be_manager_relation" AND relation_table != ""
         ');
         $deleteSql = rex_sql::factory();
@@ -205,7 +364,7 @@ class rex_xform_manager_table
         if (!isset($relations)) {
             $relations = array();
             $sql = rex_sql::factory();
-            $data = $sql->getArray('SELECT * FROM `' . rex_xform_manager_table_api::$rex_xform_field . '` WHERE type_id="value" AND type_name="be_manager_relation"');
+            $data = $sql->getArray('SELECT * FROM `' . rex_xform_manager_table::$db_field_table . '` WHERE type_id="value" AND type_name="be_manager_relation"');
             foreach ($data as $row) {
                 $relations[$row['table_name']][$row['name']] = $row;
             }
