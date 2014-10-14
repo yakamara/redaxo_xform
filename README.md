@@ -11,7 +11,7 @@ Installation
 * Rename the unzipped folder from redaxo_xform to xform
 * Move the folder to your REDAXO 4.6 System /redaxo/include/addons/
 * Install and activate the addon xform and the plugins setup, manager, email in the REDAXO 4.6 backend
-
+* Die aktuelle github Version nur als Entwicklerversion betrachten
 
 Last Changes
 -------
