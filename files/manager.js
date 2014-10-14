@@ -76,3 +76,16 @@ function xform_manager_setData(id, data_id, data_name, multiple){
     }
 
 }
+
+
+
+jQuery(function($){
+
+    // TOGGLE SEARCHFIELDS CHECKBOXES
+    $('#xform_searchfield_toggler').click(function(){
+        $('.xform-manager-searchfield input').each(function(){
+            $(this).prop('checked',!$(this).prop('checked'));
+        });
+    });
+
+});

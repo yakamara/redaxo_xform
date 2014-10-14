@@ -632,7 +632,7 @@ class rex_xform_manager
                      <thead>
                      <tr>
                          <th>' . $I18N->msg('searchtext') . ' [<a href="#" id="xform_help_empty_toggler">?</a>]</th>
-                         <th>' . $I18N->msg('searchfields') . '</th>
+                         <th>' . $I18N->msg('searchfields') . ' [<a href="#" id="xform_searchfield_toggler">toggle</a>]</th>
                          <th>&nbsp;</th>
                      </tr>
                      </thead>
