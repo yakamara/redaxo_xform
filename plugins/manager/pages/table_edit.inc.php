@@ -148,6 +148,21 @@ if ( $func == 'migrate' && $REX['USER']->isAdmin() ) {
     $xform->setValueField('checkbox', array('export', $I18N->msg('xform_manager_table_allow_export')));
     $xform->setValueField('checkbox', array('import', $I18N->msg('xform_manager_table_allow_import')));
 
+    $xform = rex_register_extension_point(
+        'XFORM_TABLE_FORM',
+        $xform,
+        array(
+            'table'       => $table,
+            'table_field' => $table_field,
+            'func'        => $func,
+            'page'        => $page,
+            'subpage'     => $subpage,
+            'table_id'    => $table_id,
+            'table_name'  => $table_name,
+            'show_list'   => $show_list,
+            )
+        );
+
     $form = $xform->getForm();
 
     if ($xform->objparams['form_show']) {
