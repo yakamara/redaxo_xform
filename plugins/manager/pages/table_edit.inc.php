@@ -152,7 +152,7 @@ if ( $func == 'tableset_export' && $REX['USER']->isAdmin() ) {
   $xform->setHiddenField('page', $page);
   $xform->setHiddenField('subpage', $subpage);
   $xform->setHiddenField('func', $func);
-  $xform->setValueField('select', array('table_name', $I18N->msg('table'), $missing_tables));
+  $xform->setValueField('select', array('table_name', $I18N->msg('xform_table'), $missing_tables));
   $xform->setValueField('checkbox', array('convert_id', $I18N->msg('xform_manager_migrate_table_id_convert')));
   $form = $xform->getForm();
 
@@ -203,7 +203,7 @@ if ( $func == 'tableset_export' && $REX['USER']->isAdmin() ) {
     $xform->setValueField('prio', array('prio', $I18N->msg('xform_manager_table_prio'), 'name'));
 
     if ($func == 'edit') {
-        $xform->setObjectparams('submit_btn_label', $I18N->msg('save'));
+        $xform->setObjectparams('submit_btn_label', $I18N->msg('xform_save'));
         $xform->setValueField('showvalue', array('table_name', $I18N->msg('xform_manager_table_name')));
         $xform->setHiddenField('table_id', $table_id);
         $xform->setActionField('db', array(rex_xform_manager_table::$db_table_table, "id=$table_id"));
@@ -212,7 +212,7 @@ if ( $func == 'tableset_export' && $REX['USER']->isAdmin() ) {
         $xform->setObjectparams('getdata', true); // Datein vorher auslesen
 
     } elseif ($func == 'add') {
-        $xform->setObjectparams('submit_btn_label', $I18N->msg('add'));
+        $xform->setObjectparams('submit_btn_label', $I18N->msg('xform_add'));
         $xform->setValueField('text', array('table_name', $I18N->msg('xform_manager_table_name'), $REX['TABLE_PREFIX']));
         $xform->setValidateField('empty', array('table_name', $I18N->msg('xform_manager_table_enter_name')));
         $xform->setValidateField('customfunction', array('table_name', '!rex_xform_manager_table::xform_checkTableName', '', $I18N->msg('xform_manager_table_enter_specialchars')));
@@ -226,7 +226,7 @@ if ( $func == 'tableset_export' && $REX['USER']->isAdmin() ) {
     $xform->setValidateField('empty', array('name', $I18N->msg('xform_manager_table_enter_name')));
 
     $xform->setValueField('textarea', array('description', $I18N->msg('xform_manager_table_description'), 'css_class' => "short1"));
-    $xform->setValueField('checkbox', array('status', $I18N->msg('tbl_active')));
+    $xform->setValueField('checkbox', array('status', $I18N->msg('xform_tbl_active')));
     // $xform->setValueField("fieldset",array("fs-list","Liste"));
     $xform->setValueField('text', array('list_amount', $I18N->msg('xform_manager_entries_per_page'), '50'));
     $xform->setValidateField('type', array('list_amount', 'int', $I18N->msg('xform_manager_enter_number')));
@@ -343,15 +343,15 @@ if ($show_list && $REX['USER']->isAdmin()) {
     $list->setColumnFormat('status', 'custom', 'rex_xform_status_col');
     $list->setColumnParams('table_name', array('table_id' => '###id###', 'func' => 'edit'));
 
-    $list->addColumn($I18N->msg('edit'), $I18N->msg('edit'));
-    $list->setColumnParams($I18N->msg('edit'), array('table_id' => '###id###', 'func' => 'edit'));
+    $list->addColumn($I18N->msg('xform_edit'), $I18N->msg('xform_edit'));
+    $list->setColumnParams($I18N->msg('xform_edit'), array('table_id' => '###id###', 'func' => 'edit'));
 
-    $list->addColumn($I18N->msg('delete'), $I18N->msg('delete'));
-    $list->setColumnParams($I18N->msg('delete'), array('table_name' => '###table_name###', 'func' => 'delete'));
-    $list->addLinkAttribute($I18N->msg('delete'), 'onclick', 'return confirm(\' [###table_name###] ' . $I18N->msg('delete') . ' ?\')');
+    $list->addColumn($I18N->msg('xform_delete'), $I18N->msg('xform_delete'));
+    $list->setColumnParams($I18N->msg('xform_delete'), array('table_name' => '###table_name###', 'func' => 'delete'));
+    $list->addLinkAttribute($I18N->msg('xform_delete'), 'onclick', 'return confirm(\' [###table_name###] ' . $I18N->msg('xform_delete') . ' ?\')');
 
-    $list->addColumn($I18N->msg('editfields'), $I18N->msg('editfields'));
-    $list->setColumnParams($I18N->msg('editfields'), array('subpage' => 'manager', 'tripage' => 'table_field', 'table_name' => '###table_name###'));
+    $list->addColumn($I18N->msg('xform_editfields'), $I18N->msg('xform_editfields'));
+    $list->setColumnParams($I18N->msg('xform_editfields'), array('subpage' => 'manager', 'tripage' => 'table_field', 'table_name' => '###table_name###'));
 
 
     echo $list->get();

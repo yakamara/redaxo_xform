@@ -102,9 +102,9 @@ if ($func == '') {
     $list->removeColumn('body_html');
     $list->removeColumn('attachments');
 
-    $list->addColumn($I18N->msg('delete'), $I18N->msg('delete'));
-    $list->setColumnParams($I18N->msg('delete'), array('page' => $page, 'subpage' => $subpage, 'func' => 'delete', 'template_id' => '###id###'));
-    $list->addLinkAttribute($I18N->msg('delete'), 'onclick', 'return confirm(\' id=###id### ' . $I18N->msg('delete') . ' ?\')');
+    $list->addColumn($I18N->msg('xform_delete'), $I18N->msg('xform_delete'));
+    $list->setColumnParams($I18N->msg('xform_delete'), array('page' => $page, 'subpage' => $subpage, 'func' => 'delete', 'template_id' => '###id###'));
+    $list->addLinkAttribute($I18N->msg('xform_delete'), 'onclick', 'return confirm(\' id=###id### ' . $I18N->msg('xform_delete') . ' ?\')');
 
     $list->setNoRowsMessage($I18N->msg('xform_email_templates_not_found'));
 

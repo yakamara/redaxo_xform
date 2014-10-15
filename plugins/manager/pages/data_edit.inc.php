@@ -19,7 +19,7 @@ if ($table && $REX['USER'] && ($REX['USER']->isAdmin() || $REX['USER']->hasPerm(
         echo $page->getDataPage();
 
     } catch (Exception $e) {
-      echo rex_warning($I18N->msg('table_not_found'));
+      echo rex_warning($I18N->msg('xform_table_not_found'));
 
     }
 

@@ -24,7 +24,7 @@ class rex_xform_manager_table
     {
         global $REX, $I18N;
         if (!is_array($values) || count($values) == 0) {
-            throw new Exception($I18N->msg('table_not_found'));
+            throw new Exception($I18N->msg('xform_table_not_found'));
         }
         $this->values = $values;
 
@@ -46,7 +46,7 @@ class rex_xform_manager_table
       $tb->debugsql = self::$debug;
       $tables = $tb->getArray('select * from ' . self::$db_table_table . ' where table_name = "' . mysql_real_escape_string($table_name) . '"');
       if (count($tables) != 1) {
-        throw new Exception($I18N->msg('table_not_found'));
+        throw new Exception($I18N->msg('xform_table_not_found'));
       }
 
       return new rex_xform_manager_table($tables[0]);

@@ -16,7 +16,7 @@
                 <?php foreach ($row as $i => $column): ?>
                     <td><input type="text" name="v[<?php echo $this->getId() ?>][<?php echo $i ?>][]" value="<?php echo $column ?>" /></td>
                 <?php endforeach ?>
-                <td><a href="javascript:void(0)">- <?php echo $I18N->msg('delete') ?></a></td>
+                <td><a href="javascript:void(0)">- <?php echo $I18N->msg('xform_delete') ?></a></td>
             </tr>
         <?php endforeach ?>
     </table>
@@ -31,7 +31,7 @@
                         <?php foreach ($columns as $i => $column): ?>\
                             <td><input type="text" name="v[<?php echo $this->getId() ?>][<?php echo $i ?>][]" value="" /></td>\
                         <?php endforeach ?>\
-                        <td><a href="javascript:void(0)">- <?php echo $I18N->msg('delete') ?></a></td>\
+                        <td><a href="javascript:void(0)">- <?php echo $I18N->msg('xform_delete') ?></a></td>\
                     </tr>\
                 ');
                 return false;

@@ -1,18 +1,18 @@
 xform_table_manager = Table Manager
 
-navigation_manager = Tables
+xform_navigation_manager = Tables
 
 
 # xform manager
-alltables = all tables
-back_to_overview = back to overview
-updatetable = update table/s
-tablesupdated = table/s got updatet
+xform_alltables = all tables
+xform_back_to_overview = back to overview
+xform_updatetable = update table/s
+xform_tablesupdated = table/s got updatet
 
 xform_help_empty = empty entries can be searched with (empty)
 xform_help_multipleselect = multiple select with pushed down CTRL/CMD key
-updatetable_with_delete = with field deletion
-updatetable_with_delete_confirm = Really update with field delete ?
+xform_updatetable_with_delete = with field deletion
+xform_updatetable_with_delete_confirm = Really update with field delete ?
 
 xform_relation_move_first_data = put selected data set at the beginning
 xform_relation_move_up_data = put selected data set to top
@@ -27,21 +27,21 @@ xform_prio_top = At top
 xform_prio_after = After "{0}"
 xform_prio_bottom = At bottom
 
-truncate_table = truncate
-table_truncated = data completely deleted
-table_not_found = table not found
-truncate_table_confirm = Really delete ALL data sets of the table?
+xform_truncate_table = truncate
+xform_table_truncated = data completely deleted
+xform_table_not_found = table not found
+xform_truncate_table_confirm = Really delete ALL data sets of the table?
 xform_table_overview = table overview
 
 xform_manager_edit_table = edit table
 xform_manager_add_table = add table
 
-add_row = add row
+xform_add_row = add row
 
 # tables.inc.php
-importcsv = import csv file
-tbl_active = active
-tbl_inactive = not active
+xform_importcsv = import csv file
+xform_tbl_active = active
+xform_tbl_inactive = not active
 
 xform_tbl_active = active
 xform_tbl_inactive = not active
@@ -107,53 +107,53 @@ xform_manager_export_error_empty = Please select at least one table
 
 
 # edit.inc.php
-thankyouforupdate = Thank you for the update.
-thankyouforentry = Thank you for entry.
-editdata = edit data
-adddata = create data set
-searchtext = search term
-searchfields = table fields that are getting searched through
-add = add
-edit = edit
-save = save
-delete = delete
-search = search
-export = export
-import = import
-datadeleted = data set deleted
-openerinfo = opener info
+xform_thankyouforupdate = Thank you for the update.
+xform_thankyouforentry = Thank you for entry.
+xform_editdata = edit data
+xform_adddata = create data set
+xform_searchtext = search term
+xform_searchfields = table fields that are getting searched through
+xform_add = add
+xform_edit = edit
+xform_save = save
+xform_delete = delete
+xform_search = search
+xform_export = export
+xform_import = import
+xform_datadeleted = data set deleted
+xform_openerinfo = opener info
 
 xform_table_info = info
 xform_dataset = dataset
 
-dataset_delete = delete dataset
-dataset_deleted = dataset has been deleted
-dataset_delete_confirm = Really delete dataset?
+xform_dataset_delete = delete dataset
+xform_dataset_deleted = dataset has been deleted
+xform_dataset_delete_confirm = Really delete dataset?
 
 
 # field.inc.php
-tablenotexists = This table does not exist!
-tablefield = table field
-values = values
-validates = valdidation
-actios = actions
-validatenamenotempty = Please fill in the name
-validatenamepregmatch = Please fill in only letters and "_" as name
-validatenamecheck = This name already exists
-donotsaveindb = do not save in database
-hideinlist = hide in list
-useassearchfieldalidatenamenotempty = add as search field
-tablefielddeleted = table field deleted
-tablefieldnotfound = table field not found
-addtablefield = create table field
-table = table
-editfield = edit field
-choosenadd = select fields
-choosenadd_description = Please select the field which you want to use for your administration. There are value field which are usually used for entries as also validate fields which validate value fields on certain criteria.
-addfield = add field
-editfields = edit fields
+xform_tablenotexists = This table does not exist!
+xform_tablefield = table field
+xform_values = values
+xform_validates = valdidation
+xform_actions = actions
+xform_validatenamenotempty = Please fill in the name
+xform_validatenamepregmatch = Please fill in only letters and "_" as name
+xform_validatenamecheck = This name already exists
+xform_donotsaveindb = do not save in database
+xform_hideinlist = hide in list
+xform_useassearchfieldalidatenamenotempty = add as search field
+xform_tablefielddeleted = table field deleted
+xform_tablefieldnotfound = table field not found
+xform_addtablefield = create table field
+xform_table = table
+xform_editfield = edit field
+xform_choosenadd = select fields
+xform_choosenadd_description = Please select the field which you want to use for your administration. There are value field which are usually used for entries as also validate fields which validate value fields on certain criteria.
+xform_addfield = add field
+xform_editfields = edit fields
 
-data = Data
+xform_data = Data
 
 xform_id_is_missing = ID missing
 xform_id_missing_info = [en] Die Tabelle hat leider kein ID Feld mit autoincrement. Somit kann XFORM nicht damit arbeiten. Bitte aktualisieren Sie die Tabelle und legen notfalls die ID manuell an.

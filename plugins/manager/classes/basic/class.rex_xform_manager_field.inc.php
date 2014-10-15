@@ -10,7 +10,7 @@ class rex_xform_manager_field {
     {
         global $REX, $I18N;
         if (!is_array($values) || count($values) == 0) {
-            throw new Exception($I18N->msg('field_not_found'));
+            throw new Exception($I18N->msg('xform_field_not_found'));
         }
         $this->values = $values;
 
