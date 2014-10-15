@@ -20,7 +20,7 @@ class rex_xform_manager_table
     static $db_table_table = 'rex_xform_table';
     static $db_field_table = 'rex_xform_field';
 
-    function __construct($values = array())
+    function __construct( array $values)
     {
         global $REX, $I18N;
         if (!is_array($values) || count($values) == 0) {
@@ -38,7 +38,7 @@ class rex_xform_manager_table
         }
     }
 
-    static public function getByTablename($table_name = "")
+    static public function getByTablename($table_name)
     {
       global $REX, $I18N;
 

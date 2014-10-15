@@ -6,7 +6,7 @@ class rex_xform_manager_field {
     static $debug = false;
     static $types = array('value','validate','action');
 
-    function __construct($values = array())
+    function __construct( array $values)
     {
         global $REX, $I18N;
         if (!is_array($values) || count($values) == 0) {
