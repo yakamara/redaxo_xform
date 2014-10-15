@@ -467,10 +467,7 @@ class rex_xform
 
     function parse($template, array $params = array())
     {
-        global $REX, $I18N;
-
         extract($params);
-
         ob_start();
         include $this->getTemplatePath($template);
         return ob_get_clean();
