@@ -99,6 +99,7 @@ xform_manager_table_import_jsonimportfile = JSON Datei einspielen
 xform_manager_tableset_import_info =
 xform_manager_table_import_warning_selectfile = Es wurde keine Datei verwendet
 xform_manager_table_import_warning_type = Der Dateityp ist falsch. Es muss eine JSON Datei sein.
+xform_manager_table_import_success = Tabelle/n wurde/n erfolgreich importiert
 
 xform_manager_tableset_export = Tableset exportieren
 xform_manager_tableset_export_info =

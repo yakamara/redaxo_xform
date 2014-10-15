@@ -79,26 +79,26 @@ if ( $func == 'tableset_export' && $REX['USER']->isAdmin() ) {
 
 } else if ( $func == 'tableset_import' && $REX['USER']->isAdmin() ) {
 
-  /*
   $xform = new rex_xform;
   $xform->setDebug(true);
   $xform->setHiddenField('page', $page);
   $xform->setHiddenField('subpage', $subpage);
   $xform->setHiddenField('func', $func);
   $xform->setObjectparams('real_field_names',true);
-  $xform->setValueField('file', array(
-    'name'     => 'name',
-    'label'    => $I18N->msg('xform_manager_table_import_jsonimportfile'),
-    'max_size' => '1000', // Maximale Größe in Kb oder Range 100,500'),
-    'types'    => '.json', // 'Welche Dateien sollen erlaubt sein, kommaseparierte Liste. ".gif,.png"'),
-    'required' => 1,
-    'messages' => array(
-        $I18N->msg('xform_manager_table_import_warning_min'),
-        $I18N->msg('xform_manager_table_import_warning_max'),
-        $I18N->msg('xform_manager_table_import_warning_type'),
-        $I18N->msg('xform_manager_table_import_warning_selectfile')
-      ),
-    'folder' => rex_path::pluginCache('xform','manager','')
+  $xform->setValueField('upload', array(
+      'name'     => 'importfile',
+      'label'    => $I18N->msg('xform_manager_table_import_jsonimportfile'),
+      'max_size' => '1000', // max size in kb or range 100,500
+      'types'    => '.json', // allowed extensions ".gif,.png"
+      'required' => 1,
+      'messages' => array(
+          $I18N->msg('xform_manager_table_import_warning_min'),
+          $I18N->msg('xform_manager_table_import_warning_max'),
+          $I18N->msg('xform_manager_table_import_warning_type'),
+          $I18N->msg('xform_manager_table_import_warning_selectfile')
+        ),
+      'modus'    => 'no_save',
+      'no_db'    => 'no_db'
   ));
 
   $form = $xform->getForm();
@@ -107,8 +107,7 @@ if ( $func == 'tableset_export' && $REX['USER']->isAdmin() ) {
   if ($xform->objparams['form_show']) {
 
     echo '<div class="rex-addon-output"><h3 class="rex-hl2">' . $I18N->msg('xform_manager_tableset_import') . '</h3>
-    <div class="rex-addon-content">
-    <p>' . $I18N->msg('xform_manager_tableset_import_info') . '</p>';
+    <div class="rex-addon-content">';
     echo $form;
     echo '</div></div>';
 
@@ -118,24 +117,18 @@ if ( $func == 'tableset_export' && $REX['USER']->isAdmin() ) {
 
   } else {
 
-    try {
+      try {
+          $content = file_get_contents($xform->objparams['value_pool']['email']['importfile']);
+          rex_xform_manager_table_api::importTablesets($content);
+          echo rex_info($I18N->msg('xform_manager_table_import_success'));
 
-      // $xform->objparams['value_pool']['sql']['table_name'];
-      // Import
-      // File exists ?
-        // Alle FILES info holen.. Originalname / tmp_ordner
+      } catch (Exception $e) {
+          echo rex_warning($I18N->msg('xform_manager_table_import_failed', '', $e->getMessage()));
 
-      echo rex_info($I18N->msg('xform_manager_table_import_success'));
-
-    } catch (Exception $e) {
-      echo rex_warning($I18N->msg('xform_manager_table_import_failed', '', $e->getMessage()));
-
-    }
+      }
 
   }
-  */
 
-  echo rex_info("Import fehlt noch..");
 
 } else if ( $func == 'migrate' && $REX['USER']->isAdmin() ) {
 
@@ -326,7 +319,7 @@ if ($show_list && $REX['USER']->isAdmin()) {
     $table_echo = '<b>';
     $table_echo .= $I18N->msg('xform_manager_table').': <a href=index.php?page=' . $page . '&subpage=' . $subpage . '&func=add>' . $I18N->msg('xform_manager_create') . '</a>';
     $table_echo .= ' / <a href=index.php?page=' . $page . '&subpage=' . $subpage . '&func=migrate><b>' . $I18N->msg('xform_manager_migrate') . '</a>';
-    $table_echo .= ' / '.$I18N->msg('xform_manager_tableset').':</b> <a href=index.php?page=' . $page . '&subpage=' . $subpage . '&func=tableset_export>' . $I18N->msg('xform_manager_export') . '</a>';
+    $table_echo .= ' '.$I18N->msg('xform_manager_tableset').':</b> <a href=index.php?page=' . $page . '&subpage=' . $subpage . '&func=tableset_export>' . $I18N->msg('xform_manager_export') . '</a>';
     $table_echo .= ' / <a href=index.php?page=' . $page . '&subpage=' . $subpage . '&func=tableset_import>' . $I18N->msg('xform_manager_import') . '</a>';
     $table_echo .= '</b>';
 

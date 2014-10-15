@@ -123,19 +123,18 @@ class rex_xform_manager_table_api
 
     public static function importTablesets( $tableset_content )
     {
-        $tableset_content = json_decode($tableset_content);
+        $tableset_content = json_decode($tableset_content, true);
         foreach($tableset_content as $table) {
-          $table = $table["table"];
+          if (!isset($table["table"]) || !isset($table["fields"])) {
+              throw new Exception('json format wrong');
+          }
+          $settable = $table["table"];
           $fields = $table["fields"];
-          rex_xform_manager_table_api::setTable($table, $fields);
+          rex_xform_manager_table_api::setTable($settable, $fields);
         }
         rex_xform_manager_table_api::generateTablesAndFields();
-
         return true;
     }
-
-
-
 
     public static function exportTablesets( $table_names )
     {

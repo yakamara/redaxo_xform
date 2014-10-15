@@ -99,6 +99,7 @@ xform_manager_table_import_jsonimportfile = import JSON file
 xform_manager_tableset_import_info =
 xform_manager_table_import_warning_selectfile = Please choose a file
 xform_manager_table_import_warning_type = Please select a json import tableset file
+xform_manager_table_import_success = table/s has/have been imported
 
 xform_manager_tableset_export = export tableset
 xform_manager_tableset_export_info =
