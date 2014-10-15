@@ -29,7 +29,8 @@ class rex_xform_manager_table
         $this->values = $values;
 
         $tb = rex_sql::factory();
-        $tb->setQuery('select * from ' . $REX['TABLE_PREFIX'] . 'xform_field where table_name="' . $this->getTablename() . '" order by prio');
+        $tb->debugsql = self::$debug;
+        $tb->setQuery('select * from ' . self::$db_field_table . ' where table_name="' . mysql_real_escape_string($this->getTablename()) . '" order by prio');
 
         $this->table_fields = array();
         foreach($tb->getArray() as $field) {
@@ -45,7 +46,7 @@ class rex_xform_manager_table
 
       $tb = rex_sql::factory();
       $tb->debugsql = self::$debug;
-      $tables = $tb->getArray('select * from ' . $REX['TABLE_PREFIX'] . 'xform_table where table_name = "' . mysql_real_escape_string($table_name) . '"');
+      $tables = $tb->getArray('select * from ' . self::$db_table_table . ' where table_name = "' . mysql_real_escape_string($table_name) . '"');
       if (count($tables) != 1) {
         throw new Exception($I18N->msg('table_not_found'));
       }
