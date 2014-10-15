@@ -432,7 +432,6 @@ class rex_xform_manager
                 }
 
                 $xform->setObjectparams('main_table', $this->table->getTablename()); // für db speicherungen und unique abfragen
-                $xform->setObjectparams('submit_btn_label', $I18N->msg('submit'));
 
                 // $xform->setObjectparams("manager_type",$this->getType());
 
