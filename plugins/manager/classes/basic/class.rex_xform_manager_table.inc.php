@@ -36,8 +36,6 @@ class rex_xform_manager_table
         foreach($tb->getArray() as $field) {
             $this->table_fields[] = new rex_xform_manager_field($field);
         }
-
-        return true;
     }
 
     static public function getByTablename($table_name = "")

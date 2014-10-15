@@ -19,8 +19,6 @@ class rex_xform_manager_field {
         } else {
             // echo '<pre>';      var_dump($values);echo '</pre>';
         }
-
-        return true;
     }
 
     // value, validate, action
