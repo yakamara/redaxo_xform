@@ -1,6 +1,6 @@
 xform_table_manager = Table Manager
 
-xform_navigation_manager = Tabellen
+navigation_manager = Tabellen
 
 
 # xform manager
@@ -107,9 +107,9 @@ xform_manager_export_error_empty = Bitte mindestens eine Tabelle für den Export
 
 
 # edit.inc.php
-xform_thankyouforupdate = Daten wurden aktualisiert.
-xform_thankyouforentry = Daten wurden eingetragen.
-xform_editdata = Daten editieren
+xform_thankyouforupdate = Datensatz wurde aktualisiert.
+xform_thankyouforentry = Datensatz wurde eingetragen.
+xform_editdata = Datensatz editieren
 xform_adddata = Datensatz anlegen
 xform_searchtext = Suchbegriff
 xform_searchfields = Tabellenfelder über die gesucht wird

@@ -1,6 +1,6 @@
 xform_table_manager = Table Manager
 
-xform_navigation_manager = Tables
+navigation_manager = Tables
 
 
 # xform manager
