@@ -16,9 +16,14 @@ Installation
 Last Changes
 -------
 
-### Version 4.8.1 // XX. XX 2014
+### Version 4.9 // XX. XX 2014
 
 #### Neu
+* Submit Klasse mit eigenem Value möglich
+* Umbau von Managerklassen für flexiblere Verwendung
+* Validate Klasse Type kann nun auch Hex Werte validieren
+* Manager: Tablesets eingeführt. Manager Tabellen können ex- und importiert werden (Json)
+* Upload Klasse ergänzt. Datei in die Datenbank oder ins Filesystem legen
 
 
 #### Bugs
@@ -28,6 +33,7 @@ Last Changes
 * Manager: Reservierte Feldnamen führte zu Problemen.
 * Uninstall: email template tabelle wird nun entfernt
 * Update über Installer beachtet die PlugIns nicht richtig. Workaround gebaut
+* Sprachkeys an prefix Notation angepasst. "xform_"..
 
 
 ### Version 4.8 // 1. September 2014
