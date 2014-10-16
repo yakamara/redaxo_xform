@@ -107,8 +107,8 @@ xform_manager_export_error_empty = Please select at least one table
 
 
 # edit.inc.php
-xform_thankyouforupdate = Thank you for the update.
-xform_thankyouforentry = Thank you for entry.
+xform_thankyouforupdate = data have been updated.
+xform_thankyouforentry = data have been added.
 xform_editdata = edit data
 xform_adddata = create data set
 xform_searchtext = search term

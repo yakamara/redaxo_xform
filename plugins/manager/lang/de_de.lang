@@ -107,8 +107,8 @@ xform_manager_export_error_empty = Bitte mindestens eine Tabelle für den Export
 
 
 # edit.inc.php
-xform_thankyouforupdate = Vielen Dank für die Aktualisierung.
-xform_thankyouforentry = Vielen Dank für den Eintrag.
+xform_thankyouforupdate = Daten wurden aktualisiert.
+xform_thankyouforentry = Daten wurden eingetragen.
 xform_editdata = Daten editieren
 xform_adddata = Datensatz anlegen
 xform_searchtext = Suchbegriff
