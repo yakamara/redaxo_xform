@@ -9,9 +9,14 @@
 class rex_xform_datetime extends rex_xform_abstract
 {
 
-
     function preValidateAction()
     {
+
+        if ($this->getElement('current_date') && $this->params['send'] == 0 && $this->params['main_id'] < 1) {
+          $this->setValue(date('Y-m-d H:i:00'));
+
+        }
+
         if (is_array($this->getValue())) {
             $a = $this->getValue();
 
@@ -68,8 +73,8 @@ class rex_xform_datetime extends rex_xform_abstract
 
         // ------------- year
 
-        $yearStart = (int) $this->getElement(3);
-        $yearEnd = (int) $this->getElement(4);
+        $yearStart = (int) $this->getElement('year_start');
+        $yearEnd = (int) $this->getElement('year_end');
         if ($yearStart == 0) {
             $yearStart = 1980;
         }
@@ -115,7 +120,7 @@ class rex_xform_datetime extends rex_xform_abstract
 
     function getDescription()
     {
-        return 'datetime -> Beispiel: datetime|name|label|jahrstart|jahrsende|minutenformate 00,15,30,45|[Anzeigeformat###Y###-###M###-###D### ###H###h ###I###m]|[no_db]';
+        return 'datetime -> Beispiel: datetime|name|label|jahrstart|jahrsende|minutenformate 00,15,30,45|[Anzeigeformat###Y###-###M###-###D### ###H###h ###I###m]|[1/Aktuelles Datum voreingestellt]|[no_db]';
     }
 
 
@@ -131,6 +136,7 @@ class rex_xform_datetime extends rex_xform_abstract
                 'year_end'   => array( 'type' => 'text', 'label' => 'Endjahr'),
                 'minutes'    => array( 'type' => 'text', 'label' => '[Minutenformate]'),
                 'format'     => array( 'type' => 'text', 'label' => '[Anzeigeformat###Y###-###M###-###D### ###H###h ###I###m]'),
+                'current_date' => array( 'type' => 'boolean', 'label' => 'Aktuelles Datum voreingestellt'),
                 'no_db'      => array( 'type' => 'no_db', 'label' => 'Datenbank',  'default' => 0),
             ),
             'description' => 'Datum & Uhrzeit Eingabe',
