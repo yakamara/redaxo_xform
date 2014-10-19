@@ -6,10 +6,6 @@
  * @author <a href="http://www.yakamara.de">www.yakamara.de</a>
  */
 
-global $REX;
-rex_xform_manager_table::$db_table_table = $REX['TABLE_PREFIX'].'xform_table';
-rex_xform_manager_table::$db_field_table = $REX['TABLE_PREFIX'].'xform_field';
-
 class rex_xform_manager_table
 {
 
@@ -206,19 +202,36 @@ class rex_xform_manager_table
 
     }
 
+    public function removeRelationTableRelicts()
+    {
+        global $REX;
+
+        $sql = rex_sql::factory();
+        $sql->setQuery('
+                SELECT `table`, relation_table
+                FROM ' . self::$db_field_table . '
+                WHERE table_name="' . $sql->escape($this->getTableName()) . '" AND type_id="value" AND type_name="be_manager_relation" AND relation_table != ""
+            ');
+        $deleteSql = rex_sql::factory();
+        while ($sql->hasNext()) {
+            $relationTableFields = self::getRelationTableFields($sql->getValue('relation_table'), $this->getTableName(), $sql->getValue('table'));
+            if ($relationTableFields['source'] && $relationTableFields['target']) {
+                $relationTable = $deleteSql->escape($sql->getValue('relation_table'));
+                $deleteSql->setQuery('
+                            DELETE FROM `' . $relationTable . '`
+                            WHERE NOT EXISTS (SELECT * FROM `' . $this->getTableName() . '` WHERE id = ' . $relationTable . '.`' . $deleteSql->escape($relationTableFields['source']) . '`)
+                        ');
+            }
+            $sql->next();
+        }
+    }
+
 
     // TODO:
-    // api constanten für tabellen in den manager öegen
     // getTableFields
-    // removeRelationTableRelicts
 
 
-
-
-
-
-
-    // -------------------------------------------------------------------------
+  // -------------------------------------------------------------------------
 
     static function checkTableName($table)
     {
@@ -313,30 +326,6 @@ class rex_xform_manager_table
         return $c;
     }
 
-    public static function removeRelationTableRelicts($table)
-    {
-        global $REX;
-
-        $sql = rex_sql::factory();
-        $sql->setQuery('
-            SELECT `table`, relation_table
-            FROM ' . rex_xform_manager_table::$db_field_table . '
-            WHERE table_name="' . $sql->escape($table) . '" AND type_id="value" AND type_name="be_manager_relation" AND relation_table != ""
-        ');
-        $deleteSql = rex_sql::factory();
-        while ($sql->hasNext()) {
-            $relationTableFields = self::getRelationTableFields($sql->getValue('relation_table'), $table, $sql->getValue('table'));
-            if ($relationTableFields['source'] && $relationTableFields['target']) {
-                $relationTable = $deleteSql->escape($sql->getValue('relation_table'));
-                $deleteSql->setQuery('
-                    DELETE FROM `' . $relationTable . '`
-                    WHERE NOT EXISTS (SELECT * FROM `' . $table . '` WHERE id = ' . $relationTable . '.`' . $deleteSql->escape($relationTableFields['source']) . '`)
-                ');
-            }
-            $sql->next();
-        }
-    }
-
     public static function getRelationTableFields($relationTable, $sourceTable, $targetTable)
     {
         $source = null;
@@ -379,5 +368,8 @@ class rex_xform_manager_table
         return isset($relations[$column]) ? $relations[$column] : null;
     }
 
-
 }
+
+global $REX;
+rex_xform_manager_table::$db_table_table = $REX['TABLE_PREFIX'].'xform_table';
+rex_xform_manager_table::$db_field_table = $REX['TABLE_PREFIX'].'xform_field';

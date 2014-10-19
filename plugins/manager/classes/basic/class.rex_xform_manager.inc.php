@@ -206,7 +206,7 @@ class rex_xform_manager
                     echo rex_info($I18N->msg('xform_datadeleted'));
                     $func = '';
 
-                    rex_xform_manager_table::removeRelationTableRelicts($this->table->getTablename());
+                    $this->table->removeRelationTableRelicts();
 
                     rex_register_extension_point('XFORM_DATA_DELETED', '', array('id' => $data_id, 'value' => $data, 'table' => $this->table));
                 }
@@ -225,7 +225,7 @@ class rex_xform_manager
                     echo rex_info($I18N->msg('xform_dataset_deleted'));
                     $func = '';
 
-                    rex_xform_manager_table::removeRelationTableRelicts($this->table->getTablename());
+                    $this->table->removeRelationTableRelicts();
 
                     rex_register_extension_point('XFORM_DATA_DATASET_DELETED', '', array('table' => $this->table));
                 }
@@ -241,7 +241,7 @@ class rex_xform_manager
                     echo rex_info($I18N->msg('xform_table_truncated'));
                     $func = '';
 
-                    rex_xform_manager_table::removeRelationTableRelicts($this->table->getTablename());
+                    $this->table->removeRelationTableRelicts();
 
                     rex_register_extension_point('XFORM_DATA_TABLE_TRUNCATED', '', array('table' => $this->table));
                 }
