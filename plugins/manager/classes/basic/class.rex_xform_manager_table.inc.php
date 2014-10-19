@@ -186,6 +186,40 @@ class rex_xform_manager_table implements ArrayAccess
     }
 
 
+
+    public function removeRelationTableRelicts()
+    {
+        $relation_exists = false;
+        foreach($this->getTableFields() as $field) {
+            if ($field->getElement("relation_table")) {
+                $relation_exists = true;
+            }
+        }
+        if (!$relation_exists) {
+            return;
+        }
+
+        $sql = rex_sql::factory();
+        $sql->setQuery('
+                  SELECT `table`, relation_table
+                  FROM ' . self::$db_field_table . '
+                  WHERE table_name="' . $sql->escape($this->getTableName()) . '" AND type_id="value" AND type_name="be_manager_relation" AND relation_table != ""
+              ');
+        $deleteSql = rex_sql::factory();
+        while ($sql->hasNext()) {
+            $relationTableFields = self::getRelationTableFields($sql->getValue('relation_table'), $this->getTableName(), $sql->getValue('table'));
+            if ($relationTableFields['source'] && $relationTableFields['target']) {
+                $relationTable = $deleteSql->escape($sql->getValue('relation_table'));
+                $deleteSql->setQuery('
+                  DELETE FROM `' . $relationTable . '`
+                  WHERE NOT EXISTS (SELECT * FROM `' . $this->getTableName() . '` WHERE id = ' . $relationTable . '.`' . $deleteSql->escape($relationTableFields['source']) . '`)
+                ');
+            }
+            $sql->next();
+        }
+    }
+
+
     // -------------------------------------------------------------------------
 
     static function getTables() {
@@ -202,33 +236,9 @@ class rex_xform_manager_table implements ArrayAccess
 
     }
 
-    public function removeRelationTableRelicts()
-    {
-        global $REX;
-
-        $sql = rex_sql::factory();
-        $sql->setQuery('
-                SELECT `table`, relation_table
-                FROM ' . self::$db_field_table . '
-                WHERE table_name="' . $sql->escape($this->getTableName()) . '" AND type_id="value" AND type_name="be_manager_relation" AND relation_table != ""
-            ');
-        $deleteSql = rex_sql::factory();
-        while ($sql->hasNext()) {
-            $relationTableFields = self::getRelationTableFields($sql->getValue('relation_table'), $this->getTableName(), $sql->getValue('table'));
-            if ($relationTableFields['source'] && $relationTableFields['target']) {
-                $relationTable = $deleteSql->escape($sql->getValue('relation_table'));
-                $deleteSql->setQuery('
-                            DELETE FROM `' . $relationTable . '`
-                            WHERE NOT EXISTS (SELECT * FROM `' . $this->getTableName() . '` WHERE id = ' . $relationTable . '.`' . $deleteSql->escape($relationTableFields['source']) . '`)
-                        ');
-            }
-            $sql->next();
-        }
-    }
 
 
-    // TODO:
-    // getTableFields
+
 
 
   // -------------------------------------------------------------------------

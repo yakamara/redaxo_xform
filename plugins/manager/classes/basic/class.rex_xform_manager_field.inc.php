@@ -53,7 +53,7 @@ class rex_xform_manager_field {
     public function getElement($k = "")
     {
         if (!isset($this->values[$k])) {
-            return false;
+            return NULL;
         }
         return $this->values[$k];
     }
