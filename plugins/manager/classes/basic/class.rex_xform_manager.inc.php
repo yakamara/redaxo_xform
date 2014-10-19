@@ -771,7 +771,7 @@ class rex_xform_manager
                 if (($this->table->isExportable() == 1 && $this->hasDataPageFunction('export'))) {
                     $dataset_links[] = '<a href="index.php?' . $link_vars . '&func=dataset_export&' . $em_url . $em_rex_list . '">' . $I18N->msg('xform_export') . '</a>';
                 }
-                echo " " . $I18N->msg('xform_dataset') . ': ' . implode(' / ', $dataset_links) . '';
+                echo " " . $I18N->msg('xform_dataset') . ': ' . implode(' | ', $dataset_links) . '';
 
                 $table_links = array();
                 $table_links[] = $I18N->msg('xform_table') . ': <a href="#" id="infotoggler">' . $I18N->msg('xform_table_info') . '</a>';
@@ -803,7 +803,7 @@ class rex_xform_manager
                 if ($REX['USER']->isAdmin()) {
                     echo '<p><b>' . $I18N->msg('xform_table_manager') . '</b>:
                           <br /><a href="index.php?page=xform&subpage=manager&table_id=' . $this->table->getId() . '&func=edit">' . $I18N->msg('xform_manager_edit_table') . '</a>
-                          / <a href="index.php?page=xform&subpage=manager&tripage=table_field&table_name=' . $this->table->getTableName() . '">' . $I18N->msg('xform_editfields') . '</a>';
+                          | <a href="index.php?page=xform&subpage=manager&tripage=table_field&table_name=' . $this->table->getTableName() . '">' . $I18N->msg('xform_editfields') . '</a>';
                 }
 
                 echo '</div><div class="rex-area-col-b">';
