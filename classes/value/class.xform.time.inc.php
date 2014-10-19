@@ -66,8 +66,8 @@ class rex_xform_time extends rex_xform_abstract
 
         // ------------- hour
 
-        if ($this->getElement(3) != '') {
-            $hours = explode(',', trim($this->getElement(3)));
+        if ($this->getElement('hours') != '') {
+            $hours = explode(',', trim($this->getElement('hours')));
         } else {
             $hours = array();
             for ($i = 0; $i < 24; $i++) {
@@ -76,8 +76,8 @@ class rex_xform_time extends rex_xform_abstract
         }
         // ------------- min
 
-        if ($this->getElement(4) != '') {
-            $minutes = explode(',', trim($this->getElement(5)));
+        if ($this->getElement('minutes') != '') {
+            $minutes = explode(',', trim($this->getElement('minutes')));
         } else {
             $minutes = array();
             for ($i = 0; $i < 60; $i++) {
@@ -87,7 +87,7 @@ class rex_xform_time extends rex_xform_abstract
 
         // -------------
 
-        $format = $this->getElement(5);
+        $format = $this->getElement('format');
         if ($format == '') {
             $format = '###H###h ###I###m';
         }
@@ -115,7 +115,7 @@ class rex_xform_time extends rex_xform_abstract
                 'label'   => array( 'type' => 'text',   'label' => 'Bezeichnung'),
                 'hours'   => array( 'type' => 'text',   'label' => '[Stundenraster]'),
                 'minutes' => array( 'type' => 'text',   'label' => '[Minutenraster]'),
-                'format'  => array( 'type' => 'text',   'label' => '[Anzeigeformat ###H###h ###M###m]'),
+                'format'  => array( 'type' => 'text',   'label' => '[Anzeigeformat ###H###h ###I###m]'),
                 'no_db'   => array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 0),
             ),
             'description' => 'Uhrzeitfeld Eingabe',
