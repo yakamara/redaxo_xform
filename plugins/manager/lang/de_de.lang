@@ -181,4 +181,4 @@ xform_manager_import_divider_tab = Tabulator
 xform_manager_import_unique_field = Wenn dieses Feld identisch ist, dann wird der Datensatz ersetzt
 xform_manager_import_start = Hinzufügen
 
-xform_manager_show_form_notation = Felddefinitionen
+xform_manager_show_form_notation = Formular-Code anzeigen
