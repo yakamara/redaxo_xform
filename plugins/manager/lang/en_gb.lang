@@ -105,6 +105,9 @@ xform_manager_tableset_export = export tableset
 xform_manager_tableset_export_info =
 xform_manager_export_error_empty = Please select at least one table
 
+xform_manager_table_hidden = visibility
+xform_hidden = hidden
+xform_visible = visible
 
 # edit.inc.php
 xform_thankyouforupdate = data have been updated.

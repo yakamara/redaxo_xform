@@ -105,6 +105,10 @@ xform_manager_tableset_export = Tableset exportieren
 xform_manager_tableset_export_info =
 xform_manager_export_error_empty = Bitte mindestens eine Tabelle für den Export auswählen
 
+xform_manager_table_hidden = Sichtbarkeit
+xform_hidden = versteckt
+xform_visible = sichtbar
+
 
 # edit.inc.php
 xform_thankyouforupdate = Datensatz wurde aktualisiert.

@@ -311,6 +311,13 @@ if ($show_list && $REX['USER']->isAdmin()) {
         return $list->getValue('status') == 1 ? '<span style="color:green;">' . $I18N->msg('xform_tbl_active') . '</span>' : '<span style="color:red;">' . $I18N->msg('xform_tbl_inactive') . '</span>';
     }
 
+    function rex_xform_hidden_col($params)
+    {
+        global $I18N;
+        $list = $params['list'];
+        return $list->getValue('hidden') == 1 ? '<span style="color:grey;">' . $I18N->msg('xform_hidden') . '</span>' : '<span>' . $I18N->msg('xform_visible') . '</span>';
+    }
+
     function rex_xform_list_translate($params)
     {
         return rex_translate($params['subject']);
@@ -325,7 +332,7 @@ if ($show_list && $REX['USER']->isAdmin()) {
 
     echo rex_content_block($table_echo);
 
-    $sql = 'select id, prio, name, table_name, status from `' . rex_xform_manager_table::$db_table_table . '` order by prio,table_name';
+    $sql = 'select id, prio, name, table_name, status, hidden from `' . rex_xform_manager_table::$db_table_table . '` order by prio,table_name';
 
     $list = rex_list::factory($sql, 30);
     $list->addParam('start', rex_request('start', 'int'));
@@ -336,12 +343,14 @@ if ($show_list && $REX['USER']->isAdmin()) {
     $list->setColumnLabel('name', $I18N->msg('xform_manager_name'));
     $list->setColumnFormat('name', 'custom', 'rex_xform_list_translate');
 
-
     $list->setColumnLabel('table_name', $I18N->msg('xform_manager_table_name'));
-    $list->setColumnLabel('status', $I18N->msg('xform_manager_table_status'));
-
-    $list->setColumnFormat('status', 'custom', 'rex_xform_status_col');
     $list->setColumnParams('table_name', array('table_id' => '###id###', 'func' => 'edit'));
+
+    $list->setColumnLabel('status', $I18N->msg('xform_manager_table_status'));
+    $list->setColumnFormat('status', 'custom', 'rex_xform_status_col');
+
+    $list->setColumnLabel('hidden', $I18N->msg('xform_manager_table_hidden'));
+    $list->setColumnFormat('hidden', 'custom', 'rex_xform_hidden_col');
 
     $list->addColumn($I18N->msg('xform_edit'), $I18N->msg('xform_edit'));
     $list->setColumnParams($I18N->msg('xform_edit'), array('table_id' => '###id###', 'func' => 'edit'));
