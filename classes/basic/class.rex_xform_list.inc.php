@@ -56,7 +56,7 @@ class rex_xform_list extends rex_list
         $pages = ceil($rows / $rowsPerPage);
 
         $s .= '<ul class="rex-navi-paginate">' . "\n";
-        $s .= '<li class="rex-navi-paginate-prev"><a href="' . $this->getUrl(array('start' => $start - $rowsPerPage)) . '" title="' . $I18N->msg('xform_list_previous') . '"><span>' . $I18N->msg('xform_list_previous') . '</span></a></li>';
+        $s .= '<li class="rex-navi-paginate-prev"><a href="' . $this->getUrl(array('start' => $start - $rowsPerPage)) . '" title="' . $I18N->msg('list_previous') . '"><span>' . $I18N->msg('list_previous') . '</span></a></li>';
 
         if ($pages > 1) {
             for ($i = 1; $i <= $pages; $i++) {
@@ -77,8 +77,8 @@ class rex_xform_list extends rex_list
                 $s .= '<li class="rex-navi-paginate-page">' . $pageLink . '</li>';
             }
         }
-        $s .= '<li class="rex-navi-paginate-next"><a href="' . $this->getUrl(array('start' => $start + $rowsPerPage)) . '" title="' . $I18N->msg('xform_list_next') . '"><span>' . $I18N->msg('xform_list_next') . '</span></a></li>';
-        $s .= '<li class="rex-navi-paginate-message"><span>' . $I18N->msg('xform_list_rows_found', $this->getRows()) . '</span></li>';
+        $s .= '<li class="rex-navi-paginate-next"><a href="' . $this->getUrl(array('start' => $start + $rowsPerPage)) . '" title="' . $I18N->msg('list_next') . '"><span>' . $I18N->msg('list_next') . '</span></a></li>';
+        $s .= '<li class="rex-navi-paginate-message"><span>' . $I18N->msg('list_rows_found', $this->getRows()) . '</span></li>';
         $s .= '</ul>' . "\n";
 
         return '<div class="rex-navi-paginate rex-toolbar"><div class="rex-toolbar-content">' . $s . '<div class="rex-clearer"></div></div></div>';
@@ -113,9 +113,9 @@ class rex_xform_list extends rex_list
 
         $return = '';
         if ($prev !== '') {
-            $return .= '<li class="rex-navi-paginate-prev"><a class="rex-active" href="' . $this->getUrl(array('start' => $prev)) . '"><span>' . $I18N->msg('xform_list_previous') . '</span></a></li>';
+            $return .= '<li class="rex-navi-paginate-prev"><a class="rex-active" href="' . $this->getUrl(array('start' => $prev)) . '" title="'.$I18N->msg('list_previous').'"><span>' . $I18N->msg('list_previous') . '</span></a></li>';
         } else {
-            $return .= '<li class="rex-navi-paginate-prev"><a href="javascript:void(0);"><span>' . $I18N->msg('xform_list_previous') . '</span></a></li>';
+            $return .= '<li class="rex-navi-paginate-prev"><a href="javascript:void(0);"><span>' . $I18N->msg('list_previous') . '</span></a></li>';
         }
 
         $show_pages = array();
@@ -155,12 +155,12 @@ class rex_xform_list extends rex_list
         }
 
         if ($next !== '') {
-            $return .= '<li class="rex-navi-paginate-next"><a class="rex-active" href="' . $this->getUrl(array('start' => $next)) . '"><span>' . $I18N->msg('xform_list_next') . '</span></a></li>';
+            $return .= '<li class="rex-navi-paginate-next"><a class="rex-active" href="' . $this->getUrl(array('start' => $next)) . '" title="' . $I18N->msg('list_next') . '"><span>' . $I18N->msg('list_next') . '</span></a></li>';
         } else {
-            $return .= '<li class="rex-navi-paginate-next"><a href="javascript:void(0);"><span>' . $I18N->msg('xform_list_next') . '</span></a></li>';
+            $return .= '<li class="rex-navi-paginate-next"><a href="javascript:void(0);"><span>' . $I18N->msg('list_next') . '</span></a></li>';
         }
 
-        $return .= '<li class="rex-navi-paginate-message"><span>' . $current . ' bis ' . $entries . ' von ' . $this->getRows() . ' Einträge</span></li>';
+        $return .= '<li class="rex-navi-paginate-message"><span>' . $I18N->msg('list_message',$current , $entries, $this->getRows()). '</span></li>';
 
         $return = '<ul class="rex-navi-paginate">' . $return . '</ul>';
         $return = '<div class="rex-clearer"></div><div class="rex-navi-paginate rex-toolbar"><div class="rex-toolbar-content">' . $return . '<div class="rex-clearer"></div></div></div>';
@@ -175,8 +175,9 @@ class rex_xform_list extends rex_list
 
     function getSingleView($params = array())
     {
+        global $I18N;
 
-            $return = '';
+        $return = '';
 
         $current = (int) $_REQUEST[$this->skip_key];
         $current = 0;
@@ -220,20 +221,20 @@ class rex_xform_list extends rex_list
         }
 
         $return .= '<div class="header">';
-        $return .= '<ul class="navi-header"><li class="first"><a class="back" href="' . $this->getUrl(array_merge($params, array('list_style' => 'line', 'start' => 0))) . '">Zurück zur Übersicht</a></li></ul>';
+        $return .= '<ul class="navi-header"><li class="first"><a class="back" href="' . $this->getUrl(array_merge($params, array('list_style' => 'line', 'start' => 0))) . '">'.$I18N->msg('xform_back_to_overview').'</a></li></ul>';
 
         $return .= '<ul class="navi-pagination">';
         if ($page_all > 1) {
             if ($prev !== '') {
-             $return .= '<li class="prev"><a class="prev" href="' . $this->getUrl($params, $prev) . '">zur&uuml;ck</a></li>';
+             $return .= '<li class="prev"><a class="prev" href="' . $this->getUrl($params, $prev) . '">'.$I18N->msg('list_back').'</a></li>';
             } else {
-             $return .= '<li class="prev"><a class="prev disabled" href="javascript:void(0);">zur&uuml;ck</a></li>';
+             $return .= '<li class="prev"><a class="prev disabled" href="javascript:void(0);">'.$I18N->msg('list_back').'</a></li>';
             }
 
             if ($next !== '') {
-             $return .= '<li class="next"><a class="next" href="' . $this->getUrl($params, $next) . '">vor</a></li>';
+             $return .= '<li class="next"><a class="next" href="' . $this->getUrl($params, $next) . '">'.$I18N->msg('list_next').'</a></li>';
             } else {
-             $return .= '<li class="next"><a class="next disabled" href="javascript:void(0);">vor</a></li>';
+             $return .= '<li class="next"><a class="next disabled" href="javascript:void(0);">'.$I18N->msg('list_next').'</a></li>';
             }
         }
         $return .= '</ul>';

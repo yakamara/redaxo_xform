@@ -16,3 +16,5 @@ xform_install_phpmailer_version_problem = PHPMailer muss mindestens Version {0} 
 
 xform_install_checkphpversion = Die PHP Version reicht nicht aus. Es wird mindestens Version 5.3 gebraucht. Im Moment ist Version {0} installiert.
 xform_install_redaxo_version_problem = Die REDAXO Version reicht nicht aus. Es wird mindestens Version {0} gebraucht.
+
+list_message = {0} bis {1} von {2} Einträge
