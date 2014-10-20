@@ -16,18 +16,22 @@ Installation
 Last Changes
 -------
 
-### Version 4.9 // XX. XX 2014
+### Version 4.9 // 20. Oktober 2014
 
 #### Neu
 * Submit Klasse mit eigenem Value möglich
-* Umbau von Managerklassen für flexiblere Verwendung
+* Umbau von Managerklassen (taböe, field) für flexiblere Verwendung, inkl. arrayaccess Rückwärtskompatibilität
 * Validate Klasse Type kann nun auch Hex Werte validieren
 * Manager: Tablesets eingeführt. Manager Tabellen können ex- und importiert werden (Json)
 * Upload Klasse ergänzt. Datei in die Datenbank oder ins Filesystem legen
-
+* Kleinere optische Umbauten: Kein Infolayer mehr, Tabellenansicht angepasst ..
+* Fehlende Texte, oder falsche/unschöne Texte angepasst
 
 #### Bugs
 
+* datetime Klasse um currentdate erweitert
+* time Klasse war falsch beschrieben, Formatierung ging nicht,
+* removeRelationTableRelicts führte zu Fehlern, wenn Relationtabelle nicht existierte
 * Radio Klasse funktionierte nicht richtig. Beschreibung war != zur Funktion.
 * Select Klasse hatte die Anzahl der Einträge falsch gezählt
 * Manager: Reservierte Feldnamen führte zu Problemen.
