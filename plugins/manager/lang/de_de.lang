@@ -1,7 +1,7 @@
 xform_table_manager = Table Manager
 
 navigation_manager = Tabellen
-
+xform_manager_fields = Felder
 
 # xform manager
 xform_alltables = Alle Tabellen

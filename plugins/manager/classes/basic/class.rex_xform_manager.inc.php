@@ -774,14 +774,26 @@ class rex_xform_manager
                 echo " " . $I18N->msg('xform_dataset') . ': ' . implode(' | ', $dataset_links) . '';
 
                 $table_links = array();
-                $table_links[] = $I18N->msg('xform_table') . ': <a href="#" id="infotoggler">' . $I18N->msg('xform_table_info') . '</a>';
                 if (!$popup && $this->table->isImportable() && $this->hasDataPageFunction('import')) {
                   $table_links[] = '<a href="index.php?' . htmlspecialchars($link_vars) . '&amp;func=import">' . $I18N->msg('xform_import') . '</a>';
                 }
                 if ($this->hasDataPageFunction('truncate_table')) {
                   $table_links[] = '<a href="index.php?' . $link_vars . '&func=truncate_table&' . $em_url . $em_rex_list . '" id="truncate-table" onclick="return confirm(\'' . $I18N->msg('xform_truncate_table_confirm') . '\');">' . $I18N->msg('xform_truncate_table') . '</a>';
                 }
-                echo " " . implode(' | ', $table_links);
+                if ($REX['USER']->isAdmin()) {
+                  $table_links[] = '<a href="index.php?page=xform&subpage=manager&table_id=' . $this->table->getId() . '&func=edit">' . $I18N->msg('xform_edit') . '</a>';
+                }
+                if (count($table_links)>0) {
+                    echo ' ' . $I18N->msg('xform_table') . ': ' . implode(' | ', $table_links);
+                }
+
+                $field_links = array();
+                if ($REX['USER']->isAdmin()) {
+                    $field_links[] = '<a href="index.php?page=xform&subpage=manager&tripage=table_field&table_name=' . $this->table->getTableName() . '">' . $I18N->msg('xform_edit') . '</a>';
+                }
+                if (count($field_links)>0) {
+                    echo ' ' . $I18N->msg('xform_manager_fields') . ': ' . implode(' | ', $field_links);
+                }
 
                 echo '</span><br style="clear:both;" /></div></div>';
 
@@ -789,37 +801,11 @@ class rex_xform_manager
                 $display = rex_request('rex_xform_search') == 1 ? 'block' : 'none';
                 echo '<div id="searchblock" style="display:' . $display . ';">' . $suchform . '</div>';
 
-                // INFOBLOCK
-                echo '<div id="infoblock" style="display:none;"  class="rex-addon-output">
-                <div class="rex-hl2" style="font-size:12px;font-weight:bold;">' . $I18N->msg('xform_pool_file_details') . '</div>
-                <div class="rex-addon-content">
-                <div class="rex-area-col-2">
-                    <div class="rex-area-col-a">';
-
-                if (isset($rex_xform_manager_opener['info'])) {
-                    echo '<h4 class="rex-hl3">' . $I18N->msg('xform_openerinfo') . '</h4><p class="rex-tx1">' . htmlspecialchars($rex_xform_manager_opener['info']) . '</p>';
-                }
-
-                if ($REX['USER']->isAdmin()) {
-                    echo '<p><b>' . $I18N->msg('xform_table_manager') . '</b>:
-                          <br /><a href="index.php?page=xform&subpage=manager&table_id=' . $this->table->getId() . '&func=edit">' . $I18N->msg('xform_manager_edit_table') . '</a>
-                          | <a href="index.php?page=xform&subpage=manager&tripage=table_field&table_name=' . $this->table->getTableName() . '">' . $I18N->msg('xform_editfields') . '</a>';
-                }
-
-                echo '</div><div class="rex-area-col-b">';
-
-                if ($this->table->getDescription() != '') {
-                    echo '<p class="rex-tx1"><b>' . $I18N->msg('xform_description') . ':</b> <br />' . nl2br($this->table->getDescription()) . '</p>';
-                }
-
-                echo '</div></div></div></div><br style="clear:both;" />';
-
                 echo $list->get();
 
                 echo '
 
                  <script type="text/javascript">/* <![CDATA[ */
-                     jQuery("#infotoggler").click(function(){jQuery("#infoblock").slideToggle("fast");});
                      jQuery("#searchtoggler").click(function(){jQuery("#searchblock").slideToggle("fast");});
                      jQuery("#xform_help_empty_toggler").click(function(){jQuery("#xform_help_empty").slideToggle("fast");});
                      jQuery("#xform_search_reset").click(function(){window.location.href = "index.php?page=xform&subpage=manager&tripage=data_edit&table_name=' . $this->table->getTableName() . '&rex_xform_search=1";});
