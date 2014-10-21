@@ -325,9 +325,9 @@ if ($show_list && $REX['USER']->isAdmin()) {
 
     $table_echo = '<b>';
     $table_echo .= $I18N->msg('xform_manager_table').': <a href=index.php?page=' . $page . '&subpage=' . $subpage . '&func=add>' . $I18N->msg('xform_manager_create') . '</a>';
-    $table_echo .= ' / <a href=index.php?page=' . $page . '&subpage=' . $subpage . '&func=migrate><b>' . $I18N->msg('xform_manager_migrate') . '</a>';
+    $table_echo .= ' | <a href=index.php?page=' . $page . '&subpage=' . $subpage . '&func=migrate><b>' . $I18N->msg('xform_manager_migrate') . '</a>';
     $table_echo .= ' '.$I18N->msg('xform_manager_tableset').':</b> <a href=index.php?page=' . $page . '&subpage=' . $subpage . '&func=tableset_export>' . $I18N->msg('xform_manager_export') . '</a>';
-    $table_echo .= ' / <a href=index.php?page=' . $page . '&subpage=' . $subpage . '&func=tableset_import>' . $I18N->msg('xform_manager_import') . '</a>';
+    $table_echo .= ' | <a href=index.php?page=' . $page . '&subpage=' . $subpage . '&func=tableset_import>' . $I18N->msg('xform_manager_import') . '</a>';
     $table_echo .= '</b>';
 
     echo rex_content_block($table_echo);
