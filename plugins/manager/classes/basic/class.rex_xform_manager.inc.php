@@ -221,6 +221,7 @@ class rex_xform_manager
                     $query = 'delete from `' . $this->table->getTablename() . '` ' . $this->getDataListQueryWhere($rex_xform_filter, $rex_xform_searchfields , $rex_xform_searchtext );
                     $delsql = new rex_sql;
                     $delsql->debugsql = self::$debug;
+                    $query = rex_register_extension_point('XFORM_DATA_DATASET_DELETE_SQL', $query, array('rex_xform_filter' => $rex_xform_filter, 'rex_xform_searchfields' => $rex_xform_searchfields, 'rex_xform_searchtext' => $rex_xform_searchtext, 'this' => $this);
                     $delsql->setQuery($query);
                     echo rex_info($I18N->msg('xform_dataset_deleted'));
                     $func = '';
