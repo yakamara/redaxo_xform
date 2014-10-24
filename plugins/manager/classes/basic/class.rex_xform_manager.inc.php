@@ -949,7 +949,7 @@ class rex_xform_manager
             ?>
             <div class="rex-addon-output"><h2 class="rex-hl2">Folgendes Feld wird verwendet: <?php echo $type_real_field; ?></h2><div class="rex-addon-content"><p class="rex-tx1"><?php
 
-            $rfields = self::getFields($table->getTableName());
+            $rfields = $this->table->getColumns();
             foreach ($rfields[$type_real_field] as $k => $v) {
                 echo '<b>' . $k . ':</b> ' . $v . '<br />';
             }
