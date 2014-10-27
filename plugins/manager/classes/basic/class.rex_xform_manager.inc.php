@@ -218,7 +218,7 @@ class rex_xform_manager
 
                 $delete = true;
                 $query = 'delete from `' . $this->table->getTablename() . '` ' . $this->getDataListQueryWhere($rex_xform_filter, $rex_xform_searchfields, $rex_xform_searchtext);
-                if (rex_register_extension_point('XFORM_DATA_DATASET_DELETE', $delete, array('table' => $this->table, 'query' => $query))) {
+                if (rex_register_extension_point('XFORM_DATA_DATASET_DELETE', $delete, array('table' => $this->table, 'query' => &$query))) {
                     $delsql = new rex_sql;
                     $delsql->debugsql = self::$debug;
                     $delsql->setQuery($query);
