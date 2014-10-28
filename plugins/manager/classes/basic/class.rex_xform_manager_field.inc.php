@@ -1,10 +1,10 @@
 <?php
 
-class rex_xform_manager_field {
-
+class rex_xform_manager_field
+{
     var $values = array();
     static $debug = false;
-    static $types = array('value','validate','action');
+    static $types = array('value', 'validate', 'action');
 
     function __construct( array $values)
     {
@@ -26,7 +26,7 @@ class rex_xform_manager_field {
     {
         $type_id =  $this->values['type_id'];
         if (!in_array($type_id, self::$types)) {
-          return false;
+            return false;
         }
         return $type_id;
     }
@@ -35,7 +35,7 @@ class rex_xform_manager_field {
     public function getTypeName()
     {
         if (!isset($this->values['type_name'])) {
-            return "";
+            return '';
         }
         return $this->values['type_name'];
     }
@@ -50,10 +50,10 @@ class rex_xform_manager_field {
         return $this->values['label'];
     }
 
-    public function getElement($k = "")
+    public function getElement($k = '')
     {
         if (!isset($this->values[$k])) {
-            return NULL;
+            return null;
         }
         return $this->values[$k];
     }
