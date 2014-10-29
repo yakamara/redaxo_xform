@@ -7,7 +7,7 @@
  */
 
 $table_name = rex_request('table_name', 'string');
-$table = rex_xform_manager_table::getByTablename($table_name);
+$table = rex_xform_manager_table::get($table_name);
 
 if ($table && $REX['USER'] && ($REX['USER']->isAdmin() || $REX['USER']->hasPerm('xform[table:' . $table_name . ']')) ) {
 

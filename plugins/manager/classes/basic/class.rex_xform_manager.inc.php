@@ -15,7 +15,7 @@ if (!function_exists('rex_xform_manager_checkField')) {
 
 class rex_xform_manager
 {
-
+    /** @type rex_xform_manager_table */
     var $table = '';
     var $linkvars = array();
     var $type = '';
@@ -120,10 +120,8 @@ class rex_xform_manager
 
             // -------------- DB FELDER HOLEN
             $field_names = array();
-            foreach ($this->table->getTableFields() as $field) {
-                if ($field->getType() == 'value') {
-                    $field_names[] = $field->getName();
-                }
+            foreach ($this->table->getValueFields() as $field) {
+                $field_names[] = $field->getName();
             }
 
             // -------------- DB DATA HOLEN
@@ -354,7 +352,7 @@ class rex_xform_manager
                 $xform->setHiddenField('sorttype', rex_request('sorttype', 'string'));
                 $xform->setHiddenField('start', rex_request('start', 'string'));
 
-                foreach ($this->table->getTableFields() as $field) {
+                foreach ($this->table->getFields() as $field) {
                     $classname = rex_xform::includeClass($field->getType(), $field->getTypeName());
 
                     $cl = new $classname;
@@ -397,7 +395,7 @@ class rex_xform_manager
                     // Textblock gibt den formalarblock als text aus, um diesen in das xform modul einsetzen zu können.
                     //  rex_xform_show_formularblock=1
                     $text_block = '';
-                    foreach ($this->table->getTableFields() as $field) {
+                    foreach ($this->table->getFields() as $field) {
                         $classname = rex_xform::includeClass($field['type_id'], $field['type_name']);
                         $cl = new $classname;
                         $definitions = $cl->getDefinitions();
@@ -528,7 +526,7 @@ class rex_xform_manager
                     $fields_array['list_hidden'] = 0;
 
                     $field = new rex_xform_manager_field($fields_array);
-                    $fields = $this->table->getTableFields(); // manually inject "id" into avail fields..
+                    $fields = $this->table->getFields(); // manually inject "id" into avail fields..
                     $fields[] = $field;
 
                     foreach ($fields as $field) {
@@ -673,7 +671,7 @@ class rex_xform_manager
                 $list->setColumnSortable('id');
                 $list->setColumnLabel('id', 'ID');
 
-                foreach ($this->table->getTableFields() as $field) {
+                foreach ($this->table->getFields() as $field) {
 
                     // CALL CLASS'S LIST VALUE METHOD IF AVAILABLE
                     if (!$field->isHiddenInList() && $field->getTypeName()) {
@@ -685,7 +683,7 @@ class rex_xform_manager
                                 $field->getName(),
                                 'custom',
                                 array('rex_xform_' . $field->getTypeName(), 'getListValue'),
-                                array('field' => $field->toArray(), 'fields' => $this->table->getTableFields()));
+                                array('field' => $field->toArray(), 'fields' => $this->table->getFields()));
                         }
                     }
 
@@ -725,7 +723,7 @@ class rex_xform_manager
                 }
                 $gr = rex_sql::factory();
                 // $gr->debugsql = 1;
-                $gr->setQuery('select * from ' . rex_xform_manager_table::$db_field_table . ' where type_name="be_manager_relation" and f3="' . $this->table->getTableName() . '"');
+                $gr->setQuery('select * from ' . rex_xform_manager_field::table() . ' where type_name="be_manager_relation" and f3="' . $this->table->getTableName() . '"');
                 $relation_fields = $gr->getArray();
                 foreach ($relation_fields as $t) {
                     $rel_id = 'rel-' . $t['table_name'] . '-' . $t['name'];
@@ -872,7 +870,7 @@ class rex_xform_manager
 
         $sql = 'select * from ' . $this->table->getTablename() . ' t0';
         $sql_felder = new rex_sql;
-        $sql_felder->setQuery('SELECT * FROM ' . rex_xform_manager_table::$db_field_table . ' WHERE table_name="' . $this->table->getTablename() . '" AND type_id="value" ORDER BY prio');
+        $sql_felder->setQuery('SELECT * FROM ' . rex_xform_manager_field::table() . ' WHERE table_name="' . $this->table->getTablename() . '" AND type_id="value" ORDER BY prio');
 
         $max = $sql_felder->getRows();
         if ($max > 0) {
@@ -1192,7 +1190,7 @@ class rex_xform_manager
 
                     case 'select_name':
                         $_fields = array();
-                        foreach (rex_xform_manager_table::getXFormFieldsByType($table->getTableName()) as $_k => $_v) {
+                        foreach ($table->getValueFields() as $_k => $_v) {
                             $_fields[] = $_k;
                         }
                         $xform->setValueField('select', array($field, $v['label'], implode(',', $_fields), '', '', 0));
@@ -1200,7 +1198,7 @@ class rex_xform_manager
 
                     case 'select_names':
                         $_fields = array();
-                        foreach (rex_xform_manager_table::getXFormFieldsByType($table->getTableName()) as $_k => $_v) {
+                        foreach ($table->getValueFields() as $_k => $_v) {
                             $_fields[] = $_k;
                         }
                         $xform->setValueField('select', array($field, $v['label'], implode(',', $_fields), '', '', 1, 5));
@@ -1219,16 +1217,16 @@ class rex_xform_manager
             }
 
             $xform->setActionField('showtext', array('', '<p>' . $I18N->msg('xform_thankyouforentry') . '</p>'));
-            $xform->setObjectparams('main_table', rex_xform_manager_table::$db_field_table);
+            $xform->setObjectparams('main_table', rex_xform_manager_field::table());
 
             if ($func == 'edit') {
                 $xform->setObjectparams('submit_btn_label', $I18N->msg('xform_save'));
                 $xform->setHiddenField('field_id', $field_id);
-                $xform->setActionField('manage_db', array(rex_xform_manager_table::$db_field_table, "id=$field_id"));
+                $xform->setActionField('manage_db', array(rex_xform_manager_field::table(), "id=$field_id"));
                 $xform->setObjectparams('main_id', $field_id);
                 $xform->setObjectparams('main_where', "id=$field_id");
                 $sql = rex_sql::factory();
-                $sql->setQuery('SELECT * FROM ' . rex_xform_manager_table::$db_field_table . " WHERE id=$field_id");
+                $sql->setQuery('SELECT * FROM ' . rex_xform_manager_field::table() . " WHERE id=$field_id");
                 foreach ($selectFields as $alias => $field) {
                     if ($alias != $field) {
                         if ((!$sql->hasValue($field) || !$sql->getValue($field)) && $sql->hasValue($alias)) {
@@ -1242,7 +1240,7 @@ class rex_xform_manager
 
             } elseif ($func == 'add') {
                 $xform->setObjectparams('submit_btn_label', $I18N->msg('xform_add'));
-                $xform->setActionField('manage_db', array(rex_xform_manager_table::$db_field_table));
+                $xform->setActionField('manage_db', array(rex_xform_manager_field::table()));
 
             }
 
@@ -1293,10 +1291,10 @@ class rex_xform_manager
 
             $sf = new rex_sql();
             // $sf->debugsql = 1;
-            $sf->setQuery('select * from ' . rex_xform_manager_table::$db_field_table . ' where table_name="' . $table->getTableName() . '" and id=' . $field_id);
+            $sf->setQuery('select * from ' . rex_xform_manager_field::table() . ' where table_name="' . $table->getTableName() . '" and id=' . $field_id);
             $sfa = $sf->getArray();
             if (count($sfa) == 1) {
-                $query = 'delete from ' . rex_xform_manager_table::$db_field_table . ' where table_name="' . $table->getTableName() . '" and id=' . $field_id;
+                $query = 'delete from ' . rex_xform_manager_field::table() . ' where table_name="' . $table->getTableName() . '" and id=' . $field_id;
                 $delsql = new rex_sql;
                 // $delsql->debugsql=1;
                 $delsql->setQuery($query);
@@ -1435,7 +1433,7 @@ class rex_xform_manager
             $show_list = true;
             $show_list = rex_register_extension_point('XFORM_MANAGER_TABLE_FIELD_FUNC', $show_list,
                 array(
-                    'table' => $table->getArray(),
+                    'table' => $table,
                     'link_vars' => $this->getLinkVars(),
                 )
             );
@@ -1490,7 +1488,7 @@ class rex_xform_manager
                      ';
                 echo rex_content_block($table_echo);
 
-                $sql = 'select id, prio, type_id, type_name, name from ' . rex_xform_manager_table::$db_field_table . ' where table_name="' . $table->getTableName() . '" order by prio';
+                $sql = 'select id, prio, type_id, type_name, name from ' . rex_xform_manager_field::table() . ' where table_name="' . $table->getTableName() . '" order by prio';
                 $list = rex_list::factory($sql, 30);
                 // $list->debug = 1;
                 $list->setColumnFormat('id', 'Id');
@@ -1570,14 +1568,14 @@ class rex_xform_manager
         global $REX;
 
         $tb = rex_sql::factory();
-        $tb->setQuery('select * from ' . rex_xform_manager_table::$db_field_table . ' where table_name="' . $table . '" order by prio');
+        $tb->setQuery('select * from ' . rex_xform_manager_field::table() . ' where table_name="' . $table . '" order by prio');
         return $tb->getArray();
     }
 
     static function checkField($l, $v, $p)
     {
         global $REX;
-        $q = 'select * from ' . rex_xform_manager_table::$db_field_table . ' where table_name="' . $p['table_name'] . '" and type_id="value" and ' . $l . '="' . $v . '" LIMIT 1';
+        $q = 'select * from ' . rex_xform_manager_field::table() . ' where table_name="' . $p['table_name'] . '" and type_id="value" and ' . $l . '="' . $v . '" LIMIT 1';
         $c = rex_sql::factory();
         // $c->debugsql = 1;
         $c->setQuery($q);
@@ -1613,8 +1611,8 @@ class rex_xform_manager
         // Tabellenset in die Basics einbauen, wenn noch nicht vorhanden
         $c = new rex_sql;
         $c->debugsql = $debug;
-        $c->setQuery('DELETE FROM ' . rex_xform_manager_table::$db_table_table . ' where table_name="' . $data_table . '"');
-        $c->setTable(rex_xform_manager_table::$db_table_table);
+        $c->setQuery('DELETE FROM ' . rex_xform_manager_table::table() . ' where table_name="' . $data_table . '"');
+        $c->setTable(rex_xform_manager_table::table());
 
         $params['table_name'] = $data_table;
         if (!isset($params['status'])) {
@@ -1675,7 +1673,7 @@ class rex_xform_manager
         $warning = $params['subject'];
 
         $sql = rex_sql::factory();
-        $sql->setQuery('SELECT `table_name`, `type_name`, `name` FROM `' . rex_xform_manager_table::$db_field_table . '` WHERE `type_id`="value" AND `type_name` IN("be_medialist","be_mediapool")');
+        $sql->setQuery('SELECT `table_name`, `type_name`, `name` FROM `' . rex_xform_manager_field::table() . '` WHERE `type_id`="value" AND `type_name` IN("be_medialist","be_mediapool")');
 
         $rows = $sql->getRows();
 
@@ -1706,7 +1704,7 @@ class rex_xform_manager
 
             while ($sql->hasNext()) {
                 $sql_tupel = rex_sql::factory();
-                $sql_tupel->setQuery('SELECT name FROM `' . rex_xform_manager_table::$db_table_table . '` WHERE `table_name`="' . $table . '"');
+                $sql_tupel->setQuery('SELECT name FROM `' . rex_xform_manager_table::table() . '` WHERE `table_name`="' . $table . '"');
 
                 $tupel .= '<li><a href="javascript:openPage(\'index.php?page=xform&amp;subpage=manager&amp;tripage=data_edit&amp;table_name=' . $table . '&amp;data_id=' . $sql->getValue('id') . '&amp;func=edit\')">' . $sql_tupel->getValue('name') . ' [id=' . $sql->getValue('id') . ']</a></li>';
 

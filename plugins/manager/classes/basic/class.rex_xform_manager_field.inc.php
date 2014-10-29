@@ -2,14 +2,14 @@
 
 class rex_xform_manager_field
 {
-    var $values = array();
-    static $debug = false;
-    static $types = array('value', 'validate', 'action');
+    protected $values = array();
+    protected static $debug = false;
+    protected static $types = array('value', 'validate', 'action');
 
-    function __construct( array $values)
+    function __construct(array $values)
     {
-        global $REX, $I18N;
-        if (!is_array($values) || count($values) == 0) {
+        global $I18N;
+        if (count($values) == 0) {
             throw new Exception($I18N->msg('xform_field_not_found'));
         }
         $this->values = $values;
@@ -19,6 +19,12 @@ class rex_xform_manager_field
         } else {
             // echo '<pre>';      var_dump($values);echo '</pre>';
         }
+    }
+
+    public static function table()
+    {
+        global $REX;
+        return $REX['TABLE_PREFIX'] . 'xform_field';
     }
 
     // value, validate, action
@@ -50,7 +56,7 @@ class rex_xform_manager_field
         return $this->values['label'];
     }
 
-    public function getElement($k = '')
+    public function getElement($k)
     {
         if (!isset($this->values[$k])) {
             return null;
