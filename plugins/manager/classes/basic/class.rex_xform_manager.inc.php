@@ -829,7 +829,7 @@ class rex_xform_manager
                 }
                 if (!is_array($v)) {
                     $sql_filter .= '`' . $k . '`="' . $v . '"';
-                } elseif ($relation = self::getRelation($this->table->getTablename(), $k)) {
+                } elseif ($relation = $this->table->getRelation($k)) {
                     foreach ($v as $k2 => $v2) {
                         $sql_filter .= '(SELECT `' . mysql_real_escape_string($k2) . '` FROM `' . mysql_real_escape_string($relation['table']) . '` WHERE id = t0.`' . mysql_real_escape_string($k) . '`) = "' . mysql_real_escape_string($v2) . '"';
                     }

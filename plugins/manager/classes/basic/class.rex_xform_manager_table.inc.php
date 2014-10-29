@@ -183,6 +183,33 @@ class rex_xform_manager_table implements ArrayAccess
         return $fields;
     }
 
+    /**
+     * @return rex_xform_manager_field[]
+     */
+    public function getRelations()
+    {
+        return $this->getValueFields(array('type_name' => 'be_manager_relation'));
+    }
+
+    /**
+     * @param string $table
+     * @return rex_xform_manager_field[]
+     */
+    public function getRelationsTo($table)
+    {
+        return $this->getValueFields(array('type_name' => 'be_manager_relation', 'table' => $table));
+    }
+
+    /**
+     * @param string $column
+     * @return rex_xform_manager_field
+     */
+    public function getRelation($column)
+    {
+        $relations = $this->getRelations();
+        return isset($relations[$column]) ? $relations[$column] : null;
+    }
+
     // Database Fielddefinition
     public function getColumns()
     {
@@ -226,12 +253,13 @@ class rex_xform_manager_table implements ArrayAccess
         $deleteSql = rex_sql::factory();
         foreach ($this->getValueFields(array('type_name' => 'be_manager_relation')) as $field) {
             if ($field->getElement('relation_table')) {
-                $relationTableFields = self::getRelationTableFields($field->getElement('relation_table'), $this->getTableName(), $field->getElement('table'));
-                if ($relationTableFields['source'] && $relationTableFields['target']) {
+                $table = self::get($field->getElement('relation_table'));
+                $source = $table->getRelationsTo($this->getTableName());
+                if (!empty($source)) {
                     $relationTable = $deleteSql->escape($field->getElement('relation_table'));
                     $deleteSql->setQuery('
                         DELETE FROM `' . $relationTable . '`
-                        WHERE NOT EXISTS (SELECT * FROM `' . $this->getTableName() . '` WHERE id = ' . $relationTable . '.`' . $deleteSql->escape($relationTableFields['source']) . '`)
+                        WHERE NOT EXISTS (SELECT * FROM `' . $this->getTableName() . '` WHERE id = ' . $relationTable . '.`' . $deleteSql->escape(reset($source)->getName()) . '`)
                     ');
                 }
             }
@@ -256,48 +284,6 @@ class rex_xform_manager_table implements ArrayAccess
         return $gf->getValue('prio');
 
     }
-
-    public static function getRelationTableFields($relationTable, $sourceTable, $targetTable)
-    {
-        $source = null;
-        $target = null;
-        foreach (self::getRelations($relationTable) as $relation) {
-            if (!$source && $relation['table'] === $sourceTable) {
-                $source = $relation['name'];
-            }
-            if (!$target && $relation['table'] === $targetTable) {
-                $target = $relation['name'];
-            }
-            if ($source && $target) {
-                return array('source' => $source, 'target' => $target);
-            }
-        }
-        return array('source' => null, 'target' => null);
-    }
-
-    public static function getRelations($table)
-    {
-        static $relations;
-
-        if (!isset($relations)) {
-            $relations = array();
-            $sql = rex_sql::factory();
-            $data = $sql->getArray('SELECT * FROM `' . rex_xform_manager_field::table() . '` WHERE type_id="value" AND type_name="be_manager_relation"');
-            foreach ($data as $row) {
-                $relations[$row['table_name']][$row['name']] = $row;
-            }
-        }
-
-        return isset($relations[$table]) ? $relations[$table] : array();
-    }
-
-    public static function getRelation($table, $column)
-    {
-        $relations = self::getRelations($table);
-
-        return isset($relations[$column]) ? $relations[$column] : null;
-    }
-
 
     // ------------------------------------------- Array Access
     public function offsetSet($offset, $value)
