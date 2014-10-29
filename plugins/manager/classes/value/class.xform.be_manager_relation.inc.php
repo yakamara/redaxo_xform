@@ -320,8 +320,8 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
             'description' => 'Hiermit kann man Verkn&uuml;pfungen zu anderen Tabellen setzen',
             'dbtype' => 'text',
             'hooks' => array(
-                'preCreate' => function ($field) {
-                    return empty($field['relation_table']) && '4' != $field['type'];
+                'preCreate' => function (rex_xform_manager_field $field) {
+                    return !$field->getElement('relation_table') && '4' != $field->getElement('type');
                 }
             ),
         );

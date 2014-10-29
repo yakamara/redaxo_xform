@@ -12,13 +12,23 @@ class rex_xform_manager_field implements ArrayAccess
         if (count($values) == 0) {
             throw new Exception($I18N->msg('xform_field_not_found'));
         }
-        $this->values = $values;
 
-        if (!class_exists('rex_xform_' . $this->getTypeName())) {
-            rex_xform::includeClass($this->getType(), $this->getTypeName());
+        if ($class = rex_xform::includeClass($values['type_id'], $values['type_name'])) {
+            $object = new $class;
+            $definitions = $object->getDefinitions();
+            if (isset($definitions['values'])) {
+                $i = 'validate' === $values['type_id'] ? 2 : 1;
+                foreach ($definitions['values'] as $key => $value) {
+                    if (isset($values['f' . $i]) && empty($values[$key])) {
+                        $values[$key] = $values['f' . $i];
+                    }
+                    $i++;
+                }
+            }
         } else {
             // echo '<pre>';      var_dump($values);echo '</pre>';
         }
+        $this->values = $values;
     }
 
     public static function table()
