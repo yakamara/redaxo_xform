@@ -215,8 +215,13 @@ if ( $func == 'tableset_export' && $REX['USER']->isAdmin() ) {
         $xform->setObjectparams('submit_btn_label', $I18N->msg('xform_add'));
         $xform->setValueField('text', array('table_name', $I18N->msg('xform_manager_table_name'), $REX['TABLE_PREFIX']));
         $xform->setValidateField('empty', array('table_name', $I18N->msg('xform_manager_table_enter_name')));
-        $xform->setValidateField('customfunction', array('table_name', '!rex_xform_manager_table::xform_checkTableName', '', $I18N->msg('xform_manager_table_enter_specialchars')));
-        $xform->setValidateField('customfunction', array('table_name', 'rex_xform_manager_table::xform_existTableName', '', $I18N->msg('xform_manager_table_exists')));
+        $xform->setValidateField('customfunction', array('table_name', function ($label = '', $table = '', $params = '') {
+            preg_match("/([a-z])+([0-9a-z\\_])*/", $table, $matches);
+            return !count($matches) || current($matches) != $table;
+        }, '', $I18N->msg('xform_manager_table_enter_specialchars')));
+        $xform->setValidateField('customfunction', array('table_name', function ($label = '', $table = '', $params = '') {
+            return (boolean) rex_xform_manager_table::get($table);
+        }, '', $I18N->msg('xform_manager_table_exists')));
         $xform->setActionField('wrapper_value', array('table_name', '###value###')); // Tablename
         $xform->setActionField('db', array(rex_xform_manager_table::table()));
 

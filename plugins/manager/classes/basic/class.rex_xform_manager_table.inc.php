@@ -37,8 +37,6 @@ class rex_xform_manager_table implements ArrayAccess
 
     public static function get($table_name)
     {
-        global $I18N;
-
         if (isset(self::$tables[$table_name])) {
             return self::$tables[$table_name];
         }
@@ -239,41 +237,6 @@ class rex_xform_manager_table implements ArrayAccess
             }
         }
     }
-
-    // -------------------------------------------------------------------------
-
-    public static function checkTableName($table)
-    {
-        preg_match("/([a-z])+([0-9a-z\\_])*/", $table, $matches);
-        if (count($matches) > 0 && current($matches) == $table) {
-            return true;
-        }
-        return false;
-    }
-
-
-    // -------------------------------------------- xform custom function
-
-    public static function xform_checkTableName($label = '', $table = '', $params = '')
-    {
-        return self::checkTableName($table);
-    }
-
-    public static function xform_existTableName($l = '', $v = '', $params = '')
-    {
-        global $REX;
-        $q = 'select * from ' . self::table() . ' where table_name="' . $v . '" LIMIT 1';
-        $c = rex_sql::factory();
-        // $c->debugsql = 1;
-        $c->setQuery($q);
-        if ($c->getRows() > 0) {
-            return true;
-        }
-        return false;
-    }
-
-
-    // -------------------------------------------------------------------------
 
     public static function getMaximumTablePrio()
     {
