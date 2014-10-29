@@ -13,7 +13,7 @@ class rex_xform_manager_field implements ArrayAccess
             throw new Exception($I18N->msg('xform_field_not_found'));
         }
 
-        if ($class = rex_xform::includeClass($values['type_id'], $values['type_name'])) {
+        if (!empty($values['type_name']) && $class = rex_xform::includeClass($values['type_id'], $values['type_name'])) {
             $object = new $class;
             $definitions = $object->getDefinitions();
             if (isset($definitions['values'])) {
