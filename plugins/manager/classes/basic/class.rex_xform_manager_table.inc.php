@@ -323,4 +323,9 @@ class rex_xform_manager_table implements ArrayAccess
         return $this->values[$offset];
     }
 
+    public function __toString()
+    {
+        return $this->getTableName();
+    }
+
 }
