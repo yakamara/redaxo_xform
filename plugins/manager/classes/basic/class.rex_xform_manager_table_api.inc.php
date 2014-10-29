@@ -16,9 +16,9 @@ class rex_xform_manager_table_api
         }
         $table_name = $table['table_name'];
 
-        $currentTable = self::getTable($table_name);
+        $currentTable = rex_xform_manager_table::get($table_name);
 
-        if (count($currentTable) == 0) {
+        if (!$currentTable) {
 
             // Insert
             $table_insert = new rex_sql;
@@ -41,6 +41,7 @@ class rex_xform_manager_table_api
             $table_insert->insert();
 
         } else {
+            $currentTable = $currentTable->toArray();
 
             // Update
             foreach (self::$table_fields as $field) {
@@ -75,7 +76,7 @@ class rex_xform_manager_table_api
 
         self::generateTablesAndFields();
 
-        return self::getTable($table_name);
+        return rex_xform_manager_table::get($table_name);
 
     }
 
@@ -86,34 +87,17 @@ class rex_xform_manager_table_api
         }
     }
 
-    public static function getTable( $table_name )
-    {
-
-        $t = rex_sql::factory();
-        $t->debugsql = self::$debug;
-        $tables = $t->getArray('select * from ' . rex_xform_manager_table::table() . ' where table_name="' . mysql_real_escape_string($table_name) . '"');
-
-        if (count($tables) > 1) {
-            throw new Exception('only one tabledefinition is allowed. ' . count($tables) . ' are found [' . $table_name . '');
-
-        } elseif (count($tables) == 1) {
-            return $tables[0];
-
-        } else {
-            return array();
-
-        }
-
-    }
-
-    public static function exportTableset( $table_name )
+    public static function exportTableset($table_name)
     {
         $export = array();
-        $export_table = rex_xform_manager_table_api::getTable( $table_name );
-        $export_fields = rex_xform_manager_table_api::getTableFields( $table_name );
+        $export_table = rex_xform_manager_table::get($table_name);
+        $export_fields = array();
+        foreach ($export_table->getFields() as $field) {
+            $export_fields[] = $field->toArray();
+        }
 
         $export[$export_table['table_name']] = array(
-            'table' => $export_table,
+            'table' => $export_table->toArray(),
             'fields' => $export_fields,
         );
 
@@ -140,10 +124,13 @@ class rex_xform_manager_table_api
     {
         $export = array();
         foreach($table_names as $table_name) {
-            $export_table = rex_xform_manager_table_api::getTable( $table_name );
-            $export_fields = rex_xform_manager_table_api::getTableFields( $table_name );
+            $export_table = rex_xform_manager_table::get($table_name);
+            $export_fields = array();
+            foreach ($export_table->getFields() as $field) {
+                $export_fields[] = $field->toArray();
+            }
             $export[$export_table['table_name']] = array(
-            'table' => $export_table,
+            'table' => $export_table->toArray(),
             'fields' => $export_fields,
             );
         }
@@ -171,9 +158,9 @@ class rex_xform_manager_table_api
         $t->debugsql = self::$debug;
         $t->setQuery('delete from ' . rex_xform_manager_table::table() . ' where table_name="' . mysql_real_escape_string($table_name) . '"');
 
-        $remove_fields = self::getTableFields($table_name, array());
+        $remove_fields = rex_xform_manager_table::get($table_name)->getFields();
         foreach ($remove_fields as $remove_field) {
-            self::removeTablefield($table_name, $remove_field);
+            self::removeTablefield($table_name, $remove_field->getName());
         }
 
     }
@@ -199,7 +186,7 @@ class rex_xform_manager_table_api
             'name' => $table_field['name']
         );
 
-        $currentFields = self::getTableFields($table_name, $fieldIdentifier);
+        $currentFields = rex_xform_manager_table::get($table_name)->getFields($fieldIdentifier);
 
         // validate specials
         if ($table_field['type_id'] == 'validate') {
@@ -231,7 +218,7 @@ class rex_xform_manager_table_api
         } else {
 
             // Update
-            $currentField = $currentFields[0];
+            $currentField = $currentFields[0]->toArray();
             foreach ($table_field as $field_name => $field_value) {
                 $currentField[$field_name] = $field_value;
             }
@@ -259,26 +246,6 @@ class rex_xform_manager_table_api
             $field_update->update();
 
         }
-
-    }
-
-    public static function getTableFields($table_name, array $fieldIdentifier = array())
-    {
-
-        $add_where = array();
-        foreach ($fieldIdentifier as $field => $value) {
-            $add_where[] = '`' . mysql_real_escape_string($field) . '`="' . mysql_real_escape_string($value) . '"';
-        }
-
-        $where = ' where table_name="' . mysql_real_escape_string($table_name) . '"';
-        if (count($add_where) > 0) {
-            $where .= ' and (' . implode(' and ', $add_where) . ') ';
-
-        }
-
-        $f = rex_sql::factory();
-        $f->debugsql = self::$debug;
-        return $f->getArray('select * from ' . rex_xform_manager_field::table() . $where . ' order by prio');
 
     }
 
@@ -629,7 +596,7 @@ class rex_xform_manager_table_api
             $c->setQuery('SHOW COLUMNS FROM `' . $table['table_name'] . '`');
             $saved_columns = $c->getArray();
 
-            foreach (self::getTableFields($table['table_name']) as $field) {
+            foreach (rex_xform_manager_table::get($table['table_name'])->getFields() as $field) {
                 $type_name = $field['type_name'];
                 $type_id = $field['type_id'];
 

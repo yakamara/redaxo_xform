@@ -155,11 +155,24 @@ class rex_xform_manager_table implements ArrayAccess
     /**
      * Fields of XForm Definitions
      *
+     * @param array $filter
      * @return rex_xform_manager_field[]
      */
-    public function getFields()
+    public function getFields(array $filter = array())
     {
-        return $this->fields;
+        if (!$filter) {
+            return $this->fields;
+        }
+        $fields = array();
+        foreach ($this->fields as $field) {
+            foreach ($filter as $key => $value) {
+                if ($value != $field->getElement($key)) {
+                    continue 2;
+                }
+            }
+            $fields[] = $field;
+        }
+        return $fields;
     }
 
     /**

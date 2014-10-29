@@ -376,8 +376,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
                     $fields[] = 't0.`' . mysql_real_escape_string($c['name']) . '`';
                 }
             }
-            $tableDefinition = rex_xform_manager_table_api::getTable($table);
-            $order = 't0.`' . $db->escape($tableDefinition['list_sortfield'] ?: 'id') . '` ' . ($tableDefinition['list_sortorder'] ?: 'ASC');
+            $order = 't0.`' . $db->escape($tableObject['list_sortfield'] ?: 'id') . '` ' . ($tableObject['list_sortorder'] ?: 'ASC');
             $db_array = $db->getArray('select t0.id, ' . implode(', ', $fields) . ' from `' . $db->escape($table) . '` t0' . $join . $where . ' ORDER BY ' . $order);
             foreach ($db_array as $entry) {
                 $value = '';
