@@ -1331,7 +1331,7 @@ class rex_xform_manager
 
         if ($func == 'show_form_notation') {
 
-            $formbuilder_fields = $this->getTableFields($table->getTableName());
+            $formbuilder_fields = $table->getFields();
 
             $notation_php   = '';
             $notation_pipe  = '';
@@ -1562,15 +1562,6 @@ class rex_xform_manager
 
 
     // ----- Felder
-
-    function getTableFields($table)
-    {
-        global $REX;
-
-        $tb = rex_sql::factory();
-        $tb->setQuery('select * from ' . rex_xform_manager_field::table() . ' where table_name="' . $table . '" order by prio');
-        return $tb->getArray();
-    }
 
     static function checkField($l, $v, $p)
     {
