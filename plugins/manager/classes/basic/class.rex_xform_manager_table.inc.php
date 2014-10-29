@@ -321,7 +321,7 @@ class rex_xform_manager_table implements ArrayAccess
 
     public function offsetGet($offset)
     {
-        return isset($this->values[$offset]) ? $this->values[$offset] : null;
+        return $this->values[$offset];
     }
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-class rex_xform_manager_field
+class rex_xform_manager_field implements ArrayAccess
 {
     protected $values = array();
     protected static $debug = false;
@@ -86,6 +86,31 @@ class rex_xform_manager_field
     {
         return $this->values;
 
+    }
+
+    // ------------------------------------------- Array Access
+    public function offsetSet($offset, $value)
+    {
+        if (is_null($offset)) {
+            $this->values[] = $value;
+        } else {
+            $this->values[$offset] = $value;
+        }
+    }
+
+    public function offsetExists($offset)
+    {
+        return isset($this->values[$offset]);
+    }
+
+    public function offsetUnset($offset)
+    {
+        unset($this->values[$offset]);
+    }
+
+    public function offsetGet($offset)
+    {
+        return $this->values[$offset];
     }
 
 }
