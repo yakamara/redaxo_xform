@@ -6,10 +6,11 @@
  * @author <a href="http://www.yakamara.de">www.yakamara.de</a>
  */
 
+/** @type rex_xform_manager_table $table */
 $table = $params['table'];
 
 // ist feld google_geocode vorhanden ?
-$fields = rex_xform_manager_table::getXFormFields($table['table_name'], array('type_id' => 'value', 'type_name' => 'google_geocode'));
+$fields = $table->getValueFields(array('type_name' => 'google_geocode'));
 
 if (count($fields) > 0) {
 

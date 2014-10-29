@@ -19,7 +19,7 @@ $show_list = true;
 if ( $func == 'tableset_export' && $REX['USER']->isAdmin() ) {
 
     $xform_tables = array();
-    foreach (rex_xform_manager_table::getTables() as $g_table) {
+    foreach (rex_xform_manager_table::getAll() as $g_table) {
         $xform_tables[$g_table->getTableName()] = rex_translate("translate:".$g_table->getTableName()).' ['.$g_table->getTableName().']';
     }
 
@@ -136,7 +136,7 @@ if ( $func == 'tableset_export' && $REX['USER']->isAdmin() ) {
   $xform_tables = array();
   $missing_tables = array();
 
-  foreach (rex_xform_manager_table::getTables() as $g_table) {
+  foreach (rex_xform_manager_table::getAll() as $g_table) {
     $xform_tables[] = $g_table->getTableName();
   }
 
@@ -198,7 +198,7 @@ if ( $func == 'tableset_export' && $REX['USER']->isAdmin() ) {
     $xform->setHiddenField('start', rex_request('start', 'string'));
 
     $xform->setActionField('showtext', array('', $I18N->msg('xform_manager_table_entry_saved')));
-    $xform->setObjectparams('main_table', rex_xform_manager_table::$db_table_table);
+    $xform->setObjectparams('main_table', rex_xform_manager_table::table());
 
     $xform->setValueField('prio', array('prio', $I18N->msg('xform_manager_table_prio'), 'name'));
 
@@ -206,7 +206,7 @@ if ( $func == 'tableset_export' && $REX['USER']->isAdmin() ) {
         $xform->setObjectparams('submit_btn_label', $I18N->msg('xform_save'));
         $xform->setValueField('showvalue', array('table_name', $I18N->msg('xform_manager_table_name')));
         $xform->setHiddenField('table_id', $table_id);
-        $xform->setActionField('db', array(rex_xform_manager_table::$db_table_table, "id=$table_id"));
+        $xform->setActionField('db', array(rex_xform_manager_table::table(), "id=$table_id"));
         $xform->setObjectparams('main_id', $table_id);
         $xform->setObjectparams('main_where', "id=$table_id");
         $xform->setObjectparams('getdata', true); // Datein vorher auslesen
@@ -215,10 +215,15 @@ if ( $func == 'tableset_export' && $REX['USER']->isAdmin() ) {
         $xform->setObjectparams('submit_btn_label', $I18N->msg('xform_add'));
         $xform->setValueField('text', array('table_name', $I18N->msg('xform_manager_table_name'), $REX['TABLE_PREFIX']));
         $xform->setValidateField('empty', array('table_name', $I18N->msg('xform_manager_table_enter_name')));
-        $xform->setValidateField('customfunction', array('table_name', '!rex_xform_manager_table::xform_checkTableName', '', $I18N->msg('xform_manager_table_enter_specialchars')));
-        $xform->setValidateField('customfunction', array('table_name', 'rex_xform_manager_table::xform_existTableName', '', $I18N->msg('xform_manager_table_exists')));
+        $xform->setValidateField('customfunction', array('table_name', function ($label = '', $table = '', $params = '') {
+            preg_match("/([a-z])+([0-9a-z\\_])*/", $table, $matches);
+            return !count($matches) || current($matches) != $table;
+        }, '', $I18N->msg('xform_manager_table_enter_specialchars')));
+        $xform->setValidateField('customfunction', array('table_name', function ($label = '', $table = '', $params = '') {
+            return (boolean) rex_xform_manager_table::get($table);
+        }, '', $I18N->msg('xform_manager_table_exists')));
         $xform->setActionField('wrapper_value', array('table_name', '###value###')); // Tablename
-        $xform->setActionField('db', array(rex_xform_manager_table::$db_table_table));
+        $xform->setActionField('db', array(rex_xform_manager_table::table()));
 
     }
 
@@ -234,7 +239,7 @@ if ( $func == 'tableset_export' && $REX['USER']->isAdmin() ) {
     $sortFields = array('id');
     if ($func === 'edit') {
         $sortFieldsSql = rex_sql::factory();
-        $sortFieldsSql->setQuery('SELECT f.name FROM `' . rex_xform_manager_table::$db_field_table . '` f LEFT JOIN `' . rex_xform_manager_table::$db_table_table . '` t ON f.table_name = t.table_name WHERE t.id = ' . (int) $table_id . ' ORDER BY f.prio');
+        $sortFieldsSql->setQuery('SELECT f.name FROM `' . rex_xform_manager_field::table() . '` f LEFT JOIN `' . rex_xform_manager_table::table() . '` t ON f.table_name = t.table_name WHERE t.id = ' . (int) $table_id . ' ORDER BY f.prio');
         while ($sortFieldsSql->hasNext()) {
             $sortFields[] = $sortFieldsSql->getValue('name');
             $sortFieldsSql->next();
@@ -275,7 +280,7 @@ if ( $func == 'tableset_export' && $REX['USER']->isAdmin() ) {
         } elseif ($func == 'add') {
             $table_name = $xform->objparams['value_pool']['sql']['table_name'];
 
-            $table = rex_xform_manager_table::getByTablename($table_name);
+            $table = rex_xform_manager_table::get($table_name);
             if ($table) {
                 $t = new rex_xform_manager();
                 $t->setTable($table);
@@ -325,14 +330,14 @@ if ($show_list && $REX['USER']->isAdmin()) {
 
     $table_echo = '<b>';
     $table_echo .= $I18N->msg('xform_manager_table').': <a href=index.php?page=' . $page . '&subpage=' . $subpage . '&func=add>' . $I18N->msg('xform_manager_create') . '</a>';
-    $table_echo .= ' / <a href=index.php?page=' . $page . '&subpage=' . $subpage . '&func=migrate><b>' . $I18N->msg('xform_manager_migrate') . '</a>';
+    $table_echo .= ' | <a href=index.php?page=' . $page . '&subpage=' . $subpage . '&func=migrate><b>' . $I18N->msg('xform_manager_migrate') . '</a>';
     $table_echo .= ' '.$I18N->msg('xform_manager_tableset').':</b> <a href=index.php?page=' . $page . '&subpage=' . $subpage . '&func=tableset_export>' . $I18N->msg('xform_manager_export') . '</a>';
-    $table_echo .= ' / <a href=index.php?page=' . $page . '&subpage=' . $subpage . '&func=tableset_import>' . $I18N->msg('xform_manager_import') . '</a>';
+    $table_echo .= ' | <a href=index.php?page=' . $page . '&subpage=' . $subpage . '&func=tableset_import>' . $I18N->msg('xform_manager_import') . '</a>';
     $table_echo .= '</b>';
 
     echo rex_content_block($table_echo);
 
-    $sql = 'select id, prio, name, table_name, status, hidden from `' . rex_xform_manager_table::$db_table_table . '` order by prio,table_name';
+    $sql = 'select id, prio, name, table_name, status, hidden from `' . rex_xform_manager_table::table() . '` order by prio,table_name';
 
     $list = rex_list::factory($sql, 30);
     $list->addParam('start', rex_request('start', 'int'));
@@ -374,7 +379,7 @@ if (!$REX['USER']->isAdmin()) {
     echo '<h2 class="rex-hl2">' . $I18N->msg('xform_table_overview') . '</h2>';
     echo '<div class="rex-addon-content"><ul>';
 
-    $tables = rex_xform_manager_table::getTables();
+    $tables = rex_xform_manager_table::getAll();
     foreach ($tables as $table) {
         if ($table->isActive() && !$table->isHidden() && ($REX['USER']->isAdmin() || $REX['USER']->hasPerm($table->getPermKey()))) {
             echo '<li><a href="index.php?page=xform&subpage=manager&tripage=data_edit&table_name=' . $table->getTableName() . '">' . rex_translate($table->getName()) . '</a></li>';

@@ -16,6 +16,14 @@ Installation
 Last Changes
 -------
 
+### Version 4.10
+
+#### Neu
+* validate_customfunction: Funktion kann in jeglichem Callback-Format übergeben werden (inkl. Closures)
+
+#### Bugs
+* Manager: Bessere Abwärtskompatibilität zu alter Tabellenstruktur
+
 ### Version 4.9 // 20. Oktober 2014
 
 #### Neu

@@ -100,14 +100,14 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
                         $value = $matches[1];
                         if (false !== strpos($value, '.')) {
                             $value = explode('.', $value);
-                            $relation = rex_xform_manager_table::getRelation($this->params['main_table'], $value[0]);
+                            $relation = rex_xform_manager_table::get($this->params['main_table'])->getRelation($value[0]);
                             $value[0] = $this->getValueForKey($value[0]);
                             if ($value[0] && $relation) {
                                 $relationSql = rex_sql::factory();
                                 //$relationSql->debugsql = true;
                                 $tables = '`' . $relationSql->escape($relation['table']) . '` t0';
                                 for ($i = 1; $i < count($value) - 1; ++$i) {
-                                    $relation = rex_xform_manager_table::getRelation($relation['table'], $value[$i]);
+                                    $relation = rex_xform_manager_table::get($relation['table'])->getRelation($value[$i]);
                                     $tables .= ' LEFT JOIN `' . $relationSql->escape($relation['table']) . '` t' . $i . ' ON t' . $i . '.id = t' . ($i - 1) . '.`' . $relationSql->escape($value[$i]) . '`';
                                 }
                                 $relationSql->setQuery('SELECT t' . ($i-1) . '.`' . $relationSql->escape($value[$i]) . '` FROM ' . $tables . ' WHERE t0.id = ' . (int) $value[0]);
@@ -320,8 +320,8 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
             'description' => 'Hiermit kann man Verkn&uuml;pfungen zu anderen Tabellen setzen',
             'dbtype' => 'text',
             'hooks' => array(
-                'preCreate' => function ($field) {
-                    return empty($field['relation_table']) && '4' != $field['type'];
+                'preCreate' => function (rex_xform_manager_field $field) {
+                    return !$field->getElement('relation_table') && '4' != $field->getElement('type');
                 }
             ),
         );
@@ -344,8 +344,10 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
 
     private static function getListValues($table, $field, array $filter = array())
     {
+
         $filterHash = sha1(json_encode($filter));
         if (!isset(self::$xform_list_values[$table][$field][$filterHash])) {
+            $tableObject = rex_xform_manager_table::get($table);
             self::$xform_list_values[$table][$field][$filterHash] = array();
             $db = rex_sql::factory();
             //$db->debugsql = true;
@@ -357,7 +359,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
                 foreach ($filter as $key => $value) {
                     if (!is_array($value)) {
                         $where[] = 't0.`' . $db->escape($key) . '` = "' . $db->escape($value) . '"';
-                    } elseif ($relation = rex_xform_manager_table::getRelation($table, $key)) {
+                    } elseif ($relation = $tableObject->getRelation($key)) {
                         $join .= ' LEFT JOIN `' . $db->escape($relation['table']) . '` t' . $joinIndex . ' ON t0.`' . $db->escape($key) . '` = t' . $joinIndex . '.id';
                         foreach ($value as $k => $v) {
                             $where[] = 't' . $joinIndex . '.`' . $db->escape($k) . '` = "' . $db->escape($v) . '"';
@@ -374,15 +376,14 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
                     $fields[] = 't0.`' . mysql_real_escape_string($c['name']) . '`';
                 }
             }
-            $tableDefinition = rex_xform_manager_table_api::getTable($table);
-            $order = 't0.`' . $db->escape($tableDefinition['list_sortfield'] ?: 'id') . '` ' . ($tableDefinition['list_sortorder'] ?: 'ASC');
+            $order = 't0.`' . $db->escape($tableObject['list_sortfield'] ?: 'id') . '` ' . ($tableObject['list_sortorder'] ?: 'ASC');
             $db_array = $db->getArray('select t0.id, ' . implode(', ', $fields) . ' from `' . $db->escape($table) . '` t0' . $join . $where . ' ORDER BY ' . $order);
             foreach ($db_array as $entry) {
                 $value = '';
                 foreach ($concat as $c) {
                     if ($c['field']) {
                         $v = $entry[$c['name']];
-                        if ($relation = rex_xform_manager_table::getRelation($table, $c['name'])) {
+                        if ($relation = $tableObject->getRelation($c['name'])) {
                             $relationListValues = self::getListValues($relation['table'], $relation['field']);
                             if (isset($relationListValues[$v])) {
                                 $v = $relationListValues[$v];
@@ -427,11 +428,13 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
 
     protected function getRelationTableFields()
     {
-        return rex_xform_manager_table::getRelationTableFields(
-            $this->getElement('relation_table'),
-            $this->params['main_table'],
-            $this->getElement('table')
-        );
+        $table = rex_xform_manager_table::get($this->getElement('relation_table'));
+        $source = $table->getRelationsTo($this->params['main_table']);
+        $target = $table->getRelationsTo($this->getElement('table'));
+        if (!empty($source) && !empty($target)) {
+            return array('source' => reset($source)->getName(), 'target' => reset($target)->getName());
+        }
+        return array('source' => null, 'target' => null);
     }
 
     protected function getRelationTableValues()
