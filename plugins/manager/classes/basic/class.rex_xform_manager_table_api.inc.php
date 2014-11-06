@@ -154,13 +154,16 @@ class rex_xform_manager_table_api
 
     public static function removeTable($table_name)
     {
+        $table = rex_xform_manager_table::get($table_name);
+
         $t = rex_sql::factory();
         $t->debugsql = self::$debug;
         $t->setQuery('delete from ' . rex_xform_manager_table::table() . ' where table_name="' . mysql_real_escape_string($table_name) . '"');
 
-        $remove_fields = rex_xform_manager_table::get($table_name)->getFields();
-        foreach ($remove_fields as $remove_field) {
-            self::removeTablefield($table_name, $remove_field->getName());
+        if ($table) {
+            foreach ($table->getFields() as $remove_field) {
+                self::removeTablefield($table_name, $remove_field->getName());
+            }
         }
 
     }
