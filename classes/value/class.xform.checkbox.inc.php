@@ -11,12 +11,12 @@ class rex_xform_checkbox extends rex_xform_abstract
     function enterObject()
     {
         ## set default value attribute
-        if ($this->getElement(3) == '') {
+        if ($this->getElement('values') == '') {
             $v = 1; // gecheckt
             $w = 0; // nicht gecheckt
 
         } else {
-            $values = explode(',', $this->getElement(3));
+            $values = explode(',', $this->getElement('values'));
 
             if (count($values) == 1) {
                 $v = $values[0];
@@ -31,7 +31,7 @@ class rex_xform_checkbox extends rex_xform_abstract
         }
 
         // first time and default is true -> checked
-        if ($this->params['send'] != 1 && $this->getElement(4) == 1 && $this->getValue() === '') {
+        if ($this->params['send'] != 1 && $this->getElement('default') == 1 && $this->getValue() === '') {
             $this->setValue($v);
 
         // if check value is given -> checked
@@ -74,4 +74,51 @@ class rex_xform_checkbox extends rex_xform_abstract
             'famous' => true
         );
     }
+
+    static function getSearchField($params)
+    {
+
+        if ($params["field"]->getElement('values') == '') {
+            $v = 1; // gecheckt
+            $w = 0; // nicht gecheckt
+
+        } else {
+            $values = explode(',', $params["field"]->getElement('values'));
+
+            if (count($values) == 1) {
+                $v = $values[0];
+                $w = '';
+
+            } else {
+                $v = $values[1];
+                $w = $values[0];
+
+            }
+
+        }
+
+        $options = array();
+        $options[$v] = 'checked';
+        $options[$w] = 'not checked';
+        $options[''] = '---';
+
+        $params["searchForm"]->setValueField('select',array(
+            'name' => $params["field"]->getName(),
+            'label' => $params["field"]->getLabel(),
+            'options' => $options
+        ));
+
+    }
+
+    static public function getSearchFilter($params)
+    {
+      $value = $params['value'];
+      $field =  $params['field']->getName();
+
+      return ' `' . mysql_real_escape_string($field) . "` =  '" . mysql_real_escape_string($value) . "'";
+
+    }
+
+
+
 }

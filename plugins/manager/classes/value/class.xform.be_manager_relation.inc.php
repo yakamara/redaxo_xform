@@ -458,4 +458,43 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
         return $values;
     }
 
+
+    static public function getSearchField($params)
+    {
+
+      if ($params["field"]->getElement('relation_table') != "") {
+        return;
+      }
+
+      $params["searchForm"]->setValueField('be_manager_relation', array(
+          'name' => $params["field"]->getName(),
+          'label' => $params["field"]->getLabel(),
+          'empty_option' => true,
+          'table' => $params["field"]->getElement('table'),
+          'field' => $params["field"]->getElement('field'),
+          'type' => 2,
+          /* TODO:
+            eventuell auch type 3
+            wie kann man das optional machen ?
+          */
+
+        )
+      );
+    }
+
+    static public function getSearchFilter($params)
+    {
+      $value = $params['value'];
+      $field =  $params['field']->getName();
+
+      if ($value != "") {
+        return ' ( FIND_IN_SET("' . mysql_real_escape_string($value) . '", `' . mysql_real_escape_string($field) . '`) )';
+
+      }
+
+    }
+
+
+
+
 }

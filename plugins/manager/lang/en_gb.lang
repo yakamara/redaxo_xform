@@ -133,6 +133,8 @@ xform_dataset_delete = delete dataset
 xform_dataset_deleted = dataset has been deleted
 xform_dataset_delete_confirm = Really delete dataset?
 
+xform_data = Data
+xform_manager_search = Search
 
 # field.inc.php
 xform_tablenotexists = This table does not exist!
@@ -155,8 +157,6 @@ xform_choosenadd = select fields
 xform_choosenadd_description = Please select the field which you want to use for your administration. There are value field which are usually used for entries as also validate fields which validate value fields on certain criteria.
 xform_addfield = add field
 xform_editfields = edit fields
-
-xform_data = Data
 
 xform_id_is_missing = ID missing
 xform_id_missing_info = [en] Die Tabelle hat leider kein ID Feld mit autoincrement. Somit kann XFORM nicht damit arbeiten. Bitte aktualisieren Sie die Tabelle und legen notfalls die ID manuell an.
