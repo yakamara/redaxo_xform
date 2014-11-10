@@ -49,7 +49,7 @@ class rex_xform_manager
 
     function setLinkVars($linkvars)
     {
-        $this->linkvars = $linkvars;
+        $this->linkvars = array_merge($this->linkvars, $linkvars);
     }
 
     function getLinkVars()
@@ -90,6 +90,10 @@ class rex_xform_manager
         if (count($rex_xform_filter) > 0) {
             $popup = true;
 
+        }
+        if (is_bool($p = rex_request('popup', 'bool', null))) {
+            $popup = $p;
+            $this->setLinkVars(array('popup' => $p ? 1 : 0));
         }
 
         // SearchObject
