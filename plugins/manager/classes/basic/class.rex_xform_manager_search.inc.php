@@ -84,7 +84,7 @@ class rex_xform_manager_search
             }
 
         }
-        $xform->setValueField('submit', array('xform_search_submit', 'search'));
+        $xform->setValueField('submit', array('xform_search_submit', $I18N->msg('xform_search')));
 
         return $xform->getForm();
     }
