@@ -554,6 +554,7 @@ class rex_xform_manager
 
                 // ---------- LISTE AUSGEBEN
 
+                /** @type rex_list $list */
                 $list = rex_list::factory($sql, $this->table->getListAmount());
                 $list->setColumnFormat('id', 'Id');
 
@@ -799,6 +800,8 @@ class rex_xform_manager
             for ($i = 0; $i < $sql_felder->getRows(); $i++) {
                 if (in_array($sql_felder->getValue('name'), $existingFields)) {
                     $fields[] = '`' . $sql_felder->getValue('name') . '`';
+                } else {
+                    $fields[] = 'NULL AS `' . $sql_felder->getValue('name') . '`';
                 }
                 $sql_felder->next();
             }

@@ -82,47 +82,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
 
         $filter = array();
         if ($rawFilter = $this->getElement('filter')) {
-            $rawFilter = preg_split('/\v+/', $rawFilter);
-            $setValue = function ($key, $value) use (&$filter) {
-                if (false !== strpos($key, '.')) {
-                    list($key1, $key2) = explode('.', $key, 2);
-                    $filter[$key1][$key2] = $value;
-                } else {
-                    $filter[$key] = $value;
-                }
-            };
-            foreach ($rawFilter as $f) {
-                $f = explode('=', $f, 2);
-                if (2 === count($f)) {
-                    $key = trim($f[0]);
-                    $value = trim($f[1]);
-                    if (preg_match('/^###(.+)###$/', $value, $matches)) {
-                        $value = $matches[1];
-                        if (false !== strpos($value, '.')) {
-                            $value = explode('.', $value);
-                            $relation = rex_xform_manager_table::get($this->params['main_table'])->getRelation($value[0]);
-                            $value[0] = $this->getValueForKey($value[0]);
-                            if ($value[0] && $relation) {
-                                $relationSql = rex_sql::factory();
-                                //$relationSql->debugsql = true;
-                                $tables = '`' . $relationSql->escape($relation['table']) . '` t0';
-                                for ($i = 1; $i < count($value) - 1; ++$i) {
-                                    $relation = rex_xform_manager_table::get($relation['table'])->getRelation($value[$i]);
-                                    $tables .= ' LEFT JOIN `' . $relationSql->escape($relation['table']) . '` t' . $i . ' ON t' . $i . '.id = t' . ($i - 1) . '.`' . $relationSql->escape($value[$i]) . '`';
-                                }
-                                $relationSql->setQuery('SELECT t' . ($i - 1) . '.`' . $relationSql->escape($value[$i]) . '` FROM ' . $tables . ' WHERE t0.id = ' . (int) $value[0]);
-                                if ($relationSql->getRows()) {
-                                    $setValue($key, $relationSql->getValue($value[$i]));
-                                }
-                            }
-                        } elseif ($value = $this->getValueForKey($value)) {
-                            $setValue($key, $value);
-                        }
-                    } else {
-                        $setValue($key, $value);
-                    }
-                }
-            }
+            $filter = self::getFilterArray($rawFilter, $this->params['main_table'], array($this, 'getValueForKey'));
         }
         if (isset($this->params['rex_xform_set'][$this->getName()]) && is_array($this->params['rex_xform_set'][$this->getName()])) {
             $filter = array_merge($filter, $this->params['rex_xform_set'][$this->getName()]);
@@ -193,22 +153,10 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
 
         // --------------------------------------- POPUP, 1-n
 
-        $addFilterParams = function (&$link, array $filter) use (&$addFilterParams) {
-            foreach ($filter as $key => $value) {
-                if (is_array($value)) {
-                    foreach ($value as $k => $v) {
-                        $addFilterParams($link, array($key . '][' . $k => $v));
-                    }
-                } else {
-                    $link .= '&rex_xform_filter[' . $key . ']=' . $value . '&rex_xform_set[' . $key . ']=' . $value;
-                }
-            }
-        };
-
         if ($this->relation['relation_type'] == 4) {
             $filter[$this->relation['target_field']] = $this->params['main_id'];
             $link = 'index.php?page=xform&subpage=manager&tripage=data_edit&table_name=' . $this->relation['target_table'];
-            $addFilterParams($link, $filter);
+            self::addFilterParams($link, $filter);
             $this->params['form_output'][$this->getId()] = $this->parse('value.be_manager_relation.tpl.php', compact('valueName', 'options', 'link'));
 
         }
@@ -331,7 +279,26 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
     {
         // TODO Relation table berücksichtigen
 
-        $listValues = self::getListValues($params['params']['field']['table'], $params['params']['field']['field']);
+        $field = $params['params']['field'];
+
+        if (4 == $field['type']) {
+            $link = 'index.php?page=xform&subpage=manager&tripage=data_edit&table_name=' . $field['table'];
+            if (is_int($popup = rex_request('popup', 'int', null))) {
+                $link .= '&popup=' . $popup;
+            } elseif (!rex_request('rex_filter', 'array')) {
+                $link .= '&popup=0';
+            }
+            if (isset($field['filter']) && $field['filter']) {
+                $filter = self::getFilterArray($field['filter'], $field['table_name'], function ($key) use ($params) {
+                    return $params['list']->getValue($key);
+                });
+            }
+            $filter[$field['field']] = $params['list']->getValue('id');
+            self::addFilterParams($link, $filter);
+            return '<a href="' . $link . '">' . rex_translate($field['label']) . '</a>';
+        }
+
+        $listValues = self::getListValues($field['table'], $field['field']);
         $return = array();
         foreach (explode(',', $params['value']) as $value) {
             if (isset($listValues[$value])) {
@@ -424,6 +391,66 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
             ));
         }
         return $concat;
+    }
+
+    private static function getFilterArray($rawFilter, $table, callable $getValueForKey)
+    {
+        $rawFilter = preg_split('/\v+/', $rawFilter);
+        $filter = array();
+        $setValue = function ($key, $value) use (&$filter) {
+            if (false !== strpos($key, '.')) {
+                list($key1, $key2) = explode('.', $key, 2);
+                $filter[$key1][$key2] = $value;
+            } else {
+                $filter[$key] = $value;
+            }
+        };
+        foreach ($rawFilter as $f) {
+            $f = explode('=', $f, 2);
+            if (2 === count($f)) {
+                $key = trim($f[0]);
+                $value = trim($f[1]);
+                if (preg_match('/^###(.+)###$/', $value, $matches)) {
+                    $value = $matches[1];
+                    if (false !== strpos($value, '.')) {
+                        $value = explode('.', $value);
+                        $relation = rex_xform_manager_table::get($table)->getRelation($value[0]);
+                        $value[0] = $getValueForKey($value[0]);
+                        if ($value[0] && $relation) {
+                            $relationSql = rex_sql::factory();
+                            //$relationSql->debugsql = true;
+                            $tables = '`' . $relationSql->escape($relation['table']) . '` t0';
+                            for ($i = 1; $i < count($value) - 1; ++$i) {
+                                $relation = rex_xform_manager_table::get($relation['table'])->getRelation($value[$i]);
+                                $tables .= ' LEFT JOIN `' . $relationSql->escape($relation['table']) . '` t' . $i . ' ON t' . $i . '.id = t' . ($i - 1) . '.`' . $relationSql->escape($value[$i]) . '`';
+                            }
+                            $relationSql->setQuery('SELECT t' . ($i - 1) . '.`' . $relationSql->escape($value[$i]) . '` FROM ' . $tables . ' WHERE t0.id = ' . (int) $value[0]);
+                            if ($relationSql->getRows()) {
+                                $setValue($key, $relationSql->getValue($value[$i]));
+                            }
+                        }
+                    } elseif ($value = $getValueForKey($value)) {
+                        $setValue($key, $value);
+                    }
+                } else {
+                    $setValue($key, $value);
+                }
+            }
+        }
+        return $filter;
+    }
+
+    private static function addFilterParams(&$link, array $filter)
+    {
+        foreach ($filter as $key => $value) {
+            if (is_array($value)) {
+                foreach ($value as $k => $v) {
+                    self::addFilterParams($link, array($key . '][' . $k => $v));
+                }
+            } else {
+                $link .= '&rex_xform_filter[' . $key . ']=' . $value . '&rex_xform_set[' . $key . ']=' . $value;
+            }
+        }
     }
 
     protected function getRelationTableFields()
