@@ -110,7 +110,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
                                     $relation = rex_xform_manager_table::get($relation['table'])->getRelation($value[$i]);
                                     $tables .= ' LEFT JOIN `' . $relationSql->escape($relation['table']) . '` t' . $i . ' ON t' . $i . '.id = t' . ($i - 1) . '.`' . $relationSql->escape($value[$i]) . '`';
                                 }
-                                $relationSql->setQuery('SELECT t' . ($i-1) . '.`' . $relationSql->escape($value[$i]) . '` FROM ' . $tables . ' WHERE t0.id = ' . (int) $value[0]);
+                                $relationSql->setQuery('SELECT t' . ($i - 1) . '.`' . $relationSql->escape($value[$i]) . '` FROM ' . $tables . ' WHERE t0.id = ' . (int) $value[0]);
                                 if ($relationSql->getRows()) {
                                     $setValue($key, $relationSql->getValue($value[$i]));
                                 }
@@ -459,38 +459,37 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
     }
 
 
-    static public function getSearchField($params)
+    public static function getSearchField($params)
     {
+        if ($params['field']->getElement('relation_table') != '') {
+            return;
+        }
 
-      if ($params["field"]->getElement('relation_table') != "") {
-        return;
-      }
-
-      $params["searchForm"]->setValueField('be_manager_relation', array(
-          'name' => $params["field"]->getName(),
-          'label' => $params["field"]->getLabel(),
-          'empty_option' => true,
-          'table' => $params["field"]->getElement('table'),
-          'field' => $params["field"]->getElement('field'),
-          'type' => 2,
-          /* TODO:
-            eventuell auch type 3
-            wie kann man das optional machen ?
-          */
+        $params['searchForm']->setValueField('be_manager_relation', array(
+            'name' => $params['field']->getName(),
+            'label' => $params['field']->getLabel(),
+            'empty_option' => true,
+            'table' => $params['field']->getElement('table'),
+            'field' => $params['field']->getElement('field'),
+            'type' => 2,
+                /* TODO:
+                  eventuell auch type 3
+                  wie kann man das optional machen ?
+                */
 
         )
-      );
+        );
     }
 
-    static public function getSearchFilter($params)
+    public static function getSearchFilter($params)
     {
-      $value = $params['value'];
-      $field =  $params['field']->getName();
+        $value = $params['value'];
+        $field =  $params['field']->getName();
 
-      if ($value != "") {
-        return ' ( FIND_IN_SET("' . mysql_real_escape_string($value) . '", `' . mysql_real_escape_string($field) . '`) )';
+        if ($value != '') {
+            return ' ( FIND_IN_SET("' . mysql_real_escape_string($value) . '", `' . mysql_real_escape_string($field) . '`) )';
 
-      }
+        }
 
     }
 

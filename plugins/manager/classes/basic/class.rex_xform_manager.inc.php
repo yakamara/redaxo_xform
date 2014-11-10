@@ -95,43 +95,43 @@ class rex_xform_manager
         // SearchObject
         $searchObject = new rex_xform_manager_search($this->table);
 
-      $searchObject->setLinkVars(array("list" => rex_request('list', 'string', '')));
-      $searchObject->setLinkVars(array("start" => rex_request('start', 'string', '')));
-      $searchObject->setLinkVars(array("sort" => rex_request('sort', 'string', '')));
-      $searchObject->setLinkVars(array("sorttype" => rex_request('sorttype', 'string', '')));
-      $searchObject->setLinkVars($this->getLinkVars());
+        $searchObject->setLinkVars(array("list" => rex_request('list', 'string', '')));
+        $searchObject->setLinkVars(array("start" => rex_request('start', 'string', '')));
+        $searchObject->setLinkVars(array("sort" => rex_request('sort', 'string', '')));
+        $searchObject->setLinkVars(array("sorttype" => rex_request('sorttype', 'string', '')));
+        $searchObject->setLinkVars($this->getLinkVars());
 
         if (count($rex_xform_filter) > 0) {
-          foreach ($rex_xform_filter as $k => $v) {
-            if (is_array($v)) {
-              foreach ($v as $k2 => $v2) {
-                $searchObject->setLinkVars(array('rex_xform_filter[' . $k . '][' . $k2 . ']' => $v2));
-              }
-            } else {
-              $searchObject->setLinkVars(array('rex_xform_filter[' . $k . ']' => $v));
+            foreach ($rex_xform_filter as $k => $v) {
+                if (is_array($v)) {
+                    foreach ($v as $k2 => $v2) {
+                        $searchObject->setLinkVars(array('rex_xform_filter[' . $k . '][' . $k2 . ']' => $v2));
+                    }
+                } else {
+                    $searchObject->setLinkVars(array('rex_xform_filter[' . $k . ']' => $v));
+                }
             }
-          }
         }
         if (count($rex_xform_set) > 0) {
-          foreach ($rex_xform_set as $k => $v) {
-            if (is_array($v)) {
-              foreach ($v as $k2 => $v2) {
-                $searchObject->setLinkVars(array('rex_xform_set[' . $k . '][' . $k2 . ']' => $v2));
-              }
-            } else {
-              $searchObject->setLinkVars(array('rex_xform_set[' . $k . ']' => $v));
+            foreach ($rex_xform_set as $k => $v) {
+                if (is_array($v)) {
+                    foreach ($v as $k2 => $v2) {
+                        $searchObject->setLinkVars(array('rex_xform_set[' . $k . '][' . $k2 . ']' => $v2));
+                    }
+                } else {
+                    $searchObject->setLinkVars(array('rex_xform_set[' . $k . ']' => $v));
+                }
             }
-          }
         }
         if (count($rex_xform_manager_opener) > 0) {
-          foreach ($rex_xform_manager_opener as $k => $v) {
-            $searchObject->setLinkVars(array('rex_xform_manager_opener[' . $k . ']' => $v));
-          }
+            foreach ($rex_xform_manager_opener as $k => $v) {
+                $searchObject->setLinkVars(array('rex_xform_manager_opener[' . $k . ']' => $v));
+            }
         }
 
         $searchform = '';
         if ($this->hasDataPageFunction('search')) {
-          $searchform = '<div class="rex-addon-output">
+            $searchform = '<div class="rex-addon-output">
                              <h3 class="rex-hl2">'.$I18N->msg('xform_manager_search').'</h3>
                              <div class="rex-addon-content">
                             <div class="xform" id="rex-xform">'.$searchObject->getForm().'</div>

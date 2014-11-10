@@ -75,15 +75,14 @@ class rex_xform_checkbox extends rex_xform_abstract
         );
     }
 
-    static function getSearchField($params)
+    public static function getSearchField($params)
     {
-
-        if ($params["field"]->getElement('values') == '') {
+        if ($params['field']->getElement('values') == '') {
             $v = 1; // gecheckt
             $w = 0; // nicht gecheckt
 
         } else {
-            $values = explode(',', $params["field"]->getElement('values'));
+            $values = explode(',', $params['field']->getElement('values'));
 
             if (count($values) == 1) {
                 $v = $values[0];
@@ -102,15 +101,15 @@ class rex_xform_checkbox extends rex_xform_abstract
         $options[$w] = 'not checked';
         $options[''] = '---';
 
-        $params["searchForm"]->setValueField('select',array(
-            'name' => $params["field"]->getName(),
-            'label' => $params["field"]->getLabel(),
+        $params['searchForm']->setValueField('select', array(
+            'name' => $params['field']->getName(),
+            'label' => $params['field']->getLabel(),
             'options' => $options
         ));
 
     }
 
-    static public function getSearchFilter($params)
+    public static function getSearchFilter($params)
     {
       $value = $params['value'];
       $field =  $params['field']->getName();

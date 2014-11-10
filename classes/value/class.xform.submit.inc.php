@@ -20,7 +20,7 @@ class rex_xform_submit extends rex_xform_abstract
         $real_value = $this->getElement(5);
         $value_on_button = $this->getElement(2);
         if ($real_value == "") {
-          $real_value = $value_on_button;
+            $real_value = $value_on_button;
         }
 
         if ($this->getValue() != $value_on_button) {
@@ -32,12 +32,12 @@ class rex_xform_submit extends rex_xform_abstract
         $this->params['form_output'][$this->getId()] = $this->parse('value.submit.tpl.php');
 
         if (!isset($this->params['value_pool']['email'][$this->getName()]) || $this->params['value_pool']['email'][$this->getName()] == "") {
-          $this->params['value_pool']['email'][$this->getName()] = stripslashes($real_value);
+            $this->params['value_pool']['email'][$this->getName()] = stripslashes($real_value);
         }
 
         if ($this->getElement(3) != 'no_db') {
             if (!isset($this->params['value_pool']['sql'][$this->getName()]) || $this->params['value_pool']['sql'][$this->getName()] == "") {
-              $this->params['value_pool']['sql'][$this->getName()] = $real_value;
+                $this->params['value_pool']['sql'][$this->getName()] = $real_value;
             }
         }
 

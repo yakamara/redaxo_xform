@@ -21,33 +21,36 @@
 
 class rex_xform_manager_search
 {
+    private $linkVars = array();
+    private $scriptPath = '';
 
-    var $linkVars = array();
-    var $table = NULL;
-    var $scriptPath = '';
+    /** @type rex_xform_manager_table */
+    protected $table = null;
 
-    public function rex_xform_manager_search($table) {
+    public function rex_xform_manager_search(rex_xform_manager_table $table)
+    {
         $this->table = $table;
         $this->setScriptPath($_SERVER['PHP_SELF']);
-
     }
 
-    public function setLinkVar($k, $v) {
+    public function setLinkVar($k, $v)
+    {
         $this->linkVars[$k] = $v;
-
     }
 
-    public function setLinkVars($vars) {
+    public function setLinkVars($vars)
+    {
        $this->linkVars = array_merge($this->linkVars, $vars);
-
     }
 
-    public function setScriptPath($scriptpath) {
+    public function setScriptPath($scriptpath)
+    {
        $this->scriptPath = $scriptpath;
-
     }
 
-    function getForm() {
+    function getForm()
+    {
+        global $I18N;
 
         if (!$this->table->isSearchable()) {
             return '';
@@ -60,8 +63,8 @@ class rex_xform_manager_search
         $xform->setObjectparams('form_action', $this->scriptPath);
         $xform->setObjectparams('form_method', 'get');
 
-        foreach($this->linkVars as $k => $v) {
-          $xform->setHiddenField($k, $v);
+        foreach ($this->linkVars as $k => $v) {
+            $xform->setHiddenField($k, $v);
         }
 
         // $xform->setValueField('text', array('label' => 'ID', 'name' => 'id'));
@@ -71,14 +74,12 @@ class rex_xform_manager_search
             if ($field->getTypeName() && $field->getType() == 'value' && $field->isSearchable()) {
                 rex_xform::includeClass($field->getType(), $field->getTypeName());
                 if (method_exists('rex_xform_' . $field->getTypeName(), 'getSearchField')) {
-                    call_user_func('rex_xform_' . $field->getTypeName() .'::getSearchField',
-                        array(
-                          'searchForm' => $xform,
-                          'searchObject' => $this,
-                          'field' => $field,
-                          'fields' => $this->table->getFields()
-                        )
-                      );
+                    call_user_func('rex_xform_' . $field->getTypeName() . '::getSearchField', array(
+                        'searchForm' => $xform,
+                        'searchObject' => $this,
+                        'field' => $field,
+                        'fields' => $this->table->getFields()
+                    ));
                 }
             }
 
@@ -86,29 +87,27 @@ class rex_xform_manager_search
         $xform->setValueField('submit', array('xform_search_submit', 'search'));
 
         return $xform->getForm();
-
     }
 
 
-    function getSearchVars() {
-
-        $rex_xform_searchvars = rex_request('rex_xform_searchvars','array');
+    function getSearchVars()
+    {
+        $rex_xform_searchvars = rex_request('rex_xform_searchvars', 'array');
         unset($rex_xform_searchvars['send']);
         unset($rex_xform_searchvars['xform_search_submit']);
-        foreach($rex_xform_searchvars as $k => $v) {
-            if ($v == "") {
+        foreach ($rex_xform_searchvars as $k => $v) {
+            if ($v == '') {
                 unset($rex_xform_searchvars[$k]);
             }
         }
         return array('rex_xform_searchvars' => $rex_xform_searchvars);
-
     }
 
 
-    function getQueryFilterArray() {
-
+    function getQueryFilterArray()
+    {
         if (!$this->table->isSearchable()) {
-          return array();
+            return array();
         }
 
         $queryFilter = array();
@@ -119,11 +118,11 @@ class rex_xform_manager_search
             if (array_key_exists($field->getName(), $vars['rex_xform_searchvars']) && $field->getType() == 'value' && $field->isSearchable()) {
                 rex_xform::includeClass($field->getType(), $field->getTypeName());
                 if (method_exists('rex_xform_' . $field->getTypeName(), 'getSearchFilter')) {
-                    $qf = call_user_func('rex_xform_' . $field->getTypeName() .'::getSearchFilter',
+                    $qf = call_user_func('rex_xform_' . $field->getTypeName() . '::getSearchFilter',
                         array(
-                          'field' => $field,
-                          'fields' => $this->table->getFields(),
-                          'value' => $vars['rex_xform_searchvars'][$field->getName()]
+                            'field' => $field,
+                            'fields' => $this->table->getFields(),
+                            'value' => $vars['rex_xform_searchvars'][$field->getName()]
                         )
                     );
                     if ($qf != '') {
@@ -135,7 +134,6 @@ class rex_xform_manager_search
         }
 
         return $queryFilter;
-
     }
 
 
