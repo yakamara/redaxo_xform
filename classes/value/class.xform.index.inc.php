@@ -54,7 +54,7 @@ class rex_xform_index extends rex_xform_abstract
             'name' => 'index',
             'values' => array(
                 'name'     => array( 'type' => 'name',   'label' => 'Feld' ),
-                'names'    => array( 'type' => 'names',  'label' => 'Names, kommasepariert'),
+                'names'    => array( 'type' => 'select_names',  'label' => 'Felder'),
                 'no_db'    => array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 0),
                 'function' => array( 'type' => 'select',  'label' => 'Opt. Codierfunktion', 'default' => '0', 'definition' => 'Keine Funktion=,md5,sha1' ),
             ),
