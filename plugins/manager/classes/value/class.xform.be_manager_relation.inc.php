@@ -165,7 +165,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
         // --------------------------------------- save
 
         $this->params['value_pool']['email'][$this->getName()] = stripslashes(implode(',', $this->getValue()));
-        if (!$this->getElement('relation_table')) {
+        if (!$this->getElement('relation_table') && $this->relation['relation_type'] != 4) {
             $this->params['value_pool']['sql'][$this->getName()] = implode(',', array_unique($this->getValue()));
         }
     }
