@@ -19,7 +19,7 @@ class rex_xform_manager_field implements ArrayAccess
             if (isset($definitions['values'])) {
                 $i = 'validate' === $values['type_id'] ? 2 : 1;
                 foreach ($definitions['values'] as $key => $value) {
-                    if (isset($values['f' . $i]) && empty($values[$key])) {
+                    if (isset($values['f' . $i]) && (!isset($values[$key]) || is_null($values[$key]) || '' === $values[$key])) {
                         $values[$key] = $values['f' . $i];
                     }
                     $i++;
