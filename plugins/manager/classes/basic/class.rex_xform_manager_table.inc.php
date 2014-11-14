@@ -15,6 +15,7 @@ class rex_xform_manager_table implements ArrayAccess
 
     protected static $debug = false;
 
+    /** @type self[] */
     protected static $tables = array();
 
     public function __construct(array $values)
