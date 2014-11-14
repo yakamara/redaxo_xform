@@ -725,7 +725,8 @@ class rex_xform_manager
                 echo '</span><br style="clear:both;" /></div></div>';
 
                 // SEARCHBLOCK
-                $display = count($searchObject->getSearchVars()["rex_xform_searchvars"]) >0 ? 'block' : 'none';
+                $searchVars = $searchObject->getSearchVars();
+                $display = count($searchVars["rex_xform_searchvars"]) >0 ? 'block' : 'none';
                 echo '<div id="searchblock" style="display:' . $display . ';">' . $searchform . '</div>';
 
                 echo $list->get();
