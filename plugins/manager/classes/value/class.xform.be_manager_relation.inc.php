@@ -285,7 +285,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
             $link = 'index.php?page=xform&subpage=manager&tripage=data_edit&table_name=' . $field['table'];
             if (is_int($popup = rex_request('popup', 'int', null))) {
                 $link .= '&popup=' . $popup;
-            } elseif (!rex_request('rex_filter', 'array')) {
+            } elseif (!rex_request('rex_xform_filter', 'array')) {
                 $link .= '&popup=0';
             }
             if (isset($field['filter']) && $field['filter']) {
