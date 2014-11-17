@@ -175,6 +175,8 @@ class rex_xform_manager_table_api
 
     public static function setTableField($table_name, array $table_field)
     {
+        unset($table_field['id']);
+
         if ($table_name == '') {
             throw new Exception('table_name must be set');
         }
