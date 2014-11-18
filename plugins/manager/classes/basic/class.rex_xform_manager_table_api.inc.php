@@ -600,11 +600,11 @@ class rex_xform_manager_table_api
                     $dbtype = $types[$type_id][$type_name]['dbtype'];
 
                     if ($dbtype != 'none' && $dbtype != '') {
-                        if (
-                            isset($types[$type_id][$type_name]['hooks']['preCreate']) &&
-                            false === call_user_func($types[$type_id][$type_name]['hooks']['preCreate'], $field)
-                        ) {
-                            continue;
+                        if (isset($types[$type_id][$type_name]['hooks']['preCreate'])) {
+                            $dbtype = call_user_func($types[$type_id][$type_name]['hooks']['preCreate'], $field);
+                            if (false === $dbtype) {
+                                continue;
+                            }
                         }
                         $add_column = true;
                         foreach ($saved_columns as $uu => $vv) {
