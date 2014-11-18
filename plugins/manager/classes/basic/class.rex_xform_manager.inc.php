@@ -245,7 +245,7 @@ class rex_xform_manager
                 if (rex_register_extension_point('XFORM_DATA_DELETE', $delete, array('id' => $data_id, 'value' => $data, 'table' => $this->table))) {
                     $query = 'delete from ' . $this->table->getTablename() . ' where id=' . $data_id;
                     $delsql = new rex_sql;
-                    // $delsql->debugsql=1;
+                    $delsql->debugsql = self::$debug;
                     $delsql->setQuery($query);
                     echo rex_info($I18N->msg('xform_datadeleted'));
                     $func = '';
@@ -646,12 +646,12 @@ class rex_xform_manager
                 {
                     $id = $params['list']->getValue('id');
                     $c = rex_sql::factory();
-                    // $c->debugsql = 1;
+                    $c->debugsql = self::$debug;
                     $c->setQuery('select count(id) as counter from ' . $params['params']['table'] . ' where FIND_IN_SET(' . $id . ', `' . $params['params']['field'] . '`);');
                     return $c->getValue('counter');
                 }
                 $gr = rex_sql::factory();
-                // $gr->debugsql = 1;
+                $gr->debugsql = self::$debug;
                 $gr->setQuery('select * from ' . rex_xform_manager_field::table() . ' where type_name="be_manager_relation" and f3="' . $this->table->getTableName() . '"');
                 $relation_fields = $gr->getArray();
                 foreach ($relation_fields as $t) {
@@ -1211,13 +1211,13 @@ class rex_xform_manager
         if ($func == 'delete') {
 
             $sf = new rex_sql();
-            // $sf->debugsql = 1;
+            $sf->debugsql = self::$debug;
             $sf->setQuery('select * from ' . rex_xform_manager_field::table() . ' where table_name="' . $table->getTableName() . '" and id=' . $field_id);
             $sfa = $sf->getArray();
             if (count($sfa) == 1) {
                 $query = 'delete from ' . rex_xform_manager_field::table() . ' where table_name="' . $table->getTableName() . '" and id=' . $field_id;
                 $delsql = new rex_sql;
-                // $delsql->debugsql=1;
+                $delsql->debugsql = self::$debug;
                 $delsql->setQuery($query);
                 echo rex_info($I18N->msg('xform_tablefielddeleted'));
                 $this->generateAll();
@@ -1486,13 +1486,11 @@ class rex_xform_manager
 
     static function checkField($l, $v, $p)
     {
-        global $REX;
         $q = 'select * from ' . rex_xform_manager_field::table() . ' where table_name="' . $p['table_name'] . '" and type_id="value" and ' . $l . '="' . $v . '" LIMIT 1';
         $c = rex_sql::factory();
-        // $c->debugsql = 1;
+        $c->debugsql = self::$debug;
         $c->setQuery($q);
         if ($c->getRows() > 0) {
-            // FALSE -> Warning = TRUE;
             return true;
         }
         return false;
