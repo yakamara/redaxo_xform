@@ -652,7 +652,7 @@ class rex_xform_manager
                 }
                 $gr = rex_sql::factory();
                 $gr->debugsql = self::$debug;
-                $gr->setQuery('select * from ' . rex_xform_manager_field::table() . ' where type_name="be_manager_relation" and f3="' . $this->table->getTableName() . '"');
+                $gr->setQuery('select * from ' . rex_xform_manager_field::table() . ' where type_name="be_manager_relation" and `table`="' . $this->table->getTableName() . '"');
                 $relation_fields = $gr->getArray();
                 foreach ($relation_fields as $t) {
                     $rel_id = 'rel-' . $t['table_name'] . '-' . $t['name'];
