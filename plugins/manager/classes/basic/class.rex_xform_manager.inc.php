@@ -642,35 +642,6 @@ class rex_xform_manager
 
                 // *********************************************
 
-                function xform_data_list_callback($params)
-                {
-                    $id = $params['list']->getValue('id');
-                    $c = rex_sql::factory();
-                    // $c->debugsql = false;
-                    $c->setQuery('select count(id) as counter from ' . $params['params']['table'] . ' where FIND_IN_SET(' . $id . ', `' . $params['params']['field'] . '`);');
-                    return $c->getValue('counter');
-                }
-                $gr = rex_sql::factory();
-                $gr->debugsql = self::$debug;
-                $gr->setQuery('select * from ' . rex_xform_manager_field::table() . ' where type_name="be_manager_relation" and `table`="' . $this->table->getTableName() . '"');
-                $relation_fields = $gr->getArray();
-                foreach ($relation_fields as $t) {
-                    $rel_id = 'rel-' . $t['table_name'] . '-' . $t['name'];
-
-                    $relation_field_name = $t['table_name'] . '.' . $t['name']; // '# <span title="['.$t["table_name"].'.'.$t["name"].']">#</span>';
-                    if (strlen($relation_field_name) > 5) {
-                        $relation_field_name = '<span title="' . $relation_field_name . '">..' . substr($relation_field_name, -5) . '</span>';
-                    } else {
-                        $relation_field_name = '<span title="' . $relation_field_name . '">' . substr($relation_field_name, -5) . '</span>';
-                    }
-
-                    $list->addColumn($rel_id, '');
-                    $list->setColumnFormat($rel_id, 'custom', 'xform_data_list_callback', array('table' => $t['table_name'], 'field' => $t['name']));
-                    $list->setColumnLabel($rel_id, $relation_field_name);
-                }
-
-                // *********************************************
-
                 $list = rex_register_extension_point('XFORM_DATA_LIST', $list, array('table' => $this->table));
 
                 $data_links = array();
