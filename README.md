@@ -19,7 +19,7 @@ Last Changes
 ### Version 4.10
 
 #### Neu
-* Neues Feld be_select_category
+* Neue Felder: integer, float, be_select_category
 * validate_customfunction: Funktion kann in jeglichem Callback-Format übergeben werden (inkl. Closures)
 * Manager: Feldabhängige Suchfelder
 * Manager: Api zur Abfrage der Tabellen und Felder vereinfacht/vereinheitlicht
