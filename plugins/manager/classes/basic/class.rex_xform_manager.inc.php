@@ -350,7 +350,7 @@ class rex_xform_manager
                 $back = rex_content_block('<a href="index.php?' . $link_vars . $em_url . $em_rex_list . '"><b>&laquo; ' . $I18N->msg('xform_back_to_overview') . '</b></a>');
 
                 $xform = new rex_xform;
-                // $xform->setDebug(TRUE);
+                $xform->setDebug(self::$debug);
                 foreach ($this->getLinkVars() as $k => $v) {
                     $xform->setHiddenField($k, $v);
                 }
@@ -646,7 +646,7 @@ class rex_xform_manager
                 {
                     $id = $params['list']->getValue('id');
                     $c = rex_sql::factory();
-                    $c->debugsql = self::$debug;
+                    // $c->debugsql = false;
                     $c->setQuery('select count(id) as counter from ' . $params['params']['table'] . ' where FIND_IN_SET(' . $id . ', `' . $params['params']['field'] . '`);');
                     return $c->getValue('counter');
                 }
