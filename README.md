@@ -20,6 +20,9 @@ Last Changes
 
 #### Neu
 * validate_customfunction: Funktion kann in jeglichem Callback-Format übergeben werden (inkl. Closures)
+* Manager: Feldabhängige Suchfelder
+* Manager: Api zur Abfrage der Tabellen und Felder vereinfacht/vereinheitlicht
+* Manager: Relationen vom Typ 1:n können direkt aus der rex_list per Link geöffnet werden
 
 #### Bugs
 * Manager: Bessere Abwärtskompatibilität zu alter Tabellenstruktur
