@@ -309,9 +309,8 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
         return implode('<br />', $return);
     }
 
-    private static function getListValues($table, $field, array $filter = array())
+    public static function getListValues($table, $field, array $filter = array())
     {
-
         $filterHash = sha1(json_encode($filter));
         if (!isset(self::$xform_list_values[$table][$field][$filterHash])) {
             $tableObject = rex_xform_manager_table::get($table);

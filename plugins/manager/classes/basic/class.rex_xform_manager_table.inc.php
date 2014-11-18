@@ -197,6 +197,12 @@ class rex_xform_manager_table implements ArrayAccess
         return $fields;
     }
 
+    public function getValueField($name)
+    {
+        $fields = $this->getValueFields(array('name' => $name));
+        return isset($fields[$name]) ? $fields[$name] : null;
+    }
+
     /**
      * @return rex_xform_manager_field[]
      */

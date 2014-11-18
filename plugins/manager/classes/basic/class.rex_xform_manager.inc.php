@@ -644,6 +644,30 @@ class rex_xform_manager
 
                 $list = rex_register_extension_point('XFORM_DATA_LIST', $list, array('table' => $this->table));
 
+                if ($rex_xform_filter) {
+                    $filter = array();
+                    $getFilter = function (rex_xform_manager_field $field, $value) {
+                        if ('be_manager_relation' == $field->getTypeName()) {
+                            $listValues = rex_xform_be_manager_relation::getListValues($field->getElement('table'), $field->getElement('field'), array('id' => $value));
+                            if (isset($listValues[$value])) {
+                                $value = $listValues[$value];
+                            }
+                        }
+                        return '<b>' . rex_translate($field->getLabel()) .':</b> ' . $value;
+                    };
+                    foreach ($rex_xform_filter as $key => $value) {
+                        if (is_array($value)) {
+                            $relTable = rex_xform_manager_table::get($this->table->getValueField($key)->getElement('table'));
+                            foreach ($value as $k => $v) {
+                                $filter[] = $getFilter($relTable->getValueField($k), $v);
+                            }
+                        } else {
+                            $filter[] = $getFilter($this->table->getValueField($key), $value);
+                        }
+                    }
+                    echo rex_content_block(implode('<br>', $filter));
+                }
+
                 $data_links = array();
                 if ($this->hasDataPageFunction('add')) {
                   $data_links['add'] = '<a href="index.php?' . $link_vars . '&func=add&' . $em_url . $em_rex_list . '">' . $I18N->msg('xform_add') . '</a>';
