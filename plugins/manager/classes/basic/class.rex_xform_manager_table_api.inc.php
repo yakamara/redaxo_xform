@@ -589,9 +589,11 @@ class rex_xform_manager_table_api
 
                     if ($dbtype != 'none' && $dbtype != '') {
                         if (isset($types[$type_id][$type_name]['hooks']['preCreate'])) {
-                            $dbtype = call_user_func($types[$type_id][$type_name]['hooks']['preCreate'], $field);
-                            if (false === $dbtype) {
+                            $result = call_user_func($types[$type_id][$type_name]['hooks']['preCreate'], $field);
+                            if (false === $result) {
                                 continue;
+                            } elseif (is_string($result)) {
+                                $dbtype = $result;
                             }
                         }
                         $add_column = true;
