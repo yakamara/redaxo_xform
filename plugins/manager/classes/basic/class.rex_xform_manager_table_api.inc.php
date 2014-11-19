@@ -579,7 +579,7 @@ class rex_xform_manager_table_api
 
     static function generateTablesAndFields($delete_old = false)
     {
-
+        rex_xform_manager_table::reload();
         $types = rex_xform::getTypeArray();
         foreach (self::getTables() as $table) {
 

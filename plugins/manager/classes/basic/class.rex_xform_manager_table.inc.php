@@ -17,6 +17,7 @@ class rex_xform_manager_table implements ArrayAccess
 
     /** @type self[] */
     protected static $tables = array();
+    protected static $loadedAllTables = true;
 
     public function __construct(array $values)
     {
@@ -51,13 +52,18 @@ class rex_xform_manager_table implements ArrayAccess
         return self::$tables[$table_name] = new self($tables[0]);
     }
 
+    public static function reload()
+    {
+        self::$tables = array();
+        self::$loadedAllTables = false;
+    }
+
     public static function getAll()
     {
-        static $all = false;
-        if ($all) {
+        if (self::$loadedAllTables) {
             return self::$tables;
         }
-        $all = true;
+        self::$loadedAllTables = true;
 
         $table_array = rex_sql::factory();
         $table_array->debugsql = self::$debug;
