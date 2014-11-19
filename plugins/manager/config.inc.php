@@ -46,7 +46,7 @@ if ($REX['REDAXO'] && !$REX['SETUP']) {
     rex_register_extension('ADDONS_INCLUDED', function () {
         global $REX, $I18N;
 
-        $tables = rex_xform_manager_table_api::getTables();
+        $tables = rex_xform_manager_table::getAll();
 
         $subpages = array();
 

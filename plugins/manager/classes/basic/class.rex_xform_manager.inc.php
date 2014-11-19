@@ -1080,7 +1080,7 @@ class rex_xform_manager
                         if ($func == 'edit' ) {
                             $xform->setValueField('showvalue', array($field, $v['label']));
                         } else {
-                            $_tables = rex_xform_manager_table_api::getTables();
+                            $_tables = rex_xform_manager_table::getAll();
                             $_options = array();
                             if (isset($v['empty_option']) && $v['empty_option']) {
                                 $_options[0] = '–=';

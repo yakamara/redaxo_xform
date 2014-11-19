@@ -140,18 +140,6 @@ class rex_xform_manager_table_api
     }
 
 
-
-
-    public static function getTables()
-    {
-
-        $t = rex_sql::factory();
-        $t->debugsql = self::$debug;
-        return $t->getArray('select * from ' . rex_xform_manager_table::table() . ' order by prio');
-
-    }
-
-
     public static function removeTable($table_name)
     {
         $table = rex_xform_manager_table::get($table_name);
@@ -581,7 +569,7 @@ class rex_xform_manager_table_api
     {
         rex_xform_manager_table::reload();
         $types = rex_xform::getTypeArray();
-        foreach (self::getTables() as $table) {
+        foreach (rex_xform_manager_table::getAll() as $table) {
 
             $c = rex_sql::factory();
             $c->debugsql = self::$debug;
@@ -591,7 +579,7 @@ class rex_xform_manager_table_api
             $c->setQuery('SHOW COLUMNS FROM `' . $table['table_name'] . '`');
             $saved_columns = $c->getArray();
 
-            foreach (rex_xform_manager_table::get($table['table_name'])->getFields() as $field) {
+            foreach ($table->getFields() as $field) {
                 $type_name = $field['type_name'];
                 $type_id = $field['type_id'];
 
