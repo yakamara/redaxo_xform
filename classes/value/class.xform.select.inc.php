@@ -11,43 +11,9 @@ class rex_xform_select extends rex_xform_abstract
 
     function enterObject()
     {
-        $multiple = $this->getElement(6) == 1;
+        $multiple = $this->getElement('multiple') == 1;
 
-        $options = $this->getElement('options');
-
-        if (!is_array($options)) {
-
-            $value_encoded = $this->getElement(3);
-            $value_encoded = $this->encodeChars(',', $value_encoded);
-
-            $rawOptions = explode(',', $value_encoded);
-            $options = array();
-            foreach ($rawOptions as $option_encoded) {
-
-                $option = $this->encodeChars('=', $option_encoded);
-
-                $t = explode('=', $option);
-                $v = $t[0];
-
-                if (isset($t[1])) {
-                    $k = $t[1];
-                } else {
-                    $k = $t[0];
-                }
-
-                $v = $this->decodeChars(',', $v);
-                $v = $this->decodeChars('=', $v);
-                $k = $this->decodeChars(',', $k);
-                $k = $this->decodeChars('=', $k);
-                $t[0] = $this->decodeChars(',', $t[0]);
-                $t[0] = $this->decodeChars('=', $t[0]);
-
-                $options[$k] = $v;
-            }
-
-        }
-
-
+        $options = $this->getArrayFromString($this->getElement('options'));
 
         if ($multiple) {
             $size = (int) $this->getElement(7);
@@ -58,8 +24,8 @@ class rex_xform_select extends rex_xform_abstract
             $size = 1;
         }
 
-        if (!$this->params['send'] && $this->getValue() == '' && $this->getElement(5) != '') {
-            $this->setValue($this->getElement(5));
+        if (!$this->params['send'] && $this->getValue() == '' && $this->getElement('default') != '') {
+            $this->setValue($this->getElement('default'));
         }
 
         if (!is_array($this->getValue())) {
@@ -71,7 +37,7 @@ class rex_xform_select extends rex_xform_abstract
         $this->setValue(implode(',', $this->getValue()));
 
         $this->params['value_pool']['email'][$this->getName()] = $this->getValue();
-        if ($this->getElement(4) != 'no_db') {
+        if ($this->getElement('no_db') != 'no_db') {
             $this->params['value_pool']['sql'][$this->getName()] = $this->getValue();
         }
     }
@@ -105,16 +71,8 @@ class rex_xform_select extends rex_xform_abstract
     {
         $return = array();
 
-        $values = array();
-        foreach (explode(',', $params['params']['field']['options']) as $v) {
-            $entry = explode('=', $v);
-            if (isset($entry[1])) {
-                $values[$entry[1]] = rex_translate($entry[0]);
-            } // .' ['.$entry[1].']';
-            else {
-                $values[$entry[0]] = rex_translate($entry[0]);
-            } // .' ['.$entry[0].']';
-        }
+        $new_select = new rex_xform_select();
+        $values = $new_select->getArrayFromString($params['params']['field']['options']);
 
         foreach (explode(',', $params['value']) as $k) {
             if (isset($values[$k])) {

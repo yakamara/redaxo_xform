@@ -114,19 +114,41 @@ abstract class rex_xform_abstract extends rex_xform_base_abstract
         $this->keys = array();
     }
 
-    function encodeChars($chars, $text)
+    public function getArrayFromString($string)
     {
-        $text_encoded = str_replace('@' . $chars . '@', sha1('@' . $chars . '@'), $text);
-        return $text_encoded;
+        if (is_array($string)) {
+            return $string;
+
+        } else {
+
+            $delimeter = ",";
+            $rawOptions = preg_split('~(?<!\\\)' . preg_quote($delimeter, '~') . '~', $string);
+
+            $options = array();
+            foreach ($rawOptions as $option) {
+
+                $delimeter = "=";
+                $finalOption = preg_split('~(?<!\\\)' . preg_quote($delimeter, '~') . '~', $option);
+                $v = $finalOption[0];
+                if (isset($finalOption[1])) {
+                    $k = $finalOption[1];
+                } else {
+                    $k = $finalOption[0];
+                }
+                $s = array('\=','\,');
+                $r = array('=',',');
+                $k = str_replace($s, $r, $k);
+                $v = str_replace($s, $r, $v);
+                $options[$k] = $v;
+            }
+
+            return $options;
+
+        }
+
     }
 
-    function decodeChars($chars, $text)
-    {
-        $text_decoded = str_replace( sha1('@' . $chars . '@'), $chars, $text);
-        return $text_decoded;
-    }
-
-    function parse($template, $params = array())
+  function parse($template, $params = array())
     {
         global $REX, $I18N;
 
