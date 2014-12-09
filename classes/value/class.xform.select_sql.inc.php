@@ -54,6 +54,18 @@ class rex_xform_select_sql extends rex_xform_abstract
             $this->setValue(explode(',', stripslashes($this->getValue())));
         }
 
+        // ---------- rex_xform_set
+        if (isset($this->params['rex_xform_set'][$this->getName()]) && !is_array($this->params['rex_xform_set'][$this->getName()])) {
+            $value = $this->params['rex_xform_set'][$this->getName()];
+            $values = array();
+            if (array_key_exists($value, $options)) {
+                $values[] = $value;
+            }
+            $this->setValue($values);
+            $this->setElement('disabled', true);
+        }
+        // ----------
+
         $this->params['form_output'][$this->getId()] = $this->parse('value.select.tpl.php', compact('options', 'multiple', 'size'));
 
         $this->setValue(implode(',', $this->getValue()));

@@ -28,6 +28,19 @@ class rex_xform_select extends rex_xform_abstract
             $this->setValue($this->getElement('default'));
         }
 
+        // ---------- rex_xform_set
+        if (isset($this->params['rex_xform_set'][$this->getName()]) && !is_array($this->params['rex_xform_set'][$this->getName()])) {
+            $value = $this->params['rex_xform_set'][$this->getName()];
+            $values = array();
+            if (array_key_exists($value, $options)) {
+                $values[] = $value;
+            }
+            $this->setValue($values);
+            $this->setElement('disabled', true);
+        }
+        // ----------
+
+
         if (!is_array($this->getValue())) {
             $this->setValue(explode(',', $this->getValue()));
         }
