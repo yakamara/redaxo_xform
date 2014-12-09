@@ -64,9 +64,13 @@ if ($REX['REDAXO'] && !$REX['SETUP']) {
 
                 $be_page = new rex_be_page($table_name, array('page' => 'xform', 'subpage' => 'manager', 'tripage' => 'data_edit', 'table_name' => $table['table_name']));
                 $be_page->setHref('index.php?page=xform&subpage=manager&tripage=data_edit&table_name=' . $table['table_name']);
+
                 $subpages[] = new rex_be_main_page('manager', $be_page);
+
             }
         }
+
+        $subpages = rex_register_extension_point('XFORM_MANAGER_SUBPAGES_TABLES', $subpages);
 
         OOPlugin::setProperty('xform', 'manager', 'pages', $subpages);
 
