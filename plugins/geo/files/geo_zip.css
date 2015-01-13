@@ -72,22 +72,22 @@ body .rex-geo-search-box-2 {
 }
 
 body .rex-geo-search .rex-geo-search-box-2 span{
-line-height: 10px;
-font-size:10px;
-display:block;
-width:100px;
-float:left;
-text-align:left;
+    line-height: 10px;
+    font-size:10px;
+    display:block;
+    width:100px;
+    float:left;
+    text-align:left;
 }
 
 body .rex-geo-search .rex-geo-search-box-2 span.info-plz{
-width:130px;
+    width:130px;
 }
 
 /* ************************************* SIDEBAR */
 
 .rex-geo-sidebar{
-    padding; 0px;
+    padding: 0px;
     margin: 0px
 }
 
@@ -97,8 +97,8 @@ width:130px;
 }
 
 .rex-geo-sidebar ul{
-margin:0px;
-padding:0px;
+    margin:0px;
+    padding:0px;
 }
 
 .rex-geo-sidebar ul li.rex-geo-side-active,
