@@ -79,10 +79,10 @@ class rex_xform_date extends rex_xform_abstract
         $yearStart = (int) $this->getElement(3);
         $yearEnd = (int) $this->getElement(4);
         if ($yearStart == 0) {
-            $yearStart = 1980;
+            $yearStart = 1900;
         }
         if ($yearEnd == 0) {
-            $yearEnd = 2020;
+            $yearEnd = date("Y")+10;
         }
         if ($yearEnd < $yearStart) {
             $yearEnd = $yearStart;
