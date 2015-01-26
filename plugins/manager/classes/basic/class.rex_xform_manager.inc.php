@@ -406,13 +406,14 @@ class rex_xform_manager
                     $i = 1;
                     foreach ($definitions['values'] as $key => $_) {
                         $key = $this->getFieldName($key, $field->getType());
-                        if ($field->getElement($key)) {
+                        /*if ($field->getElement($key)) {
                             $values[] = $field->getElement($key);
                         } elseif ($field->getElement('f' . $i)) {
                             $values[] = $field->getElement('f' . $i);
                         } else {
                             $values[] = '';
-                        }
+                        }*/
+                        $values[] = $field->getElement($key);
                         $i++;
                     }
 
@@ -1145,7 +1146,7 @@ class rex_xform_manager
                 $sql->setQuery('SELECT * FROM ' . rex_xform_manager_field::table() . " WHERE id=$field_id");
                 foreach ($selectFields as $alias => $field) {
                     if ($alias != $field) {
-                        if ((!$sql->hasValue($field) || !$sql->getValue($field)) && $sql->hasValue($alias)) {
+                        if ((!$sql->hasValue($field) || null === $sql->getValue($field) || '' === $sql->getValue($field)) && $sql->hasValue($alias)) {
                             $sql->setValue($field, $sql->getValue($alias));
                         }
                         $xform->setValueField('hidden', array($alias, ''));
