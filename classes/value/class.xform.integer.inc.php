@@ -15,7 +15,11 @@ class rex_xform_integer extends rex_xform_abstract
             $this->setValue($this->getElement('default'));
         }
 
-        $this->setValue((int) $this->getValue());
+        if ('' === $this->getValue()) {
+            $this->setValue(null);
+        } else {
+            $this->setValue((int) $this->getValue());
+        }
 
         $this->params['form_output'][$this->getId()] = $this->parse(array('value.integer.tpl.php', 'value.text.tpl.php'));
 
@@ -44,6 +48,7 @@ class rex_xform_integer extends rex_xform_abstract
             ),
             'description' => 'Ein Feld zur Eingabe von Integers',
             'dbtype' => 'int',
+            'null' => true,
         );
 
     }

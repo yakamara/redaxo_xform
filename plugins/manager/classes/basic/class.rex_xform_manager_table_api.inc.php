@@ -606,7 +606,9 @@ class rex_xform_manager_table_api
                         }
 
                         if ($add_column) {
-                            $c->setQuery('ALTER TABLE `' . $table['table_name'] . '` ADD `' . $type_label . '` ' . $dbtype . ' NOT NULL');
+                            $null = isset($types[$type_id][$type_name]['null']) && $types[$type_id][$type_name]['null'];
+                            $null = $null ? '' : ' NOT NULL';
+                            $c->setQuery('ALTER TABLE `' . $table['table_name'] . '` ADD `' . $type_label . '` ' . $dbtype . $null);
                         }
                     }
 
