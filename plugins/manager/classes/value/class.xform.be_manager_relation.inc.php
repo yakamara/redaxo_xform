@@ -487,7 +487,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
 
     public static function getSearchField($params)
     {
-        if ($params['field']->getElement('relation_table') != '') {
+        if ($params['field']->getElement('relation_table') != '' || 4 == $params['field']->getElement('type')) {
             return;
         }
 
