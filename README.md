@@ -16,17 +16,24 @@ Installation
 Last Changes
 -------
 
-### Version 4.10
+### Version 4.10 // 3. Februar 2015
 
 #### Neu
 * Neue Felder: integer, float, be_select_category
 * validate_customfunction: Funktion kann in jeglichem Callback-Format übergeben werden (inkl. Closures)
-* Manager: Feldabhängige Suchfelder
+* Manager: Feldabhängige Suchfelder (Nur wenige Felder im Moment vorhanden)
 * Manager: Api zur Abfrage der Tabellen und Felder vereinfacht/vereinheitlicht
 * Manager: Relationen vom Typ 1:n können direkt aus der rex_list per Link geöffnet werden
+* Manager: Integerfelder kann man nun auch als NULL in der Datenbank speichern (Option)
+* Bootstrapbasis Templates eingesetzt.
+* Neuer EP: XFORM_MANAGER_SUBPAGES_TABLES um Tabellenlink beeinflussen zu können
+* Selectfelder können nun "disabled" werden.
+* Manager: Auch radio-Felder sind nun möglich
 
 #### Bugs
 * Manager: Bessere Abwärtskompatibilität zu alter Tabellenstruktur
+* Datefeld: Defaulteinstellung erweitert.
+* geoplugin: css aktualisiert (danke ceekay82)
 
 ### Version 4.9 // 20. Oktober 2014
 
