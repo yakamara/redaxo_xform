@@ -16,6 +16,12 @@ Installation
 Last Changes
 -------
 
+### Version 4.11 // 4. Februar 2015
+
+#### Bugs
+* Manager: Relationfeld 1-n verursachte in der Suche fehler. Suche hier entfernt.
+
+
 ### Version 4.10 // 3. Februar 2015
 
 #### Neu
