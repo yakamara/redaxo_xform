@@ -36,9 +36,9 @@ rex_register_extension('ADDONS_INCLUDED', function () {
 }, array(), REX_EXTENSION_EARLY);
 
 
-include $REX['INCLUDE_PATH'] . '/addons/' . $mypage . '/classes/basic/class.rex_radio.inc.php';
-include $REX['INCLUDE_PATH'] . '/addons/' . $mypage . '/classes/basic/class.rex_xform_list.inc.php';
-include $REX['INCLUDE_PATH'] . '/addons/' . $mypage . '/classes/basic/class.rex_xform.inc.php';
+include_once $REX['INCLUDE_PATH'] . '/addons/' . $mypage . '/classes/basic/class.rex_radio.inc.php';
+include_once $REX['INCLUDE_PATH'] . '/addons/' . $mypage . '/classes/basic/class.rex_xform_list.inc.php';
+include_once $REX['INCLUDE_PATH'] . '/addons/' . $mypage . '/classes/basic/class.rex_xform.inc.php';
 
 if ($REX['REDAXO'] && $REX['USER']) {
     $I18N->appendFile($REX['INCLUDE_PATH'] . '/addons/' . $mypage . '/lang/');
