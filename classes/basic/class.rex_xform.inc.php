@@ -48,6 +48,7 @@ class rex_xform
         $this->objparams['form_id'] = 'form_formular';
         $this->objparams['form_class'] = 'rex-xform';
         $this->objparams['form_wrap_id'] = 'rex-xform';
+        $this->objparams['form_wrap_class'] = 'xform';
 
         $this->objparams['form_label_type'] = 'html'; // plain
 

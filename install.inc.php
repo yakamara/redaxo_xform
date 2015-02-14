@@ -22,6 +22,8 @@ if ($REX['VERSION'] != '4' || $REX['SUBVERSION'] < '5') {
 
 } else {
 
+    include_once rex_path::addon('xform', 'classes/basic/class.rex_xform.inc.php');
+
     // AUTOINSTALL THESE PLUGINS
     $autoinstall = array('email', 'setup', 'manager');
 
