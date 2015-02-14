@@ -16,6 +16,12 @@ Installation
 Last Changes
 -------
 
+### Version 4.12 // 15. Februar 2015
+
+#### Bugs
+* Installation geht wieder. "class class.rex_xform.inc.php not found".
+
+
 ### Version 4.11 // 4. Februar 2015
 
 #### Bugs
