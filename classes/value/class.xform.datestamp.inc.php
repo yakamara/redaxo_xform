@@ -9,19 +9,17 @@
 class rex_xform_datestamp extends rex_xform_abstract
 {
 
-    function enterObject()
+    function preValidateAction()
     {
         $format = 'Y-m-d';
         if ($this->getElement(2) != '') {
             $format = $this->getElement(2);
-
             if ($format == 'mysql') {
                 $format = 'Y-m-d H:i:s';
             }
-
         }
 
-         // 0 = immer setzen, 1 = nur wenn leer / create
+        // 0 = immer setzen, 1 = nur wenn leer / create
         if ($this->getElement(4) != 1) {
             $set = 0;
         } else {
@@ -32,6 +30,10 @@ class rex_xform_datestamp extends rex_xform_abstract
             $this->setValue(date($format));
         }
 
+    }
+
+    function enterObject()
+    {
         $this->params['form_output'][$this->getId()] = $this->parse('value.hidden.tpl.php');
 
         $this->params['value_pool']['email'][$this->getName()] = $this->getValue();
