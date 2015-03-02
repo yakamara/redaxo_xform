@@ -20,6 +20,6 @@ class rex_xform_generate_password extends rex_xform_abstract
 
     function getDescription()
     {
-        return 'generate_passwort -> Beispiel: generate_password|name|[no_db]';
+        return 'generate_password -> Beispiel: generate_password|name|[no_db]';
     }
 }
