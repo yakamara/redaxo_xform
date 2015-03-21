@@ -1,4 +1,4 @@
-<div class="xform-element formbe_medialist <?php echo $this->getHTMLClass() ?>">
+<div class="xform-element formbe_medialist <?php echo $this->getHTMLClass() ?>" id="<?php echo $this->getHTMLId() ?>">
     <label class="text <?php echo $this->getWarningClass() ?>" for="<?php echo $this->getFieldId() ?>" ><?php echo $this->getLabel() ?></label>
     <div class="rex-widget">
         <div class="rex-widget-medialist<?php echo $this->getElement(3) ? ' rex-widget-preview rex-widget-preview-image-manager' : '' ?>">
