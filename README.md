@@ -16,6 +16,13 @@ Installation
 Last Changes
 -------
 
+### Version 4.13 // **.**.****
+
+#### Bugs
+* Manager: Selectfeld: Werte wurden in der Übersicht nicht übersetzt
+
+
+
 ### Version 4.12 // 15. Februar 2015
 
 #### Bugs

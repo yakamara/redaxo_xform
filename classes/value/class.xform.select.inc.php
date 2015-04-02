@@ -89,7 +89,7 @@ class rex_xform_select extends rex_xform_abstract
 
         foreach (explode(',', $params['value']) as $k) {
             if (isset($values[$k])) {
-                $return[] = $values[$k];
+                $return[] = rex_translate($values[$k]);
             }
         }
 
