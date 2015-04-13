@@ -484,11 +484,12 @@ class rex_xform_manager
                     $xform->setObjectparams('main_id', $data_id);
                     $xform->setObjectparams('main_where', "id=$data_id");
                     $xform->setObjectparams('getdata', true);
-                    $xform->setObjectparams('submit_btn_label', $I18N->msg('xform_save'));
+                    $xform->setValueField('submits', array("name"=>"submit", "labels" => $I18N->msg('xform_save').",".$I18N->msg('xform_save_apply'), "values"=>"1,2", "no_db" => true, "css_classes" => ",submit_short"));
 
                 } elseif ($func == 'add') {
                     $xform->setActionField('db', array($this->table->getTablename()));
-                    $xform->setObjectparams('submit_btn_label', $I18N->msg('xform_add'));
+                    //$xform->setValueField('submits', array("name"=>"submit", "labels" => $I18N->msg('xform_add').",".$I18N->msg('xform_add_apply'), "values"=>"1,2", "no_db" => true, "css_classes" => ",submit_short"));
+                    $xform->setValueField('submits', array("name"=>"submit", "labels" => $I18N->msg('xform_add'), "values"=>"1", "no_db" => true, "css_classes" => ",submit_short"));
 
                 }
 
@@ -502,7 +503,18 @@ class rex_xform_manager
 
                 }
 
-                $form = $xform->getForm();
+                $xform->executeFields();
+
+                foreach($xform->objparams["values"] as $f) {
+                  if ($f->getName() == "submit") {
+                    if ($f->getValue() == 2) { // apply
+                      $xform->setObjectparams('form_showformafterupdate', 1);
+                      $xform->executeFields();
+                    }
+                  }
+                }
+
+                $form = $xform->executeActions();
 
                 if ($xform->objparams['actions_executed']) {
                     if ($func == 'edit') {

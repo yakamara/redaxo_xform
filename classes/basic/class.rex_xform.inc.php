@@ -187,6 +187,13 @@ class rex_xform
 
     function getForm()
     {
+        $this->executeFields();
+        return $this->executeActions();
+
+    }
+
+    function executeFields()
+    {
 
         global $REX;
 
@@ -338,6 +345,12 @@ class rex_xform
             $ValueObject->postFormAction();
         }
 
+
+    }
+
+
+    function executeActions()
+    {
 
         // *************************************************** ACTION OBJEKTE
 
