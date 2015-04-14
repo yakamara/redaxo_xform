@@ -1342,6 +1342,8 @@ class rex_xform_manager
             }
 
             $notation_php  .= "\n\n"  . '$xform->setActionField(\'db2email\', array(\'emailtemplate\', \'emaillabel\', \'email@domain.de\'));';
+            $notation_php .= "\n".'echo $xform->getForm();';
+
             $notation_pipe .= "\n\n"  . 'action|db2email|emailtemplate|emaillabel|email@domain.de';
 
             echo '<div class="rex-addon-output">';
