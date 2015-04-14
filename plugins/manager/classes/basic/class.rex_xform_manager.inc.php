@@ -27,7 +27,6 @@ class rex_xform_manager
 
     function rex_xform_manager()
     {
-        global $REX;
         $this->setDataPageFunctions();
 
     }
@@ -721,11 +720,15 @@ class rex_xform_manager
                 echo '<span style="float:right;">';
 
                 $dataset_links = array();
-                $dataset_links[] = '<a href="index.php?' . $link_vars . '&func=dataset_delete&' . $em_url . $em_rex_list . '" id="dataset-delete" onclick="return confirm(\'' . $I18N->msg('xform_dataset_delete_confirm') . '\');">' . $I18N->msg('xform_delete') . '</a>';
+                if ($this->hasDataPageFunction('truncate_table')) {
+                  $dataset_links[] = '<a href="index.php?' . $link_vars . '&func=dataset_delete&' . $em_url . $em_rex_list . '" id="dataset-delete" onclick="return confirm(\'' . $I18N->msg('xform_dataset_delete_confirm') . '\');">' . $I18N->msg('xform_delete') . '</a>';
+                }
                 if (($this->table->isExportable() == 1 && $this->hasDataPageFunction('export'))) {
                     $dataset_links[] = '<a href="index.php?' . $link_vars . '&func=dataset_export&' . $em_url . $em_rex_list . '">' . $I18N->msg('xform_export') . '</a>';
                 }
-                echo " " . $I18N->msg('xform_dataset') . ': ' . implode(' | ', $dataset_links) . '';
+                if (count($dataset_links)>0) {
+                    echo " " . $I18N->msg('xform_dataset') . ': ' . implode(' | ', $dataset_links) . '';
+                }
 
                 $table_links = array();
                 if (!$popup && $this->table->isImportable() && $this->hasDataPageFunction('import')) {
