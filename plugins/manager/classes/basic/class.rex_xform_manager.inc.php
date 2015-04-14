@@ -28,7 +28,6 @@ class rex_xform_manager
     function rex_xform_manager()
     {
         $this->setDataPageFunctions();
-
     }
 
 
@@ -45,7 +44,6 @@ class rex_xform_manager
 
 
     // ----- Seitenausgabe
-
     function setLinkVars($linkvars)
     {
         $this->linkvars = array_merge($this->linkvars, $linkvars);
@@ -57,13 +55,12 @@ class rex_xform_manager
     }
 
 
-
-
     // ---------------------------------- data functions
-
     public function getDataPage()
     {
         global $REX, $I18N;
+
+        rex_register_extension_point('XFORM_MANAGER_DATA_PAGE', $this);
 
         // ********************************************* DATA ADD/EDIT/LIST
 
