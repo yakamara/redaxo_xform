@@ -383,9 +383,6 @@ class rex_xform
 
         }
 
-        $hasWarnings = count($this->objparams['warning']) != 0;
-        $hasWarningMessages = count($this->objparams['warning_messages']) != 0;
-
         if ($this->objparams['form_showformafterupdate']) {
             $this->objparams['form_show'] = true;
         }

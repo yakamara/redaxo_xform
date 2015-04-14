@@ -18,9 +18,12 @@ Last Changes
 
 ### Version 4.13 // **.**.****
 
+#### Neu
+* Neues Feld: submits - Mehrere Submitfelder nebeneinander
+* Manager: Ein Datensatz kann beim Editieren und Anlegen "übernommen" werden. (Man springt nicht mehr direkt in die Übersicht)
+
 #### Bugs
 * Manager: Selectfeld: Werte wurden in der Übersicht nicht übersetzt
-
 
 
 ### Version 4.12 // 15. Februar 2015

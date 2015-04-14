@@ -354,7 +354,6 @@ class rex_xform_manager
                 foreach ($this->getLinkVars() as $k => $v) {
                     $xform->setHiddenField($k, $v);
                 }
-                $xform->setHiddenField('func', $func);
                 if (count($rex_xform_manager_opener) > 0) {
                     foreach ($rex_xform_manager_opener as $k => $v) {
                         $xform->setHiddenField('rex_xform_manager_opener[' . $k . ']', $v);
@@ -475,8 +474,10 @@ class rex_xform_manager
                 }
 
                 $xform->setObjectparams('main_table', $this->table->getTablename()); // für db speicherungen und unique abfragen
+                $xform->setObjectparams('rex_xform_set', $rex_xform_set);
 
-                // $xform->setObjectparams("manager_type",$this->getType());
+                $xform_clone = clone $xform;
+                $xform->setHiddenField('func', $func); // damit es neu im clone gesetzt werden kann
 
                 if ($func == 'edit') {
                     $xform->setHiddenField('data_id', $data_id);
@@ -489,11 +490,9 @@ class rex_xform_manager
                 } elseif ($func == 'add') {
                     $xform->setActionField('db', array($this->table->getTablename()));
                     //$xform->setValueField('submits', array("name"=>"submit", "labels" => $I18N->msg('xform_add').",".$I18N->msg('xform_add_apply'), "values"=>"1,2", "no_db" => true, "css_classes" => ",submit_short"));
-                    $xform->setValueField('submits', array("name"=>"submit", "labels" => $I18N->msg('xform_add'), "values"=>"1", "no_db" => true, "css_classes" => ",submit_short"));
+                    $xform->setValueField('submits', array("name"=>"submit", "labels" => $I18N->msg('xform_add').",".$I18N->msg('xform_add_apply'), "values"=>"1,2", "no_db" => true, "css_classes" => ",submit_short"));
 
                 }
-
-                $xform->setObjectparams('rex_xform_set', $rex_xform_set);
 
                 if ($func == 'edit') {
                     $xform = rex_register_extension_point('XFORM_DATA_UPDATE', $xform, array('table' => $this->table, 'data_id' => $data_id, 'data' => $data));
@@ -505,13 +504,15 @@ class rex_xform_manager
 
                 $xform->executeFields();
 
+                $submit_type = 1; // normal, 2=apply
                 foreach($xform->objparams["values"] as $f) {
-                  if ($f->getName() == "submit") {
-                    if ($f->getValue() == 2) { // apply
-                      $xform->setObjectparams('form_showformafterupdate', 1);
-                      $xform->executeFields();
+                    if ($f->getName() == "submit") {
+                        if ($f->getValue() == 2) { // apply
+                            $xform->setObjectparams('form_showformafterupdate', 1);
+                            $xform->executeFields();
+                            $submit_type = 2;
+                        }
                     }
-                  }
                 }
 
                 $form = $xform->executeActions();
@@ -524,6 +525,24 @@ class rex_xform_manager
                     } elseif ($func == 'add') {
                         echo rex_info($I18N->msg('xform_thankyouforentry'));
                         $xform = rex_register_extension_point('XFORM_DATA_ADDED', $xform, array('table' => $this->table));
+
+                        if ($submit_type == 2) {
+                            $data_id = $xform->objparams['main_id'];
+                            $func = "edit";
+                            $xform = $xform_clone;
+                            $xform->setHiddenField('func', $func);
+                            $xform->setHiddenField('data_id', $data_id);
+                            $xform->setActionField('db', array($this->table->getTablename(), "id=$data_id"));
+                            $xform->setObjectparams('main_id', $data_id);
+                            $xform->setObjectparams('main_where', "id=$data_id");
+                            $xform->setObjectparams('getdata', true);
+                            $xform->setValueField('submits', array("name"=>"submit", "labels" => $I18N->msg('xform_save').",".$I18N->msg('xform_save_apply'), "values"=>"1,2", "no_db" => true, "css_classes" => ",submit_short"));
+                            $xform->setObjectparams('form_showformafterupdate', 1);
+                            $xform->executeFields();
+
+                            $form = $xform->executeActions();
+
+                        }
 
                     }
 

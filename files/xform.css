@@ -185,6 +185,10 @@ ul.xform {
     cursor: pointer;
 }
 
+.xform input.submit_short {
+  margin-left: 10px;
+}
+
 /*  --------------------------------------- Checkbox */
 .xform p.formcheckbox input {
     float:left;
