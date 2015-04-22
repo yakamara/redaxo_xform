@@ -14,12 +14,13 @@ class rex_xform_radio extends rex_xform_abstract
 
         $options = $this->getArrayFromString($this->getElement(3));
 
-        if (!array_key_exists($this->getValue(), $options)) {
-            $this->setValue($this->getElement(5));
+        $default = $this->getElement('default');
+        if (!$default) {
+          $default = key($options);
         }
 
         if (!array_key_exists($this->getValue(), $options)) {
-            $this->setValue(key($options));
+            $this->setValue($default);
         }
 
         $this->params['form_output'][$this->getId()] = $this->parse('value.radio.tpl.php', compact('options'));
@@ -33,7 +34,7 @@ class rex_xform_radio extends rex_xform_abstract
 
     function getDescription()
     {
-        return 'radio -> Beispiel: radio|name|label|Frau=w,Herr=m|[no_db]|defaultwert';
+        return 'radio -> Beispiel: radio|name|label|Frau=w,Herr=m|[no_db]|[defaultwert]';
     }
 
     function getDefinitions()
