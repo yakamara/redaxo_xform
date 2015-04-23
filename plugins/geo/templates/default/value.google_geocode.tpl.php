@@ -3,6 +3,13 @@
 <?php endif ?>
 <script type="text/javascript">
 
+<?php
+
+$labelLat = '#xform-' . $this->params['form_name'] . '-'.$labelLat;
+$labelLng = '#xform-' . $this->params['form_name'] . '-'.$labelLng;
+
+?>
+
     var rex_geo_coder = function() {
 
         var myLatlng = new google.maps.LatLng(<?php echo $valueLat ?>, <?php echo $valueLng ?>);
@@ -26,20 +33,24 @@
         });
 
         rex_geo_updatePosition = function(latLng) {
-            jQuery(".formlabel-<?php echo $labelLat ?> input").val( latLng.lat() );
-            jQuery(".formlabel-<?php echo $labelLng ?> input").val( latLng.lng() );
+            jQuery("<?php echo $labelLat ?> input").val( latLng.lat() );
+            jQuery("<?php echo $labelLng ?> input").val( latLng.lng() );
         }
 
         geocoder = new google.maps.Geocoder();
 
-        rex_geo_getPosition = function(address) {
-            fields = address.split(",");
-            for(i=0;i<fields.length;i++) {
-                jQuery(function($){
-                    fields[i] = $(".formlabel-"+fields[i].trim()+" input").val();
-                });
-            }
+        rex_geo_getPosition = function() {
 
+            fields = [];
+            <?php 
+            
+            $i=0;
+            foreach(explode(",",$address) as $adr) {
+              echo "\n".'fields['.$i.'] = jQuery("#xform-' . $this->params['form_name'] . '-'.$adr.' input").val();';
+              $i++;
+            }
+            
+            ?>
             address = fields.join(",");
 
             geocoder.geocode( { "address": address }, function(results, status) {
@@ -72,10 +83,9 @@
 
         rex_geo_resetPosition = function() {
             jQuery(function($){
-                $(".formlabel-<?php echo $labelLat ?> input").val("0");
-                $(".formlabel-<?php echo $labelLng ?> input").val("0");
+                jQuery("<?php echo $labelLat ?> input").val("0");
+                jQuery("<?php echo $labelLng ?> input").val("0");
             });
-            marker.setMap(null);
 
         }
 
@@ -90,7 +100,7 @@
 <div class="xform-element form_google_geocode <?php echo $this->getHTMLClass() ?>" id="<?php echo $this->getHTMLId() ?>">
     <label class="text <?php echo $this->getWarningClass() ?>" for="<?php echo $this->getFieldId() ?>"><?php echo $this->getElement('label') ?></label>
     <p class="form_google_geocode">
-        <a href="javascript:void(0);" onclick="rex_geo_getPosition('<?php echo $address; ?>')">Geodaten holen</a> |
+        <a href="javascript:void(0);" onclick="rex_geo_getPosition()">Geodaten holen</a> |
         <a href="javascript:void(0);" onclick="rex_geo_resetPosition()">Geodaten nullen</a>
     </p>
     <div class="form_google_geocode_map" id="map_canvas<?php echo $this->getId() ?>" style="width:<?php echo $mapWidth ?>px; height:<?php echo $mapHeight ?>px">Google Map</div>

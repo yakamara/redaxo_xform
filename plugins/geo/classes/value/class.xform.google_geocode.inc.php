@@ -11,20 +11,20 @@ class rex_xform_google_geocode extends rex_xform_abstract
 
     function enterObject()
     {
-        $labels = explode(',', $this->getElement(3)); // Fields of Position
+        $labels = explode(',', $this->getElement('position')); // Fields of Position
         $labelLat = $labels[0];
         $labelLng = $labels[1];
 
-        $valueLng = '0';
         $valueLat = '0';
+        $valueLng = '0';
 
         $mapWidth = 400;
-        if ($this->getElement(5) != '') {
-            $mapWidth = (int) $this->getElement(5);
+        if ($this->getElement('width') != '') {
+            $mapWidth = (int) $this->getElement('width');
         }
         $mapHeight = 200;
-        if ($this->getElement(6) != '') {
-            $mapHeight = (int) $this->getElement(6);
+        if ($this->getElement('height') != '') {
+            $mapHeight = (int) $this->getElement('height');
         }
 
         foreach ($this->obj as $o) {
@@ -35,8 +35,6 @@ class rex_xform_google_geocode extends rex_xform_abstract
                 $valueLat = $this->floattostr($o->getValue());
             }
         }
-
-//        if ($this->getValue() == '' && !$this->params['send']) {             $this->setValue($this->getElement(4));         }
 
         // Script nur beim ersten mal ausgeben
         $includeGoogleMaps = false;

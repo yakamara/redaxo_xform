@@ -20,17 +20,17 @@ if (count($fields) > 0) {
         $data = array();
         ob_end_clean();
         if (array_key_exists($field, $fields)) {
-            $address_fields = explode(',', $fields[$field]['f3']);
+            $address_fields = explode(',', $fields[$field]['address']);
             $fs = array();
             foreach ($address_fields as $f) {
                 $fs[] = '`' . mysql_real_escape_string(trim($f)) . '`';
             }
             $concat = 'CONCAT(' . implode(' , ",", ', $fs) . ') as address';
 
-            $pos_fields = explode(',', $fields[$field]['label']);
+            $pos_fields = explode(',', $fields[$field]['position']);
             if (count($pos_fields) == 2) {
-                $pos_lng = $pos_fields[0];
-                $pos_lat = $pos_fields[1];
+                $pos_lat = $pos_fields[0];
+                $pos_lng = $pos_fields[1];
 
                 $gd = rex_sql::factory();
                 // $gd->debugsql = 1;
@@ -47,10 +47,10 @@ if (count($fields) > 0) {
             $data_lng = rex_request('geo_lng', 'string');
             $data_lat = rex_request('geo_lat', 'string');
             $data_id = rex_request('geo_id', 'int', 0);
-            $pos_fields = explode(',', $fields[$field]['label']);
+            $pos_fields = explode(',', $fields[$field]['position']);
             if (count($pos_fields) == 2) {
-                $pos_lng = $pos_fields[0];
-                $pos_lat = $pos_fields[1];
+                $pos_lat = $pos_fields[0];
+                $pos_lng = $pos_fields[1];
                 $gd = rex_sql::factory();
                 $gd->setQuery('select id, `' . mysql_real_escape_string($pos_lat) . '`, `' . mysql_real_escape_string($pos_lng) . '` from ' . $table['table_name'] . ' where id=' . $data_id . '');
                 if ($gd->getRows() == 1 && $data_lng != '' && $data_lat != '') {
