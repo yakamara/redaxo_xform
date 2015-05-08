@@ -46,7 +46,7 @@
                     </p>
                     <p class="rex-widget-icons rex-widget-1col">
                     <span class="rex-widget-column rex-widget-column-first">
-                        <a href="javascript:void(0);" class="rex-icon-file-open" onclick="xform_manager_openDatalist(<?php echo $this->getId() ?>, '<?php echo $this->relation['target_field'] ?>', '<?php echo $link ?>','0');return false;" title="<?php echo $I18N->msg('xform_relation_choose_entry') ?>"></a>
+                        <a href="javascript:void(0);" class="rex-icon-file-open" onclick="xform_manager_openDatalist(<?php echo $this->getId() ?>, '<?php echo $this->relation['source_table'].'.'.$this->getName(); ?>', '<?php echo $link ?>','0');return false;" title="<?php echo $I18N->msg('xform_relation_choose_entry') ?>"></a>
                         <a href="javascript:void(0);" class="rex-icon-file-delete" onclick="xform_manager_deleteDatalist(<?php echo $this->getId() ?>,'0');return false;" title="<?php echo $I18N->msg('xform_relation_delete_entry') ?>"></a>
                     </span>
                     </p>

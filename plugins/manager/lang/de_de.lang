@@ -139,6 +139,8 @@ xform_dataset_delete_confirm = Wirklich das Datenergebnis leeren?
 xform_data = Datensatz
 xform_manager_search = Suche
 
+xform_data_select = übernehmen
+
 # field.inc.php
 xform_tablenotexists = Diese Tabelle existiert nicht!
 xform_tablefield = Tabellenfeld

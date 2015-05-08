@@ -655,7 +655,36 @@ class rex_xform_manager
                 }
 
                 if (isset($rex_xform_manager_opener['id'])) {
-                    $list->addColumn('&uuml;bernehmen', '<a href="javascript:xform_manager_setData(' . $rex_xform_manager_opener['id'] . ',###id###,\'###' . $rex_xform_manager_opener['field'] . '### [id=###id###]\',' . $rex_xform_manager_opener['multiple'] . ')">&uuml;bernehmen</a>', -1, 'a');
+                    $list->addColumn($I18N->msg('xform_data_select'),'');
+                    $list->setColumnFormat(
+                        $I18N->msg('xform_data_select'),
+                        'custom',
+                        function($params) {
+                            global $I18N;
+
+                            $value = '';
+
+                            list($table_name, $field_name) = explode(".",$params["params"]["opener_field"]);
+                            $table = rex_xform_manager_table::get($table_name);
+                            if ($table) {
+                                $fields = $table->getValueFields(array("name" > $field_name));
+                                if ( isset($fields[$field_name])) {
+                                  $target_field = $fields[$field_name]->getElement('field');
+                                  $values = rex_xform_be_manager_relation::getListValues('rex_product_category', $target_field);
+                                  $value = $values[$params['list']->getValue('id')];
+
+                                }
+                            }
+
+                            return '<a href="javascript:xform_manager_setData(' . $params["params"]["opener_id"] . ',###id###,\''.htmlspecialchars($value).' [id=###id###]\',' . $params["params"]["opener_multiple"] . ')">'.$I18N->msg('xform_data_select').'</a>';
+                        },
+                        array(
+                          "opener_id" => $rex_xform_manager_opener["id"],
+                          "opener_field" => $rex_xform_manager_opener["field"],
+                          "opener_multiple" => $rex_xform_manager_opener["multiple"],
+                        )
+                    );
+
 
                 } else {
                     $list->addColumn($I18N->msg('xform_edit'), $I18N->msg('xform_edit'));

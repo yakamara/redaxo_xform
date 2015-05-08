@@ -137,6 +137,7 @@ xform_dataset_delete_confirm = Really delete dataset?
 
 xform_data = Data
 xform_manager_search = Search
+xform_data_select = select
 
 # field.inc.php
 xform_tablenotexists = This table does not exist!
