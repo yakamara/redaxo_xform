@@ -14,8 +14,9 @@ class rex_xform_upload extends rex_xform_abstract
 
         global $REX;
 
-        $rfile    = 'file_' . md5($this->getFieldName('file'));
         $error = array();
+
+        $rfile = 'file_' . md5($this->getFieldName('file'));
 
         $err_msgs = $this->getElement('messages'); // min_err,max_err,type_err,empty_err
         if (!is_array($err_msgs)) {
@@ -26,6 +27,19 @@ class rex_xform_upload extends rex_xform_abstract
         $err_msgs['max_error']   = isset($err_msgs[1]) ? $err_msgs[1] : 'max_error';
         $err_msgs['type_error']  = isset($err_msgs[2]) ? $err_msgs[2] : 'type_error';
         $err_msgs['empty_error'] = isset($err_msgs[3]) ? $err_msgs[3] : 'empty_error';
+        $err_msgs['delete_file'] = isset($err_msgs[4]) ? $err_msgs[4] : 'delete ';
+        $err_msgs['file_deleted'] = isset($err_msgs[5]) ? $err_msgs[5] : 'deleted';
+
+        $this->tmp_messages = $err_msgs;
+
+        $value = $this->getValue();
+        $this->setValue('');
+        $value_email = '';
+        $value_sql = '';
+
+        if (!is_string($value) && $value["delete"] == 1) {
+            $value = '';
+        }
 
         // SIZE CHECK
         $sizes   = explode(',', $this->getElement('max_size'));
@@ -41,6 +55,53 @@ class rex_xform_upload extends rex_xform_abstract
             unset($_FILES[$rfile]);
         }
 
+        $database_filename_field = $this->getElement('database_filename_field');
+        if ($database_filename_field != "") {
+            $value = $this->params['value_pool']['sql'][$database_filename_field];
+        }
+
+        $prefix = md5(mt_rand().microtime(true)).'_'.$this->getElement('file_prefix').'_';
+        $upload_folder = $this->getElement('upload_folder');
+        if ($upload_folder == "") {
+            $upload_folder = rex_path::addonData('xform','uploads');
+        }
+
+        if ($value != "") {
+
+            if ($REX["REDAXO"]) {
+                $value = explode("_",$value,2);
+                $value = $value[0];
+            }
+
+            $search_path = $upload_folder.'/'.$value.'_'.$this->getElement('file_prefix');
+            $files = glob(preg_replace('/(\*|\?|\[)/', '[$1]', $search_path).'*');
+
+            if (count($files) == 1) {
+                $value = basename($files[0]);
+
+                if (rex_request("rex_upload_downloadfile") == $value) {
+                  $file = $upload_folder.'/'.$value;
+                  if (file_exists($file)) {
+                    ob_end_clean();
+                    header('Content-Description: File Transfer');
+                    header('Content-Type: application/octet-stream');
+                    header('Content-Disposition: attachment; filename='.basename($value));
+                    header('Expires: 0');
+                    header('Cache-Control: must-revalidate');
+                    header('Pragma: public');
+                    header('Content-Length: ' . filesize($file));
+                    readfile($file);
+                    exit;
+                  }
+                }
+
+            } else {
+                $value = "";
+
+            }
+        }
+
+
         if ($this->params['send']) {
 
             if (isset($_FILES[$rfile]) &&  $_FILES[$rfile]['name'] != '' ) {
@@ -51,74 +112,38 @@ class rex_xform_upload extends rex_xform_abstract
                 $FILE['error']    = $_FILES[$rfile]['error'];
                 $FILE['name_normed'] = strtolower(preg_replace('/[^a-zA-Z0-9.\-\$\+]/', '_', $FILE['name']));
 
-                // EXTENSION CHECK
                 $extensions_array = explode(',', $this->getElement('types'));
                 $ext = '.' . pathinfo($FILE['name'], PATHINFO_EXTENSION);
-                if (!in_array(strtolower($ext), $extensions_array) && !in_array(strtoupper($ext), $extensions_array)) {
 
+                if (!in_array(strtolower($ext), $extensions_array) && !in_array(strtoupper($ext), $extensions_array)) {
                     $error[] = $err_msgs['type_error'];
+                    $value = '';
 
                 } else {
+                    $file_normed = $FILE['name_normed'];
+                    $file_normed_new = $prefix.$file_normed;
+                    if (file_exists($upload_folder . '/' . $file_normed_new)) {
+                      for ($cf = 1; $cf < 1000; $cf++) {
+                        $file_normed_new = $prefix . $cf . '_' . $file_normed ;
+                        if (!file_exists($upload_folder . '/' . $file_normed_new)) {
+                          break;
+                        }
+                      }
+                    }
 
-                    switch ($this->getElement('modus')) {
+                    $value = $file_normed_new;
 
-                        case('upload'):
-                            $upload_folder = $this->getElement('upload_folder');
-                            $prefix = $this->getElement('prefix');
-                            $file_normed = $FILE['name_normed'];
+                    if (!@move_uploaded_file($FILE['tmp_name'], $upload_folder . '/' . $file_normed_new ) ) {
+                      if (!@copy($FILE['tmp_name'], $upload_folder . '/' . $file_normed_new )) {
+                        $error[] = 'upload failed: destination folder problem';
+                        $value = '';
 
-                            $file_normed_new = $prefix.$file_normed;
-                            if (file_exists($upload_folder . '/' . $file_normed_new)) {
-                                for ($cf = 1; $cf < 1000; $cf++) {
-                                    $file_normed_new = $prefix . '_' . $cf . '_' . $file_normed ;
-                                    if (!file_exists($upload_folder . '/' . $file_normed_new)) {
-                                        break;
-                                    }
-                                }
-                            }
+                      } else {
+                        @chmod($upload_folder . '/' . $file_normed_new, $REX['FILEPERM']);
 
-                            if (!move_uploaded_file($FILE['tmp_name'], $upload_folder . '/' . $file_normed_new ) ) {
-                                if (!copy($FILE['tmp_name'], $upload_folder . '/' . $file_normed_new )) {
-                                    $error[] = $err_msgs['save_error'];
-                                } else {
-                                    @chmod($upload_folder . '/' . $file_normed_new, $REX['FILEPERM']);
-                                }
-                            } else {
-                                @chmod($upload_folder . '/' . $file_normed_new, $REX['FILEPERM']);
-                            }
-
-                            if (count($error) == 0) {
-                                $this->params['value_pool']['email'][$this->getName()] = $file_normed_new;
-                                $this->params['value_pool']['sql'][$this->getName()] = $file_normed_new;
-                                $this->setValue($file_normed_new);
-
-                            } else {
-                                $this->params['value_pool']['email'][$this->getName()] = '';
-                                $this->params['value_pool']['sql'][$this->getName()] = '';
-                                $this->setValue('');
-
-                            }
-                            break;
-
-                        case('database'):
-                            $database_filename_field = $this->getElement('database_filename_field');
-                            $prefix = $this->getElement('prefix');
-                            $FILE['name_normed'] = $prefix.$FILE['name_normed'];
-
-                            if ($database_filename_field != "") {
-                                $this->params['value_pool']['email'][$database_filename_field] = $FILE['name_normed'];
-                                $this->params['value_pool']['sql'][$database_filename_field] = $FILE['name_normed'];
-                            }
-
-                            $content = file_get_contents($FILE['tmp_name']);
-                            $this->params['value_pool']['email'][$this->getName()] = $content;
-                            $this->params['value_pool']['sql'][$this->getName()] = $content;
-                            break;
-
-                        default:
-                            $this->setValue($FILE['tmp_name']);
-                            $this->params['value_pool']['email'][$this->getName()] = $this->getValue();
-                            break;
+                      }
+                    } else {
+                      @chmod($upload_folder . '/' . $file_normed_new, $REX['FILEPERM']);
 
                     }
 
@@ -127,6 +152,32 @@ class rex_xform_upload extends rex_xform_abstract
             }
 
         }
+
+        if (count($error) == 0) {
+            switch ($this->getElement('modus')) {
+                case('database'):
+                    if ($database_filename_field != "") {
+                      $this->params['value_pool']['email'][$database_filename_field] = $value; // $FILE['name_normed'];
+                      $this->params['value_pool']['sql'][$database_filename_field] = $value; // $FILE['name_normed'];
+                    }
+
+                    $value_email = file_get_contents($upload_folder.'/'.$value);
+                    $value_sql = $value_email;
+                    break;
+
+                case('upload'):
+                default:
+                    $value_email = $value;
+                    $value_sql = $value_email;
+                    break;
+
+            }
+
+        }
+
+        $this->setValue($value);
+        $this->params['value_pool']['email'][$this->getName()] = $value_email;
+        $this->params['value_pool']['sql'][$this->getName()] = $value_sql;
 
         ## check for required file
         if ($this->params['send'] && $this->getElement('required') == 1 && $this->getValue() == '') {
@@ -145,7 +196,15 @@ class rex_xform_upload extends rex_xform_abstract
 
     function getDescription()
     {
-        return 'upload -> Beispiel: file|name|label|groesseinkb|endungenmitpunktmitkommasepariert|pflicht=1|min_err,max_err,type_err,empty_err|';
+        return 'upload -> Beispiel: upload|name|label|'.
+                'Maximale Größe in Kb oder Range 100,500|'.
+                'endungenmitpunktmitkommasepariert|'.
+                'pflicht=1|'.
+                'min_err,max_err,type_err,empty_err,delete_file_msg|'.
+                'Speichermodus(upload/database/no_save)|'.
+                '`database`: Dateiname wird gespeichert in Feldnamen|'.
+                'Eigener Uploadordner [optional]|'.
+                'Dateiprefix [optional]|';
     }
 
     function getDefinitions()
@@ -159,12 +218,11 @@ class rex_xform_upload extends rex_xform_abstract
                 'max_size' => array( 'type' => 'text',    'label' => 'Maximale Größe in Kb oder Range 100,500'),
                 'types'    => array( 'type' => 'text',    'label' => 'Welche Dateien sollen erlaubt sein, kommaseparierte Liste. ".gif,.png"'),
                 'required' => array( 'type' => 'boolean', 'label' => 'Pflichtfeld'),
-                'messages' => array( 'type' => 'text',    'label' => 'min_err,max_err,type_err,empty_err'),
+                'messages' => array( 'type' => 'text',    'label' => 'min_err,max_err,type_err,empty_err,delete_file_msg'),
                 'modus'    => array( 'type' => 'select',  'label' => 'Speichermodus', 'definition' => array('upload', 'database', 'no_save'), 'default' => 'upload'),
                 'database_filename_field'    => array( 'type' => 'text',  'label' => '`database`: Dateiname wird gespeichert in Feldnamen'),
-                'upload_folder'   => array( 'type' => 'text',    'label' => '`upload`: Folder' ),
+                'upload_folder'   => array( 'type' => 'text',    'label' => 'Eigener Uploadordner [optional]|' ),
                 'file_prefix'   => array( 'type' => 'text',    'label' => 'Dateiprefix [optional]' ),
-                'no_db'     => array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 0),
             ),
             'description' => 'Dateifeld, welches eine Datei in einen Ordner oder in der Datenbank speichert',
             'dbtype' => 'blob'
@@ -173,10 +231,50 @@ class rex_xform_upload extends rex_xform_abstract
 
     static function getListValue($params)
     {
-       if (strlen($params['value']) < 200) {
-           return $params['value'];
-       }
-       return '';
+        $return = '';
+        $field = new rex_xform_manager_field($params['params']["field"]);
+
+        if ($field->getElement('modus') == "database") {
+            $return = '[raw data|';
+
+        } else {
+
+            $upload_folder = $field->getElement('upload_folder');
+            if ($upload_folder == "") {
+                $upload_folder = rex_path::addonData('xform','uploads');
+            }
+
+            $value = explode("_", $params['value'], 2);
+
+            if (count($value) == 2) {
+                $hash = $value[0];
+                $value = $value[1];
+                $search_path = $upload_folder.'/'.$hash.'_'.$field->getElement('file_prefix');
+                $files = glob(preg_replace('/(\*|\?|\[)/', '[$1]', $search_path).'*');
+                if (count($files) == 1) {
+                    $return = '<a href="'.$_SERVER["REQUEST_URI"].'&rex_upload_downloadfile='.urlencode($params['value']).'">'.basename($value).'</a>';
+                    if (rex_request("rex_upload_downloadfile") == $params['value']) {
+                        $file = $upload_folder.'/'.$params['value'];
+                        if (file_exists($file)) {
+                            ob_end_clean();
+                            header('Content-Description: File Transfer');
+                            header('Content-Type: application/octet-stream');
+                            header('Content-Disposition: attachment; filename='.basename($file));
+                            header('Expires: 0');
+                            header('Cache-Control: must-revalidate');
+                            header('Pragma: public');
+                            header('Content-Length: ' . filesize($file));
+                            readfile($file);
+                        }
+                    }
+
+                }
+
+            }
+
+        }
+
+        return $return;
     }
 
 }
