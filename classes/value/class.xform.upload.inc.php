@@ -64,6 +64,7 @@ class rex_xform_upload extends rex_xform_abstract
         $upload_folder = $this->getElement('upload_folder');
         if ($upload_folder == "") {
             $upload_folder = rex_path::addonData('xform','uploads');
+            rex_dir::create($upload_folder);
         }
 
         if ($value != "") {
