@@ -667,10 +667,11 @@ class rex_xform_manager
                             list($table_name, $field_name) = explode(".",$params["params"]["opener_field"]);
                             $table = rex_xform_manager_table::get($table_name);
                             if ($table) {
-                                $fields = $table->getValueFields(array("name" > $field_name));
-                                if ( isset($fields[$field_name])) {
+                                $fields = $table->getValueFields(array("name" => $field_name));
+                                if (isset($fields[$field_name])) {
+                                  $target_table = $fields[$field_name]->getElement('table');
                                   $target_field = $fields[$field_name]->getElement('field');
-                                  $values = rex_xform_be_manager_relation::getListValues('rex_product_category', $target_field);
+                                  $values = rex_xform_be_manager_relation::getListValues($target_table, $target_field);
                                   $value = $values[$params['list']->getValue('id')];
 
                                 }
