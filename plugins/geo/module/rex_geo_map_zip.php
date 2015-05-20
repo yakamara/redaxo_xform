@@ -117,24 +117,21 @@ switch($rex_geo_func) {
 		$rad_l = $geo_center_lng / 180 * M_PI;
 		$rad_b = $geo_center_lat / 180 * M_PI;
 
+    $distance_field = "";
+    $distance_where = "";
+    $distance_order = 'rand('.date('Ymd').')';
+
+    /*
 		if ($geo_search_zoom < 8) {
-				$distance_field = "";
-				$distance_where = "";
-				$distance_order = 'rand('.date('Ymd').')';
-		
 		} else {
 			// Zoom 10 = Standard
-			
 			$umkreis = 130;
-			
 			$distance_field = "(".$radius." * SQRT(2*(1-cos(RADIANS(pos_lat)) * cos(".$rad_b.") * (sin(RADIANS(pos_lng)) *
 	 sin(".$rad_l.") + cos(RADIANS(pos_lng)) * cos(".$rad_l.")) - sin(RADIANS(pos_lat)) * sin(".$rad_b.")))) AS Distance,";
-	 
 			$distance_where = "".$radius." * SQRT(2*(1-cos(RADIANS(pos_lat)) *  cos(".$rad_b.") * (sin(RADIANS(pos_lng)) * sin(".$rad_l.") + cos(RADIANS(pos_lng)) * cos(".$rad_l.")) - sin(RADIANS(pos_lat)) * sin(".$rad_b."))) <= ".$umkreis." and ";
-	
 			$distance_order = 'Distance';
-		
 		}
+    */
 
 		$sql_pos_add = ' '.$pos_lng.'<>"" and '.$pos_lat.'<>"" ';
 		
