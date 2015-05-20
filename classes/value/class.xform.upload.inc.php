@@ -33,6 +33,9 @@ class rex_xform_upload extends rex_xform_abstract
         $this->tmp_messages = $err_msgs;
 
         $value = $this->getValue();
+        if ($value == "") {
+            $value = $this->getElement('default_file');
+        }
         $this->setValue('');
         $value_email = '';
         $value_sql = '';
@@ -224,6 +227,7 @@ class rex_xform_upload extends rex_xform_abstract
                 'database_filename_field'    => array( 'type' => 'text',  'label' => '`database`: Dateiname wird gespeichert in Feldnamen'),
                 'upload_folder'   => array( 'type' => 'text',    'label' => 'Eigener Uploadordner [optional]|' ),
                 'file_prefix'   => array( 'type' => 'text',    'label' => 'Dateiprefix [optional]' ),
+                'default_file'  => array( 'type' => 'text', 'label' => 'Defaultfile')
             ),
             'description' => 'Dateifeld, welches eine Datei in einen Ordner oder in der Datenbank speichert',
             'dbtype' => 'blob'
