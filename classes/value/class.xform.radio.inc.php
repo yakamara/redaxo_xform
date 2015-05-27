@@ -15,7 +15,7 @@ class rex_xform_radio extends rex_xform_abstract
         $options = $this->getArrayFromString($this->getElement(3));
 
         $default = $this->getElement('default');
-        if (!$default) {
+        if ($default === false) {
           $default = key($options);
         }
 
