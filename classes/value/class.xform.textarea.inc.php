@@ -49,4 +49,34 @@ class rex_xform_textarea extends rex_xform_abstract
             'famous' => true
         );
     }
+
+    public static function getSearchField($params)
+    {
+        $params['searchForm']->setValueField('text', array('name' => $params['field']->getName(), 'label' => $params['field']->getLabel()));
+    }
+
+    public static function getSearchFilter($params)
+    {
+        $value = $params['value'];
+        $field =  $params['field']->getName();
+
+        if ($value == '(empty)') {
+            return ' (`' . mysql_real_escape_string($field) . '` = "" or `' . mysql_real_escape_string($field) . '` IS NULL) ';
+
+        } elseif ($value == '!(empty)') {
+            return ' (`' . mysql_real_escape_string($field) . '` <> "" and `' . mysql_real_escape_string($field) . '` IS NOT NULL) ';
+
+        }
+
+        $pos = strpos($value, '*');
+        if ($pos !== false) {
+            $value = str_replace('%', '\%', $value);
+            $value = str_replace('*', '%', $value);
+            return ' `' . mysql_real_escape_string($field) . "` LIKE  '" . mysql_real_escape_string($value) . "'";
+        } else {
+            return ' `' . mysql_real_escape_string($field) . "` =  '" . mysql_real_escape_string($value) . "'";
+        }
+
+    }
+
 }
