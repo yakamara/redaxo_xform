@@ -13,10 +13,10 @@ class rex_xform_select_sql extends rex_xform_abstract
 
     function enterObject()
     {
-        $multiple = $this->getElement(8) == 1;
+        $multiple = $this->getElement('multiple') == 1;
 
         // ----- query
-        $sql = $this->getElement(3);
+        $sql = $this->getElement('query');
 
         $options_sql = rex_sql::factory();
         $options_sql->debugsql = $this->params['debug'];
@@ -32,12 +32,12 @@ class rex_xform_select_sql extends rex_xform_abstract
         }
 
         // ----- default value
-        if ($this->getValue() == '' && $this->getElement(4) != '') {
-            $this->setValue($this->getElement(4));
+        if ($this->getValue() == '' && $this->getElement('default') != '') {
+            $this->setValue($this->getElement('default'));
         }
 
         if ($multiple) {
-            $size = (int) $this->getElement(9);
+            $size = (int) $this->getElement('size');
             if ($size < 2) {
                 $size = count($options);
             }
@@ -45,8 +45,8 @@ class rex_xform_select_sql extends rex_xform_abstract
             $size = 1;
 
             // mit --- keine auswahl ---
-            if ($this->getElement(6) == 1) {
-                $options = array('0' => $this->getElement(7)) + $options;
+            if ($this->getElement('empty_option') == 1) {
+                $options = array('0' => $this->getElement('empty_value')) + $options;
             }
         }
 
@@ -157,5 +157,59 @@ class rex_xform_select_sql extends rex_xform_abstract
 
         return implode('<br />', $return);
     }
+
+
+
+    public static function getSearchField($params)
+    {
+        $options = array();
+        $options['(empty)'] = "(empty)";
+        $options['!(empty)'] = "!(empty)";
+
+        $options_sql = rex_sql::factory();
+        $options_sql->setQuery($params['field']['query']);
+
+        foreach ($options_sql->getArray() as $t) {
+            $options[$t['id']] = $t['name'];
+        }
+
+        $params['searchForm']->setValueField('select', array(
+                'name' => $params['field']->getName(),
+                'label' => $params['field']->getLabel(),
+                'options' => $options,
+                'multiple' => 1,
+                'size' => 5,
+            )
+        );
+    }
+
+    public static function getSearchFilter($params)
+    {
+        $field = $params['field']->getName();
+        $values = (array) $params['value'];
+
+        $where = array();
+        foreach($values as $value) {
+            switch($value){
+                case("(empty)"):
+                    $where[] = '`'.$field.'`=""';
+                    break;
+                case("!(empty)"):
+                    $where[] = '`'.$field.'`!=""';
+                    break;
+                default:
+                    $where[] = ' ( FIND_IN_SET("' . mysql_real_escape_string($value) . '", `' . mysql_real_escape_string($field) . '`) )';
+                    break;
+            }
+        }
+
+        if (count($where) > 0) {
+            return ' ( ' . implode(" or ", $where) . ' )';
+
+        }
+
+    }
+
+
 
 }

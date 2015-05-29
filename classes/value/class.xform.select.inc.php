@@ -16,7 +16,7 @@ class rex_xform_select extends rex_xform_abstract
         $options = $this->getArrayFromString($this->getElement('options'));
 
         if ($multiple) {
-            $size = (int) $this->getElement(7);
+            $size = (int) $this->getElement('size');
             if ($size < 2) {
                 $size = count($options);
             }
@@ -96,4 +96,49 @@ class rex_xform_select extends rex_xform_abstract
         return implode('<br />', $return);
     }
 
+    public static function getSearchField($params)
+    {
+        $options = array();
+        $options['(empty)'] = "(empty)";
+        $options['!(empty)'] = "!(empty)";
+
+        $new_select = new rex_xform_select();
+        $options += $new_select->getArrayFromString($params['field']['options']);
+
+        $params['searchForm']->setValueField('select', array(
+                'name' => $params['field']->getName(),
+                'label' => $params['field']->getLabel(),
+                'options' => $options,
+                'multiple' => 1,
+                'size' => 5,
+            )
+        );
+    }
+
+    public static function getSearchFilter($params)
+    {
+        $field = $params['field']->getName();
+        $values = (array) $params['value'];
+
+        $where = array();
+        foreach($values as $value) {
+            switch($value){
+                case("(empty)"):
+                    $where[] = '`'.$field.'`=""';
+                    break;
+                case("!(empty)"):
+                    $where[] = '`'.$field.'`!=""';
+                    break;
+                default:
+                    $where[] = ' ( FIND_IN_SET("' . mysql_real_escape_string($value) . '", `' . mysql_real_escape_string($field) . '`) )';
+                    break;
+            }
+        }
+
+        if (count($where) > 0) {
+            return ' ( ' . implode(" or ", $where) . ' )';
+
+        }
+
+    }
 }
