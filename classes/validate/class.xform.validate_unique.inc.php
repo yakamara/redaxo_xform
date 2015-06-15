@@ -48,8 +48,8 @@ class rex_xform_validate_unique extends rex_xform_validate_abstract
             if ($cd->getRows() > 0) {
                 foreach ($qfields as $qfield_id => $qfield_name) {
                     $this->params['warning'][$qfield_id] = $this->params['error_class'];
+                    $this->params['warning_messages'][$qfield_id] = $this->getElement('message');
                 }
-                $this->params['warning_messages'][] = $this->getElement('message');
             }
 
             return;
