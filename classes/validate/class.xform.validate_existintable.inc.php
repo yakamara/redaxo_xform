@@ -12,23 +12,58 @@ class rex_xform_validate_existintable extends rex_xform_validate_abstract
     function enterObject()
     {
         if ($this->params['send'] == '1') {
-            foreach ($this->obj_array as $Object) {
-                $sql = 'select ' . $this->getElement(2) . ' from ' . $this->getElement(3) . ' WHERE ' . $this->getElement(4) . '="' . $Object->getValue() . '" LIMIT 2';
-                $cd = rex_sql::factory();
-                if ($this->params['debug']) {
-                    $cd->debugsql = 1;
-                }
-                $cd->setQuery($sql);
-                if ($cd->getRows() != 1) {
-                    $this->params['warning'][$Object->getId()] = $this->params['error_class'];
-                    $this->params['warning_messages'][$Object->getId()] = $this->getElement(5);
+        
+            $db = rex_sql::factory();
+
+            if ($this->params['debug']) {
+                $db->debugsql = 1;
+            }
+
+            $table = $this->getElement(3);
+            $labels = $this->getElement(2);
+            $fields = $this->getElement(4);
+        
+            
+            $labels = explode(',', $labels);
+            $fields = explode(',', $fields);
+            
+            $qfields = array();
+            foreach ($this->obj as $k => $o) {
+                if (in_array($o->getName(), $labels)) {
+
+                    $label_key = array_search ($o->getName(), $labels);
+                    $name = $fields[$label_key]; // $o->getName()
+                    $value = $o->getValue();
+
+                    if (is_array($value)) {
+                        $value = implode(',', $value);
+                    }
+                    $qfields[$o->getId()] = '`' . $db->escape($name) . '`="' . $db->escape($value) . '"';
                 }
             }
+        
+            // all fields available ?
+            if (count($qfields) != count($fields)) {
+                $this->params['warning'][] = $this->params['error_class'];
+                $this->params['warning_messages'][] = $this->getElement(5);
+                return;
+            }
+        
+            $sql = 'select * from ' . $table . ' WHERE ' . implode(' AND ', $qfields) . ' LIMIT 2';
+        
+            $db->setQuery($sql);
+            if ($db->getRows() == 0) {
+                foreach ($qfields as $qfield_id => $qfield_name) {
+                    $this->params['warning'][$qfield_id] = $this->params['error_class'];
+                }
+                $this->params['warning_messages'][] = $this->getElement(5);
+            }
+
         }
     }
 
     function getDescription()
     {
-        return 'existintable -> prüft ob vorhanden, beispiel: validate|existintable|label|tablename|feldname|warning_message';
+        return 'existintable -> prüft ob vorhanden, beispiel: validate|existintable|label,label2|tablename|feldname,feldname2|warning_message';
     }
 }
