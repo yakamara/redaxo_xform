@@ -20,13 +20,7 @@ class rex_xform_datestamp extends rex_xform_abstract
         }
 
         // 0 = immer setzen, 1 = nur wenn leer / create
-        if ($this->getElement(4) != 1) {
-            $set = 0;
-        } else {
-            $set = 1;
-        }
-
-        if ($this->getValue() == '' || $set == 0) {
+        if ($this->getElement(4) != 1 || !isset($this->params['sql_object']) || !$this->params['sql_object']->getValue($this->getName())) {
             $this->setValue(date($format));
         }
 
@@ -34,10 +28,10 @@ class rex_xform_datestamp extends rex_xform_abstract
 
     function enterObject()
     {
-        $this->params['form_output'][$this->getId()] = $this->parse('value.hidden.tpl.php');
+        //$this->params['form_output'][$this->getId()] = $this->parse('value.hidden.tpl.php');
 
         $this->params['value_pool']['email'][$this->getName()] = $this->getValue();
-        if (!($this->getElement(3) == 'no_db')) {
+        if ($this->getValue() && $this->getElement(3) != 'no_db') {
             $this->params['value_pool']['sql'][$this->getName()] = $this->getValue();
         }
     }
