@@ -24,11 +24,10 @@ class rex_xform_upload extends rex_xform_abstract
         }
 
         $err_msgs['min_error']   = $err_msgs[0];
-        $err_msgs['max_error']   = isset($err_msgs[1]) ? $err_msgs[1] : 'max_error';
-        $err_msgs['type_error']  = isset($err_msgs[2]) ? $err_msgs[2] : 'type_error';
-        $err_msgs['empty_error'] = isset($err_msgs[3]) ? $err_msgs[3] : 'empty_error';
-        $err_msgs['delete_file'] = isset($err_msgs[4]) ? $err_msgs[4] : 'delete ';
-        $err_msgs['file_deleted'] = isset($err_msgs[5]) ? $err_msgs[5] : 'deleted';
+        $err_msgs['max_error']   = isset($err_msgs[1]) ? rex_translate($err_msgs[1]) : 'max_error';
+        $err_msgs['type_error']  = isset($err_msgs[2]) ? rex_translate($err_msgs[2]) : 'type_error';
+        $err_msgs['empty_error'] = isset($err_msgs[3]) ? rex_translate($err_msgs[3]) : 'empty_error';
+        $err_msgs['delete_file'] = isset($err_msgs[4]) ? rex_translate($err_msgs[4]) : 'delete ';
 
         $this->tmp_messages = $err_msgs;
 
