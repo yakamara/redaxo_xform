@@ -62,7 +62,10 @@ class rex_xform_upload extends rex_xform_abstract
             $value = $this->params['value_pool']['sql'][$database_filename_field];
         }
 
-        $prefix = md5(mt_rand().microtime(true)).'_'.$this->getElement('file_prefix').'_';
+        $prefix = md5(mt_rand().microtime(true)).'_';
+        if ($this->getElement('file_prefix')) {
+            $prefix .= $this->getElement('file_prefix').'_';
+        }
         $upload_folder = $this->getElement('upload_folder');
         if ($upload_folder == "") {
             $upload_folder = rex_path::addonData('xform','uploads');
