@@ -1,9 +1,6 @@
 <div class="alert alert-danger <?php echo $this->objparams['error_class'] ?>">
 
 <?php
-
-
-
 if ($this->objparams['warning_messages'] || $this->objparams['unique_error']):
     if ($this->objparams['Error-occured']): ?>
         <dl class="dl-horizontal">

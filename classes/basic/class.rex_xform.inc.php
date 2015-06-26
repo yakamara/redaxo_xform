@@ -82,6 +82,9 @@ class rex_xform
         $this->objparams['warning'] = array();
         $this->objparams['warning_messages'] = array();
 
+        $this->objparams['hide_top_warning_messages'] = false;
+        $this->objparams['hide_field_warning_messages'] = true;
+        
         $this->objparams['fieldsets_opened'] = 0; //
 
         $this->objparams['form_elements'] = array();
