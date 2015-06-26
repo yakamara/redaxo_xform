@@ -287,7 +287,7 @@ class rex_xform
         // ----- Felder mit Werten fuellen, fuer wiederanzeige
         // Die Value Objekte werden mit den Werten befuellt die
         // aus dem Formular nach dem Abschicken kommen
-        if (!($this->objparams['send'] == 1) && $this->objparams['main_where'] != '') {
+        if ($this->objparams['send'] != 1 && $this->objparams['main_where'] != '') {
             foreach ($this->objparams['values'] as $i => $valueObject) {
                 if ($valueObject->getName()) {
                     if (isset($this->objparams['sql_object'])) {
