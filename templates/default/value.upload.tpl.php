@@ -24,7 +24,7 @@ if ($value != "") {
         echo '
 <p class="formcheckbox formlabel-'.$this->getName('checkbox').'" id="'.$this->getHTMLId('checkbox').'">
     <input type="checkbox" class="checkbox" name="'.$this->getFieldName('delete').'" id="'.$this->getFieldId('delete').'" value="1" />
-    <label class="checkbox" for="'.$this->getFieldId('delete').'" >'.$this->tmp_messages["delete_file"].' `'.$a_a.htmlspecialchars($values[1]).$a_e.'`</label>
+    <label class="checkbox" for="'.$this->getFieldId('delete').'" >'.$this->tmp_messages["delete_file"].' "'.$a_a.htmlspecialchars($values[1]).$a_e.'"</label>
 </p>';
 
 
