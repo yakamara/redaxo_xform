@@ -36,7 +36,7 @@ class rex_xform_lang_textarea extends rex_xform_abstract
             }
         }
 
-        $this->params['form_output'][$this->getId()] = $this->parse('value.lang_textarea.tpl.php');
+        $this->params['form_output'][$this->getId()] = $this->parse('value.lang_textarea.tpl.php', array('text' => $text));
 
         $this->setValue(implode(self::getLangDivider(), $text));
 
