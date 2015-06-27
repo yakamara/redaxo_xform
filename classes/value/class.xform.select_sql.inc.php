@@ -123,10 +123,9 @@ class rex_xform_select_sql extends rex_xform_abstract
             $query = substr($query, 0, $pos);
         }
 
-        $multiple = (int) $params['params']['field']['multiple'];
+        $multiple = (isset($params['params']['field']['multiple'])) ? (int) $params['params']['field']['multiple'] : 0;
         if ($multiple != 1) {
             $where = ' `id`="' . mysql_real_escape_string($params['value']) . '"';
-
 
         } else {
             $where = ' FIND_IN_SET(`id`,"' . mysql_real_escape_string($params['value']) . '")';
