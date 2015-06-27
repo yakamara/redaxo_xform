@@ -1133,7 +1133,7 @@ class rex_xform_manager
 
                     case 'select':
                         // select|gender|Geschlecht *|Frau=w;Herr=m|[no_db]|defaultwert|multiple=1
-                        $xform->setValueField('select', array($field, $v['label'], $v['definition'], '', $v['default'], 0));
+                        $xform->setValueField('select', array($field, $v['label'], $v['options'], '', $v['default'], 0));
                         break;
 
                     case 'table':

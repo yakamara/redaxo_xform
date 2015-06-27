@@ -89,9 +89,11 @@ class rex_xform_upload extends rex_xform_abstract
                   $file = $upload_folder.'/'.$value;
                   if (file_exists($file)) {
                     ob_end_clean();
+                    $filename = explode("_",basename($file),2);
+                    $filename = $filename[1];
                     header('Content-Description: File Transfer');
                     header('Content-Type: application/octet-stream');
-                    header('Content-Disposition: attachment; filename='.basename($value));
+                    header('Content-Disposition: attachment; filename='.$filename);
                     header('Expires: 0');
                     header('Cache-Control: must-revalidate');
                     header('Pragma: public');
@@ -225,7 +227,7 @@ class rex_xform_upload extends rex_xform_abstract
                 'types'    => array( 'type' => 'text',    'label' => 'Welche Dateien sollen erlaubt sein, kommaseparierte Liste. ".gif,.png"'),
                 'required' => array( 'type' => 'boolean', 'label' => 'Pflichtfeld'),
                 'messages' => array( 'type' => 'text',    'label' => 'min_err,max_err,type_err,empty_err,delete_file_msg'),
-                'modus'    => array( 'type' => 'select',  'label' => 'Speichermodus', 'definition' => array('upload', 'database', 'no_save'), 'default' => 'upload'),
+                'modus'    => array( 'type' => 'select',  'label' => 'Speichermodus', 'options' => 'upload,database,no_save', 'default' => 'upload'),
                 'database_filename_field'    => array( 'type' => 'text',  'label' => '`database`: Dateiname wird gespeichert in Feldnamen'),
                 'upload_folder'   => array( 'type' => 'text',    'label' => 'Eigener Uploadordner [optional]|' ),
                 'file_prefix'   => array( 'type' => 'text',    'label' => 'Dateiprefix [optional]' ),
@@ -242,7 +244,7 @@ class rex_xform_upload extends rex_xform_abstract
         $field = new rex_xform_manager_field($params['params']["field"]);
 
         if ($field->getElement('modus') == "database") {
-            $return = '[raw data|';
+            $return = '[raw data]';
 
         } else {
 
@@ -264,9 +266,11 @@ class rex_xform_upload extends rex_xform_abstract
                         $file = $upload_folder.'/'.$params['value'];
                         if (file_exists($file)) {
                             ob_end_clean();
+                            $filename = explode("_",basename($file),2);
+                            $filename = $filename[1];
                             header('Content-Description: File Transfer');
                             header('Content-Type: application/octet-stream');
-                            header('Content-Disposition: attachment; filename='.basename($file));
+                            header('Content-Disposition: attachment; filename='.$filename);
                             header('Expires: 0');
                             header('Cache-Control: must-revalidate');
                             header('Pragma: public');
