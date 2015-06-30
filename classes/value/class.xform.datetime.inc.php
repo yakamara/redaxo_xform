@@ -74,15 +74,19 @@ class rex_xform_datetime extends rex_xform_abstract
         // ------------- year
 
         $yearStart = (int) $this->getElement('year_start');
-        $yearEnd = (int) $this->getElement('year_end');
-        if ($yearStart == 0) {
-            $yearStart = 1980;
+
+        if (substr($this->getElement('year_end'),0,1) == "+") {
+            $add_years = (int) substr($this->getElement('year_end'),1);
+            $yearEnd = date("Y") + $add_years;
+
+        } else {
+            $yearEnd = (int) $this->getElement('year_end');
+
         }
-        if ($yearEnd == 0) {
-            $yearEnd = 2020;
-        }
+
         if ($yearEnd < $yearStart) {
-            $yearEnd = $yearStart;
+            $yearEnd = $yearStart + 20;
+
         }
 
         // ------------- hour
@@ -132,8 +136,8 @@ class rex_xform_datetime extends rex_xform_abstract
             'values' => array(
                 'name'       => array( 'type' => 'name', 'label' => 'Feld' ),
                 'label'      => array( 'type' => 'text', 'label' => 'Bezeichnung'),
-                'year_start' => array( 'type' => 'text', 'label' => 'Startjahr'),
-                'year_end'   => array( 'type' => 'text', 'label' => 'Endjahr'),
+                'year_start' => array( 'type' => 'text', 'label' => '[Startjahr]'),
+                'year_end'   => array( 'type' => 'text', 'label' => '[Endjahr] oder [+5]'),
                 'minutes'    => array( 'type' => 'text', 'label' => '[Minutenformate]'),
                 'format'     => array( 'type' => 'text', 'label' => '[Anzeigeformat###Y###-###M###-###D### ###H###h ###I###m]'),
                 'current_date' => array( 'type' => 'boolean', 'label' => 'Aktuelles Datum voreingestellt'),

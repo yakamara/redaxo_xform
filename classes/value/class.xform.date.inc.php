@@ -76,19 +76,23 @@ class rex_xform_date extends rex_xform_abstract
 
         // ------------- year
 
-        $yearStart = (int) $this->getElement(3);
-        $yearEnd = (int) $this->getElement(4);
-        if ($yearStart == 0) {
-            $yearStart = 1900;
-        }
-        if ($yearEnd == 0) {
-            $yearEnd = date("Y")+10;
-        }
-        if ($yearEnd < $yearStart) {
-            $yearEnd = $yearStart;
+        $yearStart = (int) $this->getElement('year_start');
+
+        if (substr($this->getElement('year_end'),0,1) == "+") {
+            $add_years = (int) substr($this->getElement('year_end'),1);
+            $yearEnd = date("Y") + $add_years;
+
+        } else {
+            $yearEnd = (int) $this->getElement('year_end');
+
         }
 
-        $format = $this->getElement(5);
+        if ($yearEnd < $yearStart) {
+            $yearEnd = $yearStart + 20;
+
+        }
+
+        $format = $this->getElement('format');
         if ($format == '') {
             $format = '###Y###-###M###-###D###';
         }
@@ -103,7 +107,7 @@ class rex_xform_date extends rex_xform_abstract
 
     function getDescription()
     {
-        return 'date -> Beispiel: date|name|label|jahrstart|jahrsende|[Anzeigeformat###Y###-###M###-###D###]|[1/Aktuelles Datum voreingestellt]|[no_db]';
+        return 'date -> Beispiel: date|name|label|jahrstart|[jahrsende|+5]|[Anzeigeformat###Y###-###M###-###D###]|[1/Aktuelles Datum voreingestellt]|[no_db]';
     }
 
     function getDefinitions()
@@ -115,7 +119,7 @@ class rex_xform_date extends rex_xform_abstract
                 'name'         => array( 'type' => 'name', 'label' => 'Feld' ),
                 'label'        => array( 'type' => 'text', 'label' => 'Bezeichnung'),
                 'year_start'   => array( 'type' => 'text', 'label' => '[Startjahr]'),
-                'year_end'     => array( 'type' => 'text', 'label' => '[Endjahr]'),
+                'year_end'     => array( 'type' => 'text', 'label' => '[Endjahr] oder [+5]'),
                 'format'       => array( 'type' => 'text', 'label' => '[Anzeigeformat###Y###-###M###-###D###]]'),
                 'current_date' => array( 'type' => 'boolean', 'label' => 'Aktuelles Datum voreingestellt'),
                 'no_db'        => array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 0),
