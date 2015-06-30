@@ -9,7 +9,7 @@
 class rex_xform_validate_unique extends rex_xform_validate_abstract
 {
 
-    function postValueAction()
+    function enterObject()
     {
         if ($this->params['send'] == '1') {
 
