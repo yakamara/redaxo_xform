@@ -9,7 +9,7 @@
 class rex_xform_action_redirect extends rex_xform_action_abstract
 {
 
-    function execute()
+    function executeAction()
     {
 
         // spezialfaelle - nur bei request oder label

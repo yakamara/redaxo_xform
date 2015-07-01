@@ -8,7 +8,7 @@
 
 class rex_xform_action_wrapper_value extends rex_xform_action_abstract
 {
-    function execute()
+    function executeAction()
     {
         foreach ($this->params['value_pool']['sql'] as $key => $value) {
             if ($this->getElement(2) == $key) {

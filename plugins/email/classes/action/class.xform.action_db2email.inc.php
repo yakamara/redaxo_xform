@@ -9,7 +9,7 @@
 class rex_xform_action_db2email extends rex_xform_action_abstract
 {
 
-    function execute()
+    function executeAction()
     {
 
         global $REX;

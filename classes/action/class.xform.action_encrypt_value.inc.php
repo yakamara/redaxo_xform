@@ -9,7 +9,7 @@
 class rex_xform_action_encrypt_value extends rex_xform_action_abstract
 {
 
-    function execute()
+    function executeAction()
     {
 
         $f = $this->getElement(3); // the function

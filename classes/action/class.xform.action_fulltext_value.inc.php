@@ -9,7 +9,7 @@
 class rex_xform_action_fulltext_value extends rex_xform_action_abstract
 {
 
-    function execute()
+    function executeAction()
     {
         $label = $this->getElement(2);
         $labels = ' ,' . $this->getElement(3) . ',';

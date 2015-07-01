@@ -9,7 +9,7 @@
 class rex_xform_action_readtable extends rex_xform_action_abstract
 {
 
-    function execute()
+    function executeAction()
     {
 
         $value = '';

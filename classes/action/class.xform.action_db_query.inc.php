@@ -9,7 +9,7 @@
 class rex_xform_action_db_query extends rex_xform_action_abstract
 {
 
-    function execute()
+    function executeAction()
     {
 
         $query = trim($this->getElement(2));

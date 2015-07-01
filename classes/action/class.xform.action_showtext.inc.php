@@ -9,7 +9,7 @@
 class rex_xform_action_showtext extends rex_xform_action_abstract
 {
 
-    function execute()
+    function executeAction()
     {
 
         $text = $this->getElement(2);

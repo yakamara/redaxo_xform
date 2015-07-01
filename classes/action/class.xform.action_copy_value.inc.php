@@ -9,7 +9,7 @@
 class rex_xform_action_copy_value extends rex_xform_action_abstract
 {
 
-    function execute()
+    function executeAction()
     {
 
         $label_from = $this->getElement(2);

@@ -9,7 +9,7 @@
 class rex_xform_action_createdb extends rex_xform_action_abstract
 {
 
-    function execute()
+    function executeAction()
     {
         $table = $this->getElement(2);
 

@@ -248,20 +248,4 @@ abstract class rex_xform_abstract extends rex_xform_base_abstract
     {
     }
 
-    function preValidateAction()
-    {
-    }
-
-    function postValidateAction()
-    {
-    }
-
-    function postFormAction()
-    {
-    }
-
-    function postAction()
-    {
-    }
-
 }

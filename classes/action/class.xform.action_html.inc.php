@@ -9,7 +9,7 @@
 class rex_xform_action_html extends rex_xform_action_abstract
 {
 
-    function execute()
+    function executeAction()
     {
 
         $html = $this->getElement(2);

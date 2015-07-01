@@ -9,7 +9,7 @@
 class rex_xform_action_db extends rex_xform_action_abstract
 {
 
-    function execute()
+    function executeAction()
     {
 
         $sql = rex_sql::factory();

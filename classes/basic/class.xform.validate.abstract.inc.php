@@ -39,8 +39,4 @@ abstract class rex_xform_validate_abstract extends rex_xform_base_abstract
         return '';
     }
 
-    function postValueAction()
-    {
-    }
-
 }

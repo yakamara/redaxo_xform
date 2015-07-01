@@ -9,7 +9,7 @@
 class rex_xform_action_email extends rex_xform_action_abstract
 {
 
-    function execute()
+    function executeAction()
     {
 
         $mail_from = $this->getElement(2);

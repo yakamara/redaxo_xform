@@ -89,4 +89,23 @@ abstract class rex_xform_base_abstract
     {
         return array();
     }
+
+    function preValidateAction() {}
+
+    function postValidateAction() {}
+
+    function postValueAction() {}
+
+    function postFormAction() {}
+
+    function executeAction()
+    {
+        return $this->execute();
+    }
+
+    function postAction() {}
+
+    /* deprecated */
+    function execute() {}
+
 }

@@ -9,7 +9,7 @@
 class rex_xform_action_callback extends rex_xform_action_abstract
 {
 
-    function execute()
+    function executeAction()
     {
 
         if (!$this->getElement(2)) {
