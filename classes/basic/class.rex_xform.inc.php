@@ -56,6 +56,7 @@ class rex_xform
 
         $this->objparams['actions_executed'] = false;
         $this->objparams['postactions_executed'] = false;
+        $this->objparams['preactions_executed'] = false;
 
         $this->objparams['Error-occured'] = '';
         $this->objparams['Error-Code-EntryNotFound'] = 'ErrorCode - EntryNotFound';
@@ -385,6 +386,19 @@ class rex_xform
         if ($this->objparams['send'] == 1 && !$hasWarnings && !$hasWarningMessages) {
 
             $this->objparams['form_show'] = false;
+
+            // ----- pre Actions
+            foreach ($this->objparams['fields'] as $t => $types){
+                foreach ($types as $Objects) {
+                    if(!is_array($Objects))
+                        $Objects = [$Objects];
+                    foreach($Objects as $Object) {
+                        $Object->preAction();
+                    }
+                }
+            }
+            $this->objparams['preactions_executed'] = true;
+
 
             // ----- normal Actions
             foreach ($this->objparams['fields'] as $t => $types){

@@ -98,6 +98,8 @@ abstract class rex_xform_base_abstract
 
     function postFormAction() {}
 
+    function preAction() {}
+
     function executeAction()
     {
         return $this->execute();
