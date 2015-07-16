@@ -50,6 +50,8 @@ class rex_xform_select extends rex_xform_abstract
         $this->setValue(implode(',', $this->getValue()));
 
         $this->params['value_pool']['email'][$this->getName()] = $this->getValue();
+        $this->params['value_pool']['email'][$this->getName()."_NAME"] = $options[$this->getValue()];
+
         if ($this->getElement('no_db') != 'no_db') {
             $this->params['value_pool']['sql'][$this->getName()] = $this->getValue();
         }
