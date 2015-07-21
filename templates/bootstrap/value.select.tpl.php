@@ -25,7 +25,7 @@
     <label class="control-label" for="<?php echo $this->getFieldId() ?>"><?php echo $this->getLabel() ?></label>
     <select class="<?php echo $class_control ?>" id="<?php echo $this->getFieldId() ?>" <?php echo $multiple ? 'name="' . $this->getFieldName() . '[]" multiple="multiple"' : 'name="' . $this->getFieldName() . '"' ?><?php $size > 1 ? ' size="' . $size . '"' : '' ?>>
         <?php foreach ($options as $key => $value): ?>
-            <option value="<?php echo htmlspecialchars($key) ?>"<?php echo in_array($key, $this->getValue()) ? ' selected="selected"' : '' ?>><?php echo $this->getLabelStyle($value) ?></option>
+            <option value="<?php echo htmlspecialchars($key) ?>"<?php echo in_array((string) $key, $this->getValue()) ? ' selected="selected"' : '' ?>><?php echo $this->getLabelStyle($value) ?></option>
         <?php endforeach ?>
     </select>
     <?php echo $notice ?>
