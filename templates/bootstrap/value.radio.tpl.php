@@ -1,6 +1,6 @@
 <?php
 
-$notice = [];
+$notice = array();
 if ($this->getElement('notice') != "") {
     $notice[] = $this->getElement('notice');
 }

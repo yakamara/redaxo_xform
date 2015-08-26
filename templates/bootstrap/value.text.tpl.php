@@ -4,7 +4,7 @@ $type = isset($type) ? $type : 'text';
 $class = $type == 'text' ? '' : 'form-' . $type . ' ';
 $value = isset($value) ? $value : stripslashes($this->getValue());
 
-$notice = [];
+$notice = array();
 if ($this->getElement('notice') != "") {
   $notice[] = $this->getElement('notice');
 }
