@@ -258,7 +258,7 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
                 'label'        => array( 'type' => 'text',    'label' => 'Bezeichnung'),
                 'table'        => array( 'type' => 'table',   'label' => 'Ziel Tabelle'),
                 'field'        => array( 'type' => 'text',    'label' => 'Ziel Tabellenfeld(er) zur Anzeige oder Zielfeld'),
-                'type'         => array( 'type' => 'select',  'label' => 'Mehrfachauswahl', 'default' => '', 'definition' => array('0' => 'select (single)', '1' => 'select (multiple)', '2' => 'popup (single)', '3' => 'popup (multiple)' , '4' => 'popup (multiple 1-n)') ), // ,popup (multiple / relation)=4
+                'type'         => array( 'type' => 'select',  'label' => 'Mehrfachauswahl', 'default' => '', 'options' => array('0' => 'select (single)', '1' => 'select (multiple)', '2' => 'popup (single)', '3' => 'popup (multiple)' , '4' => 'popup (multiple 1-n)') ), // ,popup (multiple / relation)=4
                 'empty_option' => array( 'type' => 'boolean', 'label' => 'Mit "Leer-Option"' ),
                 'empty_value'  => array( 'type' => 'text',    'label' => 'Fehlermeldung wenn "Leer-Option" nicht aktiviert ist.'),
                 'size'         => array( 'type' => 'text', 'name' => 'boxheight',    'label' => 'Höhe der Auswahlbox'),

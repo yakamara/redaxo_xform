@@ -89,7 +89,7 @@ class rex_xform_prio extends rex_xform_abstract
                 'label'    => array( 'type' => 'text',         'label' => 'Bezeichnung'),
                 'fields'   => array( 'type' => 'select_names', 'label' => 'Tabellenfelder zur Anzeige' ),
                 'scope'    => array( 'type' => 'select_names', 'label' => 'Tabellenfelder zur Beschränkung'),
-                'default'  => array( 'type' => 'select', 'label' => 'Defaultwert', 'definition' => array(1 => 'Am Anfang', '' => 'Am Ende'), 'default' => ''),
+                'default'  => array( 'type' => 'select', 'label' => 'Defaultwert', 'options' => array(1 => 'Am Anfang', '' => 'Am Ende'), 'default' => ''),
             ),
             'description' => 'Ein Priofeld zur Festlegung der Reihenfolge',
             'dbtype' => 'int'
