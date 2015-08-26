@@ -205,7 +205,7 @@ class rex_xform
         $this->objparams['validates'] = array();
         $this->objparams['actions'] = array();
 
-        $this->objparams['fields'] = [];
+        $this->objparams['fields'] = array();
 
         $this->objparams['fields']['values'] = &$this->objparams['values'];
         $this->objparams['fields']['validates'] = &$this->objparams['validates'];
@@ -318,7 +318,7 @@ class rex_xform
         foreach ($this->objparams['fields'] as $t => $types){
             foreach ($types as $Objects) {
                 if(!is_array($Objects))
-                    $Objects = [$Objects];
+                    $Objects = array($Objects);
                 foreach($Objects as $Object) {
                     $Object->preValidateAction();
                 }
@@ -339,7 +339,7 @@ class rex_xform
         foreach ($this->objparams['fields'] as $t => $types){
             foreach ($types as $Objects) {
                 if(!is_array($Objects))
-                    $Objects = [$Objects];
+                    $Objects = array($Objects);
                 foreach($Objects as $Object) {
                     $Object->postValidateAction();
                 }
@@ -391,7 +391,7 @@ class rex_xform
             foreach ($this->objparams['fields'] as $t => $types){
                 foreach ($types as $Objects) {
                     if(!is_array($Objects))
-                        $Objects = [$Objects];
+                        $Objects = array($Objects);
                     foreach($Objects as $Object) {
                         $Object->preAction();
                     }
@@ -404,7 +404,7 @@ class rex_xform
             foreach ($this->objparams['fields'] as $t => $types){
                 foreach ($types as $Objects) {
                     if(!is_array($Objects))
-                        $Objects = [$Objects];
+                        $Objects = array($Objects);
                     foreach($Objects as $Object) {
                         $Object->executeAction();
                     }
@@ -416,7 +416,7 @@ class rex_xform
             foreach ($this->objparams['fields'] as $types){
                 foreach ($types as $Objects) {
                     if(!is_array($Objects))
-                        $Objects = [$Objects];
+                        $Objects = array($Objects);
                     foreach($Objects as $Object) {
                         $Object->postAction();
                     }
