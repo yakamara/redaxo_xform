@@ -160,9 +160,6 @@ class rex_xform
             $aid = $REX['ARTICLE_ID'];
         }
 
-        $this->setHiddenField('article_id', $aid);
-        $this->setHiddenField('clang', $clang);
-
         $this->setObjectparams('form_action', rex_getUrl($aid, $clang, $params));
     }
 
