@@ -16,14 +16,37 @@ Installation
 Last Changes
 -------
 
-### Version 4.13 // **.**.****
+### Version 4.13 // 09.09.2015
 
 #### Neu
 * Neues Feld: submits - Mehrere Submitfelder nebeneinander
 * Manager: Ein Datensatz kann beim Editieren und Anlegen "übernommen" werden. (Man springt nicht mehr direkt in die Übersicht)
+* Neuer Extension Point: XFORM_MANAGER_DATA_PAGE um einzelne Detailseiten beeinflussen zu können
+* redirect: Exit entfernt. Die REDAXO Seite wird nun komplett ausgeführt
+* upload: Eigener Ordner möglich, Default wird gesetzt, Download im Backend wie Listenansicht eingebaut
+* Manager: In Suche aufgenommen: textarea, select, select_sql
+* validate.existintable: Ergänzt. Mehrere Felder sind nun möglich
+* Bootstrap: Captcha-Template mit aufgenommen, Checkboxen-Template ergänzt, horizontale Elemente mittels Grid-System
+* Fehlermeldungen können nun auch direkt am Feld hängen. Wird bisher nur von den Bootstraptemplates beachtet
+* compare und compare_value: sind um Vergleichsoperatoren ergänzt, =, >= ...
+* date und datetime um variables Endjahr ergänzt
+* validate_unique: Betroffene Felder werden nun mit error_class belegt
+* Alle Feldtypen (validate, value, action) haben nun Aktionsmethoden, postAction(), preAction()
+* select Feldwerteingaben können nun in E-Mail-Templates verwendet werden. z.b. anrede_NAME
 
 #### Bugs
-* Manager: Selectfeld: Werte wurden in der Übersicht nicht übersetzt
+* Manager
+** Selectfeld: Werte wurden in der Übersicht nicht übersetzt, Suche ging nicht richtig
+** Listen: truncate_table wurde bei den Rechten nicht beachtet
+** Tabellennamen werden nun überall richtig ausgelesen
+* Datestamp: Werte werden nun bei Bedarf auch initial gesetzt, "nur wenn leer setzen" funktioniert wieder
+* Diverse Textkorrekturen
+* be_mediapool: Fehlende ID ergänzt
+* be_link: Fehlende ID ergänzt
+* be_medialist: Fehlende ID ergänzt
+* radio: Es wird nun immer ein Wert gesetzt. Wenn nichts passendes gefunden wird oder per Default nicht definiert wird, wird der erste Wert genommen, "0" als Wert kann nun auch gesetzt werden
+* Addon Geo: Diverse Fehlerkorrekturen und Anpassungen
+* be_relation: Popup-Öffnen auch für multiple korrigiert, Suche korrigiert, wenn Concat als Feldbezeichner verwendet wurde
 
 
 ### Version 4.12 // 15. Februar 2015

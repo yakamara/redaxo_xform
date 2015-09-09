@@ -10,7 +10,7 @@ $mypage = 'xform';
 
 $REX['ADDON']['name'][$mypage] = 'XForm';
 $REX['ADDON']['perm'][$mypage] = 'xform[]';
-$REX['ADDON']['version'][$mypage] = '4.12';
+$REX['ADDON']['version'][$mypage] = '4.13';
 $REX['ADDON']['author'][$mypage] = 'Jan Kristinus';
 $REX['ADDON']['supportpage'][$mypage] = 'www.yakamara.de/tag/xform/';
 $REX['PERM'][] = 'xform[]';
@@ -34,7 +34,6 @@ rex_register_extension('ADDONS_INCLUDED', function () {
     global $REX;
     $REX['ADDON']['xform']['templatepaths'][] = rex_path::addonData('xform', 'templates/');
 }, array(), REX_EXTENSION_EARLY);
-
 
 include_once $REX['INCLUDE_PATH'] . '/addons/' . $mypage . '/classes/basic/class.rex_radio.inc.php';
 include_once $REX['INCLUDE_PATH'] . '/addons/' . $mypage . '/classes/basic/class.rex_xform_list.inc.php';
