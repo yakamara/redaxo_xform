@@ -49,6 +49,15 @@ class rex_xform_emailtemplate
                 $template[$k] = str_replace('###' . $search . '###', $replace, $template[$k]);
                 $template[$k] = str_replace('***' . $search . '***', urlencode($replace), $template[$k]);
                 $template[$k] = str_replace('+++' . $search . '+++', self::makeSingleLine($replace), $template[$k]);
+                
+                $template[$k] = preg_replace_callback(
+                  '@redaxo://(\d+)(?:-(\d+))?/?@i',
+                  create_function(
+                    '$matches',
+                    'return rex_getUrl($matches[1], isset($matches[2]) ? $matches[2] : ' . $REX['CUR_CLANG'] . ');'
+                  ),
+                  $template[$k]
+                );
             }
         }
         return $template;

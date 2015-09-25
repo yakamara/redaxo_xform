@@ -1642,7 +1642,7 @@ class rex_xform_manager
         $warning = $params['subject'];
 
         $sql = rex_sql::factory();
-        $sql->setQuery('SELECT `table_name`, `type_name`, `name` FROM `' . rex_xform_manager_field::table() . '` WHERE `type_id`="value" AND `type_name` IN("be_medialist","be_mediapool")');
+        $sql->setQuery('SELECT `table_name`, `type_name`, `name` FROM `' . rex_xform_manager_field::table() . '` WHERE `type_id`="value" AND `type_name` IN("be_medialist","be_mediapool","mediafile")');
 
         $rows = $sql->getRows();
 
@@ -1656,6 +1656,7 @@ class rex_xform_manager
             $table = $sql->getValue('table_name');
             switch ($sql->getValue('type_name')) {
                 case 'be_mediapool':
+                case 'mediafile':    
                     $where[$table][] = $sql->getValue('name') . '="' . $filename . '"';
                     break;
                 case 'be_medialist':
