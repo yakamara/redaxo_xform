@@ -1,11 +1,11 @@
-<input type="hidden" name="<?php echo $this->getFieldName() ?>" value="<?php echo $this->getValue() ?>" />
+<input type="hidden" name="<?php echo $this->getFieldName() ?>" value="<?php echo htmlspecialchars($this->getValue()) ?>" />
 <p class="<?php echo $this->getHTMLClass() ?> formlabel-<?php echo $this->getName() ?>" id="<?php echo $this->getHTMLId() ?>">
     <label class="text <?php echo $this->getWarningClass() ?>" for="<?php echo $this->getFieldId() ?>" >
         <?php echo $this->getLabel() ?>
         <?php if ($this->getValue()): ?>
-            <br />Dateiname: <a href="files/<?php echo $this->getValue() ?>"><?php echo $this->getValue() ?></a><br />
+            <br />Dateiname: <a href="files/<?php echo htmlspecialchars($this->getValue()) ?>"><?php echo htmlspecialchars($this->getValue()) ?></a><br />
             <?php if (in_array(substr(strtolower($this->getValue()), -4), array('.jpg', '.png', '.gif'))): ?>
-                <br /><img src="?rex_img_type=profileimage&amp;rex_img_file=<?php echo $this->getValue() ?>" />
+                <br /><img src="?rex_img_type=profileimage&amp;rex_img_file=<?php echo htmlspecialchars($this->getValue()) ?>" />
             <?php endif ?>
         <?php endif ?>
     </label>
