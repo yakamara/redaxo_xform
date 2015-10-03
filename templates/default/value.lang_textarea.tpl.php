@@ -8,9 +8,7 @@
         </ul>
         <?php foreach ($REX['CLANG'] as $l => $lang): ?>
             <p class="tab" id="tab_<?php echo $l ?>">
-                <textarea class="textarea <?php echo $this->getWarningClass() ?>" name="<?php echo $this->getFieldName($l) ?>" id="<?php echo $this->getFieldId($l) ?>" cols="80" rows="10">
-                    <?php echo htmlspecialchars(stripslashes($text[$l])) ?>
-                </textarea>
+                <textarea class="textarea <?php echo $this->getWarningClass() ?>" name="<?php echo $this->getFieldName($l) ?>" id="<?php echo $this->getFieldId($l) ?>" cols="80" rows="10"><?php echo htmlspecialchars(stripslashes($text[$l])) ?></textarea>
             </p>
         <?php endforeach ?>
     </div>
