@@ -107,7 +107,7 @@ class rex_xform_date extends rex_xform_abstract
 
     function getDescription()
     {
-        return 'date -> Beispiel: date|name|label|jahrstart|[jahrsende|+5]|[Anzeigeformat###Y###-###M###-###D###]|[1/Aktuelles Datum voreingestellt]|[no_db]';
+        return 'date -> Beispiel: date|name|label|jahrstart|[jahrsende/+5]|[Anzeigeformat###Y###-###M###-###D###]|[1/Aktuelles Datum voreingestellt]|[no_db]';
     }
 
     function getDefinitions()
