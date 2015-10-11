@@ -67,7 +67,7 @@ class rex_xform_submits extends rex_xform_abstract
                 'default'   => array( 'type' => 'text',    'label' => 'Defaultwert'),
                 'css_classes' => array( 'type' => 'text',    'label' => 'CSS Klassen (kommasepariert)'),
             ),
-            'description' => 'Ein einfaches Textfeld als Eingabe',
+            'description' => 'Zusätzliche Submit-Buttons',
             'dbtype' => 'text',
             'famous' => true
         );
