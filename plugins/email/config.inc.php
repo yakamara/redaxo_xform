@@ -15,7 +15,7 @@ include $REX['INCLUDE_PATH'] . '/addons/xform/plugins/email/classes/basic/class.
 if ($REX['REDAXO'] && !$REX['SETUP']) {
     $I18N->appendFile($REX['INCLUDE_PATH'] . '/addons/xform/plugins/email/lang/');
 
-    $REX['ADDON']['version'][$mypage] = '4.12';
+    $REX['ADDON']['version'][$mypage] = '4.14';
     $REX['ADDON']['author'][$mypage] = 'Jan Kristinus';
     $REX['ADDON']['supportpage'][$mypage] = 'www.yakamara.de/tag/redaxo/';
     $REX['PERM'][] = 'xform[email]';

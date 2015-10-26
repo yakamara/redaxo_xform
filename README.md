@@ -16,6 +16,16 @@ Installation
 Last Changes
 -------
 
+
+### Version 4.14 // 26.10.2015
+
+#### Neu
+* Ermöglicht Ersetzung von "redaxo://"-Links innerhalb von E-Mail-Templates
+* Mediafile in use fix
+* mediafield - filename wurde nicht escaped
+* date: beschreibung mit trennzeichen war verwirrend
+
+
 ### Version 4.13 // 09.09.2015
 
 #### Neu
