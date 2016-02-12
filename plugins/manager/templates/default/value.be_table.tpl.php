@@ -1,7 +1,7 @@
 <div class="xform-element <?php echo $this->getHTMLClass() ?>" id="<?php echo $this->getHTMLId() ?>">
     <p class="formtable <?php echo $this->getWarningClass() ?>">
         <label class="table <?php echo $this->getWarningClass() ?>" for="<?php echo $this->getFieldId() ?>" ><?php echo $this->getLabel() ?></label>
-        <a href="javascript:void(0);">+ <?php echo $I18N->msg('add_row') ?></a>
+        <a href="javascript:void(0);">+ <?php echo $I18N->msg('xform_add_row') ?></a>
     </p>
 
     <table class="rex-table rex-xform-be-table" id="xform_table<?php echo $this->getId() ?>">
