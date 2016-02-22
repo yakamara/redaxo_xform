@@ -29,7 +29,7 @@ class rex_xform_text extends rex_xform_abstract
 
     function getDescription()
     {
-        return 'text -> Beispiel: text|name|label|defaultwert|[no_db]|cssclassname';
+        return 'text -> Beispiel: text|name|label|defaultwert|[no_db]|cssclassname|dbtype';
     }
 
     function getDefinitions()
@@ -43,12 +43,21 @@ class rex_xform_text extends rex_xform_abstract
                 'default'   => array( 'type' => 'text',    'label' => 'Defaultwert'),
                 'no_db'     => array( 'type' => 'no_db',   'label' => 'Datenbank',  'default' => 0),
                 'css_class' => array( 'type' => 'text',    'label' => 'cssclassname'),
+                'dbtype'    => array( 'type' => 'select',  'label' => 'Datenbanktyp', 'default' => 'text', 'options' => array('text' => 'text', 'mediumtext' => 'mediumtext', 'longtext' => 'longtext', 'varchar(50)' => 'varchar(50)', 'varchar(100)' => 'varchar(100)', 'varchar(255)' => 'varchar(255)', 'date' => 'date', 'datetime' => 'datetime', 'int' => 'int')),
             ),
             'description' => 'Ein einfaches Textfeld als Eingabe',
             'dbtype' => 'text',
-            'famous' => true
+            'famous' => true,
+            'hooks' => array(
+              'preCreate' => 'rex_xform_text::getDBType'
+            )
         );
 
+    }
+
+    public static function getDBType($params)
+    {
+      return $params['dbtype'] ?: 'text';
     }
 
     public static function getSearchField($params)
