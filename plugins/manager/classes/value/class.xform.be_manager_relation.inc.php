@@ -220,18 +220,18 @@ class rex_xform_be_manager_relation extends rex_xform_abstract
         $sql = rex_sql::factory();
         $sql->debugsql = $this->params['debug'];
         $relationTablePreEditValues = $this->getRelationTableValues();
-        foreach ($values as $value) {
-            if (!isset($relationTablePreEditValues[$value])) {
+		
+		$sql->flushValues();
+        $sql->setTable($relationTable);
+        $sql->setWhere('`' . $sql->escape($relationTableField['source']) . '`=' . $source_id . ' AND `' . $sql->escape($relationTableField['target']) . '`');
+        $sql->delete();
+		
+        foreach (array_reverse($values) as $value) {
                 $sql->setTable($relationTable);
                 $sql->setValue($relationTableField['source'], $source_id);
                 $sql->setValue($relationTableField['target'], $value);
                 $sql->insert();
-            }
         }
-        $sql->flushValues();
-        $sql->setTable($relationTable);
-        $sql->setWhere('`' . $sql->escape($relationTableField['source']) . '`=' . $source_id . ' AND `' . $sql->escape($relationTableField['target']) . '` NOT IN (' . implode(',', $values) . ')');
-        $sql->delete();
 
     }
 
