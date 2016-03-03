@@ -118,7 +118,7 @@ if ( $func == 'tableset_export' && $REX['USER']->isAdmin() ) {
   } else {
 
       try {
-          $content = file_get_contents($xform->objparams['value_pool']['email']['importfile']);
+          $content = file_get_contents(rex_path::addonData('xform','uploads').'/'.$xform->objparams['value_pool']['email']['importfile']);
           rex_xform_manager_table_api::importTablesets($content);
           echo rex_info($I18N->msg('xform_manager_table_import_success'));
 
