@@ -45,6 +45,7 @@ class rex_xform_action_redirect extends rex_xform_action_abstract
         if ($url != '') {
             ob_end_clean();
             header('Location: ' . $url);
+	        exit;
         }
 
     }
