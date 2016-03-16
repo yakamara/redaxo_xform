@@ -24,7 +24,7 @@ class rex_xform_radio_sql extends rex_xform_abstract
             $options[$k] = $v;
         }
 
-        if ($this->getElement(4) != '') {
+        if ($this->getValue() == '' && $this->getElement(4) != '') {
             $this->setValue($this->getElement(4));
         }
 
