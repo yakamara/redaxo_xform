@@ -19,6 +19,9 @@ class rex_xform_action_email extends rex_xform_action_abstract
 
         foreach ($this->params['value_pool']['email'] as $search => $replace) {
             $mail_body = str_replace('###' . $search . '###', $replace, $mail_body);
+            $mail_from = str_replace('###'. $search .'###', $replace, $mail_from);
+			$mail_to = str_replace('###'. $search .'###', $replace, $mail_to);
+			$mail_subject = str_replace('###'. $search .'###', $replace, $mail_subject);
             $mail_body = str_replace('+++' . $search . '+++', urlencode($replace), $mail_body);
         }
 
