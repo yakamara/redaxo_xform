@@ -1468,7 +1468,9 @@ class rex_xform_manager
                      ';
                 echo rex_content_block($table_echo);
 
-                $sql = 'select id, prio, type_id, type_name, name from ' . rex_xform_manager_field::table() . ' where table_name="' . $table->getTableName() . '" order by prio';
+
+                $sql = 'select id, prio, type_id, type_name, name, label from ' . rex_xform_manager_table::$db_field_table . ' where table_name="' . $table->getTableName() . '" order by prio';
+
                 $list = rex_list::factory($sql, 30);
                 // $list->debug = 1;
                 $list->setColumnFormat('id', 'Id');
@@ -1482,10 +1484,17 @@ class rex_xform_manager
 
                 $list->removeColumn('id');
 
+                $list->setColumnSortable('prio');
+                $list->setColumnSortable('type_id');
+                $list->setColumnSortable('type_name');
+                $list->setColumnSortable('name');
+                $list->setColumnSortable('label');
+
                 $list->setColumnLabel('prio', $I18N->msg('xform_manager_table_prio_short'));
                 $list->setColumnLabel('type_id', $I18N->msg('xform_manager_type_id'));
                 $list->setColumnLabel('type_name', $I18N->msg('xform_manager_type_name'));
-                $list->setColumnLabel('name', $I18N->msg('xform_manager_name'));
+                $list->setColumnLabel('name', $I18N->msg('xform_manager_field_name'));
+                $list->setColumnLabel('label', $I18N->msg('xform_manager_field_label'));
 
                 $list->setColumnLayout('prio', array('<th>###VALUE###</th>', '###VALUE###'));
                 $list->setColumnFormat('prio', 'custom', 'rex_xform_list_format' );
@@ -1495,6 +1504,8 @@ class rex_xform_manager
                 $list->setColumnFormat('type_name', 'custom', 'rex_xform_list_format' );
                 $list->setColumnLayout('name', array('<th>###VALUE###</th>', '###VALUE###')); // ###VALUE###
                 $list->setColumnFormat('name', 'custom', 'rex_xform_list_format' );
+                $list->setColumnLayout('label', array('<th>###VALUE###</th>', '###VALUE###')); // ###VALUE###
+                $list->setColumnFormat('label', 'custom', 'rex_xform_list_format' );
 
                 $list->addColumn($I18N->msg('xform_edit'), $I18N->msg('xform_edit'));
                 $list->setColumnParams($I18N->msg('xform_edit'), array('field_id' => '###id###', 'func' => 'edit', 'type_name' => '###type_name###', 'type_id' => '###type_id###', ));
