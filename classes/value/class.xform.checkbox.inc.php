@@ -54,7 +54,7 @@ class rex_xform_checkbox extends rex_xform_abstract
 
     function getDescription()
     {
-        return 'checkbox -> Beispiel: checkbox|name|label|Values(0,1)|default clicked (0/1)|[no_db]';
+        return 'checkbox -> Beispiel: checkbox|name|label|Values(0,1)|default clicked (0/1)|[no_db]|cssclassname';
     }
 
     function getDefinitions()
@@ -68,6 +68,7 @@ class rex_xform_checkbox extends rex_xform_abstract
                 'values'  => array( 'type' => 'text', 'label' => 'Werte (0,1) (nicht angeklickt,angeklickt)', 'default' => '0,1'),
                 'default' => array( 'type' => 'boolean', 'label' => 'Defaultstatus', 'default' => 0),
                 'no_db'   => array( 'type' => 'no_db', 'label' => 'Datenbank', 'default' => 0),
+                'css_class' => array('type' => 'text', 'label' => 'cssclassname'),
             ),
             'description' => 'Eine Checkbox mit fester Definition.',
             'dbtype' => 'varchar(255)',
