@@ -17,10 +17,10 @@ class rex_xform_readtable extends rex_xform_abstract
             }
         }
         $gd = rex_sql::factory();
-        $gd->setQuery('select * from ' . $this->getElement(1) . ' where ' . $this->getElement(2) . '="' . addslashes($v) . '"');
+        $gd->setQuery('select * from ' . $this->getElement(1) . ' where ' . $this->getElement(2) . '="' . addslashes($value) . '"');
 
         if ($gd->getRows() == 1) {
-            $ar = $gd->get_array();
+            $ar = $gd->getArray();
             foreach ($ar[0] as $k => $v) {
                 $this->params['value_pool']['email'][$k] = $v;
             }
