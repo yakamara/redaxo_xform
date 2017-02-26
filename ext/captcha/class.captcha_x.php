@@ -68,6 +68,16 @@ class captcha_x
      * @return void
      * @constructor
      */
+
+    // this is the new style constructor used by newer php versions.
+    // important: if you change the signatur of this method, change also the signature of captcha_x()
+    function __construct()
+    {
+        $this->captcha_x();
+    }
+
+    // this is the deprecated old style constructor kept for compat reasons. 
+    // important: if you change the signatur of this method, change also the signature of __construct()
     function captcha_x()
     {
         $this->INI = parse_ini_file( dirname( __FILE__) . '/captcha_x.ini', true);

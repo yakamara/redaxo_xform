@@ -25,6 +25,15 @@ class rex_xform_manager
 
     protected static $reservedFieldColumns = array('id', 'table_name', 'prio', 'type_id', 'type_name', 'list_hidden', 'search');
 
+    // this is the new style constructor used by newer php versions.
+    // important: if you change the signatur of this method, change also the signature of rex_xform_manager()
+    function __construct()
+    {
+        $this->rex_xform_manager();
+    }
+
+    // this is the deprecated old style constructor kept for compat reasons. 
+    // important: if you change the signatur of this method, change also the signature of __construct()
     function rex_xform_manager()
     {
         $this->setDataPageFunctions();
