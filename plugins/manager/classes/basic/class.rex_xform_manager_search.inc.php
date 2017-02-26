@@ -27,6 +27,15 @@ class rex_xform_manager_search
     /** @type rex_xform_manager_table */
     protected $table = null;
 
+    // this is the new style constructor used by newer php versions.
+    // important: if you change the signatur of this method, change also the signature of rex_xform_manager_search()
+    function __construct(rex_xform_manager_table $table)
+    {
+        $this->rex_xform_manager_search($table);
+    }
+
+    // this is the deprecated old style constructor kept for compat reasons. 
+    // important: if you change the signatur of this method, change also the signature of __construct()
     public function rex_xform_manager_search(rex_xform_manager_table $table)
     {
         $this->table = $table;
